@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.PhoneInputCountry {
+  border-radius: 18px;
+  padding: 16px;
+  height: 56px;
+  background-color: white;
+  border: 1px solid #d0d5dd;
+  font-size: 14px;
+  line-height: 20.3px;
+  letter-spacing: -0.02em;
+  font-weight: 400;
+  margin-right: 4px !important;
+}
+.PhoneInputCountry:focus-within {
+  border: 1px solid #0673ff;
+  box-shadow: 0px 0px 0px 4px #1e93ff1a;
+}
+
+.PhoneInputCountryIcon--border,
+.PhoneInputCountrySelect:focus + .PhoneInputCountryIcon--border {
+  box-shadow: none !important;
+}
+.PhoneInputCountryIcon {
+  margin-right: 4px;
+}
+.PhoneInputCountrySelectArrow {
+  border-color: #141b34 !important;
+  width: 10px !important;
+  opacity: 1 !important;
+  height: 10px !important;
+  border-bottom-width: 2px !important;
+  border-right-width: 2px !important;
+  border-radius: 1px;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* .container {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+@media only screen and (min-width: 600px) {
+  .container {
+    max-width: 600px !important;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .container {
+    max-width: 768px !important;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .container {
+    max-width: 960px !important;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .container {
+    max-width: 1140px !important;
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .container {
+    max-width: 1216px !important;
+  }
+} */

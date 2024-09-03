@@ -2,10 +2,13 @@
   "name": "@repo/ui",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "exports": {
     "./button": "./src/button.tsx",
-    "./card": "./src/card.tsx",
-    "./code": "./src/code.tsx"
+    "./select": "./src/select.tsx",
+    "./inputField": "./src/inputField.tsx",
+    "./phoneNumberField": "./src/phoneNumberField.tsx",
+    "./otpField": "./src/otpField.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
@@ -15,14 +18,23 @@
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
     "@turbo/gen": "^1.12.4",
-    "@types/node": "^20.11.24",
     "@types/eslint": "^8.56.5",
+    "@types/node": "^20.11.24",
     "@types/react": "^18.2.61",
     "@types/react-dom": "^18.2.19",
+    "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.10",
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "react": "^18.2.0"
+    "@radix-ui/react-select": "^2.1.1",
+    "classnames": "^2.5.1",
+    "flag-icons": "^7.2.3",
+    "react": "^18.2.0",
+    "react-otp-input": "^3.1.1",
+    "react-phone-number-input": "^3.4.5",
+    "reactjs-otp-input": "^2.0.10"
   }
 }
