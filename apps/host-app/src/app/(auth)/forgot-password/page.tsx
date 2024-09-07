@@ -1,29 +1,22 @@
 "use client";
 
 import { Form, Formik } from "formik";
-import Link from "next/link";
 import Button from "@repo/ui/button";
 import InputField from "@repo/ui/inputField";
-import { CaretLeft } from "@phosphor-icons/react";
 import { resetPasswordEmailValidationSchema } from "@/utils/validationSchema";
 import { resetPasswordEmailInitialValues } from "@/utils/initialValues";
+import BackLink from "@/components/BackLink";
+import AuthPageHeader from "@/components/Header/AuthPageHeader";
 
 export default function ForgotPasswordPage() {
   return (
     <div className="space-y-8">
-      <div className="flex items-center gap-0.5 text-primary-500 fill-primary-500">
-        <CaretLeft size={18} fill="inherit" />
-        <Link href="/login" className="text-base font-medium">
-          Back
-        </Link>
-      </div>
-      <div className="space-y-3">
-        <h1 className="text-h1 font-medium text-black">Reset password</h1>
-        <p className="text-base text-grey-500">
-          Enter your email, and we&apos;ll send you instructions to regain
-          access
-        </p>
-      </div>
+      <BackLink backLink="/login" />
+      <AuthPageHeader
+        title="Reset password"
+        description="Enter your email, and we'll send you instructions to regain
+          access"
+      />
 
       <Formik
         initialValues={resetPasswordEmailInitialValues}

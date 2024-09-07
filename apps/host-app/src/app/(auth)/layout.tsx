@@ -13,11 +13,11 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <main>
       <div className="min-h-screen h-full flex">
-        <div className="w-1/2 h-auto relative">
+        <div className="hidden md:block w-1/2 h-auto relative">
           <div className="absolute top-0 left-0 w-full h-full">
             <Image
               className="h-full w-full object-cover"
-              src="/images/auth_bg.png"
+              src="/images/auth/auth_bg.png"
               alt=""
               width={1000}
               height={1000}
@@ -25,7 +25,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
 
-        <div className="w-1/2 flex justify-center items-center p-8">
+        <div className="w-full md:w-1/2 flex justify-center items-center px-5 sm:px-10 py-8 sm:py-14">
           <div
             className={cn(
               "w-full",

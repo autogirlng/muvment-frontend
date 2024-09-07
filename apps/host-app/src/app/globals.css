@@ -48,7 +48,7 @@ body {
   }
 }
 
-/* .container {
+.container {
   position: relative;
   width: 100%;
   margin: 0 auto;
@@ -73,7 +73,7 @@ body {
   }
 }
 
-@media only screen and (min-width: 1200px) {
+@media only screen and (min-width: 1240px) {
   .container {
     max-width: 1140px !important;
   }
@@ -83,4 +83,10 @@ body {
   .container {
     max-width: 1216px !important;
   }
-} */
+}
+
+@media only screen and (min-width: 1600px) {
+  .container {
+    max-width: 1520px !important;
+  }
+}

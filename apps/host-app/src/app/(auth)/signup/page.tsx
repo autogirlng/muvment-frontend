@@ -1,37 +1,22 @@
 "use client";
 
-import cn from "classnames";
 import Link from "next/link";
 import { Form, Formik } from "formik";
-import { EyeSlash, Eye, CheckCircle } from "@phosphor-icons/react";
-import {
-  isDigitValid,
-  isLengthValid,
-  isLowerCaseValid,
-  isSpaceValid,
-  isSpecialCharacterValid,
-  isUpperCaseValid,
-} from "@/utils/functions";
-import { passwordChecks } from "@/utils/constants";
 import { signUpFormInitialValues } from "@/utils/initialValues";
 import { signupFormValidationSchema } from "@/utils/validationSchema";
 import Button from "@repo/ui/button";
 import InputField from "@repo/ui/inputField";
 import PhoneNumberField from "@repo/ui/phoneNumberField";
-import usePasswordValidation from "@/hooks/usePasswordValidation";
 import PasswordChecks from "@/components/PasswordChecks";
+import AuthPageHeader from "@/components/Header/AuthPageHeader";
 
 export default function SignupPage() {
-  const { isPasswordHidden, toggleHiddenPassword } = usePasswordValidation();
-
   return (
     <div className="space-y-10">
-      <div className="space-y-3">
-        <h1 className="text-h1 font-medium text-black">Become A Host</h1>
-        <p className="text-base text-grey-500">
-          Generate Extra Income with Your Vehicle
-        </p>
-      </div>
+      <AuthPageHeader
+        title="Become A Host"
+        description=" Generate Extra Income with Your Vehicle"
+      />
 
       <Formik
         initialValues={signUpFormInitialValues}
@@ -53,12 +38,13 @@ export default function SignupPage() {
             handleBlur,
             handleChange,
             setFieldValue,
+            setFieldTouched,
             isSubmitting,
           } = props;
 
           return (
             <Form className="space-y-6">
-              <div className="flex gap-6">
+              <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-6">
                 <InputField
                   name="first_name"
                   id="first_name"
@@ -91,17 +77,20 @@ export default function SignupPage() {
                 />
               </div>
               <PhoneNumberField
-                name="phone_number"
-                id="phone_number"
-                type="phone_number"
+                name="phoneNumber"
+                id="phoneNumber"
+                type="phoneNumber"
                 label="Phone Number"
                 placeholder="Enter phone number"
-                value={values.phone_number}
-                onChange={handleChange}
+                value={values.phoneNumber}
+                onChange={(number: any) => {
+                  setFieldTouched("phoneNumber", true);
+                  setFieldValue("phoneNumber", number);
+                }}
                 onBlur={handleBlur}
-                error={
-                  errors.phone_number && touched.phone_number
-                    ? errors.phone_number
+                errors={
+                  errors.phoneNumber && touched.phoneNumber
+                    ? errors.phoneNumber
                     : ""
                 }
               />
@@ -126,9 +115,9 @@ export default function SignupPage() {
                 }
               />
 
-              <p className="text-grey-500 text-base">
+              <p className="text-grey-500 text-sm 2xl:text-base">
                 Already a host?{" "}
-                <Link href="/login" className="text-base text-primary-500">
+                <Link href="/login" className="text-primary-500">
                   Sign In
                 </Link>
               </p>

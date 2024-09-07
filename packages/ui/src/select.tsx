@@ -1,9 +1,7 @@
-"use client";
 import React, { LegacyRef, ReactNode } from "react";
 
 import * as Select from "@radix-ui/react-select";
 import cn from "classnames";
-
 
 type OptionProps = {
   value: string;
@@ -11,41 +9,58 @@ type OptionProps = {
 };
 
 type SelectInputProps = {
+  className?: string;
+  defaultValue?: string;
   id: string;
-  label: string;
-  placeholder: string;
+  label?: string;
+  placeholder?: string;
   variant?: "outlined" | "filled";
   options: OptionProps[];
+  onChange?: (value: string) => void;
+  value?: string;
+  error?: string;
 };
 
 const SelectInput = ({
+  className,
+  defaultValue,
   id,
   label,
   placeholder,
   variant,
   options,
+  value,
+  onChange,
+  error,
 }: SelectInputProps) => {
   return (
     <div className="w-full space-y-2">
-      <p
-        className={cn(
-          "text-xl",
-          variant === "filled" ? "text-white" : "text-grey-900"
-        )}
+      {label && (
+        <p
+          className={cn(
+            "text-base 3xl:text-xl",
+            variant === "filled" ? "text-white" : "text-grey-900"
+          )}
+        >
+          {label}
+        </p>
+      )}
+      <Select.Root
+        defaultValue={defaultValue}
+        value={value}
+        onValueChange={onChange}
       >
-        {label}
-      </p>
-      <Select.Root>
         <Select.Trigger
           className={cn(
             "flex items-center justify-between w-full rounded-[18px] p-4 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400",
             variant === "filled"
               ? "bg-grey-800 text-grey-400 border-none"
-              : "bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A]"
+              : "bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A]",
+            className
           )}
           aria-label={id}
         >
-          <Select.Value placeholder={placeholder} />
+          <Select.Value placeholder={placeholder || ""} />
           <Select.Icon>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -71,12 +86,15 @@ const SelectInput = ({
           <Select.Viewport className="px-6 py-[14px]">
             <Select.Group className="space-y-3">
               {options.map((option: OptionProps) => (
-                <SelectItem value={option.value}>{option.option}</SelectItem>
+                <SelectItem key={option.value} value={option.value}>
+                  {option.option}
+                </SelectItem>
               ))}
             </Select.Group>
           </Select.Viewport>
         </Select.Content>
       </Select.Root>
+      {error && <p className="text-error-500 text-sm mt-2">{error}</p>}
     </div>
   );
 };
@@ -95,16 +113,13 @@ const SelectItem = React.forwardRef(
     return (
       <Select.Item
         className={cn(
-          "text-sm flex items-center py-2 h-4 relative select-none data-[disabled]:text-grey-400 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:text-primary-500",
+          "text-xs 3xl:text-sm flex items-center py-2 h-4 relative select-none data-[disabled]:text-grey-400 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:text-primary-500",
           className
         )}
         {...props}
         ref={forwardedRef}
       >
         <Select.ItemText>{children}</Select.ItemText>
-        {/* <Select.ItemIndicator className="absolute left-0 w-[25px] inline-flex items-center justify-center">
-          <CheckIcon />
-        </Select.ItemIndicator> */}
       </Select.Item>
     );
   }

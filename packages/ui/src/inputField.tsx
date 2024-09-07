@@ -1,6 +1,6 @@
-"use client";
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import cn from "classnames";
+import Tooltip from "@repo/ui/tooltip";
 
 type InputFieldProps = {
   name: string;
@@ -14,6 +14,11 @@ type InputFieldProps = {
   required?: boolean;
   disabled?: boolean;
   error?: string;
+  info?: boolean;
+  tooltipTitle?: string;
+  tooltipDescription?: string;
+  inputClass?: string;  className?: string;
+
   toggleShowPassword?: () => void;
   [key: string]: any;
 };
@@ -26,19 +31,31 @@ const InputField = ({
   type,
   icon,
   error,
+  info,
+  tooltipTitle,
+  tooltipDescription,
+  inputClass,className,
   toggleShowPassword,
   ...rest
 }: InputFieldProps) => (
-  <div className="w-full space-y-1">
+  <div className={cn("w-full space-y-1", className)}>
     {label && (
       <label
         htmlFor={id}
         className={cn(
-          "text-sm block font-medium",
-          variant === "filled" ? "text-white" : "text-grey-900"
+          "text-sm block font-medium text-nowrap",
+          variant === "filled" ? "text-white" : "text-grey-900",
+          info && "flex items-center gap-3"
         )}
       >
-        {label}
+        <span> {label}</span>
+        {/* info */}
+        {info && (
+          <Tooltip
+            title={tooltipTitle || ""}
+            description={tooltipDescription || ""}
+          />
+        )}
       </label>
     )}
     <div className="relative">
@@ -47,7 +64,9 @@ const InputField = ({
         id={id}
         placeholder={placeholder}
         className={cn(
-          "w-full rounded-[18px] p-4 pr-8 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400",
+          "w-full rounded-[18px] p-4 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400",
+          icon && "pr-8",
+          inputClass,
           error
             ? "border border-error-500 focus:border-error-500"
             : variant === "filled"

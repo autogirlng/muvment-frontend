@@ -6,16 +6,15 @@ import InputField from "@repo/ui/inputField";
 import { setNewPasswordValidationSchema } from "@/utils/validationSchema";
 import { setNewPasswordInitialValues } from "@/utils/initialValues";
 import PasswordChecks from "@/components/PasswordChecks";
+import AuthPageHeader from "@/components/Header/AuthPageHeader";
 
 export default function ResetPasswordPage() {
   return (
     <div className="space-y-8">
-      <div className="space-y-3">
-        <h1 className="text-h1 font-medium text-black">Set New Password</h1>
-        <p className="text-base text-grey-500">
-          Enter your new password below.
-        </p>
-      </div>
+      <AuthPageHeader
+        title="Set New Password"
+        description=" Enter your new password below."
+      />
 
       <Formik
         initialValues={setNewPasswordInitialValues}

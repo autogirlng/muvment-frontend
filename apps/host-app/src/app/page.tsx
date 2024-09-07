@@ -1,23 +1,23 @@
-import Benefits from "@/components/hostLanding/Benefits";
-import Calculator from "@/components/hostLanding/Calculator";
-import Footer from "@/components/hostLanding/Footer";
-import Hero from "@/components/hostLanding/Hero";
-import JoinUs from "@/components/hostLanding/JoinUs";
-import Overview from "@/components/hostLanding/Overview";
-import Steps from "@/components/hostLanding/Steps";
-import VehicleOptions from "@/components/hostLanding/VehicleOptions";
-import VehiclePackages from "@/components/hostLanding/VehiclePackages";
+import Benefits from "@/components/LandingPageComponents/Benefits";
+import Calculator from "@/components/LandingPageComponents/Calculator";
+import Footer from "@/components/LandingPageComponents/Footer";
+import Hero from "@/components/LandingPageComponents/Hero";
+import JoinUs from "@/components/LandingPageComponents/JoinUs";
+import Overview from "@/components/LandingPageComponents/Overview";
+import Steps from "@/components/LandingPageComponents/Steps";
+import VehicleOptions from "@/components/LandingPageComponents/VehicleOptions";
+import VehiclePackages from "@/components/LandingPageComponents/VehiclePackages";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <main className="">
-      <Hero/>
-      <Benefits/>
+    <main className="overflow-x-hidden">
+      <Hero />
+      <Benefits />
       <JoinUs />
       <Steps />
       <VehicleOptions />
-      <VehiclePackages />
       <Calculator />
+      <VehiclePackages />
       <Overview />
       <Footer />
     </main>

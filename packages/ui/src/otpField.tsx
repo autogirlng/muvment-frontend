@@ -1,5 +1,3 @@
-"use client";
-import React, { ChangeEvent, ReactNode } from "react";
 import cn from "classnames";
 import { OtpInput } from "reactjs-otp-input";
 

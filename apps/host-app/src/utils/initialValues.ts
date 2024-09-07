@@ -4,12 +4,15 @@ import {
   ResetPasswordOtpValues,
   SetNewPasswordValues,
   SignupFormValues,
+  VerifyIdentityValues,
+  VerifyPhoneNumberValues,
+  WithdrawalAccountValues,
 } from "@/utils/types";
 
 export const signUpFormInitialValues: SignupFormValues = {
   first_name: "",
   last_name: "",
-  phone_number: "",
+  phoneNumber: "",
   email: "",
   password: "",
   password_checks: {
@@ -37,4 +40,20 @@ export const resetPasswordOtpInitialValues: ResetPasswordOtpValues = {
 export const setNewPasswordInitialValues: SetNewPasswordValues = {
   password: "",
   confirm_password: "",
+};
+
+export const verifyPhoneNumberValues: VerifyPhoneNumberValues = {
+  phoneNumber: "",
+};
+
+export const verifyIdentityValues: VerifyIdentityValues = {
+  day: "",
+  month: "",
+  year: "",
+  bvn: "",
+};
+
+export const withdrawalAccountValues: WithdrawalAccountValues = {
+  bank: "",
+  accountNumber: "",
 };

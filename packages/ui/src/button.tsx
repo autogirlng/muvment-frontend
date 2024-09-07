@@ -1,4 +1,3 @@
-"use client";
 
 import cn from "classnames";
 import { ReactNode } from "react";
@@ -22,7 +21,9 @@ const Button = ({
   fullWidth,
   ...rest
 }: ButtonProps) => {
-  const btnWidth = fullWidth ? "w-full py-4" : "w-fit py-6";
+  const btnWidth = fullWidth
+    ? "w-full py-4 !font-semibold text-sm 2xl:text-base"
+    : "w-fit py-5 2xl:py-6 !font-medium text-base md:text-xl 2xl:text-h6";
 
   const btnRadius =
     radius === "full" ? "" : radius === "lg" ? "rounded-[32px]" : "rounded-2xl";
@@ -48,7 +49,7 @@ const Button = ({
     <button
       {...rest}
       className={cn(
-        "px-[52px] font-medium",
+        "px-9 md:px-11 2xl:px-[52px]",
         btnWidth,
         btnRadius,
         btnBorder,

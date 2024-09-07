@@ -3,6 +3,7 @@
 import Image from "next/image";
 import OtpField from "@repo/ui/otpField";
 import { useState } from "react";
+import AuthPageHeader from "./Header/AuthPageHeader";
 
 type Props = {};
 
@@ -20,15 +21,12 @@ const OtpVerification = ({}: Props) => {
         width={200}
         height={134}
       />
-      <div className="space-y-3">
-        <h1 className="text-h1 font-medium text-black">
-          We’ve sent a mail your way
-        </h1>
-        <p className="text-base text-grey-500">
-          We sent you an OTP to verify your email. If you can’t find it please
-          check your spam first before resending the code.
-        </p>
-      </div>
+      <AuthPageHeader
+        title="We’ve sent a mail your way"
+        description="We sent you an OTP to verify your email. If you can’t find it please
+          check your spam first before resending the code."
+      />
+  
 
       <OtpField
         name="otp"

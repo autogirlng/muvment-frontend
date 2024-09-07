@@ -8,11 +8,24 @@ const config: Config = {
     "../../packages/ui/**/*{.js,.ts,.jsx,.tsx}",
   ],
   theme: {
+    screens: {
+      xs:'410px',
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1400px",
+      "3xl": "1536px",
+      "4xl": "1700px",
+      "5xl": "1900px",
+    },
+
     colors: {
       black: "#000000",
       white: "#FFFFFF",
       transparent: "transparent",
       primary: {
+        50: "#EDF8FF",
         500: "#0673FF",
         900: "#0E285D",
       },
@@ -20,20 +33,26 @@ const config: Config = {
         50: "#F9FAFB",
         75: "#F7F9FC",
         100: "#EBEBEB",
+        200: "#E4E7EC",
         300: "#D0D5DD",
         400: "#98A2B3",
         500: "#667185",
+        600: "#475367",
+        700: "#344054",
         800: "#1D2739",
         900: "#101928",
       },
       warning: {
         300: "#F5B546",
         400: "#F3A218",
+        700: "#865503",
       },
       error: {
         500: "#F83B3B",
+        900: "#E61C1C",
       },
       success: {
+        500: "#0AAF24",
         600: "#0C8921",
       },
     },
@@ -42,6 +61,15 @@ const config: Config = {
         "56px",
         {
           lineHeight: "56px",
+          letterSpacing: "-0.02em",
+          fontWeight: "600",
+        },
+      ],
+
+      h2: [
+        "46px",
+        {
+          lineHeight: "46px",
           letterSpacing: "-0.02em",
           fontWeight: "600",
         },
@@ -71,6 +99,22 @@ const config: Config = {
           fontWeight: "600",
         },
       ],
+      h5: [
+        "24px",
+        {
+          lineHeight: "28.6px",
+          letterSpacing: "-0.02em",
+          fontWeight: "600",
+        },
+      ],
+      h6: [
+        "20px",
+        {
+          lineHeight: "24px",
+          letterSpacing: "-0.02em",
+          fontWeight: "400",
+        },
+      ],
       xl: [
         "18px",
         {
@@ -95,14 +139,27 @@ const config: Config = {
           fontWeight: "400",
         },
       ],
+      xs: [
+        "12px",
+        {
+          lineHeight: "17.4px",
+          letterSpacing: "-0.02em",
+          fontWeight: "400",
+        },
+      ],
+      "2xs": [
+        "10px",
+        {
+          lineHeight: "15.4px",
+          letterSpacing: "-0.02em",
+          fontWeight: "400",
+        },
+      ],
     },
     extend: {
       backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-        "footer-overlay": "url(/images/footer_bg.png)",
-        "calculator-overlay": "url(/images/calculator_bg.png)",
+        "footer-overlay": "url(/images/landing/footer_bg.png)",
+        "calculator-overlay": "url(/images/landing/calculator_bg.png)",
       },
     },
   },

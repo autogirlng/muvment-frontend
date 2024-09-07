@@ -8,18 +8,17 @@ import InputField from "@repo/ui/inputField";
 import usePasswordValidation from "@/hooks/usePasswordValidation";
 import { loginFormValidationSchema } from "@/utils/validationSchema";
 import { loginFormInitialValues } from "@/utils/initialValues";
+import AuthPageHeader from "@/components/Header/AuthPageHeader";
 
 export default function LoginPage() {
   const { isPasswordHidden, toggleHiddenPassword } = usePasswordValidation();
 
   return (
     <div className="space-y-8">
-      <div className="space-y-3">
-        <h1 className="text-h1 font-medium text-black">Welcome back</h1>
-        <p className="text-base text-grey-500">
-          Log in to pick up where you left off.
-        </p>
-      </div>
+      <AuthPageHeader
+        title="Welcome back"
+        description="Log in to pick up where you left off."
+      />
 
       <Formik
         initialValues={loginFormInitialValues}
@@ -77,17 +76,14 @@ export default function LoginPage() {
                   errors.password && touched.password ? errors.password : ""
                 }
               />
-              <div className="flex items-center justify-between">
-                <p className="text-grey-500 text-base">
+              <div className="flex items-center justify-between text-sm 2xl:text-base">
+                <p className="text-grey-500">
                   Not a host?{" "}
-                  <Link href="/signup" className="text-base text-primary-500">
+                  <Link href="/signup" className="text-primary-500">
                     Sign Up
                   </Link>
                 </p>
-                <Link
-                  href="/forgot-password"
-                  className="text-base text-primary-500"
-                >
+                <Link href="/forgot-password" className="text-primary-500">
                   Forgot password?
                 </Link>
               </div>

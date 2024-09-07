@@ -4,11 +4,15 @@
   "private": true,
   "type": "module",
   "exports": {
+    "./badge": "./src/badge.tsx",
     "./button": "./src/button.tsx",
+    "./fullPageDialog": "./src/fullPageDialog.tsx",
     "./select": "./src/select.tsx",
     "./inputField": "./src/inputField.tsx",
     "./phoneNumberField": "./src/phoneNumberField.tsx",
-    "./otpField": "./src/otpField.tsx"
+    "./otpField": "./src/otpField.tsx",
+    "./tooltip": "./src/tooltip.tsx",
+    "./icons": "./src/icons.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
@@ -29,6 +33,8 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.1",
+    "@radix-ui/react-popover": "^1.1.1",
     "@radix-ui/react-select": "^2.1.1",
     "classnames": "^2.5.1",
     "flag-icons": "^7.2.3",

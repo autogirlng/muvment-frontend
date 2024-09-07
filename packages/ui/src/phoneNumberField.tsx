@@ -1,9 +1,8 @@
-"use client";
-import React, { ChangeEvent, ReactNode } from "react";
 import cn from "classnames";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import "flag-icons/css/flag-icons.min.css";
+import flags from "react-phone-number-input/flags";
 
 type PhoneNumberFieldProps = {
   name: string;
@@ -27,6 +26,7 @@ const PhoneNumberField = ({
   variant,
   error,
   onChange,
+  value,
   ...rest
 }: PhoneNumberFieldProps) => (
   <div className="w-full space-y-1">
@@ -42,11 +42,11 @@ const PhoneNumberField = ({
       </label>
     )}
     <PhoneInput
-      countrySelectProps={{
-        renderCountryFlag: (country: string) => (
-          <span className={`fi fi-${country.toLowerCase()} fis`}></span>
-        ),
-      }}
+      // countrySelectProps={{
+      //   renderCountryFlag: (country: string) => (
+      //     <span className={`fi fi-${country.toLowerCase()} fis`}></span>
+      //   ),
+      // }}
       numberInputProps={{
         className: cn(
           "w-full rounded-[18px] p-4 pr-8 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400",
@@ -59,10 +59,10 @@ const PhoneNumberField = ({
       }}
       placeholder={placeholder}
       onChange={onChange}
+      value={value}
       international
       defaultCountry="NG"
-      // flags={flags}
-      // disabled={disabled ? true : false}
+      flags={flags}
       {...rest}
     />
     {error && <p className="text-error-500 text-sm mt-2">{error}</p>}
