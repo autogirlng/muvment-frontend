@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import cn from "classnames";
 import Tooltip from "@repo/ui/tooltip";
 
-type InputFieldProps = {
+type TextAreaProps = {
   name: string;
   id: string;
   type?: string;
@@ -24,7 +24,7 @@ type InputFieldProps = {
   [key: string]: any;
 };
 
-const InputField = ({
+const TextArea = ({
   id,
   label,
   placeholder,
@@ -39,7 +39,7 @@ const InputField = ({
   className,
   toggleShowPassword,
   ...rest
-}: InputFieldProps) => (
+}: TextAreaProps) => (
   <div className={cn("w-full space-y-1", className)}>
     {label && (
       <label
@@ -60,12 +60,11 @@ const InputField = ({
       </label>
     )}
     <div className="relative">
-      <input
-        type={type || "text"}
+      <textarea
         id={id}
         placeholder={placeholder}
         className={cn(
-          "w-full rounded-[18px] p-4 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400",
+          "w-full rounded-[18px] p-4 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400 min-h-[130px]",
           icon && "pr-8",
           inputClass,
           error
@@ -74,22 +73,11 @@ const InputField = ({
               ? "bg-grey-800 text-grey-400 border-none"
               : "bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A]"
         )}
-        autoComplete="off"
-        autoCorrect="off"
-        spellCheck="false"
         {...rest}
       />
-      {id === "password" && (
-        <div
-          className="absolute right-3 bottom-[19px] fill-grey-500 cursor-pointer"
-          onClick={toggleShowPassword}
-        >
-          {icon}
-        </div>
-      )}
     </div>
     {error && <p className="text-error-500 text-sm mt-2">{error}</p>}
   </div>
 );
 
-export default InputField;
+export default TextArea;

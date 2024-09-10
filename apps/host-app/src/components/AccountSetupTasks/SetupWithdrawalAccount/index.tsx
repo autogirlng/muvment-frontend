@@ -79,7 +79,7 @@ export default function SetupWithdrawalAccount({}: Props) {
               )}
               {accountName && (
                 <p className="flex items-center gap-2 text-base md:text-lg 2xl:text-h6 text-success-600">
-                  {Icons.ic_check} <span>Mamudu Jeffrey</span>
+                  {Icons.ic_check_circle} <span>Mamudu Jeffrey</span>
                 </p>
               )}
             </div>

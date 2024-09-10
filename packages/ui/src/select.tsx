@@ -2,6 +2,7 @@ import React, { LegacyRef, ReactNode } from "react";
 
 import * as Select from "@radix-ui/react-select";
 import cn from "classnames";
+import Tooltip from "@repo/ui/tooltip";
 
 type OptionProps = {
   value: string;
@@ -19,6 +20,9 @@ type SelectInputProps = {
   onChange?: (value: string) => void;
   value?: string;
   error?: string;
+  info?: boolean;
+  tooltipTitle?: string;
+  tooltipDescription?: string;
 };
 
 const SelectInput = ({
@@ -32,18 +36,29 @@ const SelectInput = ({
   value,
   onChange,
   error,
+  info,
+  tooltipTitle,
+  tooltipDescription,
 }: SelectInputProps) => {
   return (
-    <div className="w-full space-y-2">
+    <div className="w-full space-y-2 custom-radix-select">
       {label && (
-        <p
+        <label
+          htmlFor={id}
           className={cn(
-            "text-base 3xl:text-xl",
-            variant === "filled" ? "text-white" : "text-grey-900"
+            "text-sm block font-medium text-nowrap",
+            variant === "filled" ? "text-white" : "text-grey-900",
+            info && "flex items-center gap-3"
           )}
         >
-          {label}
-        </p>
+          <span> {label}</span>
+          {info && (
+            <Tooltip
+              title={tooltipTitle || ""}
+              description={tooltipDescription || ""}
+            />
+          )}
+        </label>
       )}
       <Select.Root
         defaultValue={defaultValue}
@@ -53,9 +68,11 @@ const SelectInput = ({
         <Select.Trigger
           className={cn(
             "flex items-center justify-between w-full rounded-[18px] p-4 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400",
-            variant === "filled"
-              ? "bg-grey-800 text-grey-400 border-none"
-              : "bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A]",
+            error
+              ? "border border-error-500 focus:border-error-500"
+              : variant === "filled"
+                ? "bg-grey-800 text-grey-400 border-none"
+                : "bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A]",
             className
           )}
           aria-label={id}
@@ -75,9 +92,9 @@ const SelectInput = ({
         </Select.Trigger>
         <Select.Content
           position="popper"
-          sideOffset={10}
+          sideOffset={5}
           className={cn(
-            "overflow-hidden rounded-3xl",
+            "!overflow-auto rounded-3xl z-[999] max-h-[300px] min-w-[300px]",
             variant === "filled"
               ? "bg-grey-800 text-grey-400 border-none"
               : "bg-white border border-grey-300 shadow-[0px_4px_6px_-2px_#10192808,0px_16px_24px_-4px_#10192814]"

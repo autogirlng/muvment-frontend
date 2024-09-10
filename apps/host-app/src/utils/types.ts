@@ -43,12 +43,31 @@ export interface VerifyIdentityValues {
   bvn: string;
 }
 
-
 export interface WithdrawalAccountValues {
   bank: string;
   accountNumber: string;
 }
 
+export interface BasicVehicleInformationValues {
+  vehicleName: string;
+  city: string;
+  address: string;
+  vehicleType: string;
+  vehicleMake: string;
+  vehicleModel: string;
+  year: string;
+  insurance: string;
+  tracker: string;
+}
+
+export interface AdditionalVehicleInformationValues {
+  licensePlateNumber: string;
+  stateOfRegistration: string;
+  vehicleDescription: string;
+  vehicleFeatures: string[];
+  vehicleColor: string;
+  numberOfSeats: string;
+}
 
 export type BadgeStatus = "accepted" | "pending" | "canceled";
 

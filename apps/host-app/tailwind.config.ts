@@ -9,7 +9,7 @@ const config: Config = {
   ],
   theme: {
     screens: {
-      xs:'410px',
+      xs: "410px",
       sm: "640px",
       md: "768px",
       lg: "1024px",
@@ -27,6 +27,7 @@ const config: Config = {
       primary: {
         50: "#EDF8FF",
         500: "#0673FF",
+        400: "#1E93FF",
         900: "#0E285D",
       },
       grey: {

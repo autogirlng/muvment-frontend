@@ -53,3 +53,24 @@ export const withdrawalAccountSchema = object().shape({
   bank: string().required("Please enter your bank"),
   accountNumber: string().required("Please enter your account number"),
 });
+
+export const basicVehicleInformationSchema = object().shape({
+  vehicleName: string().required("Vehicle name is required"),
+  city: string().required("City is required"),
+  address: string().required("Address is required"),
+  vehicleType: string().required("Please select vehicle type"),
+  vehicleMake: string().required("Please select vehicle make"),
+  vehicleModel: string().required("Please select vehicle model"),
+  year: string().required("Please select year of release"),
+  insurance: string().required("Please select insurance status"),
+  tracker: string().required("Please select tracker status"),
+});
+
+export const addtionalVehicleInformationSchema = object().shape({
+  licensePlateNumber: string().required("License plate number is required"),
+  stateOfRegistration: string().required("State of registration is required"),
+  vehicleDescription: string().required("Vehicle description is required"),
+  // vehicleFeatures: string().required("Vehicle features is required"),
+  vehicleColor: string().required("Vehicle color is required"),
+  numberOfSeats: string().required("Number of seats is required"),
+});

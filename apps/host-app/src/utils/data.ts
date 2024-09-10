@@ -1,5 +1,73 @@
 import { BookingOverviewTableRow, TopRatedVehicleType } from "./types";
 
+export const vehicleTypes = [
+  { value: "Sedan", option: "Sedan" },
+  { value: "SUV", option: "SUV" },
+  { value: "Truck", option: "Truck" },
+  { value: "Sports Car", option: "Sports Car" },
+  { value: "Pickup", option: "Pickup" },
+  { value: "Bus", option: "Bus" },
+  { value: "Luxury Vehicle", option: "Luxury Vehicle" },
+];
+
+export const vehicleMakes = [
+  { value: "Toyota", option: "Toyota" },
+  { value: "Ford", option: "Ford" },
+  { value: "Honda", option: "Honda" },
+  { value: "Chevrolet", option: "Chevrolet" },
+  { value: "Nissan", option: "Nissan" },
+  { value: "BMW", option: "BMW" },
+  { value: "Mercedes-Benz", option: "Mercedes-Benz" },
+];
+
+export const vehicleModels = [
+  { value: "Tucson", option: "Tucson" },
+  { value: "Santa Fe", option: "Santa Fe" },
+  { value: "Palisade", option: "Palisade" },
+  { value: "Kona", option: "Kona" },
+  { value: "Venue", option: "Venue" },
+  { value: "Ioniq Electric", option: "Ioniq Electric" },
+  { value: "Veloster N", option: "Veloster N" },
+];
+
+export const vehicleColors = [
+  { value: "Red", option: "Red" },
+  { value: "Black", option: "Black" },
+  { value: "White", option: "White" },
+  { value: "Silver", option: "Silver" },
+  { value: "Gold", option: "Gold" },
+];
+
+export const vehicleFeatures = [
+  "All wheel drive",
+  "Android auto",
+  "Apple car play",
+  "Aux Input",
+  "Backup camera",
+  "Bike rack",
+  "Blind spot warning",
+  "Bluetooth",
+  "Child seat",
+  "Convertible",
+  "GPS",
+  "Heated seats",
+  "Keyless entry",
+  "Pet friendly",
+  "Ski rack",
+  "USB Charger",
+  "Sunroof",
+  "Toll pass",
+  "USB input",
+  "Wheelchair accessible",
+];
+
+export const cities = [
+  { value: "Lagos", option: "Lagos" },
+  { value: "Accra", option: "Accra" },
+  { value: "Abuja", option: "Abuja" },
+  { value: "Port Harcourt", option: "Port Harcourt" },
+];
+
 export const monthsFilter = [
   "Jan",
   "Feb",
@@ -26,6 +94,64 @@ export const tableHeadItems = [
   "Status",
   "Price",
   "Actions",
+];
+
+export const bookingOverviewFilters = [
+  {
+    title: "Vehicle",
+    options: [
+      { label: "Hyundai Tuscon 2018", value: "hyundai-tuscon" },
+      { label: "Toyota Camry 2017", value: "toyota-camry" },
+    ],
+  },
+  {
+    title: "Booking Type",
+    options: [
+      { label: "Daily rides", value: "daily" },
+      { label: "Interstate rides", value: "interstate" },
+      { label: "Weekly rides", value: "weekly" },
+      { label: "Monthly rides", value: "monthly" },
+      { label: "Airport pickups", value: "airport" },
+    ],
+  },
+];
+
+export const bookingFilters = [
+  {
+    title: "Booking Type",
+    options: [
+      { label: "Daily rides", value: "daily" },
+      { label: "Interstate rides", value: "interstate" },
+      { label: "Weekly rides", value: "weekly" },
+      { label: "Monthly rides", value: "monthly" },
+      { label: "Airport pickups", value: "airport" },
+    ],
+  },
+  {
+    title: "Vehicle",
+    options: [
+      { label: "Hyundai Tuscon 2018", value: "hyundai-tuscon" },
+      { label: "Toyota Camry 2017", value: "toyota-camry" },
+    ],
+  },
+  {
+    title: "Date",
+    options: [
+      { label: "Start date", value: "start-date" },
+      { label: "End date", value: "end-date" },
+      { label: "Date range", value: "date-range" },
+    ],
+  },
+  {
+    title: "Status",
+    options: [
+      { label: "Active", value: "active" },
+      { label: "Pending", value: "pending" },
+      { label: "Completed", value: "completed" },
+      { label: "Canceled", value: "canceled" },
+      { label: "Rejected", value: "rejected" },
+    ],
+  },
 ];
 
 // =================== mock data ===================//

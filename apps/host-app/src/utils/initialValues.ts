@@ -1,4 +1,6 @@
 import {
+  AdditionalVehicleInformationValues,
+  BasicVehicleInformationValues,
   LoginFormValues,
   ResetPasswordEmailValues,
   ResetPasswordOtpValues,
@@ -57,3 +59,25 @@ export const withdrawalAccountValues: WithdrawalAccountValues = {
   bank: "",
   accountNumber: "",
 };
+
+export const basicVehicleInformationValues: BasicVehicleInformationValues = {
+  vehicleName: "",
+  city: "",
+  address: "",
+  vehicleType: "",
+  vehicleMake: "",
+  vehicleModel: "",
+  year: "",
+  insurance: "",
+  tracker: "",
+};
+
+export const additionalVehicleInformationValues: AdditionalVehicleInformationValues =
+  {
+    licensePlateNumber: "",
+    stateOfRegistration: "",
+    vehicleDescription: "",
+    vehicleFeatures: [],
+    vehicleColor: "",
+    numberOfSeats: "",
+  };
