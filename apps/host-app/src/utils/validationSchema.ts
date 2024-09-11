@@ -74,3 +74,15 @@ export const addtionalVehicleInformationSchema = object().shape({
   vehicleColor: string().required("Vehicle color is required"),
   numberOfSeats: string().required("Number of seats is required"),
 });
+
+export const vehiclePhotosSchema = object().shape({
+  // frontView: string().required("Front view is required"),
+  // backView: string().required("Back view is required"),
+  // leftView: string().required("Left view is required"),
+  // rightView: string().required("Right view is required"),
+  // interiorView: string().required("Interior view is required"),
+});
+
+export const availabilityAndPricingSchema = object().shape({
+  advanceNotice: string().required("Advance notice is required"),
+});

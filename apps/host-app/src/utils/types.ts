@@ -69,6 +69,29 @@ export interface AdditionalVehicleInformationValues {
   numberOfSeats: string;
 }
 
+export interface VehiclePhotosValues {
+  frontView: string;
+  backView: string;
+  sideView1: string;
+  sideView2: string;
+  interiorImage: string;
+  otherImage: string;
+}
+export interface AvailabilityAndPricingValues {
+  advanceNoticeInDays: string;
+  minTripDurationInDays: string;
+  maxTripDurationInDays: string;
+  selfDrive: string;
+  driverProvided: string;
+  fuelProvided: string;
+  dailyRate: string;
+  extraHourRate: string;
+  airportPickup: string;
+  threeDaysDiscount: string;
+  sevenDaysDiscount: string;
+  thirtyDaysDiscount: string;
+}
+
 export type BadgeStatus = "accepted" | "pending" | "canceled";
 
 // ==================== hard coded types - to be changed ====================//

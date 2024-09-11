@@ -42,11 +42,16 @@ body {
   border-radius: 1px;
 }
 
-label svg{
+label svg {
   width: 20px;
   height: 20px;
+}
+
+.label svg {
   color: #667185;
 }
+
+
 
 @layer utilities {
   .text-balance {

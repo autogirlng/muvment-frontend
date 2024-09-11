@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { Fragment, ReactNode } from "react";
 import Icons from "@repo/ui/icons";
 import cn from "classnames";
 
@@ -15,15 +15,12 @@ export const Stepper = ({
     <>
       <div className="flex justify-between items-center gap-2">
         {steps.map((step, index) => (
-          <>
-            <div
-              className="flex items-center justify-between gap-6"
-              key={index}
-            >
+          <Fragment key={index}>
+            <div className="flex items-center justify-between gap-6">
               <div
                 className={`flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10 rounded-full border-grey-500 border-[1.5px] text-xs ${
                   currentStep > index
-                    ? "bg-primary-500 text-white"
+                    ? "bg-primary-500 border-primary-500 text-white"
                     : currentStep === index
                       ? "bg-grey-500 text-white"
                       : "text-grey-500"
@@ -38,7 +35,7 @@ export const Stepper = ({
             {index < steps.length - 1 && (
               <div className="text-black">{Icons.ic_chevron_right}</div>
             )}
-          </>
+          </Fragment>
         ))}
       </div>
 
@@ -53,15 +50,19 @@ export const StepperNavigation = ({
   steps,
   currentStep,
   setCurrentStep,
-  // saveDraft,
+  submitText,
+  handleSubmit,
+  disableSubmitButton,
 }: {
   steps: string[];
   currentStep: number;
   setCurrentStep: (step: number) => void;
-  // saveDraft: () => void;
+  submitText?: string;
+  handleSubmit?: () => void;
+  disableSubmitButton?: boolean;
 }) => {
   const handleNext = () => {
-    if (currentStep < steps.length - 1) {
+    if (currentStep < steps.length) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -72,13 +73,13 @@ export const StepperNavigation = ({
     }
   };
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-grey-50 py-6 px-8 lg:px-[52px]">
+    <div className="fixed bottom-0 left-0 w-full bg-grey-50 py-4 3xl:py-6 px-4 sm:px-8 lg:px-[52px]">
       <div className="flex justify-between">
         {currentStep > 0 && (
           <StepperButton
             onClick={handleBack}
             disabled={currentStep === 0}
-            className="border-2 border-grey-600 text-grey-600"
+            className="sm:border-2 sm:border-grey-600 text-grey-600"
             type="button"
           >
             {Icons.ic_chevron_left} <span>Previous</span>
@@ -86,20 +87,31 @@ export const StepperNavigation = ({
         )}
         <div className="flex items-center gap-3 justify-end w-full">
           <StepperButton
-            // onClick={saveDraft}
-            className="border-2 border-grey-600 text-grey-600"
+            // onClick={handleSaveDraft}
+            className="sm:border-2 sm:border-grey-600 text-grey-600"
             type="submit"
           >
             <span>Save Draft</span>
           </StepperButton>
-          <StepperButton
-            onClick={handleNext}
-            disabled={currentStep === steps.length - 1}
-            className="px-6 3xl:!px-8 bg-primary-500 text-white disabled:bg-grey-300"
-            type="button"
-          >
-            <span>Next</span> {Icons.ic_chevron_right}
-          </StepperButton>
+          {submitText ? (
+            <StepperButton
+              onClick={handleSubmit}
+              disabled={disableSubmitButton}
+              className="px-6 3xl:!px-8 bg-transparent sm:bg-primary-500 text-primary-500 sm:text-white disabled:sm:bg-grey-300"
+              type="button"
+            >
+              <span>{submitText}</span> {Icons.ic_chevron_right}
+            </StepperButton>
+          ) : (
+            <StepperButton
+              onClick={handleNext}
+              disabled={currentStep === steps.length}
+              className="px-6 3xl:!px-8 bg-transparent sm:bg-primary-500 text-primary-500 sm:text-white disabled:sm:bg-grey-300"
+              type="button"
+            >
+              <span>Next</span> {Icons.ic_chevron_right}
+            </StepperButton>
+          )}
         </div>
       </div>
     </div>
@@ -120,7 +132,7 @@ const StepperButton = ({
   <button
     {...rest}
     className={cn(
-      "py-3 3xl:py-4 px-4 3xl:px-6 rounded-[43px] flex items-center gap-1 3xl:gap-2 text-sm 3xl:text-base font-semibold",
+      "py-2 sm:py-3 3xl:py-4 px-2 sm:px-4 3xl:px-6 rounded-[43px] flex items-center gap-1 3xl:gap-2 text-xs 3xl:text-base font-semibold",
       className
     )}
     onClick={onClick}

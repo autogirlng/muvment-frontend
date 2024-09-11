@@ -45,7 +45,7 @@ const InputField = ({
       <label
         htmlFor={id}
         className={cn(
-          "text-sm block font-medium text-nowrap",
+          "label text-sm block font-medium text-nowrap",
           variant === "filled" ? "text-white" : "text-grey-900",
           info && "flex items-center gap-3"
         )}
@@ -65,7 +65,7 @@ const InputField = ({
         id={id}
         placeholder={placeholder}
         className={cn(
-          "w-full rounded-[18px] p-4 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400",
+          "w-full rounded-[18px] p-4 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400 disabled:bg-grey-100 disabled:text-grey-400 disabled:border-grey-300",
           icon && "pr-8",
           inputClass,
           error

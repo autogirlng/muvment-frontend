@@ -19,5 +19,9 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.2.7",
+    "swiper": "^11.1.12"
+  }
 }

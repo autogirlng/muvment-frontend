@@ -45,7 +45,7 @@ const TextArea = ({
       <label
         htmlFor={id}
         className={cn(
-          "text-sm block font-medium text-nowrap",
+          "label text-sm block font-medium text-nowrap",
           variant === "filled" ? "text-white" : "text-grey-900",
           info && "flex items-center gap-3"
         )}

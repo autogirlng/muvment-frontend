@@ -23,6 +23,7 @@ type SelectInputProps = {
   info?: boolean;
   tooltipTitle?: string;
   tooltipDescription?: string;
+  disabled?: boolean;
 };
 
 const SelectInput = ({
@@ -39,6 +40,7 @@ const SelectInput = ({
   info,
   tooltipTitle,
   tooltipDescription,
+  disabled = false,
 }: SelectInputProps) => {
   return (
     <div className="w-full space-y-2 custom-radix-select">
@@ -46,7 +48,7 @@ const SelectInput = ({
         <label
           htmlFor={id}
           className={cn(
-            "text-sm block font-medium text-nowrap",
+            "label text-sm block font-medium text-nowrap",
             variant === "filled" ? "text-white" : "text-grey-900",
             info && "flex items-center gap-3"
           )}
@@ -67,7 +69,7 @@ const SelectInput = ({
       >
         <Select.Trigger
           className={cn(
-            "flex items-center justify-between w-full rounded-[18px] p-4 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400",
+            "flex items-center justify-between w-full rounded-[18px] p-4 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400 disabled:bg-grey-100 disabled:text-grey-400 disabled:border-grey-300",
             error
               ? "border border-error-500 focus:border-error-500"
               : variant === "filled"
@@ -76,19 +78,22 @@ const SelectInput = ({
             className
           )}
           aria-label={id}
+          disabled={disabled}
         >
           <Select.Value placeholder={placeholder || ""} />
-          <Select.Icon>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              fill={variant === "filled" ? "#FFFFFF" : "#000000"}
-              viewBox="0 0 256 256"
-            >
-              <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
-            </svg>
-          </Select.Icon>
+          {!disabled && (
+            <Select.Icon>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                fill={variant === "filled" ? "#FFFFFF" : "#000000"}
+                viewBox="0 0 256 256"
+              >
+                <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+              </svg>
+            </Select.Icon>
+          )}
         </Select.Trigger>
         <Select.Content
           position="popper"

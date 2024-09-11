@@ -3,7 +3,7 @@ import Tips from "../Tips";
 const AdditionalInformationTips = () => {
   return (
     <Tips>
-      <div>
+      <div className="hidden md:block">
         <p className="text-xl font-semibold"> Show off the Extras</p>
         <ul className="list-disc text-sm ml-5">
           <li>

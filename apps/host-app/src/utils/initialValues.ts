@@ -1,11 +1,13 @@
 import {
   AdditionalVehicleInformationValues,
+  AvailabilityAndPricingValues,
   BasicVehicleInformationValues,
   LoginFormValues,
   ResetPasswordEmailValues,
   ResetPasswordOtpValues,
   SetNewPasswordValues,
   SignupFormValues,
+  VehiclePhotosValues,
   VerifyIdentityValues,
   VerifyPhoneNumberValues,
   WithdrawalAccountValues,
@@ -81,3 +83,27 @@ export const additionalVehicleInformationValues: AdditionalVehicleInformationVal
     vehicleColor: "",
     numberOfSeats: "",
   };
+
+export const vehiclePhotosValues: VehiclePhotosValues = {
+  frontView: "",
+  backView: "",
+  sideView1: "",
+  sideView2: "",
+  interiorImage: "",
+  otherImage:''
+};
+
+export const availabilityAndPricingValues: AvailabilityAndPricingValues = {
+  advanceNoticeInDays: "",
+  minTripDurationInDays: "",
+  maxTripDurationInDays: "",
+  selfDrive: "",
+  driverProvided: "",
+  fuelProvided: "",
+  dailyRate: "",
+  extraHourRate: "",
+  airportPickup: "",
+  threeDaysDiscount: "",
+  sevenDaysDiscount: "",
+  thirtyDaysDiscount: "",
+};
