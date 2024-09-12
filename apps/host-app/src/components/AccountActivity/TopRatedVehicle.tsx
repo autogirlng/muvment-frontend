@@ -52,7 +52,7 @@ export default function TopRatedVehicle({ topRatedVehicle }: Props) {
           ) : (
             <h6 className="text-grey-800 text-xl 2xl:text-h6 font-medium">
               You have no vehicles listed.{" "}
-              <Link href="/" className="text-primary-500">
+              <Link href="/vehicle-onboarding" className="text-primary-500">
                 onboard a vehicle
               </Link>
             </h6>

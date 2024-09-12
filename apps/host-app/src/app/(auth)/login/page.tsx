@@ -9,9 +9,12 @@ import usePasswordValidation from "@/hooks/usePasswordValidation";
 import { loginFormValidationSchema } from "@/utils/validationSchema";
 import { loginFormInitialValues } from "@/utils/initialValues";
 import AuthPageHeader from "@/components/Header/AuthPageHeader";
+import useAuth from "@/hooks/useAuth";
 
 export default function LoginPage() {
   const { isPasswordHidden, toggleHiddenPassword } = usePasswordValidation();
+
+  const { loginMutation } = useAuth();
 
   return (
     <div className="space-y-8">
@@ -22,8 +25,10 @@ export default function LoginPage() {
 
       <Formik
         initialValues={loginFormInitialValues}
-        onSubmit={async (values, { setSubmitting }) => {
+        onSubmit={(values, { setSubmitting }) => {
           console.log(values);
+          loginMutation.mutate(values);
+          setSubmitting(false);
         }}
         validationSchema={loginFormValidationSchema}
         enableReinitialize={true}
@@ -88,7 +93,14 @@ export default function LoginPage() {
                 </Link>
               </div>
 
-              <Button fullWidth variant="filled" color="primary" type="submit">
+              <Button
+                fullWidth
+                variant="filled"
+                color="primary"
+                type="submit"
+                loading={isSubmitting || loginMutation.isPending}
+                disabled={isSubmitting || loginMutation.isPending}
+              >
                 Sign In
               </Button>
             </Form>

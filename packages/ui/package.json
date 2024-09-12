@@ -4,15 +4,28 @@
   "private": true,
   "type": "module",
   "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
     "./badge": "./src/badge.tsx",
     "./button": "./src/button.tsx",
+    "./collapsible": "./src/collapsible.tsx",
+    "./checkbox": "./src/checkbox.tsx",
+    "./chip": "./src/chip.tsx",
+    "./filter": "./src/filter.tsx",
     "./fullPageDialog": "./src/fullPageDialog.tsx",
-    "./select": "./src/select.tsx",
+    "./icons": "./src/icons.tsx",
     "./inputField": "./src/inputField.tsx",
-    "./phoneNumberField": "./src/phoneNumberField.tsx",
     "./otpField": "./src/otpField.tsx",
-    "./tooltip": "./src/tooltip.tsx",
-    "./icons": "./src/icons.tsx"
+    "./phoneNumberField": "./src/phoneNumberField.tsx",
+    "./photoUpload": "./src/photoUpload.tsx",
+    "./select": "./src/select.tsx",
+    "./selectCountry": "./src/selectCountry.tsx",
+    "./spinner": "./src/spinner.tsx",
+    "./stepper": "./src/stepper.tsx",
+    "./textarea": "./src/textarea.tsx",
+    "./tooltip": "./src/tooltip.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
@@ -33,6 +46,8 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@radix-ui/react-checkbox": "^1.1.1",
+    "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-popover": "^1.1.1",
     "@radix-ui/react-select": "^2.1.1",

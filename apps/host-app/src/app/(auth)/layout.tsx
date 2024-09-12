@@ -1,14 +1,31 @@
 "use client";
+import useAuth from "@/hooks/useAuth";
+import FullPageSpinner from "@repo/ui/spinner";
 import cn from "classnames";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { ReactNode, useEffect, useState } from "react";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const pathname = usePathname();
+  const [loading, setLoading] = useState(true);
+  const { user_token } = useAuth();
 
   const otpRoutes = ["/verify-email", "/forgot-password/otp"];
   const isOtpScreen = otpRoutes.includes(pathname);
+
+  useEffect(() => {
+    if (user_token) {
+      router.push("/dashboard");
+    } else {
+      setLoading(false);
+    }
+  }, [router, user_token]);
+
+  if (loading) {
+    return <FullPageSpinner />;
+  }
 
   return (
     <main>

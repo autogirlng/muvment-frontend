@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function DashboardPage() {
   return (
-    <div className="py-8 2xl:py-11 space-y-11 2xl:space-y-[68px]">
+    <main className="py-8 2xl:py-11 space-y-11 2xl:space-y-[68px]">
       {/* complete tasks component starts */}
       <div className="py-4 px-6 2xl:px-[33px] bg-warning-400 rounded-[32px] text-white space-y-[18px]">
         <div className="space-y-2">
@@ -29,6 +29,6 @@ export default function DashboardPage() {
 
       <AccountActivity />
       <BookingsOverview />
-    </div>
+    </main>
   );
 }

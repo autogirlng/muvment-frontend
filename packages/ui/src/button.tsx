@@ -1,4 +1,3 @@
-
 import cn from "classnames";
 import { ReactNode } from "react";
 
@@ -9,6 +8,7 @@ type ButtonProps = {
   color?: "primary" | "white" | "transparent";
   radius?: "full" | "rounded" | "lg" | "md";
   fullWidth?: boolean;
+  loading?: boolean;
   [key: string]: any;
 };
 
@@ -19,6 +19,7 @@ const Button = ({
   color,
   radius,
   fullWidth,
+  loading,
   ...rest
 }: ButtonProps) => {
   const btnWidth = fullWidth
@@ -58,7 +59,7 @@ const Button = ({
       )}
       onClick={onClick}
     >
-      {children}
+      {loading ? <p>Loading...</p> : children}
     </button>
   );
 };

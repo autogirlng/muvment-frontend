@@ -16,7 +16,7 @@ export const specialCharRegex = /[@$!#%*?_&]/;
 
 export const spacesRegex = /^\S*$/;
 
-type PasswordCheckKey = keyof SignupFormValues["password_checks"];
+type PasswordCheckKey = keyof NonNullable<SignupFormValues["password_checks"]>;
 export const passwordChecks: { label: string; check: PasswordCheckKey }[] = [
   { label: "8 characters long", check: "length" },
   { label: "One digit", check: "digit" },
@@ -25,3 +25,8 @@ export const passwordChecks: { label: string; check: PasswordCheckKey }[] = [
   { label: "One lowercase character", check: "lowercase_letters" },
   { label: "Must not include spaces", check: "no_space" },
 ];
+
+// export const countryMap: { [key: string]: string } = {
+//   NG: "NGN",
+//   GH: "GHS",
+// };

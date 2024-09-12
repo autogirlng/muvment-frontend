@@ -8,6 +8,66 @@ body {
   line-height: 24px;
 }
 
+.Toastify__toast-container {
+  z-index: 9999999999 !important;
+  right: 75px !important;
+}
+.Toastify__toast-theme--light {
+  border: 1px solid #e4e7ec;
+  border-left: 6px solid;
+  border-radius: 4px 0px 0px 4px !important;
+  padding: 12px 16px !important;
+  width: 390px;
+  box-shadow: none !important;
+}
+
+.Toastify__toast-body {
+  padding: 0 12px 0 0 !important;
+  font-family: "__Inter_59dee8";
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  color: #101928;
+}
+
+.Toastify__toast--success {
+  border-left-color: #0aaf24;
+}
+
+.Toastify__toast--error {
+  border-left-color: #cb1a14;
+}
+
+.Toastify__toast-icon {
+  width: 24px !important;
+  height: 24px !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid;
+  margin-inline-end: 12px !important;
+}
+
+.Toastify__toast--success .Toastify__toast-icon {
+  border-color: #b5e3c4;
+  background: #e7f6ec;
+  color: #0aaf24 !important;
+}
+
+.Toastify__toast--error .Toastify__toast-icon {
+  border-color: #f2bcba;
+  background: #fbeae9;
+  color: #cb1a14 !important;
+}
+
+.Toastify__close-button--light {
+  opacity: 1 !important;
+  align-self: center !important;
+  border-left: 1px solid #f0f2f5 !important;
+  padding-left: 12px !important;
+  min-height: 24px !important;
+}
+
 .PhoneInputCountry {
   border-radius: 18px;
   padding: 16px;
@@ -42,6 +102,44 @@ body {
   border-radius: 1px;
 }
 
+label svg {
+  width: 20px;
+  height: 20px;
+}
+
+.label svg {
+  color: #667185;
+}
+
+.vehicle-summary-swiper .swiper-button-prev,
+.vehicle-summary-swiper .swiper-button-next {
+  background-color: #0000009c;
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 100%;
+}
+
+.vehicle-summary-swiper .swiper-button-prev:after,
+.vehicle-summary-swiper .swiper-button-next:after {
+  font-size: 10px;
+  color: white;
+  font-weight: 700;
+}
+
+.vehicle-summary-swiper .swiper-pagination-fraction {
+  background: white;
+  width: fit-content;
+  left: 16px;
+  bottom: 14px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: -0.02em;
+  text-align: left;
+  padding: 6px 22px;
+  border-radius: 51px;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -64,6 +162,16 @@ body {
 @media only screen and (min-width: 768px) {
   .container {
     max-width: 768px !important;
+  }
+  .vehicle-summary-swiper .swiper-button-prev,
+  .vehicle-summary-swiper .swiper-button-next {
+    width: 40px;
+    height: 40px;
+  }
+
+  .vehicle-summary-swiper .swiper-button-prev:after,
+  .vehicle-summary-swiper .swiper-button-next:after {
+    font-size: 12px;
   }
 }
 
@@ -88,5 +196,9 @@ body {
 @media only screen and (min-width: 1600px) {
   .container {
     max-width: 1520px !important;
+  }
+  .vehicle-summary-swiper .swiper-pagination-fraction {
+    font-size: 20px;
+    padding: 10px 30px;
   }
 }

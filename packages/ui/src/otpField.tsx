@@ -11,8 +11,7 @@ type OtpFieldProps = {
   required?: boolean;
   disabled?: boolean;
   error?: string;
-  // onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  onChange: any;
+  onChange: (otp: string) => void;
   [key: string]: any;
 };
 
@@ -24,11 +23,10 @@ const OtpField = ({
   error,
   onChange,
   value,
+  disabled,
 
   ...rest
 }: OtpFieldProps) => {
-  console.log(value);
-
   return (
     <div className="w-full space-y-3">
       {label && (
@@ -55,6 +53,7 @@ const OtpField = ({
         )}
         errorStyle="!border !border-error-500 focus:!border-error-500 !shadow-none"
         hasErrored={!!error}
+        isDisabled={disabled}
       />
 
       {error && <p className="text-error-500 text-sm mt-2">{error}</p>}

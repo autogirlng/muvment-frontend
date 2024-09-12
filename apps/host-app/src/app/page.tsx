@@ -1,3 +1,4 @@
+'use client'
 import Benefits from "@/components/LandingPageComponents/Benefits";
 import Calculator from "@/components/LandingPageComponents/Calculator";
 import Footer from "@/components/LandingPageComponents/Footer";

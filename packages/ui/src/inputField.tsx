@@ -17,7 +17,8 @@ type InputFieldProps = {
   info?: boolean;
   tooltipTitle?: string;
   tooltipDescription?: string;
-  inputClass?: string;  className?: string;
+  inputClass?: string;
+  className?: string;
 
   toggleShowPassword?: () => void;
   [key: string]: any;
@@ -34,7 +35,8 @@ const InputField = ({
   info,
   tooltipTitle,
   tooltipDescription,
-  inputClass,className,
+  inputClass,
+  className,
   toggleShowPassword,
   ...rest
 }: InputFieldProps) => (
@@ -43,13 +45,12 @@ const InputField = ({
       <label
         htmlFor={id}
         className={cn(
-          "text-sm block font-medium text-nowrap",
+          "label text-sm block font-medium text-nowrap",
           variant === "filled" ? "text-white" : "text-grey-900",
           info && "flex items-center gap-3"
         )}
       >
         <span> {label}</span>
-        {/* info */}
         {info && (
           <Tooltip
             title={tooltipTitle || ""}
@@ -64,7 +65,7 @@ const InputField = ({
         id={id}
         placeholder={placeholder}
         className={cn(
-          "w-full rounded-[18px] p-4 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400",
+          "w-full rounded-[18px] p-4 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400 disabled:bg-grey-100 disabled:text-grey-400 disabled:border-grey-300",
           icon && "pr-8",
           inputClass,
           error
@@ -78,14 +79,15 @@ const InputField = ({
         spellCheck="false"
         {...rest}
       />
-      {id === "password" && (
-        <div
-          className="absolute right-3 bottom-[19px] fill-grey-500 cursor-pointer"
-          onClick={toggleShowPassword}
-        >
-          {icon}
-        </div>
-      )}
+      {(id === "password" ||
+      id === "confirmPassword") && (
+          <div
+            className="absolute right-3 bottom-[19px] fill-grey-500 cursor-pointer"
+            onClick={toggleShowPassword}
+          >
+            {icon}
+          </div>
+        )}
     </div>
     {error && <p className="text-error-500 text-sm mt-2">{error}</p>}
   </div>
