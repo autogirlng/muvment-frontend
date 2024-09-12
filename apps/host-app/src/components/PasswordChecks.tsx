@@ -15,9 +15,9 @@ import usePasswordValidation from "@/hooks/usePasswordValidation";
 import { FormikErrors } from "formik";
 
 type Props = {
+  name?: string;
   label?: string;
   placeholder?: string;
-
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleBlur: (e: FocusEvent<HTMLInputElement>) => void;
   setFieldValue: (
@@ -30,6 +30,7 @@ type Props = {
 };
 
 export default function PasswordChecks({
+  name,
   label,
   placeholder,
   handleChange,
@@ -43,7 +44,7 @@ export default function PasswordChecks({
   return (
     <div className="space-y-3">
       <InputField
-        name="password"
+        name={name || "password"}
         id="password"
         type={isPasswordHidden ? "password" : "text"}
         label={label || "Password"}

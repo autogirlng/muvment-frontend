@@ -7,8 +7,11 @@ import { resetPasswordEmailValidationSchema } from "@/utils/validationSchema";
 import { resetPasswordEmailInitialValues } from "@/utils/initialValues";
 import BackLink from "@/components/BackLink";
 import AuthPageHeader from "@/components/Header/AuthPageHeader";
+import useAuth from "@/hooks/useAuth";
 
 export default function ForgotPasswordPage() {
+  const { forgotPassword } = useAuth();
+
   return (
     <div className="space-y-8">
       <BackLink backLink="/login" />
@@ -22,6 +25,9 @@ export default function ForgotPasswordPage() {
         initialValues={resetPasswordEmailInitialValues}
         onSubmit={async (values, { setSubmitting }) => {
           console.log(values);
+
+          forgotPassword.mutate(values);
+          setSubmitting(false);
         }}
         validationSchema={resetPasswordEmailValidationSchema}
         enableReinitialize={true}
@@ -54,7 +60,14 @@ export default function ForgotPasswordPage() {
                 error={errors.email && touched.email ? errors.email : ""}
               />
 
-              <Button fullWidth variant="filled" color="primary" type="submit">
+              <Button
+                fullWidth
+                variant="filled"
+                color="primary"
+                type="submit"
+                loading={isSubmitting || forgotPassword.isPending}
+                disabled={isSubmitting || forgotPassword.isPending}
+              >
                 Reset Password
               </Button>
             </Form>

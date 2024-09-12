@@ -4,19 +4,25 @@ import {
   BasicVehicleInformationValues,
   LoginFormValues,
   ResetPasswordEmailValues,
-  ResetPasswordOtpValues,
+  // ResetPasswordOtpValues,
   SetNewPasswordValues,
   SignupFormValues,
   VehiclePhotosValues,
+  // verifyEmailValues,
+  // resendVerifyEmailTokenValues,
   VerifyIdentityValues,
   VerifyPhoneNumberValues,
   WithdrawalAccountValues,
 } from "@/utils/types";
 
+
+
 export const signUpFormInitialValues: SignupFormValues = {
-  first_name: "",
-  last_name: "",
+  firstName: "",
+  lastName: "",
   phoneNumber: "",
+  country: "",
+  countryCode: "",
   email: "",
   password: "",
   password_checks: {
@@ -34,16 +40,38 @@ export const loginFormInitialValues: LoginFormValues = {
   password: "",
 };
 
+// export const verifyEmailInitialValues: verifyEmailValues = {
+//   email: "",
+//   token: "",
+// };
+
+// export const resendVerifyEmailTokenInitialValues: resendVerifyEmailTokenValues =
+//   {
+//     email: "",
+//   };
+
 export const resetPasswordEmailInitialValues: ResetPasswordEmailValues = {
   email: "",
 };
 
-export const resetPasswordOtpInitialValues: ResetPasswordOtpValues = {
-  otp: "",
-};
+// export const resetPasswordOtpInitialValues: ResetPasswordOtpValues = {
+//   otp: "",
+// };
 export const setNewPasswordInitialValues: SetNewPasswordValues = {
+  email: "",
+  token: "",
+  newPassword: "",
   password: "",
-  confirm_password: "",
+
+  confirmPassword: "",
+  password_checks: {
+    length: false,
+    uppercase_letters: false,
+    lowercase_letters: false,
+    digit: false,
+    special_character: false,
+    no_space: false,
+  },
 };
 
 export const verifyPhoneNumberValues: VerifyPhoneNumberValues = {
@@ -90,7 +118,7 @@ export const vehiclePhotosValues: VehiclePhotosValues = {
   sideView1: "",
   sideView2: "",
   interiorImage: "",
-  otherImage:''
+  otherImage: "",
 };
 
 export const availabilityAndPricingValues: AvailabilityAndPricingValues = {

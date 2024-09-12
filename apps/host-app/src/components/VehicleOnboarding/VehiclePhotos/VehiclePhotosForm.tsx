@@ -16,37 +16,37 @@ const photoViews = [
   {
     label: "Front View",
     name: "frontView",
-    image: "/images/front_view.png",
+    image: "/images/onboarding/front_view.png",
     size: "w-[50px] 3xl:w-[75px]",
   },
   {
     label: "Back View",
     name: "backView",
-    image: "/images/back_view.png",
+    image: "/images/onboarding/back_view.png",
     size: "w-[50px] 3xl:w-[75px]",
   },
   {
     label: "Side View 1",
     name: "sideView1",
-    image: "/images/side_view_1.png",
+    image: "/images/onboarding/side_view_1.png",
     size: "w-[120px] 3xl:w-[160px]",
   },
   {
     label: "Side View 2",
     name: "sideView2",
-    image: "/images/side_view_2.png",
+    image: "/images/onboarding/side_view_2.png",
     size: "w-[120px] 3xl:w-[160px]",
   },
   {
     label: "Interior Image",
     name: "interiorImage",
-    image: "/images/interior_view.png",
+    image: "/images/onboarding/interior_view.png",
     size: "w-[50px] 3xl:w-[75px]",
   },
   {
     label: "Other Image",
     name: "otherImage",
-    image: "/images/other_view.png",
+    image: "/images/onboarding/other_view.png",
     size: "w-[120px] 3xl:w-[160px]",
   },
 ];

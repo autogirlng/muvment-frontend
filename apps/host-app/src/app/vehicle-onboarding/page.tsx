@@ -6,6 +6,7 @@ import BasicVehicleInformation from "@/components/VehicleOnboarding/BasicInforma
 import VehiclePhotos from "@/components/VehicleOnboarding/VehiclePhotos";
 import VehicleSummary from "@/components/VehicleOnboarding/VehicleSummary";
 import { Stepper } from "@repo/ui/stepper";
+import cn from "classnames";
 import { useState } from "react";
 
 const steps = [
@@ -20,7 +21,12 @@ export default function VehicleOnboardingPage() {
 
   return (
     <main className="pb-[188px] pt-[52px] md:pt-16 px-8 lg:px-[52px] min-h-screen">
-      <div className="max-w-[1492px] mx-auto space-y-8 md:space-y-[52px]">
+      <div
+        className={cn(
+          "mx-auto space-y-8 md:space-y-[52px]",
+          currentStep === 4 ? "max-w-[1020px] 3xl:max-w-[1120px]" : "max-w-[1492px]"
+        )}
+      >
         <div className="space-y-8">
           <BackLink backLink="/dashboard" />
           <h2 className="text-h5 md:text-h3 3xl:text-4xl text-black">

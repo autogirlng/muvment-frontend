@@ -79,14 +79,15 @@ const InputField = ({
         spellCheck="false"
         {...rest}
       />
-      {id === "password" && (
-        <div
-          className="absolute right-3 bottom-[19px] fill-grey-500 cursor-pointer"
-          onClick={toggleShowPassword}
-        >
-          {icon}
-        </div>
-      )}
+      {(id === "password" ||
+      id === "confirmPassword") && (
+          <div
+            className="absolute right-3 bottom-[19px] fill-grey-500 cursor-pointer"
+            onClick={toggleShowPassword}
+          >
+            {icon}
+          </div>
+        )}
     </div>
     {error && <p className="text-error-500 text-sm mt-2">{error}</p>}
   </div>

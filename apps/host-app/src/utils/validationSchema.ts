@@ -1,15 +1,16 @@
-import { object, string } from "yup";
+import { object, ref, string } from "yup";
 import { emailRegEx } from "@/utils/constants";
 import { isValidPhoneNumber } from "react-phone-number-input";
 
 export const signupFormValidationSchema = object().shape({
-  first_name: string().required("Please enter your first name"),
-  last_name: string().required("Please enter your last name"),
+  firstName: string().required("Please enter your first name"),
+  lastName: string().required("Please enter your last name"),
   phoneNumber: string()
     .required("Please enter your phone number")
     .test("phoneNumber", "Invalid phone number", function (val) {
       return isValidPhoneNumber(val);
     }),
+  country: string().required("Please enter your country code"),
   email: string()
     .email("Please enter a valid email address")
     .required("Please enter your email")
@@ -31,8 +32,10 @@ export const resetPasswordEmailValidationSchema = object().shape({
 });
 
 export const setNewPasswordValidationSchema = object().shape({
-  password: string().required("Please enter your password"),
-  confirm_password: string().required("Please enter your password"),
+  newPassword: string().required("Please enter your password"),
+  confirmPassword: string()
+    .required("Please confirm your password")
+    .oneOf([ref("password")], "The passwords doesn’t match."),
 });
 
 export const verifyPhoneNumberSchema = object().shape({

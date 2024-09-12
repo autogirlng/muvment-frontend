@@ -7,6 +7,7 @@ import Tooltip from "@repo/ui/tooltip";
 type OptionProps = {
   value: string;
   option: string;
+  flag?: string;
 };
 
 type SelectInputProps = {
@@ -107,16 +108,21 @@ const SelectInput = ({
         >
           <Select.Viewport className="px-6 py-[14px]">
             <Select.Group className="space-y-3">
-              {options.map((option: OptionProps) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.option}
+              {options.map((option: OptionProps, index) => (
+                <SelectItem
+                  key={index}
+                  value={option.value}
+                  className="flex items-center gap-2"
+                >
+                  {option?.flag && <span className={option?.flag}></span>}
+                  <span> {option.option}</span>
                 </SelectItem>
               ))}
             </Select.Group>
           </Select.Viewport>
         </Select.Content>
       </Select.Root>
-      {error && <p className="text-error-500 text-sm mt-2">{error}</p>}
+      {error && <p className="text-error-500 text-sm mt-2 text-nowrap">{error}</p>}
     </div>
   );
 };
