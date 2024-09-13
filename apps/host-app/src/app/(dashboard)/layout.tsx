@@ -4,12 +4,12 @@ import { ReactNode } from "react";
 import { useAppSelector } from "@/lib/hooks";
 import SideNav from "@/components/SideNav";
 import TopHeader from "@/components/TopHeader";
-import useAuth from "@/hooks/useAuth";
 import FullPageSpinner from "@repo/ui/spinner";
+import useUser from "@/hooks/useUser";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { isLoading } = useAppSelector((state) => state.user);
-  const { getUser } = useAuth();
+  const { getUser } = useUser();
 
   if (isLoading || getUser.isLoading) {
     return <FullPageSpinner />;

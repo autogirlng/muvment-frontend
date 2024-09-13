@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import Benefits from "@/components/LandingPageComponents/Benefits";
 import Calculator from "@/components/LandingPageComponents/Calculator";
 import Footer from "@/components/LandingPageComponents/Footer";
@@ -8,10 +8,13 @@ import Overview from "@/components/LandingPageComponents/Overview";
 import Steps from "@/components/LandingPageComponents/Steps";
 import VehicleOptions from "@/components/LandingPageComponents/VehicleOptions";
 import VehiclePackages from "@/components/LandingPageComponents/VehiclePackages";
+import NavBar from "@/components/LandingPageComponents/NavBar";
+import GetStarted from "@/components/LandingPageComponents/GetStarted";
 
 export default function HomePage() {
   return (
     <main className="overflow-x-hidden">
+      <NavBar />
       <Hero />
       <Benefits />
       <JoinUs />
@@ -20,6 +23,7 @@ export default function HomePage() {
       <Calculator />
       <VehiclePackages />
       <Overview />
+      <GetStarted />
       <Footer />
     </main>
   );

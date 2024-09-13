@@ -1,4 +1,5 @@
 import LandingPageSectionHeader from "@/components/Header/LandingPageSectionHeader";
+import cn from "classnames";
 import Image from "next/image";
 import React from "react";
 
@@ -29,44 +30,46 @@ const packages: packageProps[] = [
 
 function VehiclePackages({}: Props) {
   return (
-    <div className="pt-24 3xl:pt-[107px] pb-[150] 3xl:pb-[216px]">
-      <div className="space-y-[100px] 3xl:space-y-[157px] container">
+    <section className="py-[120px] lg:pt-24 3xl:pt-[107px] lg:pb-[150px] 3xl:pb-[200px] px-5">
+      <div className="space-y-10 md:space-y-[100px] 3xl:space-y-[157px] max-w-[1100px] 3xl:max-w-[1510px] mx-auto">
         <LandingPageSectionHeader
-          className="text-h1 text-primary-900 text-center max-w-[860px] mx-auto"
-          title=" Here is a plan and package for every vehicle owner"
+          className="text-primary-900 text-center"
+          title="Here is a plan and package for every vehicle owner"
         />
-        <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-grey-400 gap-6 mx-auto max-w-[336px] sm:max-w-full">
+        <div className="flex flex-col md:flex-row items-center gap-[70px] md:gap-6 lg:gap-[60px] 3xl:gap-[125px] mx-auto md:max-w-full">
           {packages.map((item, index) => (
-            <div key={index} className="content-center">
-              <div className="max-w-[336px] mx-auto">
-                <div className="mt-6 sm:mt-0 sm:ml-3 space-y-[22px]">
-                  <div className="flex space-x-2">
-                    {Array.from({ length: index + 1 }, (_, num) => {
-                      console.log(_, num);
-                      return (
-                        <Image
-                          key={num}
-                          src={`/images/landing/polygon${num + 1}.png`}
-                          alt=""
-                          width={60}
-                          height={60}
-                          className="w-9 3xl:w-[60px] object-cover"
-                        />
-                      );
-                    })}
-                  </div>
-
-                  <h3 className="text-h4 3xl:text-h3 !font-bold">
-                    {item.title}
-                  </h3>
-                  <p className="text-base 3xl:text-h6">{item.description}</p>
+            <>
+              <div
+                key={index}
+                className="max-w-[400px] md:max-w-[375px] w-full space-y-[22px] px-8 md:px-4"
+              >
+                <div className="flex space-x-2">
+                  {Array.from({ length: index + 1 }, (_, num) => {
+                    console.log(_, num);
+                    return (
+                      <Image
+                        key={num}
+                        src={`/images/landing/polygon${num + 1}.png`}
+                        alt=""
+                        width={60}
+                        height={60}
+                        className="w-9 3xl:w-[60px] object-cover"
+                      />
+                    );
+                  })}
                 </div>
+
+                <h3 className="text-h4 3xl:text-h3 !font-bold">{item.title}</h3>
+                <p className="text-base 3xl:text-h6">{item.description}</p>
               </div>
-            </div>
+              {index < packages.length - 1 && (
+                <div className="hidden md:block w-[1px] h-[185px] bg-grey-300"></div>
+              )}
+            </>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
