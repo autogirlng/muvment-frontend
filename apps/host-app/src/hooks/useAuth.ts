@@ -1,3 +1,5 @@
+"use client";
+
 import { api } from "@/lib/api";
 import { clearUser, setToken, setUser } from "@/lib/features/user/userSlice";
 import { useAppDispatch } from "@/lib/hooks";
@@ -13,13 +15,25 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function useAuth() {
-  const user_token = localStorage.getItem("user_token");
+  const [userToken, setUserToken] = useState("");
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+  useEffect(() => {
+    const user_token = window.localStorage.getItem("user_token");
+         setUserToken(user_token || "");
+         
+          if (user_token) {
+            router.push("/dashboard");
+          } else {
+                             router.push("/login");
+
+          }
+  }, []);
 
   const signupMutation = useMutation({
     mutationFn: (values: SignupFormValues) =>
@@ -165,7 +179,7 @@ export default function useAuth() {
   const getUser = useQuery({
     queryKey: ["getUser"],
     queryFn: () => api.get("/api/user"),
-    enabled: !!user_token,
+    enabled: !!userToken,
   });
 
   useEffect(() => {
@@ -174,7 +188,7 @@ export default function useAuth() {
       dispatch(
         setUser({
           user: getUser.data.data,
-          userToken: user_token || "",
+          userToken: userToken || "",
           isAuthenticated: true,
           isLoading: false,
         })
@@ -197,6 +211,6 @@ export default function useAuth() {
     forgotPassword,
     resetPassword,
     getUser,
-    user_token,
+    user_token: userToken,
   };
 }

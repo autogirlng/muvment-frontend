@@ -47,7 +47,7 @@ const TextArea = ({
         className={cn(
           "label text-sm block font-medium text-nowrap",
           variant === "filled" ? "text-white" : "text-grey-900",
-          info && "flex items-center gap-3"
+          info ? "flex items-center gap-3" : ""
         )}
       >
         <span> {label}</span>
@@ -65,7 +65,7 @@ const TextArea = ({
         placeholder={placeholder}
         className={cn(
           "w-full rounded-[18px] p-4 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400 min-h-[130px]",
-          icon && "pr-8",
+          icon ? "pr-8":'',
           inputClass,
           error
             ? "border border-error-500 focus:border-error-500"

@@ -51,7 +51,7 @@ const SelectInput = ({
           className={cn(
             "label text-sm block font-medium text-nowrap",
             variant === "filled" ? "text-white" : "text-grey-900",
-            info && "flex items-center gap-3"
+            info ? "flex items-center gap-3" : ""
           )}
         >
           <span> {label}</span>
@@ -122,7 +122,9 @@ const SelectInput = ({
           </Select.Viewport>
         </Select.Content>
       </Select.Root>
-      {error && <p className="text-error-500 text-sm mt-2 text-nowrap">{error}</p>}
+      {error && (
+        <p className="text-error-500 text-sm mt-2 text-nowrap">{error}</p>
+      )}
     </div>
   );
 };
