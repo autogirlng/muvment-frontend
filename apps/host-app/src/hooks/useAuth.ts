@@ -25,14 +25,14 @@ export default function useAuth() {
 
   useEffect(() => {
     const user_token = window.localStorage.getItem("user_token");
-         setUserToken(user_token || "");
-         
-          if (user_token) {
-            router.push("/dashboard");
-          } else {
-                             router.push("/login");
+    setUserToken(user_token || "");
 
-          }
+    if (user_token) {
+      router.push("/dashboard");
+    }
+    //     else {
+    //       router.push("/login");
+    //     }
   }, []);
 
   const signupMutation = useMutation({
