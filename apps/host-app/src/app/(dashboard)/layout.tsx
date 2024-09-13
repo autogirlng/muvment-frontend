@@ -1,7 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { ReactNode } from "react";
 import { useAppSelector } from "@/lib/hooks";
 import SideNav from "@/components/SideNav";
 import TopHeader from "@/components/TopHeader";
@@ -9,15 +8,9 @@ import useAuth from "@/hooks/useAuth";
 import FullPageSpinner from "@repo/ui/spinner";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  const router = useRouter();
   const { isLoading } = useAppSelector((state) => state.user);
-  const { getUser, user_token } = useAuth();
+  const { getUser } = useAuth();
 
-  useEffect(() => {
-    if (!user_token) {
-      router.push("/login");
-    }
-  }, [user_token, router]);
 
   if (isLoading || getUser.isLoading) {
     return <FullPageSpinner />;
