@@ -11,7 +11,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { isLoading } = useAppSelector((state) => state.user);
   const { getUser } = useAuth();
 
-
   if (isLoading || getUser.isLoading) {
     return <FullPageSpinner />;
   }
