@@ -29,29 +29,28 @@ const steps: stepProps[] = [
 
 function Steps({}: Props) {
   return (
-    <section className="pt-[150px] 3xl:pt-[210px] pb-[131px] md:pb-[191px]">
-      <div className="space-y-[141px] max-w-[870px] mx-auto px-5 sm:px-0">
+    <section className="py-[120px] md:py-[200px]">
+      <div className="space-y-8 md:space-y-[141px] max-w-[914px] mx-auto px-5 md:px-0">
         <LandingPageSectionHeader
           className="text-primary-900 text-center"
           title=" Start earning in a few minutes"
-          description="Whether you’re an individual looking to earn extra income or a business wanting to manage and expand your fleet, our platform caters to all. Join 100+ hosts who are maximizing their vehicle’s potential."
         />
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col gap-3 md:gap-0 items-center">
           {steps.map((step, index) => (
             <div
               key={index}
-              className=" h-[400px] 3xl:h-[600px] last:h-0 relative"
+              className="md:h-[400px] 3xl:h-[600px] last:md:h-0 relative"
             >
               <div className="h-full w-[5px] bg-grey-400 mx-auto" />
               <div
                 className={cn(
-                  "absolute -top-[80px]",
+                  "md:absolute md:-top-[80px]",
                   (index + 1) % 2 === 0 ? "right-10" : "left-10"
                 )}
               >
                 <div
                   className={cn(
-                    "py-[35px] px-[43px] bg-grey-50 rounded-3xl w-[419px] text-primary-900 relative after:absolute after:top-[70px] after:content-[''] after:h-[30px] after:w-[30px] after:bg-grey-400 after:rounded-full",
+                    "py-[35px] px-8 md:px-[43px] bg-grey-50 rounded-3xl w-full md:w-[330px] lg:w-[419px] text-primary-900 relative space-y-[10px] after:md:absolute after:md:top-[70px] after:md:content-[''] after:md:h-[30px] after:md:w-[30px] after:md:bg-grey-400 after:md:rounded-full",
                     (index + 1) % 2 === 0
                       ? "after:-right-[52px]"
                       : "after:-left-[52px]"

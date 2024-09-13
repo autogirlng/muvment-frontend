@@ -27,26 +27,29 @@ const benefits: benefitProps[] = [
 
 function Benefits({}: Props) {
   return (
-    <section className="px-5 sm:px-9 3xl:px-[61px] -mb-12 relative z-10">
-      <div className="py-16 sm:py-24 3xl:py-[144px] px-10 sm:px-20 3xl:px-[132px] bg-grey-900 rounded-[65px] sm:rounded-[100px] 3xl:rounded-[123px]">
-        <div className="space-y-11 3xl:space-y-[72px] text-white max-w-[1532px] mx-auto">
-          <h1 className="text-h4 sm:text-h3 3xl:text-4xl">Benefits</h1>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-14 3xl:gap-[130px]">
-            {benefits.map((item, index) => (
-              <div key={index} className="max-w-[423px] space-y-3">
-                <h2 className="text-h5 sm:text-h4 2xl:text-h3 3xl:text-4xl !font-bold">
-                  {index + 1}
-                </h2>
+    <section className="px-5 sm:px-9 3xl:px-[61px] py-[120px] md:py-[92px] md:pb-[200px]">
+      <div className="space-y-8 sm:space-y-[60px] text-black max-w-[1345px] mx-auto">
+        <h1 className="text-h4 sm:text-h3 3xl:text-4xl text-center">
+          Benefits
+        </h1>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 3xl:gap-10 w-fit mx-auto">
+          {benefits.map((item, index) => (
+            <div
+              key={index}
+              className="max-w-[423px] w-full space-y-5 sm:space-y-6 border border-grey-200 rounded-[32px] px-8 py-6"
+            >
+              <h2 className="h-[72px] w-[72px] flex items-center justify-center rounded-full bg-primary-50 text-primary-500">
+                {index + 1}
+              </h2>
 
-                <h3 className="text-xl sm:text-h6 2xl:text-h4 3xl:text-h3 !font-medium">
-                  {item.title}
-                </h3>
-                <p className="text-sm sm:text-base 3xl:text-h6 !font-normal">
-                  {item.description}
-                </p>
-              </div>
-            ))}
-          </div>
+              <h3 className="text-xl sm:text-h5 3xl:text-h4 !font-medium">
+                {item.title}
+              </h3>
+              <p className="text-xs sm:text-sm 3xl:text-base !font-normal text-grey-600">
+                {item.description}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

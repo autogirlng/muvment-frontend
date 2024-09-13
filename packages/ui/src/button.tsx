@@ -9,6 +9,7 @@ type ButtonProps = {
   radius?: "full" | "rounded" | "lg" | "md";
   fullWidth?: boolean;
   loading?: boolean;
+  className?: string;
   [key: string]: any;
 };
 
@@ -20,6 +21,7 @@ const Button = ({
   radius,
   fullWidth,
   loading,
+  className,
   ...rest
 }: ButtonProps) => {
   const btnWidth = fullWidth
@@ -30,7 +32,9 @@ const Button = ({
     radius === "full" ? "" : radius === "lg" ? "rounded-[32px]" : "rounded-2xl";
 
   const btnBorder =
-    variant === "outlined" ? "border border-solid border-black" : "border-none";
+    variant === "outlined"
+      ? "border-2 border-solid border-black"
+      : "border-none";
 
   const btnBgColor =
     color === "primary"
@@ -55,7 +59,8 @@ const Button = ({
         btnRadius,
         btnBorder,
         btnBgColor,
-        btnTextColor
+        btnTextColor,
+        className
       )}
       onClick={onClick}
     >

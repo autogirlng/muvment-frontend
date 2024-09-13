@@ -1,7 +1,7 @@
 "use client";
 
 import { api } from "@/lib/api";
-import { clearUser, setToken, setUser } from "@/lib/features/user/userSlice";
+import { setToken } from "@/lib/features/user/userSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import {
   ErrorResponse,
@@ -12,7 +12,7 @@ import {
   SignupFormValues,
   verifyEmailValues,
 } from "@/utils/types";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -30,9 +30,6 @@ export default function useAuth() {
     if (user_token) {
       router.push("/dashboard");
     }
-    //     else {
-    //       router.push("/login");
-    //     }
   }, []);
 
   const signupMutation = useMutation({
@@ -176,32 +173,6 @@ export default function useAuth() {
     },
   });
 
-  const getUser = useQuery({
-    queryKey: ["getUser"],
-    queryFn: () => api.get("/api/user"),
-    enabled: !!userToken,
-  });
-
-  useEffect(() => {
-    if (getUser.isSuccess) {
-      console.log("User data fetched successfully", getUser.data.data);
-      dispatch(
-        setUser({
-          user: getUser.data.data,
-          userToken: userToken || "",
-          isAuthenticated: true,
-          isLoading: false,
-        })
-      );
-    }
-
-    if (getUser.isError) {
-      dispatch(clearUser());
-      router.push("/login");
-      console.log("Error fetching user", getUser.error);
-    }
-  }, [getUser.isError, getUser.isSuccess, router]);
-
   return {
     signupMutation,
     loginMutation,
@@ -210,7 +181,6 @@ export default function useAuth() {
     resendVerifyEmailToken,
     forgotPassword,
     resetPassword,
-    getUser,
     user_token: userToken,
   };
 }

@@ -31,8 +31,8 @@ const vehicles: optionProps[] = [
 
 function VehicleOptions({}: Props) {
   return (
-    <div className="px-5 pb-5 sm:pb-10 3xl:pb-[53px]">
-      <div className="pt-[97px] pb-[155px] bg-grey-75 rounded-[75px] md:rounded-[97px] px-5">
+    <section className="px-5 pb-5 sm:pb-10 3xl:pb-[53px]">
+      <div className="pt-[97px] pb-[155px] md:bg-grey-75 rounded-[75px] md:rounded-[97px] px-5">
         <div className="space-y-[114px]">
           <LandingPageSectionHeader
             className="max-w-[860px] mx-auto text-primary-900 text-center "
@@ -65,7 +65,7 @@ function VehicleOptions({}: Props) {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
