@@ -99,7 +99,7 @@ export default function LoginPage() {
                 color="primary"
                 type="submit"
                 loading={isSubmitting || loginMutation.isPending}
-                disabled={isSubmitting || loginMutation.isPending}
+                disabled={isSubmitting || loginMutation.isPending || !isValid}
               >
                 Sign In
               </Button>

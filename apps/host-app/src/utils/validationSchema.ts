@@ -32,7 +32,7 @@ export const resetPasswordEmailValidationSchema = object().shape({
 });
 
 export const setNewPasswordValidationSchema = object().shape({
-  newPassword: string().required("Please enter your password"),
+  password: string().required("Please enter your password"),
   confirmPassword: string()
     .required("Please confirm your password")
     .oneOf([ref("password")], "The passwords doesn’t match."),

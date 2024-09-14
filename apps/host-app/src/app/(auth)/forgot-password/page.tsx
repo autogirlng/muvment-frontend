@@ -66,7 +66,7 @@ export default function ForgotPasswordPage() {
                 color="primary"
                 type="submit"
                 loading={isSubmitting || forgotPassword.isPending}
-                disabled={isSubmitting || forgotPassword.isPending}
+                disabled={isSubmitting || forgotPassword.isPending || !isValid}
               >
                 Reset Password
               </Button>

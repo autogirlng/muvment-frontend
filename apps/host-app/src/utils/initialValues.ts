@@ -60,9 +60,7 @@ export const resetPasswordEmailInitialValues: ResetPasswordEmailValues = {
 export const setNewPasswordInitialValues: SetNewPasswordValues = {
   email: "",
   token: "",
-  newPassword: "",
   password: "",
-
   confirmPassword: "",
   password_checks: {
     length: false,

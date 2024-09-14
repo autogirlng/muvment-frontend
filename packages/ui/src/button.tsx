@@ -38,7 +38,7 @@ const Button = ({
 
   const btnBgColor =
     color === "primary"
-      ? "bg-primary-500"
+      ? "bg-primary-500 disabled:bg-grey-300"
       : color === "white"
         ? "bg-white"
         : "bg-transparent";

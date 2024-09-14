@@ -104,7 +104,9 @@ const OtpVerification = ({
           }}
           disabled={isResendOtpLoading}
         >
-          {isResendOtpLoading ? "Loading..." : "Resend Code"}
+          {isResendOtpLoading || isVerifyOtpLoading
+            ? "Loading..."
+            : "Resend Code"}
         </button>
       )}
     </div>
