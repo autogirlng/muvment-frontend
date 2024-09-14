@@ -38,25 +38,19 @@ function VehiclePackages({}: Props) {
         />
         <div className="flex flex-col md:flex-row items-center gap-[70px] md:gap-6 lg:gap-[60px] 3xl:gap-[125px] mx-auto md:max-w-full">
           {packages.map((item, index) => (
-            <>
-              <div
-                key={index}
-                className="max-w-[400px] md:max-w-[375px] w-full space-y-[22px] px-8 md:px-4"
-              >
+            <React.Fragment key={index}>
+              <div className="max-w-[400px] md:max-w-[375px] w-full space-y-[22px] px-8 md:px-4">
                 <div className="flex space-x-2">
-                  {Array.from({ length: index + 1 }, (_, num) => {
-                    console.log(_, num);
-                    return (
-                      <Image
-                        key={num}
-                        src={`/images/landing/polygon${num + 1}.png`}
-                        alt=""
-                        width={60}
-                        height={60}
-                        className="w-9 3xl:w-[60px] object-cover"
-                      />
-                    );
-                  })}
+                  {Array.from({ length: index + 1 }, (_, num) => (
+                    <Image
+                      key={num}
+                      src={`/images/landing/polygon${num + 1}.png`}
+                      alt=""
+                      width={60}
+                      height={60}
+                      className="w-9 3xl:w-[60px] object-cover"
+                    />
+                  ))}
                 </div>
 
                 <h3 className="text-h4 3xl:text-h3 !font-bold">{item.title}</h3>
@@ -65,7 +59,7 @@ function VehiclePackages({}: Props) {
               {index < packages.length - 1 && (
                 <div className="hidden md:block w-[1px] h-[185px] bg-grey-300"></div>
               )}
-            </>
+            </React.Fragment>
           ))}
         </div>
       </div>
