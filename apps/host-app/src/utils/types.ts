@@ -46,7 +46,6 @@ export interface ResetPasswordEmailValues {
 export interface SetNewPasswordValues {
   email: string;
   token: string;
-  newPassword: string;
   password?: string;
   confirmPassword: string;
   password_checks?: PasswordChecks;

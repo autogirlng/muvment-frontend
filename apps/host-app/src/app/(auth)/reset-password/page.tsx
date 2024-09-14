@@ -35,11 +35,9 @@ export default function ResetPasswordPage() {
       <Formik
         initialValues={setNewPasswordInitialValues}
         onSubmit={async (values, { setSubmitting }) => {
-          // pass token
-          const { password_checks, password, ...submissionValues } = values;
-          console.log(submissionValues);
+          console.log(values);
 
-          resetPassword.mutate({ ...submissionValues, email: email as string });
+          resetPassword.mutate({ ...values, email: email as string });
           setSubmitting(false);
         }}
         validationSchema={setNewPasswordValidationSchema}
@@ -65,42 +63,38 @@ export default function ResetPasswordPage() {
               <PasswordChecks
                 label="New Password"
                 placeholder="Enter new password"
-                handleChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  setFieldValue("newPassword", e.target.value);
-                  setFieldValue("password", e.target.value);
-                }}
+                handleChange={handleChange}
                 handleBlur={handleBlur}
                 setFieldValue={setFieldValue}
                 values={values}
                 error={
-                  errors.newPassword && touched.newPassword
-                    ? errors.newPassword
-                    : ""
+                  errors.password && touched.password ? errors.password : ""
                 }
-              />
-              <InputField
-                name="confirmPassword"
-                id="confirmPassword"
-                type={isPasswordHidden ? "password" : "text"}
-                label="Confirm Password"
-                placeholder="Confirm Password"
-                value={values.confirmPassword}
-                icon={
-                  isPasswordHidden ? (
-                    <Eye size={20} fill="inherit" />
-                  ) : (
-                    <EyeSlash size={20} fill="inherit" />
-                  )
-                }
-                onChange={handleChange}
-                onBlur={handleBlur}
-                toggleShowPassword={toggleHiddenPassword}
-                error={
-                  errors.confirmPassword && touched.confirmPassword
-                    ? errors.confirmPassword
-                    : ""
-                }
-              />
+              >
+                <InputField
+                  name="confirmPassword"
+                  id="confirmPassword"
+                  type={isPasswordHidden ? "password" : "text"}
+                  label="Confirm Password"
+                  placeholder="Confirm Password"
+                  value={values.confirmPassword}
+                  icon={
+                    isPasswordHidden ? (
+                      <Eye size={20} fill="inherit" />
+                    ) : (
+                      <EyeSlash size={20} fill="inherit" />
+                    )
+                  }
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  toggleShowPassword={toggleHiddenPassword}
+                  error={
+                    errors.confirmPassword && touched.confirmPassword
+                      ? errors.confirmPassword
+                      : ""
+                  }
+                />
+              </PasswordChecks>
 
               <Button
                 fullWidth
@@ -108,7 +102,17 @@ export default function ResetPasswordPage() {
                 color="primary"
                 type="submit"
                 loading={isSubmitting || resetPassword.isPending}
-                disabled={isSubmitting || resetPassword.isPending}
+                disabled={
+                  isSubmitting ||
+                  resetPassword.isPending ||
+                  !isValid ||
+                  !values.password_checks?.digit ||
+                  !values.password_checks?.length ||
+                  !values.password_checks?.lowercase_letters ||
+                  !values.password_checks?.no_space ||
+                  !values.password_checks?.special_character ||
+                  !values.password_checks?.uppercase_letters
+                }
               >
                 Set Password
               </Button>

@@ -1,3 +1,4 @@
+import Icons from "@repo/ui/icons";
 import React from "react";
 
 type Props = {};
@@ -5,6 +6,7 @@ type Props = {};
 type benefitProps = {
   title: string;
   description: string;
+  icon: React.ReactNode;
 };
 
 const benefits: benefitProps[] = [
@@ -12,16 +14,19 @@ const benefits: benefitProps[] = [
     title: "Earn Extra Income",
     description:
       "Discover the financial benefits of sharing your car. It's more than just extra money; it's financial freedom at your fingertips.",
+    icon: Icons.ic_folder_library,
   },
   {
     title: "Flexible Scheduling",
     description:
       "Your time, your rules. You have the flexibility to decide when your car is available for rent. Set your availability and let our system handle the rest.",
+    icon: Icons.ic_renewable_energy,
   },
   {
     title: "Simple Onboarding",
     description:
       "Getting started with Muvment is easy. With our intuitive platform, you’ll be up and running in no time. No complicated paperwork—just a straightforward path to extra income.",
+    icon: Icons.ic_bend_tool,
   },
 ];
 
@@ -39,7 +44,7 @@ function Benefits({}: Props) {
               className="max-w-[423px] w-full space-y-5 sm:space-y-6 border border-grey-200 rounded-[32px] px-8 py-6"
             >
               <h2 className="h-[72px] w-[72px] flex items-center justify-center rounded-full bg-primary-50 text-primary-500">
-                {index + 1}
+                {item.icon}
               </h2>
 
               <h3 className="text-xl sm:text-h5 3xl:text-h4 !font-medium">

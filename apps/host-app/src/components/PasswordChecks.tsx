@@ -1,5 +1,5 @@
 import cn from "classnames";
-import { ChangeEvent, FocusEvent } from "react";
+import { ChangeEvent, FocusEvent, ReactNode } from "react";
 import { EyeSlash, Eye, CheckCircle } from "@phosphor-icons/react";
 import {
   isDigitValid,
@@ -27,6 +27,7 @@ type Props = {
   ) => Promise<void | FormikErrors<any>>;
   values: any;
   error: string;
+  children?: ReactNode;
 };
 
 export default function PasswordChecks({
@@ -38,6 +39,7 @@ export default function PasswordChecks({
   setFieldValue,
   values,
   error,
+  children,
 }: Props) {
   const { isPasswordHidden, toggleHiddenPassword } = usePasswordValidation();
 
@@ -82,6 +84,7 @@ export default function PasswordChecks({
         onBlur={handleBlur}
         error={error}
       />
+      {children}
       {values.password && (
         <div className="space-y-3 text-sm">
           <p className="text-black">Password must include at least:</p>
