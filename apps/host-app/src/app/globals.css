@@ -146,6 +146,11 @@ label svg {
   }
 }
 
+.custom-radix-select span.fi,
+.custom-radix-select svg {
+  width: 1em;
+}
+
 .container {
   position: relative;
   width: 100%;
@@ -156,6 +161,10 @@ label svg {
 @media only screen and (min-width: 600px) {
   .container {
     max-width: 600px !important;
+  }
+  .custom-radix-select span.fi,
+  .custom-radix-select svg {
+    width: 1.1111em;
   }
 }
 

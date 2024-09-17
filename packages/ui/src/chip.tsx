@@ -27,7 +27,7 @@ const Chip = ({ text, variant, color, radius, icon }: ChipProps) => {
     <p
       className={cn(
         "bg-grey-90 px-3 w-fit text-base 3xl:text-xl",
-        icon ?"flex items-center gap-1":"",
+        icon ? "flex items-center gap-1" : "",
         borderRadius,
         border,
         textColor
@@ -35,8 +35,8 @@ const Chip = ({ text, variant, color, radius, icon }: ChipProps) => {
     >
       {icon ? (
         <>
-          <span>{text}</span>
           {icon}
+          <span>{text}</span>
         </>
       ) : (
         text

@@ -1,7 +1,7 @@
-export interface ErrorResponse {
+export type ErrorResponse = {
   ERR_CODE: string;
   message: string;
-}
+};
 
 interface PasswordChecks {
   length: boolean;
@@ -11,6 +11,25 @@ interface PasswordChecks {
   special_character: boolean;
   no_space: boolean;
 }
+
+export type BankProp = {
+  bankId: string;
+  baseUssdCode: string;
+  code: string;
+  name: string;
+  nipBankCode: string;
+  transferUssdTemplate: string;
+  ussdTemplate: string;
+};
+
+export type AccountSetupTask = {
+  icon: JSX.Element;
+  title: string;
+  link: string;
+  linkText: string;
+  isCompleted: boolean;
+  taskId: keyof User;
+};
 
 export interface SignupFormValues {
   firstName: string;
@@ -32,16 +51,25 @@ export interface verifyEmailValues {
   token: string;
 }
 
-export interface resendVerifyEmailTokenValues {
+export interface ResendVerifyEmailTokenValues {
   email: string;
 }
 export interface ResetPasswordEmailValues {
   email: string;
 }
 
-// export interface ResetPasswordOtpValues {
-//   otp: string;
-// }
+export interface VerifyPhoneNumberTokenValues {
+  phoneNumber: string;
+  token: string;
+}
+
+export interface SendPhoneNumberTokenValues {
+  phoneNumber: string;
+}
+
+export interface VerifyOtpValues {
+  token: string;
+}
 
 export interface SetNewPasswordValues {
   email: string;
@@ -53,6 +81,8 @@ export interface SetNewPasswordValues {
 
 export interface VerifyPhoneNumberValues {
   phoneNumber: string;
+  countryCode: string;
+  country: string;
 }
 
 export interface VerifyIdentityValues {
@@ -63,8 +93,10 @@ export interface VerifyIdentityValues {
 }
 
 export interface WithdrawalAccountValues {
-  bank: string;
+  bank?: BankProp | null;
+  bankCode: string;
   accountNumber: string;
+  accountName?: "";
 }
 
 export interface BasicVehicleInformationValues {
@@ -113,7 +145,7 @@ export interface AvailabilityAndPricingValues {
 
 export type BadgeStatus = "accepted" | "pending" | "canceled";
 
-type UderVerification = {
+type UserVerification = {
   id: string;
   phoneNumber: string;
   otpToken: string | null;
@@ -136,6 +168,7 @@ export type User = {
   emailConfirmed: boolean;
   phoneNumber: string;
   phoneVerified: boolean;
+  withdrawalAccountVerified: boolean;
   bvnVerified: boolean;
   bio: string | null;
   city: string | null;
@@ -147,7 +180,7 @@ export type User = {
   businessEmail: string | null;
   createdAt: string;
   updatedAt: string;
-  Verification: UderVerification;
+  Verification: UserVerification;
 };
 
 // ==================== hard coded types - to be changed ====================//

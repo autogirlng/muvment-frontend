@@ -1,4 +1,36 @@
-import { BookingOverviewTableRow, TopRatedVehicleType } from "./types";
+import Icons from "@repo/ui/icons";
+import {
+  AccountSetupTask,
+  BookingOverviewTableRow,
+  TopRatedVehicleType,
+} from "./types";
+
+export const completeAccountSetupTasks: AccountSetupTask[] = [
+  {
+    icon: Icons.ic_lock,
+    title: "Verify Phone Number",
+    link: "/account-setup/verify-number",
+    linkText: "Start Verification",
+    isCompleted: false,
+    taskId: "phoneVerified",
+  },
+  // {
+  //   icon: Icons.ic_lock,
+  //   title: "Verify your identity",
+  //   link: "/account-setup/verify-identity",
+  //   linkText: "Start Verification",
+  //   isCompleted: false,
+  //   taskId: "bvnVerified",
+  // },
+  {
+    icon: Icons.ic_lock,
+    title: "Setup Withdrawal Account",
+    link: "/account-setup/withdrawal-account",
+    linkText: "Get Started",
+    isCompleted: false,
+    taskId: "withdrawalAccountVerified",
+  },
+];
 
 export const vehicleTypes = [
   { value: "Sedan", option: "Sedan" },

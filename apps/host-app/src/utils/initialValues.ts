@@ -4,18 +4,13 @@ import {
   BasicVehicleInformationValues,
   LoginFormValues,
   ResetPasswordEmailValues,
-  // ResetPasswordOtpValues,
   SetNewPasswordValues,
   SignupFormValues,
   VehiclePhotosValues,
-  // verifyEmailValues,
-  // resendVerifyEmailTokenValues,
   VerifyIdentityValues,
   VerifyPhoneNumberValues,
   WithdrawalAccountValues,
 } from "@/utils/types";
-
-
 
 export const signUpFormInitialValues: SignupFormValues = {
   firstName: "",
@@ -40,23 +35,10 @@ export const loginFormInitialValues: LoginFormValues = {
   password: "",
 };
 
-// export const verifyEmailInitialValues: verifyEmailValues = {
-//   email: "",
-//   token: "",
-// };
-
-// export const resendVerifyEmailTokenInitialValues: resendVerifyEmailTokenValues =
-//   {
-//     email: "",
-//   };
-
 export const resetPasswordEmailInitialValues: ResetPasswordEmailValues = {
   email: "",
 };
 
-// export const resetPasswordOtpInitialValues: ResetPasswordOtpValues = {
-//   otp: "",
-// };
 export const setNewPasswordInitialValues: SetNewPasswordValues = {
   email: "",
   token: "",
@@ -74,6 +56,8 @@ export const setNewPasswordInitialValues: SetNewPasswordValues = {
 
 export const verifyPhoneNumberValues: VerifyPhoneNumberValues = {
   phoneNumber: "",
+  countryCode: "",
+  country: "",
 };
 
 export const verifyIdentityValues: VerifyIdentityValues = {
@@ -84,7 +68,8 @@ export const verifyIdentityValues: VerifyIdentityValues = {
 };
 
 export const withdrawalAccountValues: WithdrawalAccountValues = {
-  bank: "",
+  bank: null,
+  bankCode: "",
   accountNumber: "",
 };
 

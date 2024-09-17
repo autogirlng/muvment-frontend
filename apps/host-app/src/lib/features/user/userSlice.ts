@@ -32,6 +32,9 @@ const userSlice = createSlice({
       state.userToken = action.payload.userToken;
       state.isAuthenticated = action.payload.isAuthenticated;
     },
+    updateUserData: (state, action: PayloadAction<Partial<User>>) => {
+      if (state.user) state.user = { ...state.user, ...action.payload };
+    },
     clearUser: (state) => {
       state.user = null;
       state.isAuthenticated = false;
@@ -41,5 +44,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, clearUser, setLoading, setToken } = userSlice.actions;
+export const { setUser, clearUser, setLoading, setToken, updateUserData } =
+  userSlice.actions;
 export default userSlice.reducer;

@@ -1,24 +1,42 @@
-import React from "react";
+import { useEffect } from "react";
 import { Form, Formik } from "formik";
-import Button from "@repo/ui/button";
-import InputField from "@repo/ui/inputField";
-import SelectInput from "@repo/ui/select";
 import { withdrawalAccountValues } from "@/utils/initialValues";
 import { withdrawalAccountSchema } from "@/utils/validationSchema";
+import { BankProp } from "@/utils/types";
+import Button from "@repo/ui/button";
+import InputField from "@repo/ui/inputField";
+import SelectSearchInput from "@repo/ui/searchSelectInput";
 import Icons from "@repo/ui/icons";
+import useAccountSetup from "@/hooks/useAccountSetup";
 
 type Props = {};
 
 export default function SetupWithdrawalAccount({}: Props) {
-  const [credentialsError, setCredentialsError] =
-    React.useState<boolean>(false);
-  const [accountName, setAccountName] = React.useState<string>("");
+  const {
+    credentialsError,
+    accountDetails,
+    bankCodes,
+    getAllBankCodes,
+    validateBankAccount,
+    setCredentialsError,
+    loading,
+    setLoading,
+  } = useAccountSetup();
+
+  useEffect(() => {
+    getAllBankCodes.mutate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Formik
       initialValues={withdrawalAccountValues}
       onSubmit={async (values, { setSubmitting }) => {
         console.log(values);
+        setLoading(true);
+        setCredentialsError(false);
+        validateBankAccount.mutate(values);
+        setSubmitting(false);
       }}
       validationSchema={withdrawalAccountSchema}
       enableReinitialize={true}
@@ -31,7 +49,6 @@ export default function SetupWithdrawalAccount({}: Props) {
           touched,
           errors,
           isValid,
-          dirty,
           handleBlur,
           handleChange,
           setFieldValue,
@@ -41,19 +58,22 @@ export default function SetupWithdrawalAccount({}: Props) {
 
         return (
           <Form className="space-y-6 max-w-[375px]">
-            <SelectInput
+            <SelectSearchInput
               placeholder="Select Bank"
               variant="outlined"
               label="Bank"
               id="bank"
-              options={[{ value: "access", option: "Access Bank" }]}
+              banks={bankCodes}
+              isLoading={getAllBankCodes.isPending}
               value={values.bank}
-              onChange={(value: string) => {
+              onChange={(bank: BankProp) => {
                 setFieldTouched("bank", true);
-                setFieldValue("bank", value);
+                setFieldValue("bank", bank);
+                setFieldValue("bankCode", bank?.code);
               }}
-              error={errors.bank && touched.bank ? errors.bank : ""}
+              error={errors.bankCode && touched.bankCode ? errors.bankCode : ""}
             />
+
             <div className="space-y-4">
               <InputField
                 name="accountNumber"
@@ -71,20 +91,26 @@ export default function SetupWithdrawalAccount({}: Props) {
                 }
               />
 
-              {/* add loader here */}
               {credentialsError && (
                 <p className="text-base md:text-lg 2xl:text-h6 text-error-500">
                   Invalid credentials
                 </p>
               )}
-              {accountName && (
+              {accountDetails.accountName && (
                 <p className="flex items-center gap-2 text-base md:text-lg 2xl:text-h6 text-success-600">
-                  {Icons.ic_check_circle} <span>Mamudu Jeffrey</span>
+                  {Icons.ic_check_circle}{" "}
+                  <span>{accountDetails.accountName}</span>
                 </p>
               )}
             </div>
 
-            <Button variant="filled" color="primary" type="submit">
+            <Button
+              variant="filled"
+              color="primary"
+              type="submit"
+              loading={isSubmitting || loading}
+              disabled={isSubmitting || loading || !isValid}
+            >
               Add Bank
             </Button>
           </Form>

@@ -4,11 +4,13 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-import { StepperNavigation } from "@repo/ui/stepper";
 import Image from "next/image";
-import Icons from "@repo/ui/icons";
 import cn from "classnames";
+import Link from "next/link";
+
 import Chip from "@repo/ui/chip";
+import Icons from "@repo/ui/icons";
+import { StepperNavigation } from "@repo/ui/stepper";
 
 type Props = {
   currentStep: number;
@@ -42,6 +44,31 @@ const vehicleDetails = [
   { city: "Lagos" },
   { vehicleType: "Sedan" },
   { seatingCapacity: 4 },
+];
+
+const perks = [
+  { icon: Icons.ic_driver_provided, name: "Driver Provided" },
+  { icon: Icons.ic_fuel_station, name: "20 ltrs Fuel Included" },
+  { icon: Icons.ic_remove_calendar, name: "Free Cancellation" },
+  { icon: Icons.ic_self_drive, name: "Self Drive" },
+  { icon: Icons.ic_checkmark_badge, name: "Vehicle insured" },
+  { icon: Icons.ic_car_tracker, name: "Tracker Enabled" },
+];
+
+const features = ["All wheel drive", "Android auto", "Apple airplay"];
+
+const outskirtLocations = [
+  "Ikorodu",
+  "Bagagry",
+  "Epe",
+  "Ojo",
+  "Alimosho",
+  "Agege",
+  "Ajah",
+  "Sango",
+  "Ijede",
+  "Ikotun",
+  "Egbeda",
 ];
 
 export default function VehicleSummary({
@@ -104,7 +131,7 @@ export default function VehicleSummary({
       </div>
 
       <div className="flex items-start gap-10 ">
-        <div className="w-2/3 space-y-10">
+        <div className="w-[62%] space-y-10">
           {/* vehicle details */}
           <div className="space-y-5">
             <SectionTitle text="Vehicle Details" />
@@ -137,23 +164,94 @@ export default function VehicleSummary({
           {/* vehicle perks */}
           <div className="space-y-5">
             <SectionTitle text="Perks" />
-            <div></div>
+            <div className="flex flex-wrap gap-3">
+              {perks.map((perk, index) => (
+                <Chip
+                  key={index}
+                  text={perk.name}
+                  icon={perk.icon}
+                  variant="outlined"
+                  radius="md"
+                  color="light"
+                />
+              ))}
+              <Link href="/" className="text-primary-500 text-base 3xl:text-xl">
+                Learn more about our free cancellation
+              </Link>
+            </div>
           </div>
 
           {/* vehicle features */}
           <div className="space-y-5">
             <SectionTitle text="Features" />
-            <div></div>
+            <div className="flex flex-wrap gap-3">
+              {features.map((feature, index) => (
+                <Chip
+                  key={index}
+                  text={feature}
+                  variant="outlined"
+                  radius="md"
+                  color="light"
+                />
+              ))}
+            </div>
           </div>
 
           {/* outskirt locations */}
           <div className="space-y-5">
             <SectionTitle text="Outskirt Locations" />
+            <div className="flex flex-wrap gap-y-8 gap-x-[18px]">
+              {outskirtLocations.map((location, index) => (
+                <p
+                  key={index}
+                  className="text-xl 3xl:text-xl text-black flex items-center gap-[14px] w-[170px]"
+                >
+                  {Icons.ic_location}
+                  <span>{location}</span>
+                </p>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* pricing */}
-        <div className="w-1/3"></div>
+        <div className="w-[38%] border border-grey-200 rounded-[42px]">
+          <div className="p-8 divide-y divide-grey-200 text-grey-800 !font-medium text-base 3xl:text-xl">
+            <h4 className="text-h5 3xl:text-h4 !font-medium pb-[22px]">
+              Pricing
+            </h4>
+            <div className="py-[22px] flex divide-x divide-grey-200">
+              <div className="pr-6">
+                <p>Daily (12 hrs)</p>
+                <p className="!font-semibold">NGN 20,000/day</p>
+              </div>
+              <div className="pl-6">
+                <p>Extra Hours</p>
+                <p className="!font-semibold">NGN 2,700/hr</p>
+              </div>
+            </div>
+            <div className="py-[22px]">
+              <p>Trip Duration</p>
+              <p className="!font-semibold">Min: 1 day | Max: 20 days</p>
+            </div>
+            <div className="py-[22px]">
+              <p>Discounts</p>
+            </div>
+            <div className="py-[22px]">
+              <p>Airport Pickups & dropoffs</p>
+              <p className="!font-semibold">NGN 12,000/</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        {/* checkbox */}
+        <p className="text-xl 3xl:text-h6 !font-normal">
+          By submitting your vehicle you agree to the Rental{" "}
+          <Link href="/" className="text-primary-500">
+            Terms and Services
+          </Link>
+        </p>
       </div>
 
       <StepperNavigation

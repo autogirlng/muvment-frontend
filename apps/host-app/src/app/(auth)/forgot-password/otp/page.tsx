@@ -4,6 +4,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import OtpVerification from "@/components/OtpVerification";
 import useAuth from "@/hooks/useAuth";
 import { useState } from "react";
+import Image from "next/image";
+import AuthPageHeader from "@/components/Header/AuthPageHeader";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -33,6 +35,19 @@ export default function ResetPasswordPage() {
       otp={otp}
       setOtp={setOtp}
       error={verifyEmailOnForgotPassword.error}
-    />
+    >
+      <Image
+        src="/icons/mailbox.png"
+        alt=""
+        className="w-[200px] h-[134px]"
+        width={200}
+        height={134}
+      />
+      <AuthPageHeader
+        title="We’ve sent a mail your way"
+        description="We sent you an OTP to verify your email. If you can’t find it please
+          check your spam first before resending the code."
+      />
+    </OtpVerification>
   );
 }

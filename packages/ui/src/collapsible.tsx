@@ -1,6 +1,5 @@
 import { ReactNode, useState } from "react";
 import * as Collapsible from "@radix-ui/react-collapsible";
-import cn from "classnames";
 
 type Props = {
   title: string | ReactNode;
