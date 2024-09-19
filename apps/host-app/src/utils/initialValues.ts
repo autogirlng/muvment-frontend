@@ -4,18 +4,13 @@ import {
   BasicVehicleInformationValues,
   LoginFormValues,
   ResetPasswordEmailValues,
-  // ResetPasswordOtpValues,
   SetNewPasswordValues,
   SignupFormValues,
-  VehiclePhotosValues,
-  // verifyEmailValues,
-  // resendVerifyEmailTokenValues,
+  VehiclePhotos,
   VerifyIdentityValues,
   VerifyPhoneNumberValues,
   WithdrawalAccountValues,
 } from "@/utils/types";
-
-
 
 export const signUpFormInitialValues: SignupFormValues = {
   firstName: "",
@@ -40,23 +35,10 @@ export const loginFormInitialValues: LoginFormValues = {
   password: "",
 };
 
-// export const verifyEmailInitialValues: verifyEmailValues = {
-//   email: "",
-//   token: "",
-// };
-
-// export const resendVerifyEmailTokenInitialValues: resendVerifyEmailTokenValues =
-//   {
-//     email: "",
-//   };
-
 export const resetPasswordEmailInitialValues: ResetPasswordEmailValues = {
   email: "",
 };
 
-// export const resetPasswordOtpInitialValues: ResetPasswordOtpValues = {
-//   otp: "",
-// };
 export const setNewPasswordInitialValues: SetNewPasswordValues = {
   email: "",
   token: "",
@@ -74,6 +56,8 @@ export const setNewPasswordInitialValues: SetNewPasswordValues = {
 
 export const verifyPhoneNumberValues: VerifyPhoneNumberValues = {
   phoneNumber: "",
+  countryCode: "",
+  country: "",
 };
 
 export const verifyIdentityValues: VerifyIdentityValues = {
@@ -84,20 +68,21 @@ export const verifyIdentityValues: VerifyIdentityValues = {
 };
 
 export const withdrawalAccountValues: WithdrawalAccountValues = {
-  bank: "",
+  bank: null,
+  bankCode: "",
   accountNumber: "",
 };
 
 export const basicVehicleInformationValues: BasicVehicleInformationValues = {
-  vehicleName: "",
-  city: "",
+  listingName: "",
+  location: "",
   address: "",
   vehicleType: "",
-  vehicleMake: "",
-  vehicleModel: "",
-  year: "",
-  insurance: "",
-  tracker: "",
+  make: "",
+  model: "",
+  yearOfRelease: "",
+  hasTracker: "no",
+  hasInsurance: "no",
 };
 
 export const additionalVehicleInformationValues: AdditionalVehicleInformationValues =
@@ -105,25 +90,25 @@ export const additionalVehicleInformationValues: AdditionalVehicleInformationVal
     licensePlateNumber: "",
     stateOfRegistration: "",
     vehicleDescription: "",
-    vehicleFeatures: [],
+    features: [],
     vehicleColor: "",
     numberOfSeats: "",
   };
 
-export const vehiclePhotosValues: VehiclePhotosValues = {
+export const vehiclePhotosValues: VehiclePhotos = {
   frontView: "",
   backView: "",
   sideView1: "",
   sideView2: "",
-  interiorImage: "",
-  otherImage: "",
+  interior: "",
+  other: "",
 };
 
 export const availabilityAndPricingValues: AvailabilityAndPricingValues = {
   advanceNoticeInDays: "",
   minTripDurationInDays: "",
   maxTripDurationInDays: "",
-  selfDrive: "",
+  // selfDrive: "",
   driverProvided: "",
   fuelProvided: "",
   dailyRate: "",
@@ -132,4 +117,6 @@ export const availabilityAndPricingValues: AvailabilityAndPricingValues = {
   threeDaysDiscount: "",
   sevenDaysDiscount: "",
   thirtyDaysDiscount: "",
+  outskirtsLocation: [],
+  outskirtsPrice: "",
 };

@@ -1,11 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import OtpField from "@repo/ui/otpField";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import AuthPageHeader from "./Header/AuthPageHeader";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/utils/types";
+import { Spinner } from "@repo/ui/spinner";
+import OtpField from "@repo/ui/otpField";
 
 type Props = {
   verifyOtp: () => void;
@@ -15,9 +14,12 @@ type Props = {
   setOtp: Dispatch<SetStateAction<string>>;
   otp: string;
   error: AxiosError<ErrorResponse> | null;
+  children?: React.ReactNode;
+  numInputs?: number;
 };
 
 const OtpVerification = ({
+  numInputs = 5,
   verifyOtp,
   isVerifyOtpLoading,
   resendOtp,
@@ -25,11 +27,12 @@ const OtpVerification = ({
   setOtp,
   otp,
   error,
+  children,
 }: Props) => {
   const handleChange = (otp: string) => setOtp(otp);
 
-  const [minutes, setMinutes] = useState<number>(4);
-  const [seconds, setSeconds] = useState<number>(59);
+  const [minutes, setMinutes] = useState<number>(0);
+  const [seconds, setSeconds] = useState<number>(19);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -46,30 +49,22 @@ const OtpVerification = ({
     }, 1000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seconds]);
 
   useEffect(() => {
-    if (otp.length === 5) {
+    if (otp.length === numInputs) {
       verifyOtp();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [otp]);
 
   return (
     <div className="space-y-8">
-      <Image
-        src="/icons/mailbox.png"
-        alt=""
-        className="w-[200px] h-[134px]"
-        width={200}
-        height={134}
-      />
-      <AuthPageHeader
-        title="We’ve sent a mail your way"
-        description="We sent you an OTP to verify your email. If you can’t find it please
-          check your spam first before resending the code."
-      />
+      {children}
 
       <OtpField
+        numInputs={numInputs}
         name="otp"
         id="otp"
         type="otp"
@@ -83,9 +78,11 @@ const OtpVerification = ({
             ? "Incorrect pin, please check and try again"
             : ""
         }
-        disabled={isVerifyOtpLoading}
+        disabled={isVerifyOtpLoading || isResendOtpLoading}
       />
-      {minutes > 0 || seconds > 0 ? (
+      {isVerifyOtpLoading || isResendOtpLoading ? (
+        <Spinner />
+      ) : minutes > 0 || seconds > 0 ? (
         <p className="text-grey-500 text-sm 3xl:text-base">
           Resend Code in{" "}
           {minutes > 1
@@ -99,14 +96,11 @@ const OtpVerification = ({
           className="text-sm 3xl:text-base text-primary-500"
           onClick={() => {
             resendOtp();
-            setMinutes(4);
-            setSeconds(59);
+            setMinutes(0);
+            setSeconds(19);
           }}
-          disabled={isResendOtpLoading}
         >
-          {isResendOtpLoading || isVerifyOtpLoading
-            ? "Loading..."
-            : "Resend Code"}
+          Resend Code
         </button>
       )}
     </div>

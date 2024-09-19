@@ -1,12 +1,11 @@
 "use client";
 
-import { api } from "@/lib/api";
-import { clearUser, setUser } from "@/lib/features/user/userSlice";
-import { useAppDispatch } from "@/lib/hooks";
 import { useQuery } from "@tanstack/react-query";
-
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
+import { clearUser, setUser } from "@/lib/features/userSlice";
+import { useAppDispatch } from "@/lib/hooks";
 
 export default function useUser() {
   const [userToken, setUserToken] = useState("");
@@ -20,6 +19,7 @@ export default function useUser() {
     if (!user_token) {
       router.push("/login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getUser = useQuery({
@@ -46,7 +46,8 @@ export default function useUser() {
       router.push("/login");
       console.log("Error fetching user", getUser.error);
     }
-  }, [getUser.isError, getUser.isSuccess, router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getUser.isError, getUser.isSuccess]);
 
   return {
     getUser,

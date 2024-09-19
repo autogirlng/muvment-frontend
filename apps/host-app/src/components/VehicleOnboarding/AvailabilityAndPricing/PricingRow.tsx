@@ -1,7 +1,13 @@
-import React from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import { standardServiceFeeInPercentage } from "@/utils/constants";
 import InputField from "@repo/ui/inputField";
+import {
+  calculateRateGuestsWillSee,
+  calculateServiceFee,
+} from "@/utils/functions";
 
 type PricingRowProps = {
+  optional?: boolean;
   title: string;
   rateLabel: string;
   rateName: string;
@@ -17,6 +23,7 @@ type PricingRowProps = {
 };
 
 const PricingRow = ({
+  optional,
   title,
   rateLabel,
   rateName,
@@ -30,12 +37,36 @@ const PricingRow = ({
   handleChange,
   handleBlur,
 }: PricingRowProps) => {
+  const [serviceFee, setServiceFee] = useState(0);
+  const [guestWillSee, setGuestWillSee] = useState(0);
+
+  useEffect(() => {
+    const value = parseInt(rateValue);
+
+    if (rateValue === "" || isNaN(value)) {
+      setServiceFee(0);
+      setGuestWillSee(0);
+    } else {
+      const calculatedFee = calculateServiceFee(
+        value,
+        standardServiceFeeInPercentage
+      );
+      setServiceFee(calculatedFee);
+      setGuestWillSee(calculateRateGuestsWillSee(value, calculatedFee));
+    }
+  }, [rateValue]);
+
   return (
-    <div className="flex flex-col md:flex-row gap-6 md:items-center justify-between w-full pb-10 sm:pb-5 md:pb-0">
+    <div className="flex flex-col md:flex-row flex-wrap lg:flex-nowrap gap-6 md:items-center justify-between w-full pb-10 sm:pb-5 md:pb-0">
       <p className="text-sm font-semibold text-nowrap min-w-[200px] text-grey-600">
         {title}
+        {optional && (
+          <>
+            <br /> (optional)
+          </>
+        )}
       </p>
-      <div className="flex flex-col sm:flex-row sm:items-center gap-8">
+      <div className="flex flex-col sm:flex-row sm:items-center flex-wrap lg:flex-nowrap gap-8">
         <div className="flex items-center gap-2">
           <InputField
             name={rateName}
@@ -61,7 +92,7 @@ const PricingRow = ({
             type="text"
             label="Service fee"
             placeholder="+NGN0"
-            value={`+NGN${0}`}
+            value={`+NGN${serviceFee}`}
             inputClass="text-right"
             className="sm:w-[150px] md:w-[180px]"
             disabled
@@ -74,8 +105,8 @@ const PricingRow = ({
             id={guestWillSeeName}
             type="text"
             label="Guests will see"
-            placeholder={`NGN${0}`}
-            value={`NGN${0}`}
+            placeholder="NGN0"
+            value={`NGN${guestWillSee}`}
             inputClass="text-right"
             className="sm:w-[150px] md:w-[180px]"
             disabled

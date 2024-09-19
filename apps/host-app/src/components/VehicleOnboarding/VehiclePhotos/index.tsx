@@ -1,23 +1,43 @@
+import { useState } from "react";
+import { TipsPopup } from "@repo/ui/popup";
+import Tips from "@/components/VehicleOnboarding//Tips";
 import VehiclePhotosForm from "./VehiclePhotosForm";
 import VehiclePhotosTips from "./VehiclePhotosTips";
 
 type Props = {
-  currentStep: number;
-  setCurrentStep: (step: number) => void;
   steps: string[];
 };
 
-const VehiclePhotos = ({ currentStep, setCurrentStep, steps }: Props) => {
+const VehiclePhotos = ({ steps }: Props) => {
+  const [photoTipIndex, setPhotoTipIndex] = useState<number>(0);
+
   return (
     <div className="space-y-[52px]">
-      <VehiclePhotosTips/>
-      <VehiclePhotosForm
-        currentStep={currentStep}
-        setCurrentStep={setCurrentStep}
-        steps={steps}
-      />
+      <DesktopTips photoTipIndex={photoTipIndex} />
+      <MobileTips photoTipIndex={photoTipIndex} />
+
+      <VehiclePhotosForm steps={steps} setPhotoTipIndex={setPhotoTipIndex} />
     </div>
   );
 };
+
+const DesktopTips = ({ photoTipIndex }: { photoTipIndex: number }) => (
+  <div className="hidden md:block">
+    <VehiclePhotosTips photoTipIndex={photoTipIndex} />
+  </div>
+);
+
+const MobileTips = ({ photoTipIndex }: { photoTipIndex: number }) => (
+  <div className="block md:hidden">
+    <TipsPopup
+      trigger={
+        <button className="w-full">
+          <Tips />
+        </button>
+      }
+      content={<VehiclePhotosTips photoTipIndex={photoTipIndex} />}
+    />
+  </div>
+);
 
 export default VehiclePhotos;

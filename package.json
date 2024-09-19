@@ -21,6 +21,7 @@
     "packages/*"
   ],
   "dependencies": {
+    "@headlessui/react": "^2.1.8",
     "@reduxjs/toolkit": "^2.2.7",
     "@tanstack/react-query": "^5.55.4",
     "axios": "^1.7.7",

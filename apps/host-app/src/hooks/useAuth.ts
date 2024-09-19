@@ -1,52 +1,24 @@
 "use client";
 
-import { api } from "@/lib/api";
-import { clearOtp, setOtp } from "@/lib/features/user/forgotPasswordSlice";
-import { setToken } from "@/lib/features/user/userSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import {
-  ErrorResponse,
-  LoginFormValues,
-  resendVerifyEmailTokenValues,
-  ResetPasswordEmailValues,
-  SetNewPasswordValues,
-  SignupFormValues,
-  verifyEmailValues,
-} from "@/utils/types";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
-const handleErrors = (
-  page: string,
-  error: AxiosError<ErrorResponse>,
-  redirectUser?: () => void
-) => {
-  console.log(`${page} error`, error.response?.status, error.response?.data);
-  const ERR_CODE = error.response?.data?.ERR_CODE;
-
-  // signup errors
-  if (ERR_CODE === "USER_ALREADY_EXIST")
-    toast.error("Email already registered");
-
-  // login errors
-  if (error.response?.data?.ERR_CODE === "INVALID_CREDENTIALS")
-    toast.error("Invalid login credentials");
-
-  if (error.response?.data?.ERR_CODE === "USER_NOT_FOUND")
-    toast.error("User not found");
-
-  if (error.response?.data?.ERR_CODE === "EMAIL_NOT_CONFIRMED") {
-    toast.error("Email not verified");
-    redirectUser && redirectUser();
-  }
-
-  // resend verify email token errors
-  if (error.response?.data?.ERR_CODE === "EMAIL_ALREADY_CONFIRMED")
-    toast.error("Email already confirmed");
-};
+import { api } from "@/lib/api";
+import { setForgotPasswordOtp } from "@/lib/features/forgotPasswordSlice";
+import { setToken } from "@/lib/features/userSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { handleErrors } from "@/utils/functions";
+import {
+  ErrorResponse,
+  LoginFormValues,
+  ResendVerifyEmailTokenValues,
+  ResetPasswordEmailValues,
+  SetNewPasswordValues,
+  SignupFormValues,
+  verifyEmailValues,
+} from "@/utils/types";
 
 export default function useAuth() {
   const [userToken, setUserToken] = useState("");
@@ -61,6 +33,7 @@ export default function useAuth() {
     if (user_token) {
       router.push("/dashboard");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const signupMutation = useMutation({
@@ -132,7 +105,7 @@ export default function useAuth() {
     onSuccess: (data, _values, context) => {
       console.log("Email verified successfully", data);
       router.push(`/reset-password?email=${context?.email}`);
-      dispatch(setOtp(context?.otp));
+      dispatch(setForgotPasswordOtp(context?.otp));
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>
@@ -140,7 +113,7 @@ export default function useAuth() {
   });
 
   const resendVerifyEmailToken = useMutation({
-    mutationFn: (values: resendVerifyEmailTokenValues) =>
+    mutationFn: (values: ResendVerifyEmailTokenValues) =>
       api.post("/api/auth/resend-verify-email", values),
 
     onSuccess: (data) => {
@@ -181,7 +154,7 @@ export default function useAuth() {
     },
 
     onSuccess: (data) => {
-      dispatch(clearOtp());
+      dispatch(setForgotPasswordOtp(""));
       console.log("Password Reset successfully", data);
       toast.success("New password set successfully");
       router.push("/login");

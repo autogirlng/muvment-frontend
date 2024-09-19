@@ -1,18 +1,21 @@
+import React from "react";
 import Icons from "@repo/ui/icons";
-import { bookingOverviewFilters, bookingOverviewTableItems, monthsFilter } from "@/utils/data";
 import SelectInput from "@repo/ui/select";
 import FilterBy from "@repo/ui/filter";
-import React from "react";
-import Table from "../Table";
-import DashboardSectionTitle from "../DashboardSectionTitle";
+import Table from "@/components/BookingsOverview/BookingTable";
+import DashboardSectionTitle from "@/components/DashboardSectionTitle";
+import {
+  bookingOverviewFilters,
+  bookingOverviewTableItems,
+  monthsFilter,
+} from "@/utils/data";
 
 type Props = {};
 
-export default function BookingsOverview({ }: Props) {
-  
-   const handleFilterChange = (selectedFilters: Record<string, string[]>) => {
-     console.log("Selected filters:", selectedFilters);
-   };
+export default function BookingsOverview({}: Props) {
+  const handleFilterChange = (selectedFilters: Record<string, string[]>) => {
+    console.log("Selected filters:", selectedFilters);
+  };
   return (
     <div className="space-y-8">
       <DashboardSectionTitle icon={Icons.ic_ticket} title="Bookings" />

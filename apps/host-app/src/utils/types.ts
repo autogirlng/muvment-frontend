@@ -12,6 +12,81 @@ interface PasswordChecks {
   no_space: boolean;
 }
 
+export interface BankProp {
+  bankId: string;
+  baseUssdCode: string;
+  code: string;
+  name: string;
+  nipBankCode: string;
+  transferUssdTemplate: string;
+  ussdTemplate: string;
+}
+
+export interface AccountSetupTask {
+  icon: JSX.Element;
+  title: string;
+  link: string;
+  linkText: string;
+  isCompleted: boolean;
+  taskId: keyof User;
+}
+
+export interface TripSettings {
+  advanceNotice: string;
+  maxTripDuration: string;
+  provideDriver: boolean;
+  fuelProvided: boolean;
+}
+
+export interface Rate {
+  value: number;
+  unit: string;
+}
+
+export interface Discount {
+  durationInDays: number;
+  percentage: number;
+}
+
+export interface Pricing {
+  dailyRate: Rate;
+  extraHoursFee: number;
+  // hourlyRate: Rate;
+  airportPickupFee: number;
+  discounts: Discount[];
+}
+
+export interface AvailabilityAndPricing {
+  tripSettings: TripSettings;
+  pricing: Pricing;
+  outskirtsLocation?: string[];
+  outskirtsPrice?: number;
+}
+
+export interface VehicleInformation {
+  id?: string;
+  listingName: string;
+  location?: string;
+  address?: string;
+  vehicleType: string;
+  make: string;
+  model: string;
+  yearOfRelease: string;
+  hasTracker: true;
+  hasInsurance: true;
+  licensePlateNumber: string;
+  stateOfRegistration: string;
+  vehicleDescription: string;
+  features: string[];
+  vehicleColor: string;
+  numberOfSeats: number;
+  VehicleImage: VehiclePhotos;
+  tripSettings: TripSettings;
+  pricing: Pricing;
+  outskirtsLocation?: string[];
+  outskirtsPrice?: number;
+}
+
 export interface SignupFormValues {
   firstName: string;
   lastName: string;
@@ -32,16 +107,25 @@ export interface verifyEmailValues {
   token: string;
 }
 
-export interface resendVerifyEmailTokenValues {
+export interface ResendVerifyEmailTokenValues {
   email: string;
 }
 export interface ResetPasswordEmailValues {
   email: string;
 }
 
-// export interface ResetPasswordOtpValues {
-//   otp: string;
-// }
+export interface VerifyPhoneNumberTokenValues {
+  phoneNumber: string;
+  token: string;
+}
+
+export interface SendPhoneNumberTokenValues {
+  phoneNumber: string;
+}
+
+export interface VerifyOtpValues {
+  token: string;
+}
 
 export interface SetNewPasswordValues {
   email: string;
@@ -53,6 +137,8 @@ export interface SetNewPasswordValues {
 
 export interface VerifyPhoneNumberValues {
   phoneNumber: string;
+  countryCode: string;
+  country: string;
 }
 
 export interface VerifyIdentityValues {
@@ -63,44 +149,46 @@ export interface VerifyIdentityValues {
 }
 
 export interface WithdrawalAccountValues {
-  bank: string;
+  bank?: BankProp | null;
+  bankCode: string;
   accountNumber: string;
+  accountName?: "";
 }
 
 export interface BasicVehicleInformationValues {
-  vehicleName: string;
-  city: string;
+  listingName: string;
+  location: string;
   address: string;
   vehicleType: string;
-  vehicleMake: string;
-  vehicleModel: string;
-  year: string;
-  insurance: string;
-  tracker: string;
+  make: string;
+  model: string;
+  yearOfRelease: string;
+  hasTracker: string;
+  hasInsurance: string;
 }
 
 export interface AdditionalVehicleInformationValues {
   licensePlateNumber: string;
   stateOfRegistration: string;
   vehicleDescription: string;
-  vehicleFeatures: string[];
+  features: string[];
   vehicleColor: string;
   numberOfSeats: string;
 }
 
-export interface VehiclePhotosValues {
+export interface VehiclePhotos {
   frontView: string;
   backView: string;
   sideView1: string;
   sideView2: string;
-  interiorImage: string;
-  otherImage: string;
+  interior: string;
+  other: string;
 }
 export interface AvailabilityAndPricingValues {
   advanceNoticeInDays: string;
   minTripDurationInDays: string;
   maxTripDurationInDays: string;
-  selfDrive: string;
+  // selfDrive: string;
   driverProvided: string;
   fuelProvided: string;
   dailyRate: string;
@@ -109,11 +197,15 @@ export interface AvailabilityAndPricingValues {
   threeDaysDiscount: string;
   sevenDaysDiscount: string;
   thirtyDaysDiscount: string;
+  outskirtsLocation: string[];
+  outskirtsPrice: string;
 }
 
-export type BadgeStatus = "accepted" | "pending" | "canceled";
+export type BookingBadgeStatus = "accepted" | "pending" | "canceled";
 
-type UderVerification = {
+export type TransactionBadgeStatus = "successful" | "pending" | "failed";
+
+type UserVerification = {
   id: string;
   phoneNumber: string;
   otpToken: string | null;
@@ -136,6 +228,7 @@ export type User = {
   emailConfirmed: boolean;
   phoneNumber: string;
   phoneVerified: boolean;
+  withdrawalAccountVerified: boolean;
   bvnVerified: boolean;
   bio: string | null;
   city: string | null;
@@ -147,7 +240,7 @@ export type User = {
   businessEmail: string | null;
   createdAt: string;
   updatedAt: string;
-  Verification: UderVerification;
+  Verification: UserVerification;
 };
 
 // ==================== hard coded types - to be changed ====================//
@@ -171,5 +264,17 @@ export type BookingOverviewTableRow = {
   endDate: string;
   status: string;
   price: string;
+  actions: string;
+};
+
+export type TransactionTableRow = {
+  transactionId: string;
+  date: string;
+  bookingId: string;
+  type: string;
+  vehicle: string;
+  purpose: string;
+  amount: string;
+  status: string;
   actions: string;
 };

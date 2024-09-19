@@ -1,30 +1,27 @@
-import React from "react";
 import { Formik, Form } from "formik";
+import { GroupCheckBox } from "@repo/ui/checkbox";
+import { StepperNavigation } from "@repo/ui/stepper";
+import { addSpaceBeforeUppercase } from "@/utils/functions";
+import { addtionalVehicleInformationSchema } from "@/utils/validationSchema";
+import { vehicleColorsOptions, vehicleFeaturesOptions } from "@/utils/data";
 import InputField from "@repo/ui/inputField";
 import TextArea from "@repo/ui/textarea";
 import SelectInput from "@repo/ui/select";
-import { addtionalVehicleInformationSchema } from "@/utils/validationSchema";
-import { vehicleColors, vehicleFeatures } from "@/utils/data";
-import { StepperNavigation } from "@repo/ui/stepper";
-import { additionalVehicleInformationValues } from "@/utils/initialValues";
-import CheckBox from "@repo/ui/checkbox";
 import FormRow from "../FormRow";
+import useAdditionalInformationForm from "./useAdditionalInformationForm";
 
-const AdditionalInformationForm = ({
-  currentStep,
-  setCurrentStep,
-  steps,
-}: {
-  currentStep: number;
-  setCurrentStep: (step: number) => void;
-  steps: string[];
-}) => {
+const AdditionalInformationForm = ({ steps }: { steps: string[] }) => {
+  const { currentStep, setCurrentStep, submitStep2, saveStep2, initialValues } =
+    useAdditionalInformationForm();
+
   return (
     <Formik
-      initialValues={additionalVehicleInformationValues}
+      initialValues={initialValues}
       validationSchema={addtionalVehicleInformationSchema}
-      onSubmit={(values) => {
+      onSubmit={(values, { setSubmitting }) => {
         console.log("Form values:", values);
+        submitStep2.mutate(values);
+        setSubmitting(false);
       }}
     >
       {({
@@ -56,8 +53,8 @@ const AdditionalInformationForm = ({
                   : ""
               }
               info
-              tooltipTitle=""
-              tooltipDescription=""
+              tooltipTitle="License plate number:"
+              tooltipDescription="Your vehicle’s license plate number is required to verify its legal registration and for identification purposes."
             />
 
             <InputField
@@ -75,8 +72,8 @@ const AdditionalInformationForm = ({
                   : ""
               }
               info
-              tooltipTitle=""
-              tooltipDescription=""
+              tooltipTitle="State of registration:"
+              tooltipDescription="Knowing the state where your vehicle is registered helps us ensure compliance with local laws and regulations."
             />
           </FormRow>
 
@@ -98,37 +95,44 @@ Bluetooth connectivity, and a sunroof.`}
                 : ""
             }
             info
-            tooltipTitle=""
-            tooltipDescription=""
+            tooltipTitle="Vehicle of description:"
+            tooltipDescription="Providing a detailed description helps customers understand the unique features and specifications of your vehicle."
           />
           {/* vehicle features */}
           <div className="space-y-3">
             <label
-              htmlFor="vehicleFeatures"
+              htmlFor="features"
               className="text-sm block font-medium text-nowrap text-grey-900"
             >
               Vehicle Features
             </label>
-            <div className="grid grid-cols-3 gap-x-[50px] gap-y-3 max-w-[686px]">
-              {vehicleFeatures.map((feature) => (
-                <CheckBox
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-[50px] gap-y-3 max-w-[686px]">
+              {vehicleFeaturesOptions.map((feature) => (
+                <GroupCheckBox
                   key={feature}
-                  feature={feature}
-                  checkedValues={values.vehicleFeatures}
+                  feature={addSpaceBeforeUppercase(feature)}
+                  checkedValues={values.features}
                   onChange={(feature: string, isChecked: boolean) => {
                     if (isChecked) {
-                      const newValues = [...values.vehicleFeatures, feature];
-                      setFieldValue("vehicleFeatures", newValues);
+                      const newValues = [...values.features, feature];
+                      setFieldValue("features", newValues);
                     } else {
-                      const newValues = values.vehicleFeatures.filter(
+                      const newValues = values.features.filter(
                         (value) => value !== feature
                       );
-                      setFieldValue("vehicleFeatures", newValues);
+                      setFieldValue("features", newValues);
                     }
                   }}
                 />
               ))}
             </div>
+            {errors.features && touched.features ? (
+              <p className="text-error-500 text-sm mt-2 text-nowrap">
+                {errors.features}
+              </p>
+            ) : (
+              ""
+            )}
           </div>
 
           <FormRow>
@@ -137,7 +141,7 @@ Bluetooth connectivity, and a sunroof.`}
               label="Vehicle Color"
               placeholder="Select vehicle color"
               variant="outlined"
-              options={vehicleColors}
+              options={vehicleColorsOptions}
               value={values.vehicleColor}
               onChange={(value: string) => {
                 setFieldTouched("vehicleColor", true);
@@ -149,8 +153,8 @@ Bluetooth connectivity, and a sunroof.`}
                   : ""
               }
               info
-              tooltipTitle=""
-              tooltipDescription=""
+              tooltipTitle="Vehicle color:"
+              tooltipDescription="Indicating your vehicle’s color is important for easy identification during customer pickups and possible inspections."
             />
 
             <InputField
@@ -168,8 +172,8 @@ Bluetooth connectivity, and a sunroof.`}
                   : ""
               }
               info
-              tooltipTitle=""
-              tooltipDescription=""
+              tooltipTitle="Number of seats:"
+              tooltipDescription="Knowing how many seats your vehicle has allows customers to choose the right vehicle for their needs, especially for group rides."
             />
           </FormRow>
 
@@ -177,7 +181,14 @@ Bluetooth connectivity, and a sunroof.`}
             steps={steps}
             currentStep={currentStep}
             setCurrentStep={setCurrentStep}
-            //      saveDraft={() => {}}
+            handleSaveDraft={() => {
+              saveStep2.mutate(values);
+            }}
+            isSaveDraftloading={saveStep2.isPending}
+            isNextLoading={isSubmitting || submitStep2.isPending}
+            disableNextButton={
+              !isValid || isSubmitting || submitStep2.isPending
+            }
           />
         </Form>
       )}

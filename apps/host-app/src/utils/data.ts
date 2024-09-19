@@ -1,6 +1,49 @@
-import { BookingOverviewTableRow, TopRatedVehicleType } from "./types";
+import Icons from "@repo/ui/icons";
+import {
+  AccountSetupTask,
+  BookingOverviewTableRow,
+  TopRatedVehicleType,
+  TransactionTableRow,
+} from "./types";
 
-export const vehicleTypes = [
+export const completeAccountSetupTasks: AccountSetupTask[] = [
+  {
+    icon: Icons.ic_lock,
+    title: "Verify Phone Number",
+    link: "/account-setup/verify-number",
+    linkText: "Start Verification",
+    isCompleted: false,
+    taskId: "phoneVerified",
+  },
+  // {
+  //   icon: Icons.ic_lock,
+  //   title: "Verify your identity",
+  //   link: "/account-setup/verify-identity",
+  //   linkText: "Start Verification",
+  //   isCompleted: false,
+  //   taskId: "bvnVerified",
+  // },
+  {
+    icon: Icons.ic_lock,
+    title: "Setup Withdrawal Account",
+    link: "/account-setup/withdrawal-account",
+    linkText: "Get Started",
+    isCompleted: false,
+    taskId: "withdrawalAccountVerified",
+  },
+];
+
+const currentYear = new Date().getFullYear();
+export const yearOfReleaseOptions = Array.from(
+  { length: currentYear - 2010 + 1 },
+  (_, index) => ({
+    value: (2010 + index).toString(),
+    option: (2010 + index).toString(),
+  })
+);
+
+// add type
+export const vehicleTypesOptions = [
   { value: "Sedan", option: "Sedan" },
   { value: "SUV", option: "SUV" },
   { value: "Truck", option: "Truck" },
@@ -10,7 +53,8 @@ export const vehicleTypes = [
   { value: "Luxury Vehicle", option: "Luxury Vehicle" },
 ];
 
-export const vehicleMakes = [
+// add type
+export const vehicleMakesOptions = [
   { value: "Toyota", option: "Toyota" },
   { value: "Ford", option: "Ford" },
   { value: "Honda", option: "Honda" },
@@ -20,7 +64,8 @@ export const vehicleMakes = [
   { value: "Mercedes-Benz", option: "Mercedes-Benz" },
 ];
 
-export const vehicleModels = [
+// add type
+export const vehicleModelsOptions = [
   { value: "Tucson", option: "Tucson" },
   { value: "Santa Fe", option: "Santa Fe" },
   { value: "Palisade", option: "Palisade" },
@@ -30,7 +75,8 @@ export const vehicleModels = [
   { value: "Veloster N", option: "Veloster N" },
 ];
 
-export const vehicleColors = [
+// add type
+export const vehicleColorsOptions = [
   { value: "Red", option: "Red" },
   { value: "Black", option: "Black" },
   { value: "White", option: "White" },
@@ -38,37 +84,94 @@ export const vehicleColors = [
   { value: "Gold", option: "Gold" },
 ];
 
-export const vehicleFeatures = [
-  "All wheel drive",
-  "Android auto",
-  "Apple car play",
-  "Aux Input",
-  "Backup camera",
-  "Bike rack",
-  "Blind spot warning",
+export const vehicleFeaturesOptions: string[] = [
+  "AllWheelDrive",
+  "AndroidAuto",
+  "AppleCarPlay",
+  "AuxInput",
+  "BackupCamera",
+  "BikeRack",
+  "BlindSpotWarning",
   "Bluetooth",
-  "Child seat",
+  "ChildSeat",
   "Convertible",
-  "GPS",
-  "Heated seats",
-  "Keyless entry",
-  "Pet friendly",
-  "Ski rack",
-  "USB Charger",
+  "Gps",
+  "HeatedSeats",
+  "KeylessEntry",
+  "PetFriendly",
+  "SkiRack",
+  "UsbCharger",
   "Sunroof",
-  "Toll pass",
-  "USB input",
-  "Wheelchair accessible",
+  "TollPass",
+  "UsbInput",
+  "WheelchairAccessible",
 ];
 
-export const cities = [
+// add type
+export const citiesOptions = [
   { value: "Lagos", option: "Lagos" },
   { value: "Accra", option: "Accra" },
   { value: "Abuja", option: "Abuja" },
   { value: "Port Harcourt", option: "Port Harcourt" },
 ];
 
-export const monthsFilter = [
+// add type
+export const photoViewOptions = [
+  {
+    label: "Front View",
+    name: "frontView",
+    image: "/images/onboarding/front_view.png",
+    size: "w-[50px] 3xl:w-[75px]",
+  },
+  {
+    label: "Back View",
+    name: "backView",
+    image: "/images/onboarding/back_view.png",
+    size: "w-[50px] 3xl:w-[75px]",
+  },
+  {
+    label: "Side View 1",
+    name: "sideView1",
+    image: "/images/onboarding/side_view_1.png",
+    size: "w-[120px] 3xl:w-[160px]",
+  },
+  {
+    label: "Side View 2",
+    name: "sideView2",
+    image: "/images/onboarding/side_view_2.png",
+    size: "w-[120px] 3xl:w-[160px]",
+  },
+  {
+    label: "Interior Image",
+    name: "interior",
+    image: "/images/onboarding/interior_view.png",
+    size: "w-[50px] 3xl:w-[75px]",
+  },
+  {
+    label: "Other Image",
+    name: "other",
+    image: "/images/onboarding/other_view.png",
+    size: "w-[120px] 3xl:w-[160px]",
+  },
+];
+
+export const outskirtsLocationOptions: string[] = [
+  "Ikorodu",
+  "Badagry",
+  "Epe",
+  "Ibeju-Lekki",
+  "Ojo",
+  "Alimosho",
+  "Agege",
+  "Ajah",
+  "Agbara",
+  "Sango",
+  "Ijede",
+  "Ikotun",
+  "Egbeda",
+];
+
+export const monthsFilter: string[] = [
   "Jan",
   "Feb",
   "Mar",
@@ -83,7 +186,41 @@ export const monthsFilter = [
   "Dec",
 ];
 
-export const tableHeadItems = [
+export const photoUploadTips = [
+  {
+    title: "Take Photos From Different Angles",
+    description:
+      "Show all sides of your car - front, back, sides, and at an angle. Try to take photos during the day when there’s plenty of light, but avoid direct sunlight that can cause harsh shadows.",
+  },
+  {
+    title: "Capture the Car's Condition",
+    description:
+      "Make sure your photos reflect the current condition of your car. Honesty builds trust with potential renters. If there are any minor dings or scratches, include a photo so there are no surprises.",
+  },
+
+  {
+    title: "Mind the Weather",
+    description:
+      "Avoid taking photos on rainy or gloomy days. Sunshine makes everything look better. If the weather isn’t cooperating, wait for a better day to take your pictures.",
+  },
+  {
+    title: "Clean Your Car Before the Photoshoot",
+    description:
+      "A clean car looks more inviting. Take the time to wash and vacuum your car before taking photos. This makes a big difference in how your car is perceived.",
+  },
+  {
+    title: "Show Off the Interior and Exterior",
+    description:
+      "Renters want to see both the inside and outside of your car. Make sure to include shots of the dashboard, seats, trunk space, and any cool features like a sunroof or navigation system.",
+  },
+  {
+    title: "Highlight Unique Features",
+    description:
+      "Got a great sound system or custom rims? Make sure to capture these unique features in your photos. They can make your car more appealing to potential renters.View detailed guidelines.",
+  },
+];
+
+export const bookingOverviewTableHeadItems: string[] = [
   "Vehicle",
   "Guest Name",
   "Booking ID",
@@ -96,6 +233,19 @@ export const tableHeadItems = [
   "Actions",
 ];
 
+export const transactionTableHeadItems: string[] = [
+  "Transaction ID",
+  "Date",
+  "Booking ID",
+  "Type",
+  "Vehicle",
+  "Purpose",
+  "Amount",
+  "Status",
+  "Actions",
+];
+
+// add type
 export const bookingOverviewFilters = [
   {
     title: "Vehicle",
@@ -116,6 +266,7 @@ export const bookingOverviewFilters = [
   },
 ];
 
+// add type
 export const bookingFilters = [
   {
     title: "Booking Type",
@@ -150,6 +301,33 @@ export const bookingFilters = [
       { label: "Completed", value: "completed" },
       { label: "Canceled", value: "canceled" },
       { label: "Rejected", value: "rejected" },
+    ],
+  },
+];
+
+// add type
+export const transactionFilters = [
+  {
+    title: "Type",
+    options: [
+      { label: "Credit", value: "Credit" },
+      { label: "Debit", value: "debit" },
+    ],
+  },
+  {
+    title: "Status",
+    options: [
+      { label: "Successful", value: "successful" },
+      { label: "Pending", value: "pending" },
+      { label: "Failed", value: "failed" },
+    ],
+  },
+  {
+    title: "Purpose",
+    options: [
+      { label: "Rental", value: "rental" },
+      { label: "Refund", value: "refund" },
+      { label: "Withdrawal", value: "withdrawal" },
     ],
   },
 ];
@@ -285,5 +463,41 @@ export const bookingOverviewTableItems: BookingOverviewTableRow[] = [
     status: "Accepted",
     price: "NGN 50,000",
     actions: "Leading text",
+  },
+];
+
+export const transactionData: TransactionTableRow[] = [
+  {
+    transactionId: "TXN-2023-01-1234",
+    date: "Apr 12, 2023 | 09:32AM",
+    bookingId: "BKG-1234-AB56",
+    type: "Credit",
+    vehicle: "Toyota Camry 2021",
+    purpose: "Rental",
+    amount: "NGN 100,000",
+    status: "Successful",
+    actions: "",
+  },
+  {
+    transactionId: "TXN-2023-01-1234",
+    date: "Apr 12, 2023 | 09:32AM",
+    bookingId: "BKG-1234-AB56",
+    type: "Debit",
+    vehicle: "Toyota Camry 2021",
+    purpose: "Rental",
+    amount: "NGN 100,000",
+    status: "Pending",
+    actions: "",
+  },
+  {
+    transactionId: "TXN-2023-01-1234",
+    date: "Apr 12, 2023 | 09:32AM",
+    bookingId: "BKG-1234-AB56",
+    type: "Payout",
+    vehicle: "Toyota Camry 2021",
+    purpose: "Rental",
+    amount: "NGN 100,000",
+    status: "Failed",
+    actions: "",
   },
 ];

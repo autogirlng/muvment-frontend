@@ -1,6 +1,6 @@
 "use client";
 import useAuth from "@/hooks/useAuth";
-import FullPageSpinner from "@repo/ui/spinner";
+import { FullPageSpinner } from "@repo/ui/spinner";
 import cn from "classnames";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";

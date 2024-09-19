@@ -3,9 +3,9 @@ import { toast } from "react-toastify";
 
 export const api = axios.create({
   baseURL: "https://muvment-dev-api.up.railway.app/",
-  headers: {
-    "Content-Type": "application/json",
-  },
+  // headers: {
+  //   "Content-Type": "application/json",
+  // },
 });
 
 api.interceptors.request.use((config) => {

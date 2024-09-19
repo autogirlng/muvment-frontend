@@ -7,7 +7,7 @@ const TableHead = ({ tableHeadItems }:{tableHeadItems:string[]}) => (
         <th
           key={item}
           scope="col"
-          className="px-6 py-3 bg-grey-200 text-start text-sm font-medium text-grey-700 capitalize"
+          className="px-6 py-3 bg-grey-75 text-start text-sm font-medium text-grey-700 capitalize"
         >
           {item}
         </th>

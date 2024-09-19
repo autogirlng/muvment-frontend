@@ -23,7 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ToastContainer
-          autoClose={15000}
+          autoClose={5000}
           hideProgressBar
           newestOnTop
           closeOnClick

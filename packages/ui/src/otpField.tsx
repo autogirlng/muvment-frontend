@@ -12,6 +12,7 @@ type OtpFieldProps = {
   disabled?: boolean;
   error?: string;
   onChange: (otp: string) => void;
+  numInputs: number;
   [key: string]: any;
 };
 
@@ -24,6 +25,7 @@ const OtpField = ({
   onChange,
   value,
   disabled,
+  numInputs,
 
   ...rest
 }: OtpFieldProps) => {
@@ -43,7 +45,7 @@ const OtpField = ({
       <OtpInput
         {...rest}
         onChange={onChange}
-        numInputs={5}
+        numInputs={numInputs}
         containerStyle="flex items-center gap-3"
         inputStyle={cn(
           "w-full rounded-[12px] text-sm h-[42px] !w-[42px] outline-none data-[placeholder]:text-grey-400",

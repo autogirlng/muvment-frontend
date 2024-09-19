@@ -102,15 +102,6 @@ body {
   border-radius: 1px;
 }
 
-label svg {
-  width: 20px;
-  height: 20px;
-}
-
-.label svg {
-  color: #667185;
-}
-
 .vehicle-summary-swiper .swiper-button-prev,
 .vehicle-summary-swiper .swiper-button-next {
   background-color: #0000009c;
@@ -146,6 +137,21 @@ label svg {
   }
 }
 
+label svg {
+  width: 20px;
+  height: 20px;
+}
+
+.label svg {
+  color: #667185;
+}
+
+.custom-radix-select span.fi,
+.custom-radix-select svg,
+.label svg {
+  width: 1em;
+}
+
 .container {
   position: relative;
   width: 100%;
@@ -156,6 +162,11 @@ label svg {
 @media only screen and (min-width: 600px) {
   .container {
     max-width: 600px !important;
+  }
+  .custom-radix-select span.fi,
+  .custom-radix-select svg,
+  .label svg {
+    width: 1.1111em;
   }
 }
 

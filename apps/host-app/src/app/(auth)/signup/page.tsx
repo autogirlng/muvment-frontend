@@ -1,19 +1,19 @@
 "use client";
 
-import cn from "classnames";
-import en from "react-phone-number-input/locale/en";
 import Link from "next/link";
 import { Form, Formik } from "formik";
-import { getCountryCallingCode } from "react-phone-number-input";
+import {
+  getCountryCallingCode,
+  parsePhoneNumber,
+} from "react-phone-number-input";
 import { signUpFormInitialValues } from "@/utils/initialValues";
 import { signupFormValidationSchema } from "@/utils/validationSchema";
 import useAuth from "@/hooks/useAuth";
 import Button from "@repo/ui/button";
 import InputField from "@repo/ui/inputField";
-import SelectCountry from "@repo/ui/selectCountry";
-import PhoneNumberField from "@repo/ui/phoneNumberField";
 import PasswordChecks from "@/components/PasswordChecks";
 import AuthPageHeader from "@/components/Header/AuthPageHeader";
+import PhoneNumberAndCountryField from "@repo/ui/phoneNumberAndCountryField";
 
 export default function SignupPage() {
   const { signupMutation } = useAuth();
@@ -28,6 +28,8 @@ export default function SignupPage() {
       <Formik
         initialValues={signUpFormInitialValues}
         onSubmit={async (values, { setSubmitting }) => {
+          console.log(values);
+
           const { password_checks, ...submissionValues } = values;
           signupMutation.mutate(submissionValues);
           setSubmitting(false);
@@ -83,51 +85,46 @@ export default function SignupPage() {
                   }
                 />
               </div>
-              <div
-                className={cn(
-                  "flex gap-1 items-end",
-                  errors.country || (errors.phoneNumber && "pb-5")
-                )}
-              >
-                <SelectCountry
-                  labels={en}
-                  name="country"
-                  id="country"
-                  type="text"
-                  label="Phone Number"
-                  placeholder="+234"
-                  value={values.country}
-                  onChange={(value: string) => {
-                    const countryCode = `+${getCountryCallingCode(value as any)}`;
-                    // setFieldTouched("country", true);
-                    setFieldValue("country", value);
-                    setFieldValue("countryCode", countryCode);
-                    setFieldValue("phoneNumber", countryCode);
-                  }}
-                  onBlur={handleBlur}
-                  error={
-                    errors.country && touched.country ? errors.country : ""
-                  }
-                  className="!w-[150px]"
-                />
-                <PhoneNumberField
-                  name="phoneNumber"
-                  id="phoneNumber"
-                  type="text"
-                  placeholder="Enter phone number"
-                  value={values.phoneNumber}
-                  onChange={(number: any) => {
-                    setFieldTouched("phoneNumber", true);
-                    setFieldValue("phoneNumber", number);
-                  }}
-                  onBlur={handleBlur}
-                  error={
-                    errors.phoneNumber && touched.phoneNumber
-                      ? errors.phoneNumber
-                      : ""
-                  }
-                />
-              </div>
+              <PhoneNumberAndCountryField
+                inputName="phoneNumber"
+                selectName="country"
+                inputId="phoneNumber"
+                selectId="country"
+                label="Phone Number"
+                inputPlaceholder="Enter phone number"
+                selectPlaceholder="+234"
+                inputValue={values.phoneNumber}
+                selectValue={values.country}
+                inputOnChange={(number: any) => {
+                  const phoneNumber = parsePhoneNumber(number || "");
+                  setFieldValue("country", phoneNumber?.country || "");
+                  setFieldValue(
+                    "countryCode",
+                    phoneNumber?.countryCallingCode || ""
+                  );
+
+                  setFieldTouched("phoneNumber", true);
+                  setFieldValue("phoneNumber", number);
+                }}
+                selectOnChange={(value: string) => {
+                  const countryCode = `+${getCountryCallingCode(value as any)}`;
+                  setFieldValue("country", value);
+                  setFieldValue("countryCode", countryCode);
+                  setFieldValue("phoneNumber", countryCode);
+                }}
+                inputOnBlur={handleBlur}
+                selectOnBlur={handleBlur}
+                // inputClassname
+                selectClassname="!w-[170px]"
+                inputError={
+                  errors.phoneNumber && touched.phoneNumber
+                    ? errors.phoneNumber
+                    : ""
+                }
+                selectError={
+                  errors.country && touched.country ? errors.country : ""
+                }
+              />
 
               <InputField
                 name="email"
