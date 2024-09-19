@@ -1,35 +1,41 @@
 import React from "react";
 import { Formik, Form } from "formik";
-import InputField from "@repo/ui/inputField";
 import SelectInput from "@repo/ui/select";
-import { availabilityAndPricingSchema } from "@/utils/validationSchema";
-import { StepperNavigation } from "@repo/ui/stepper";
-import { availabilityAndPricingValues } from "@/utils/initialValues";
-import CheckBox from "@repo/ui/checkbox";
-import FormRow from "./FormRow";
 import Tooltip from "@repo/ui/tooltip";
-import PricingRow from "./PricingRow";
-import DiscountRow from "./DiscountRow";
 import Collapse from "@repo/ui/collapsible";
 import Icons from "@repo/ui/icons";
+import { outskirtsLocationOptions } from "@/utils/data";
+import { availabilityAndPricingSchema } from "@/utils/validationSchema";
+import { StepperNavigation } from "@repo/ui/stepper";
+import { GroupCheckBox } from "@repo/ui/checkbox";
+import FormRow from "./FormRow";
+import PricingRow from "./PricingRow";
+import DiscountRow from "./DiscountRow";
+import OutskirtRow from "./OutskirtRow";
+import useAvailabilityAndPricingForm from "./useAvailabilityAndPricingForm";
 
 type Props = {
-  currentStep: number;
-  setCurrentStep: (step: number) => void;
   steps: string[];
 };
 
-const AvailabilityAndPricingForm = ({
-  currentStep,
-  setCurrentStep,
-  steps,
-}: Props) => {
+const AvailabilityAndPricingForm = ({ steps }: Props) => {
+  const {
+    currentStep,
+    setCurrentStep,
+    submitStep4,
+    saveStep4,
+    mapValuesToApiPayload,
+    initialValues,
+  } = useAvailabilityAndPricingForm();
   return (
     <Formik
-      initialValues={availabilityAndPricingValues}
+      initialValues={initialValues}
       validationSchema={availabilityAndPricingSchema}
-      onSubmit={(values) => {
+      onSubmit={(values, { setSubmitting }) => {
         console.log("Form values:", values);
+        const payload = mapValuesToApiPayload(values);
+        submitStep4.mutate(payload);
+        setSubmitting(false);
       }}
     >
       {({
@@ -44,7 +50,7 @@ const AvailabilityAndPricingForm = ({
         setFieldValue,
         isSubmitting,
       }) => (
-        <Form className="w-full space-y-[72px]">
+        <Form className="w-full md:w-[calc(100%-250px)] space-y-[72px]">
           <div className="max-w-[800px] w-full space-y-[72px]">
             <FormRow
               title="Advance notice"
@@ -123,7 +129,7 @@ const AvailabilityAndPricingForm = ({
               </div>
             </FormRow>
 
-            <FormRow title="Self-drive eligibility">
+            {/* <FormRow title="Self-drive eligibility">
               <SelectInput
                 id="selfDrive"
                 label="Is your vehicle for self-driving services?"
@@ -146,7 +152,7 @@ const AvailabilityAndPricingForm = ({
                 tooltipTitle=""
                 tooltipDescription=""
               />
-            </FormRow>
+            </FormRow> */}
             <FormRow title="Additional Services">
               <div className="max-w-[770px] flex flex-col sm:flex-row gap-5">
                 <SelectInput
@@ -245,6 +251,7 @@ const AvailabilityAndPricingForm = ({
                 touched={touched}
                 handleChange={handleChange}
                 handleBlur={handleBlur}
+                optional
               />
             </div>
           </div>
@@ -267,11 +274,11 @@ const AvailabilityAndPricingForm = ({
                 </p>
               }
             >
-              <div className="space-y-8 3xl:space-y-[50px]">
+              <div className="space-y-8 3xl:space-y-[50px] pt-8">
                 <DiscountRow
                   title="3+ days discount"
                   percentageLabel="Percentage discount"
-                  percentageName="3DaysDiscount"
+                  percentageName="threeDaysDiscount"
                   percentagePlaceholder="10%"
                   rateUnit="for 3+ days trips"
                   serviceFeeName="serviceFeeDaily"
@@ -280,11 +287,12 @@ const AvailabilityAndPricingForm = ({
                   touched={touched}
                   handleChange={handleChange}
                   handleBlur={handleBlur}
+                  dailyRateValue={values.dailyRate}
                 />
                 <DiscountRow
                   title="7+ days discount"
                   percentageLabel="Percentage discount"
-                  percentageName="7DaysDiscount"
+                  percentageName="sevenDaysDiscount"
                   percentagePlaceholder="10%"
                   rateUnit="for 7+ days trips"
                   serviceFeeName="serviceFeeDaily"
@@ -293,11 +301,12 @@ const AvailabilityAndPricingForm = ({
                   touched={touched}
                   handleChange={handleChange}
                   handleBlur={handleBlur}
+                  dailyRateValue={values.dailyRate}
                 />
                 <DiscountRow
                   title="30+ days discount"
                   percentageLabel="Percentage discount"
-                  percentageName="30DaysDiscount"
+                  percentageName="thirtyDaysDiscount"
                   percentagePlaceholder="10%"
                   rateUnit="for 30+ days trips"
                   serviceFeeName="serviceFeeDaily"
@@ -306,23 +315,94 @@ const AvailabilityAndPricingForm = ({
                   touched={touched}
                   handleChange={handleChange}
                   handleBlur={handleBlur}
+                  dailyRateValue={values.dailyRate}
                 />
               </div>
             </Collapse>
           </div>
 
           <div>
-            <p className="text-h6 3xl:text-h5 font-medium text-black">
-              Do you charge extra for outskirt locations?
-            </p>
+            <Collapse
+              title={
+                <p className="text-h6 3xl:text-h5 font-medium text-black">
+                  Do you charge extra for outskirt locations?
+                </p>
+              }
+              closeText={
+                <p className="text-primary-500 font-medium text-sm 3xl:text-xl flex items-center gap-1 ">
+                  {Icons.ic_add} <span>Add Loactions</span>
+                </p>
+              }
+              openText={
+                <p className="text-primary-500 font-medium text-sm 3xl:text-xl flex items-center gap-1">
+                  {Icons.ic_remove} <span>Remove Loactions</span>
+                </p>
+              }
+            >
+              <div className="space-y-8">
+                <OutskirtRow
+                  rateName="outskirtsPrice"
+                  rateUnit="/day"
+                  regularFeeName="regularFeeOutskirt"
+                  guestWillSeeName="guestWillSeeOutskirt"
+                  rateValue={values.outskirtsPrice}
+                  errors={errors}
+                  touched={touched}
+                  handleChange={handleChange}
+                  handleBlur={handleBlur}
+                />
+                <div className="space-y-3">
+                  <label
+                    htmlFor="features"
+                    className="text-sm block font-medium text-black"
+                  >
+                    Outskirt Locations
+                  </label>
+                  <p className="text-sm text-grey-600">
+                    Uncheck locations you do not want to visit with your vehicle
+                  </p>
+                  <div className="flex flex-wrap gap-x-4 gap-y-8">
+                    {outskirtsLocationOptions.map((feature) => (
+                      <GroupCheckBox
+                        key={feature}
+                        feature={feature}
+                        checkedValues={values.outskirtsLocation}
+                        onChange={(feature: string, isChecked: boolean) => {
+                          if (isChecked) {
+                            const newValues = [
+                              ...values.outskirtsLocation,
+                              feature,
+                            ];
+                            setFieldValue("outskirtsLocation", newValues);
+                          } else {
+                            const newValues = values.outskirtsLocation.filter(
+                              (value) => value !== feature
+                            );
+                            setFieldValue("outskirtsLocation", newValues);
+                          }
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </Collapse>
           </div>
 
           <StepperNavigation
             steps={steps}
             currentStep={currentStep}
             setCurrentStep={setCurrentStep}
-            // handleSaveDraft={() => {}}
-            handleSubmit={() => {}}
+            handleSaveDraft={() => {
+              const payload = mapValuesToApiPayload(values);
+              saveStep4.mutate(payload);
+            }}
+            isSaveDraftloading={saveStep4.isPending}
+            isNextLoading={isSubmitting || submitStep4.isPending}
+            disableNextButton={
+              !isValid || isSubmitting || submitStep4.isPending
+              // ||disableNextButton
+            }
           />
         </Form>
       )}

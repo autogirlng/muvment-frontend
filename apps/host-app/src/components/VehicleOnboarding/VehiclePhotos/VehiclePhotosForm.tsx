@@ -1,63 +1,39 @@
-import React from "react";
+import Image from "next/image";
+import { Dispatch, SetStateAction } from "react";
 import { Formik, Form } from "formik";
 import { vehiclePhotosSchema } from "@/utils/validationSchema";
+import { VehiclePhotos } from "@/utils/types";
 import { StepperNavigation } from "@repo/ui/stepper";
 import PhotoUpload from "@repo/ui/photoUpload";
-import { vehiclePhotosValues } from "@/utils/initialValues";
-import Image from "next/image";
+import useVehiclePhotosForm from "@/components/VehicleOnboarding/VehiclePhotos/useVehiclePhotosForm";
 
 type Props = {
-  currentStep: number;
-  setCurrentStep: (step: number) => void;
   steps: string[];
+  setPhotoTipIndex: Dispatch<SetStateAction<number>>;
 };
 
-const photoViews = [
-  {
-    label: "Front View",
-    name: "frontView",
-    image: "/images/onboarding/front_view.png",
-    size: "w-[50px] 3xl:w-[75px]",
-  },
-  {
-    label: "Back View",
-    name: "backView",
-    image: "/images/onboarding/back_view.png",
-    size: "w-[50px] 3xl:w-[75px]",
-  },
-  {
-    label: "Side View 1",
-    name: "sideView1",
-    image: "/images/onboarding/side_view_1.png",
-    size: "w-[120px] 3xl:w-[160px]",
-  },
-  {
-    label: "Side View 2",
-    name: "sideView2",
-    image: "/images/onboarding/side_view_2.png",
-    size: "w-[120px] 3xl:w-[160px]",
-  },
-  {
-    label: "Interior Image",
-    name: "interiorImage",
-    image: "/images/onboarding/interior_view.png",
-    size: "w-[50px] 3xl:w-[75px]",
-  },
-  {
-    label: "Other Image",
-    name: "otherImage",
-    image: "/images/onboarding/other_view.png",
-    size: "w-[120px] 3xl:w-[160px]",
-  },
-];
+const VehiclePhotosForm = ({ steps, setPhotoTipIndex }: Props) => {
+  const {
+    initialValues,
+    currentStep,
+    photoViews,
+    setPhotoViews,
+    setCurrentStep,
+    submitStep3,
+    saveStep3,
+    appendFormData,
+  } = useVehiclePhotosForm(setPhotoTipIndex);
 
-const VehiclePhotosForm = ({ currentStep, setCurrentStep, steps }: Props) => {
   return (
     <Formik
-      initialValues={vehiclePhotosValues}
+      initialValues={initialValues}
       validationSchema={vehiclePhotosSchema}
-      onSubmit={(values) => {
-        console.log("Form values:", values);
+      onSubmit={(values, { setSubmitting }) => {
+        const formData = appendFormData(values);
+        console.log("Form data:", formData);
+
+        submitStep3.mutate(formData);
+        setSubmitting(false);
       }}
     >
       {({
@@ -66,47 +42,72 @@ const VehiclePhotosForm = ({ currentStep, setCurrentStep, steps }: Props) => {
         errors,
         isValid,
         dirty,
-        handleBlur,
-        handleChange,
         setFieldTouched,
         setFieldValue,
         isSubmitting,
       }) => (
         <Form className="w-full grid grid-cols-1 sm:grid-cols-2 gap-10">
-          {photoViews.map((item) => (
-            <PhotoUpload
-              key={item.name}
-              id={item.name}
-              name={item.name}
-              label={item.label}
-              image={
-                <Image
-                  src={item.image}
-                  alt=""
-                  width={90}
-                  height={67}
-                  className={item.size}
-                />
-              }
-              value={values.frontView}
-              onChange={(fieldName, file) => {
-                console.log(values);
-                console.log(fieldName, file);
+          {photoViews.map((item) => {
+            const fieldName = item.name as keyof VehiclePhotos;
 
-                setFieldTouched(fieldName, true);
-                setFieldValue(fieldName, file);
-              }}
-              // error={
-              //   errors.frontView && touched.frontView ? errors.frontView : ""
-              // }
-            />
-          ))}
+            return (
+              <PhotoUpload
+                key={item.name}
+                id={item.name}
+                name={item.name}
+                label={item.label}
+                image={
+                  <Image
+                    src={item.image}
+                    alt=""
+                    width={90}
+                    height={67}
+                    className={item.size}
+                  />
+                }
+                value={values[fieldName]}
+                onChange={(fieldName, file) => {
+                  setFieldTouched(fieldName, true);
+                  setFieldValue(fieldName, file);
+
+                  const currentIndex = photoViews.findIndex(
+                    (view) => view.name === fieldName
+                  );
+
+                  const updatedViews = photoViews.map((view, index) => {
+                    if (index === currentIndex + 1) {
+                      setPhotoTipIndex(currentIndex);
+
+                      return { ...view, disabled: file === null };
+                    }
+                    return view;
+                  });
+                  setPhotoViews(updatedViews);
+                }}
+                // error={
+                //   errors[fieldName] && touched[fieldName]
+                //     ? errors[fieldName]
+                //     : ""
+                // }
+                disabled={item.disabled}
+              />
+            );
+          })}
 
           <StepperNavigation
             steps={steps}
             currentStep={currentStep}
             setCurrentStep={setCurrentStep}
-            //      saveDraft={() => {}}
+            handleSaveDraft={() => {
+              const formData = appendFormData(values);
+              console.log(formData);
+              saveStep3.mutate(formData);
+            }}
+            isSaveDraftloading={saveStep3.isPending}
+            isNextLoading={isSubmitting || submitStep3.isPending}
+            disableNextButton={
+              !isValid || isSubmitting || submitStep3.isPending
+            }
           />
         </Form>
       )}

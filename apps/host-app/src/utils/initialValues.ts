@@ -6,7 +6,7 @@ import {
   ResetPasswordEmailValues,
   SetNewPasswordValues,
   SignupFormValues,
-  VehiclePhotosValues,
+  VehiclePhotos,
   VerifyIdentityValues,
   VerifyPhoneNumberValues,
   WithdrawalAccountValues,
@@ -74,15 +74,15 @@ export const withdrawalAccountValues: WithdrawalAccountValues = {
 };
 
 export const basicVehicleInformationValues: BasicVehicleInformationValues = {
-  vehicleName: "",
-  city: "",
+  listingName: "",
+  location: "",
   address: "",
   vehicleType: "",
-  vehicleMake: "",
-  vehicleModel: "",
-  year: "",
-  insurance: "",
-  tracker: "",
+  make: "",
+  model: "",
+  yearOfRelease: "",
+  hasTracker: "no",
+  hasInsurance: "no",
 };
 
 export const additionalVehicleInformationValues: AdditionalVehicleInformationValues =
@@ -90,25 +90,25 @@ export const additionalVehicleInformationValues: AdditionalVehicleInformationVal
     licensePlateNumber: "",
     stateOfRegistration: "",
     vehicleDescription: "",
-    vehicleFeatures: [],
+    features: [],
     vehicleColor: "",
     numberOfSeats: "",
   };
 
-export const vehiclePhotosValues: VehiclePhotosValues = {
+export const vehiclePhotosValues: VehiclePhotos = {
   frontView: "",
   backView: "",
   sideView1: "",
   sideView2: "",
-  interiorImage: "",
-  otherImage: "",
+  interior: "",
+  other: "",
 };
 
 export const availabilityAndPricingValues: AvailabilityAndPricingValues = {
   advanceNoticeInDays: "",
   minTripDurationInDays: "",
   maxTripDurationInDays: "",
-  selfDrive: "",
+  // selfDrive: "",
   driverProvided: "",
   fuelProvided: "",
   dailyRate: "",
@@ -117,4 +117,6 @@ export const availabilityAndPricingValues: AvailabilityAndPricingValues = {
   threeDaysDiscount: "",
   sevenDaysDiscount: "",
   thirtyDaysDiscount: "",
+  outskirtsLocation: [],
+  outskirtsPrice: "",
 };

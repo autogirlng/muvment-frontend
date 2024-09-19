@@ -2,7 +2,7 @@ import React from "react";
 import ActivityCard from "@/components/ActivityCard";
 import TopRatedVehicle from "@/components/AccountActivity/TopRatedVehicle";
 import { TopRatedVehicleType } from "@/utils/types";
-import DashboardSectionTitle from "../DashboardSectionTitle";
+import DashboardSectionTitle from "@/components/DashboardSectionTitle";
 import { topRatedVehicle } from "@/utils/data";
 import Icons from "@repo/ui/icons";
 

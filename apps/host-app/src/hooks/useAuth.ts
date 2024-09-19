@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/lib/api";
-import { setForgotPasswordOtp } from "@/lib/features/user/forgotPasswordSlice";
-import { setToken } from "@/lib/features/user/userSlice";
+import { setForgotPasswordOtp } from "@/lib/features/forgotPasswordSlice";
+import { setToken } from "@/lib/features/userSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { handleErrors } from "@/utils/functions";
 import {
@@ -33,7 +33,7 @@ export default function useAuth() {
     if (user_token) {
       router.push("/dashboard");
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const signupMutation = useMutation({

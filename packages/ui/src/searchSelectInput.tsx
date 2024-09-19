@@ -64,7 +64,7 @@ const SearchSelectInput = ({
         });
 
   return (
-    <div className="w-full space-y-2 custom-radix-select">
+    <div className="relative w-full space-y-2 custom-radix-select">
       {label && (
         <label
           htmlFor={id}
@@ -83,10 +83,7 @@ const SearchSelectInput = ({
           )}
         </label>
       )}
-      <Combobox
-        value={value}
-        onChange={onChange}
-        onClose={() => setQuery("")}
+      <div
         className={cn(
           "relative flex items-center justify-between w-full rounded-[18px] p-4 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400 disabled:bg-grey-100 disabled:text-grey-400 disabled:border-grey-300",
           error
@@ -96,47 +93,53 @@ const SearchSelectInput = ({
               : "bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A]",
           className
         )}
-        as={Fragment}
       >
-        <div>
-          <ComboboxInput
-            aria-label={label}
-            displayValue={(bank) => bank?.name}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder={placeholder}
-            className="w-full bg-transparent outline-none"
-          />
-          <ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-2">
-            {Icons.ic_chevron_down}
-          </ComboboxButton>
-          <ComboboxOptions
-            anchor="bottom"
-            className={cn(
-              "!overflow-auto rounded-3xl z-[999] max-h-[300px] min-w-[300px] p-4",
-              variant === "filled"
-                ? "bg-grey-800 text-grey-400 border-none"
-                : "bg-white border border-grey-300 shadow-[0px_4px_6px_-2px_#10192808,0px_16px_24px_-4px_#10192814]"
-            )}
-          >
-            {isLoading ? (
-              <Spinner />
-            ) : (
-              filteredBanks.map((bank) => (
-                <ComboboxOption
-                  key={bank.code}
-                  value={bank}
-                  className={cn(
-                    "text-xs 3xl:text-sm flex items-center py-4 h-4 relative select-none data-[disabled]:text-grey-400 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:text-primary-500",
-                    className
-                  )}
-                >
-                  {bank.name}
-                </ComboboxOption>
-              ))
-            )}
-          </ComboboxOptions>
-        </div>
-      </Combobox>
+        <Combobox
+          value={value}
+          onChange={onChange}
+          onClose={() => setQuery("")}
+          as={Fragment}
+        >
+          <div>
+            <ComboboxInput
+              aria-label={label}
+              displayValue={(bank: BankProp) => bank?.name}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={placeholder}
+              className="w-full bg-transparent outline-none"
+            />
+            <ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-2">
+              {Icons.ic_chevron_down}
+            </ComboboxButton>
+            <ComboboxOptions
+              anchor="bottom"
+              className={cn(
+                "!overflow-auto rounded-3xl z-[999] max-h-[300px] min-w-[300px] p-4",
+                variant === "filled"
+                  ? "bg-grey-800 text-grey-400 border-none"
+                  : "bg-white border border-grey-300 shadow-[0px_4px_6px_-2px_#10192808,0px_16px_24px_-4px_#10192814]"
+              )}
+            >
+              {isLoading ? (
+                <Spinner />
+              ) : (
+                filteredBanks.map((bank) => (
+                  <ComboboxOption
+                    key={bank.code}
+                    value={bank}
+                    className={cn(
+                      "text-xs 3xl:text-sm flex items-center py-4 h-4 relative select-none data-[disabled]:text-grey-400 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:text-primary-500",
+                      className
+                    )}
+                  >
+                    {bank.name}
+                  </ComboboxOption>
+                ))
+              )}
+            </ComboboxOptions>
+          </div>
+        </Combobox>
+      </div>
       {error && (
         <p className="text-error-500 text-sm mt-2 text-nowrap">{error}</p>
       )}

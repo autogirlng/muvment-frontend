@@ -6,13 +6,13 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/lib/api";
-import { updateUserData } from "@/lib/features/user/userSlice";
+import { updateUserData } from "@/lib/features/userSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   setAccountDetails,
   setPhoneNumberToVerify,
   setWithdrawalAccountSetupOtp,
-} from "@/lib/features/user/accountSetupSlice";
+} from "@/lib/features/accountSetupSlice";
 import { handleErrors } from "@/utils/functions";
 import {
   BankProp,

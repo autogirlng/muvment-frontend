@@ -39,6 +39,24 @@ export const isSpaceValid = (password: string) => {
   return noSpace;
 };
 
+export const addSpaceBeforeUppercase = (str: string): string => {
+  return str.replace(/([a-z])([A-Z])/g, "$1 $2");
+};
+
+export const formatNumberWithCommas = (number: string | number) => {
+  return number.toLocaleString();
+};
+
+export const calculateServiceFee = (price: number, standardFee: number) => {
+  return price * standardFee;
+};
+export const calculateRateGuestsWillSee = (
+  price: number,
+  serviceFee: number
+) => {
+  return price + serviceFee;
+};
+
 export const handleErrors = (
   page: string,
   error: AxiosError<ErrorResponse>,

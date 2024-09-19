@@ -20,6 +20,8 @@
     "./otpField": "./src/otpField.tsx",
     "./phoneNumberAndCountryField": "./src/phoneNumberAndCountryField.tsx",
     "./photoUpload": "./src/photoUpload.tsx",
+        "./popup": "./src/popup.tsx",
+
     "./select": "./src/select.tsx",
     "./selectCountry": "./src/selectCountry.tsx",
     "./searchSelectInput": "./src/searchSelectInput.tsx",

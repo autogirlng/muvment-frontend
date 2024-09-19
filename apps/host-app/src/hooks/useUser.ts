@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { clearUser, setUser } from "@/lib/features/user/userSlice";
+import { clearUser, setUser } from "@/lib/features/userSlice";
 import { useAppDispatch } from "@/lib/hooks";
 
 export default function useUser() {

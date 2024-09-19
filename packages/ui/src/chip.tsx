@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 type ChipProps = {
   text: string;
   variant?: "filled" | "outlined";
-  color?: "dark" | "light";
+  color?: "dark" | "light" | "lighter" | "primary";
   radius?: "full" | "md" | "sm";
   icon?: ReactNode;
 };
@@ -21,12 +21,18 @@ const Chip = ({ text, variant, color, radius, icon }: ChipProps) => {
     variant === "outlined" ? "border border-grey-300" : "border-none";
 
   const textColor =
-    color === "dark" ? "text-grey-800 !font-medium py-2" : "text-grey-900 py-3";
+    color === "primary"
+      ? "text-primary-600 bg-primary-50 py-[10px]"
+      : color === "lighter"
+        ? "text-grey-600 bg-grey-75 py-2"
+        : color === "dark"
+          ? "text-grey-800 !font-medium py-2"
+          : "text-grey-900 py-3";
 
   return (
     <p
       className={cn(
-        "bg-grey-90 px-3 w-fit text-base 3xl:text-xl",
+        "font-normal bg-grey-90 px-3 w-fit text-sm md:text-base",
         icon ? "flex items-center gap-1" : "",
         borderRadius,
         border,

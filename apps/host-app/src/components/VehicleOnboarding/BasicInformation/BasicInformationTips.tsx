@@ -1,11 +1,9 @@
-import Tips from "../Tips";
-
 const BasicInformationTips = () => {
   return (
-    <Tips>
-      <div className="hidden md:block">
-        <p className="text-xl font-semibold">Get your car ready</p>
-        <ul className="list-disc text-sm ml-5">
+    <>
+      <div className="">
+        <p className="text-base md:text-xl font-semibold">Get your car ready</p>
+        <ul className="list-disc text-sm md:text-sm ml-5">
           <li>
             Make and Model: Specifying your car’s make and model helps potential
             renters know exactly what they&apos;re getting.
@@ -20,15 +18,18 @@ const BasicInformationTips = () => {
           </li>
         </ul>
       </div>
-      <div className="hidden md:block">
-        <p className="text-xl font-semibold"> Be Accurate and Honest!</p>
-        <p className="text-sm">
+      <div className="">
+        <p className="text-base md:text-xl font-semibold">
+          {" "}
+          Be Accurate and Honest!
+        </p>
+        <p className="text-sm md:text-sm">
           Make sure you provide accurate and honest details about your vehicle.
           This helps build trust with potential renters and ensures a smooth
           experience for everyone.
         </p>
       </div>
-    </Tips>
+    </>
   );
 };
 

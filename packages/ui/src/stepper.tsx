@@ -1,6 +1,7 @@
 import { Fragment, ReactNode } from "react";
 import Icons from "@repo/ui/icons";
 import cn from "classnames";
+import { Spinner } from "@repo/ui/spinner";
 
 export const Stepper = ({
   steps,
@@ -52,14 +53,29 @@ export const StepperNavigation = ({
   setCurrentStep,
   submitText,
   handleSubmit,
+  handleSaveDraft,
   disableSubmitButton,
+  disableSaveDraftButton = false,
+  disableNextButton,
+  isSubmitloading,
+  isSaveDraftloading,
+  isNextLoading,
 }: {
   steps: string[];
   currentStep: number;
   setCurrentStep: (step: number) => void;
   submitText?: string;
-  handleSubmit?: () => void;
+
   disableSubmitButton?: boolean;
+  disableSaveDraftButton?: boolean;
+  disableNextButton?: boolean;
+
+  handleSubmit?: () => void;
+  handleSaveDraft?: () => void;
+
+  isSubmitloading?: boolean;
+  isSaveDraftloading?: boolean;
+  isNextLoading?: boolean;
 }) => {
   const handleNext = () => {
     if (currentStep < steps.length) {
@@ -87,29 +103,36 @@ export const StepperNavigation = ({
         )}
         <div className="flex items-center gap-3 justify-end w-full">
           <StepperButton
-            // onClick={handleSaveDraft}
-            className="sm:border-2 sm:border-grey-600 text-grey-600"
-            type="submit"
+            onClick={handleSaveDraft}
+            disabled={isSaveDraftloading || disableSaveDraftButton}
+            className="sm:border-2 sm:border-grey-600 text-grey-600 disabled:text-grey-300 disabled:sm:border-grey-300"
+            type="button"
           >
-            <span>Save Draft</span>
+            <span>Save Draft</span> {isSaveDraftloading && <Spinner />}
           </StepperButton>
           {submitText ? (
             <StepperButton
               onClick={handleSubmit}
-              disabled={disableSubmitButton}
+              disabled={disableSubmitButton || isSubmitloading}
               className="px-6 3xl:!px-8 bg-transparent sm:bg-primary-500 text-primary-500 sm:text-white disabled:sm:bg-grey-300"
               type="button"
             >
-              <span>{submitText}</span> {Icons.ic_chevron_right}
+              <span>{submitText}</span>{" "}
+              {isSubmitloading ? <Spinner /> : Icons.ic_chevron_right}
             </StepperButton>
           ) : (
             <StepperButton
-              onClick={handleNext}
-              disabled={currentStep === steps.length}
+              // onClick={handleNext}
+              disabled={
+                currentStep === steps.length ||
+                disableNextButton ||
+                isNextLoading
+              }
               className="px-6 3xl:!px-8 bg-transparent sm:bg-primary-500 text-primary-500 sm:text-white disabled:sm:bg-grey-300"
-              type="button"
+              type="submit"
             >
-              <span>Next</span> {Icons.ic_chevron_right}
+              <span>Next</span>{" "}
+              {isNextLoading ? <Spinner /> : Icons.ic_chevron_right}
             </StepperButton>
           )}
         </div>

@@ -65,7 +65,7 @@ const TextArea = ({
         placeholder={placeholder}
         className={cn(
           "w-full rounded-[18px] p-4 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400 min-h-[130px]",
-          icon ? "pr-8":'',
+          icon ? "pr-8" : "",
           inputClass,
           error
             ? "border border-error-500 focus:border-error-500"
@@ -76,7 +76,14 @@ const TextArea = ({
         {...rest}
       />
     </div>
-    {error && <p className="text-error-500 text-sm mt-2">{error}</p>}
+    {error && error.includes("minimum") ? (
+      <p className="text-grey-500 text-sm mt-2">
+        <span className="bg-error-75 w-[100px] h-2 rounded-3xl inline-block mr-3" />
+        {error}
+      </p>
+    ) : (
+      error && <p className="text-error-500 text-sm mt-2">{error}</p>
+    )}
   </div>
 );
 

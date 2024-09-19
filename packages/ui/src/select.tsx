@@ -143,7 +143,7 @@ const SelectItem = React.forwardRef(
     return (
       <Select.Item
         className={cn(
-          "text-xs 3xl:text-sm flex items-center py-2 h-4 relative select-none data-[disabled]:text-grey-400 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:text-primary-500",
+          "text-xs 3xl:text-sm flex items-center py-4 h-4 relative select-none data-[disabled]:text-grey-400 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:text-primary-500",
           className
         )}
         {...props}
