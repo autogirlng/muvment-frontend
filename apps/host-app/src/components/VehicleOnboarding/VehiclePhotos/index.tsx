@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TipsPopup } from "@repo/ui/popup";
 import Tips from "@/components/VehicleOnboarding//Tips";
 import VehiclePhotosForm from "./VehiclePhotosForm";
@@ -10,6 +10,10 @@ type Props = {
 
 const VehiclePhotos = ({ steps }: Props) => {
   const [photoTipIndex, setPhotoTipIndex] = useState<number>(0);
+
+  useEffect(() => {
+    console.log(photoTipIndex);
+  }, [photoTipIndex]);
 
   return (
     <div className="space-y-[52px]">

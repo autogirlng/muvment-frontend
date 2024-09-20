@@ -27,34 +27,34 @@ export default function useAvailabilityAndPricingForm() {
     dispatch(setVehicleOnboardingCurrentStep(step));
 
   const initialValues: AvailabilityAndPricingValues = {
-    advanceNoticeInDays: vehicle?.tripSettings.advanceNotice || "",
+    advanceNoticeInDays: vehicle?.tripSettings?.advanceNotice || "",
     minTripDurationInDays: "1 day",
-    maxTripDurationInDays: vehicle?.tripSettings.maxTripDuration || "",
+    maxTripDurationInDays: vehicle?.tripSettings?.maxTripDuration || "",
     // selfDrive: "",
 
     driverProvided:
-      vehicle?.tripSettings.provideDriver === undefined ||
-      vehicle?.tripSettings.provideDriver === null
+      vehicle?.tripSettings?.provideDriver === undefined ||
+      vehicle?.tripSettings?.provideDriver === null
         ? ""
-        : vehicle?.tripSettings.provideDriver
+        : vehicle?.tripSettings?.provideDriver
           ? "yes"
           : "no",
 
     fuelProvided:
-      vehicle?.tripSettings.fuelProvided === undefined ||
-      vehicle?.tripSettings.fuelProvided === null
+      vehicle?.tripSettings?.fuelProvided === undefined ||
+      vehicle?.tripSettings?.fuelProvided === null
         ? ""
-        : vehicle?.tripSettings.fuelProvided
+        : vehicle?.tripSettings?.fuelProvided
           ? "yes"
           : "no",
-    dailyRate: `${vehicle?.pricing.dailyRate.value}` || "",
-    extraHourRate: `${vehicle?.pricing.extraHoursFee}` || "",
-    airportPickup: `${vehicle?.pricing.airportPickupFee}` || "",
-    threeDaysDiscount: `${vehicle?.pricing.discounts[0].percentage}` || "",
-    sevenDaysDiscount: `${vehicle?.pricing.discounts[1].percentage}` || "",
-    thirtyDaysDiscount: `${vehicle?.pricing.discounts[2].percentage}` || "",
+    dailyRate: `${vehicle?.pricing?.dailyRate?.value || ""}`,
+    extraHourRate: `${vehicle?.pricing?.extraHoursFee || ""}`,
+    airportPickup: `${vehicle?.pricing?.airportPickupFee || ""}`,
+    threeDaysDiscount: `${vehicle?.pricing?.discounts[0]?.percentage || ""}`,
+    sevenDaysDiscount: `${vehicle?.pricing?.discounts[1]?.percentage || ""}`,
+    thirtyDaysDiscount: `${vehicle?.pricing?.discounts[2]?.percentage || ""}`,
     outskirtsLocation: vehicle?.outskirtsLocation || [],
-    outskirtsPrice: `${vehicle?.outskirtsPrice}` || "",
+    outskirtsPrice: `${vehicle?.outskirtsPrice || ""}`,
   };
 
   const mapValuesToApiPayload = (values: AvailabilityAndPricingValues) => {
