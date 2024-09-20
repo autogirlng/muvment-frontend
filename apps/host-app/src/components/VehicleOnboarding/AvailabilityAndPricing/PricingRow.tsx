@@ -42,8 +42,6 @@ const PricingRow = ({
 
   useEffect(() => {
     const value = parseInt(rateValue);
-    console.log(value);
-    
 
     if (rateValue === "" || isNaN(value)) {
       setServiceFee(0);

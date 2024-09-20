@@ -2,82 +2,19 @@
 
 import DashboardSectionTitle from "@/components/DashboardSectionTitle";
 import ListingCard from "@/components/Listings/ListingCard";
+import useListings from "@/hooks/useListings";
+import { useAppSelector } from "@/lib/hooks";
 import Icons from "@repo/ui/icons";
-
-const listings = [
-  {
-    image: "/images/listing/vehicle_image.png",
-    name: "Hyundai Tuscon 2018",
-    price: "NGN 20,000/day",
-    status: "approved",
-    extras: [
-      { name: "Fuel Included", icon: Icons.ic_fuel_station },
-      { name: "Driver Available", icon: Icons.ic_driver_provided },
-    ],
-    vehicleDetails: [
-      { make: "Hyundai" },
-      { colour: "White" },
-      { seatingCapacity: 4 },
-      { location: "Lagos" },
-      { "vehicle type": "Sedan" },
-    ],
-  },
-  {
-    image: "/images/listing/vehicle_image.png",
-    name: "Hyundai Tuscon 2018",
-    price: "NGN 20,000/day",
-    status: "pending",
-    extras: [
-      { name: "Fuel Included", icon: Icons.ic_fuel_station },
-      { name: "Driver Available", icon: Icons.ic_driver_provided },
-    ],
-    vehicleDetails: [
-      { make: "Hyundai" },
-      { colour: "White" },
-      { seatingCapacity: 4 },
-      { location: "Lagos" },
-      { "vehicle type": "Sedan" },
-    ],
-  },
-  {
-    image: "/images/listing/vehicle_image.png",
-    name: "Hyundai Tuscon 2018",
-    price: "NGN 20,000/day",
-    status: "draft",
-    extras: [
-      { name: "Fuel Included", icon: Icons.ic_fuel_station },
-      { name: "Driver Available", icon: Icons.ic_driver_provided },
-    ],
-    vehicleDetails: [
-      { make: "Hyundai" },
-      { colour: "White" },
-      { seatingCapacity: 4 },
-      { location: "Lagos" },
-      { "vehicle type": "Sedan" },
-    ],
-  },
-  {
-    image: "/images/listing/vehicle_image.png",
-    name: "Hyundai Tuscon 2018",
-    price: "NGN 20,000/day",
-    status: "rejected",
-    extras: [
-      { name: "Fuel Included", icon: Icons.ic_fuel_station },
-      { name: "Driver Available", icon: Icons.ic_driver_provided },
-    ],
-    vehicleDetails: [
-      { make: "Hyundai" },
-      { colour: "White" },
-      { seatingCapacity: 4 },
-      { location: "Lagos" },
-      { "vehicle type": "Sedan" },
-    ],
-  },
-];
+import { FullPageSpinner } from "@repo/ui/spinner";
 
 export default function ListingsPage() {
-  // get listings
-  
+  const { listings } = useAppSelector((state) => state.listings);
+  const { getListings } = useListings();
+
+  if (getListings.isLoading) {
+    return <FullPageSpinner />;
+  }
+
   return (
     <main className="space-y-6 py-[56px]">
       <DashboardSectionTitle icon={Icons.ic_car} title="Listings" />

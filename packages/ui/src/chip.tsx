@@ -32,7 +32,7 @@ const Chip = ({ text, variant, color, radius, icon }: ChipProps) => {
   return (
     <p
       className={cn(
-        "font-normal bg-grey-90 px-3 w-fit text-sm md:text-base",
+        "font-normal bg-grey-90 px-3 w-fit text-xs md:text-sm 3xl:text-base",
         icon ? "flex items-center gap-1" : "",
         borderRadius,
         border,

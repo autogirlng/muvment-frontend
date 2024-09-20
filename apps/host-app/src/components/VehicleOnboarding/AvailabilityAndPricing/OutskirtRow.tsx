@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import InputField from "@repo/ui/inputField";
+import {
+  calculateRateGuestsWillSee,
+  calculateServiceFee,
+} from "@/utils/functions";
+import { standardServiceFeeInPercentage } from "@/utils/constants";
 
 type OutskirtRowProps = {
+  dailyRateValue?: string;
   rateName: string;
   rateUnit: string;
   regularFeeName: string;
@@ -14,6 +20,7 @@ type OutskirtRowProps = {
 };
 
 const OutskirtRow = ({
+  dailyRateValue,
   rateName,
   rateUnit,
   regularFeeName,
@@ -24,6 +31,30 @@ const OutskirtRow = ({
   handleChange,
   handleBlur,
 }: OutskirtRowProps) => {
+  const [guestWillSee, setGuestWillSee] = useState(0);
+
+  useEffect(() => {
+    if (dailyRateValue) {
+      const value = parseInt(rateValue);
+      const dailyRate = parseInt(dailyRateValue || "");
+
+      if (dailyRateValue === "" || rateValue === "" || isNaN(value)) {
+        setGuestWillSee(0);
+      } else {
+        const calculatedFee = calculateServiceFee(
+          value + dailyRate,
+          standardServiceFeeInPercentage
+        );
+
+        setGuestWillSee(
+          calculateRateGuestsWillSee(value + dailyRate, calculatedFee)
+        );
+      }
+    } else {
+      setGuestWillSee(0);
+    }
+  }, [rateValue, dailyRateValue]);
+
   return (
     <div className="flex flex-col sm:flex-row sm:items-center flex-wrap gap-8 pt-8">
       <div className="flex items-center gap-2">
@@ -48,8 +79,8 @@ const OutskirtRow = ({
           id={regularFeeName}
           type="text"
           label="Your Regular fee"
-          placeholder={`NGN${0}`}
-          value={`NGN${0}`}
+          placeholder="NGN0"
+          value={`NGN${dailyRateValue || 0}`}
           inputClass="text-right"
           className="sm:w-[150px] md:w-[180px]"
           disabled
@@ -62,8 +93,8 @@ const OutskirtRow = ({
           id={guestWillSeeName}
           type="text"
           label="Guests will see"
-          placeholder={`NGN${0}`}
-          value={`NGN${0}`}
+          placeholder="NGN0"
+          value={`NGN${guestWillSee}`}
           inputClass="text-right"
           className="sm:w-[150px] md:w-[180px]"
           disabled

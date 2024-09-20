@@ -31,62 +31,7 @@ export interface AccountSetupTask {
   taskId: keyof User;
 }
 
-export interface TripSettings {
-  advanceNotice: string;
-  maxTripDuration: string;
-  provideDriver: boolean;
-  fuelProvided: boolean;
-}
-
-export interface Rate {
-  value: number;
-  unit: string;
-}
-
-export interface Discount {
-  durationInDays: number;
-  percentage: number;
-}
-
-export interface Pricing {
-  dailyRate: Rate;
-  extraHoursFee: number;
-  // hourlyRate: Rate;
-  airportPickupFee: number;
-  discounts: Discount[];
-}
-
-export interface AvailabilityAndPricing {
-  tripSettings: TripSettings;
-  pricing: Pricing;
-  outskirtsLocation?: string[];
-  outskirtsPrice?: number;
-}
-
-export interface VehicleInformation {
-  id?: string;
-  listingName: string;
-  location?: string;
-  address?: string;
-  vehicleType: string;
-  make: string;
-  model: string;
-  yearOfRelease: string;
-  hasTracker: true;
-  hasInsurance: true;
-  licensePlateNumber: string;
-  stateOfRegistration: string;
-  vehicleDescription: string;
-  features: string[];
-  vehicleColor: string;
-  numberOfSeats: number;
-  VehicleImage: VehiclePhotos;
-  tripSettings: TripSettings;
-  pricing: Pricing;
-  outskirtsLocation?: string[];
-  outskirtsPrice?: number;
-}
-
+// <================= FORM VALUES =================>
 export interface SignupFormValues {
   firstName: string;
   lastName: string;
@@ -201,10 +146,39 @@ export interface AvailabilityAndPricingValues {
   outskirtsPrice: string;
 }
 
-export type BookingBadgeStatus = "accepted" | "pending" | "canceled";
+// <================= STATUS =================>
+export enum BookingBadgeStatus {
+  ACCEPTED = "accepted",
+  PENDING = "pending",
+  CANCELED = "canceled",
+}
 
-export type TransactionBadgeStatus = "successful" | "pending" | "failed";
+export enum TransactionBadgeStatus {
+  SUCCESSFUL = "successful",
+  PENDING = "pending",
+  FAILED = "failed",
+}
 
+export enum VehicleStatus {
+  DRAFT = "draft",
+  PENDING = "pending",
+  REJECTED = "rejected",
+  // ACTIVE = "active",
+  APPROVED = "approved",
+}
+export enum ListingStatus {
+  DRAFT = "draft",
+  PENDING = "pending",
+  REJECTED = "rejected",
+  APPROVED = "approved",
+}
+
+export enum DriverStatus {
+  ASSIGNED = "ASSIGNED",
+  UNASSIGNED = "UNASSIGNED",
+}
+
+// <================= USER/LISTING/BOOKING/VEHICLE =================>
 type UserVerification = {
   id: string;
   phoneNumber: string;
@@ -232,7 +206,7 @@ export type User = {
   bvnVerified: boolean;
   bio: string | null;
   city: string | null;
-  userRole: "INDIVIDUAL" | "BUSINESS";
+  userRole: "HOST";
   businessLogo: string | null;
   businessName: string | null;
   businessAddress: string | null;
@@ -242,6 +216,138 @@ export type User = {
   updatedAt: string;
   Verification: UserVerification;
 };
+
+export interface TripSettings {
+  advanceNotice: string;
+  maxTripDuration: string;
+  provideDriver: boolean;
+  fuelProvided: boolean;
+}
+
+export interface Rate {
+  value: number;
+  unit: string;
+}
+
+export interface Discount {
+  durationInDays: number;
+  percentage: number;
+}
+
+export interface Pricing {
+  dailyRate: Rate;
+  extraHoursFee: number;
+  // hourlyRate: Rate;
+  airportPickupFee: number;
+  discounts: Discount[];
+}
+
+export interface AvailabilityAndPricing {
+  tripSettings: TripSettings;
+  pricing: Pricing;
+  outskirtsLocation?: string[];
+  outskirtsPrice?: number;
+}
+
+export interface BookingInformation {
+  id: string;
+  startDate: string;
+  endDate: string;
+  duration: number;
+  bookingType: "SINGLE_DAY" | "MULTI_DAY"; //check booking status
+  amount: number;
+  paymentStatus: "PENDING" | "PAID" | "FAILED"; //check booking status
+  paymentMethod: "BANK_TRANSFER" | "CARD_PAYMENT" | "CASH"; //check booking status
+  rentalAgreement: string | null;
+  bookingStatus: "PENDING" | "CONFIRMED" | "CANCELLED"; //check booking status
+  guestName: string;
+  guestEmail: string;
+  guestPhoneNumber: string;
+  pickupLocation: string;
+  dropoffLocation: string;
+  emergencyContact: string;
+  vehicleId: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface VehicleInformation {
+  id?: string;
+  listingName: string;
+  location?: string;
+  address?: string;
+  vehicleType: string;
+  make: string;
+  model: string;
+  yearOfRelease: string;
+  hasTracker: boolean;
+  hasInsurance: boolean;
+  licensePlateNumber: string;
+  stateOfRegistration: string;
+  vehicleDescription: string;
+  features: string[];
+  vehicleColor: string;
+  numberOfSeats: number;
+  VehicleImage: VehiclePhotos;
+  tripSettings: TripSettings;
+  pricing: Pricing;
+  outskirtsLocation?: string[];
+  outskirtsPrice?: number;
+  status: ListingStatus;
+  vehicleStatus: VehicleStatus;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AssignedDriver {
+  id: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  vehicleId: string;
+  bookingId: string;
+  assignmentDate: string;
+  status: DriverStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ListingInformation {
+  id?: string;
+  listingName: string;
+  location?: string;
+  address?: string;
+  vehicleType: string;
+  make: string;
+  model: string;
+  yearOfRelease: string;
+  hasTracker: boolean;
+  hasInsurance: boolean;
+  licensePlateNumber: string;
+  stateOfRegistration: string;
+  vehicleDescription: string;
+  features: string[];
+  vehicleColor: string;
+  numberOfSeats: number;
+  outskirtsLocation?: string[];
+  outskirtsPrice?: number;
+  status: ListingStatus;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  isActive: boolean;
+  unavailableFrom: string;
+  unavailableUntil: string;
+  vehicleStatus: VehicleStatus;
+  VehicleImage: VehiclePhotos;
+  pricing: Pricing;
+  tripSettings: TripSettings;
+  user: User;
+  AssignedDriver: AssignedDriver[];
+  Booking: BookingInformation[];
+}
 
 // ==================== hard coded types - to be changed ====================//
 export type TopRatedVehicleType = {

@@ -109,9 +109,11 @@ export const vehicleFeaturesOptions: string[] = [
 
 // add type
 export const citiesOptions = [
-  { value: "Lagos", option: "Lagos" },
-  { value: "Accra", option: "Accra" },
   { value: "Abuja", option: "Abuja" },
+  { value: "Accra", option: "Accra" },
+  { value: "Benin", option: "Benin City" },
+  { value: "Enugu", option: "Enugu" },
+  { value: "Lagos", option: "Lagos" },
   { value: "Port Harcourt", option: "Port Harcourt" },
 ];
 

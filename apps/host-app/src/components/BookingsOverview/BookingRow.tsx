@@ -1,6 +1,6 @@
 import TableCell from "../TableCell";
 import { BookingOverviewTableRow } from "@/utils/types";
-import Icons from "@repo/ui/icons";
+import MoreButton from "@repo/ui/moreButton";
 
 const BookingRow = ({ items }: { items: BookingOverviewTableRow }) => {
   return (
@@ -15,9 +15,7 @@ const BookingRow = ({ items }: { items: BookingOverviewTableRow }) => {
       <TableCell content={items?.status} isBadge type="booking" />
       <TableCell content={items?.price} />
       <td>
-        <div className="border border-grey-200 bg-white text-black rounded-lg p-2 w-fit mx-auto">
-          {Icons.ic_more}
-        </div>
+        <MoreButton />
       </td>
     </tr>
   );
