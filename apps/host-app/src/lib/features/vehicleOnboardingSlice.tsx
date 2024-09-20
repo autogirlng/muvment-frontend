@@ -24,7 +24,6 @@ const vehicleSlice = createSlice({
       action: PayloadAction<VehicleInformation>
     ) => {
       state.vehicle = action.payload;
-      console.log(action.payload.VehicleImage);
     },
     setVehicleOnboardingCurrentStep: (state, action: PayloadAction<number>) => {
       state.currentStep = action.payload;

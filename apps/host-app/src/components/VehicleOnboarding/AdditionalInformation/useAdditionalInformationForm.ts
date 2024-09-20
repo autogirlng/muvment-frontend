@@ -51,6 +51,7 @@ export default function useAdditionalInformationForm() {
     onError: (error: AxiosError<ErrorResponse>) =>
       handleErrors("Vehicle Onboarding Step 2", error),
   });
+  
   const submitStep2 = useMutation({
     mutationFn: (values: AdditionalVehicleInformationValues) =>
       api.put(`/api/vehicle-onboarding/step2/${vehicle?.id}`, {

@@ -47,18 +47,13 @@ export default function useVehiclePhotosForm(
   const [photoViews, setPhotoViews] = useState(
     photoViewOptions.map((view) => ({
       ...view,
-      disabled: !initialValues[view.name as keyof VehiclePhotos],
+      disabled:
+        view.name === "frontView"
+          ? false
+          : !initialValues[view.name as keyof VehiclePhotos] ||
+            initialValues[view.name as keyof VehiclePhotos] === "",
     }))
   );
-
-  // Set the initial photoTipIndex when the component mounts
-  useEffect(() => {
-    const filledFields = photoViewOptions.filter(
-      (view) => initialValues[view.name as keyof VehiclePhotos]
-    );
-    setPhotoTipIndex(filledFields.length - 1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const saveStep3 = useMutation({
     mutationFn: (values: FormData) =>
@@ -104,5 +99,6 @@ export default function useVehiclePhotosForm(
     saveStep3,
     vehicle,
     appendFormData,
+    photoViewOptions,
   };
 }

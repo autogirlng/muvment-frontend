@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { Formik, Form } from "formik";
 import { vehiclePhotosSchema } from "@/utils/validationSchema";
 import { VehiclePhotos } from "@/utils/types";
@@ -22,7 +22,21 @@ const VehiclePhotosForm = ({ steps, setPhotoTipIndex }: Props) => {
     submitStep3,
     saveStep3,
     appendFormData,
+    photoViewOptions,
   } = useVehiclePhotosForm(setPhotoTipIndex);
+
+  // Set the initial photoTipIndex when the component mounts
+  useEffect(() => {
+    const filledFields = photoViewOptions.filter(
+      (view) => initialValues[view.name as keyof VehiclePhotos]
+    );
+    if (filledFields.length > 0) {
+      setPhotoTipIndex(filledFields.length - 1);
+    } else {
+      setPhotoTipIndex(0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Formik
