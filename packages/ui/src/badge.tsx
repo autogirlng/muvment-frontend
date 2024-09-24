@@ -24,17 +24,57 @@ export const BookingBadge = ({ status }: BookingBadgeProps) => {
   );
 };
 
+type VehicleListingBadgeProps = {
+  status:
+    | "draft"
+    | "active"
+    | "pending"
+    | "maintenance"
+    | "booked"
+    | "submitted"
+    | "unavailable"
+    | "inactive";
+};
+
+export const VehicleListingBadge = ({ status }: VehicleListingBadgeProps) => {
+  const badgeColor =
+    status === "booked" || status === "active"
+      ? "bg-success-100 text-success-600"
+      : status === "pending" || status === "maintenance"
+        ? "bg-warning-75 text-warning-500"
+        : status === "unavailable" || status === "inactive"
+          ? "bg-error-100 text-error-600"
+          : "bg-grey-300 text-grey-500";
+
+  return (
+    <div
+      className={cn(
+        "px-6 py-2 text-sm 3xl:text-base font-medium capitalize rounded-[121px]",
+        badgeColor
+      )}
+    >
+      {status}
+    </div>
+  );
+};
+
 type ListingBadgeProps = {
-  status: "draft" | "approved" | "pending" | "rejected";
+  status:
+    | "suspended"
+    | "approved"
+    | "rejected"
+    | "review"
+    | "feedback"
+    | "accepted";
 };
 
 export const ListingBadge = ({ status }: ListingBadgeProps) => {
   const badgeColor =
     status === "approved"
       ? "bg-success-100 text-success-600"
-      : status === "pending"
+      : status === "review"
         ? "bg-warning-75 text-warning-500"
-        : status === "rejected"
+        : status === "rejected" || status === "feedback"
           ? "bg-error-100 text-error-600"
           : "bg-grey-300 text-grey-500";
 

@@ -62,7 +62,7 @@ export default function useAuth() {
     },
 
     onSuccess: (data) => {
-      console.log("Login successful", data?.data);
+      console.log("Login successful", data);
       dispatch(setToken(data.data || ""));
       router.push("/dashboard");
     },

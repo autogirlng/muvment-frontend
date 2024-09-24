@@ -14,8 +14,8 @@ const initialState: ListingsState = {
   listings: [],
   pageLimit: 10,
   pageNumber: 1,
-  totalItemsCount: 32,
-  totalPagesCount: 4,
+  totalItemsCount: 0,
+  totalPagesCount: 0,
   listingById: null,
 };
 
@@ -31,6 +31,10 @@ const userSlice = createSlice({
       state.totalPagesCount = action.payload.totalPagesCount;
     },
 
+    updateListings: (state, action: PayloadAction<VehicleInformation[]>) => {
+      state.listings = action.payload;
+    },
+
     updateListingByIdData: (
       state,
       action: PayloadAction<Partial<ListingInformation>>
@@ -44,5 +48,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { setListings, updateListingByIdData } = userSlice.actions;
+export const { setListings, updateListingByIdData, updateListings } =
+  userSlice.actions;
 export default userSlice.reducer;

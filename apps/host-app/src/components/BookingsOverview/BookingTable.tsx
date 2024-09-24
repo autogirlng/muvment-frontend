@@ -24,7 +24,7 @@ export default function BookingTable({
     <EmptyState
       title="No Data Yet"
       message={emptyStateMessage}
-      image="/images/empty_state.png"
+      image="/icons/empty_state.png"
     />
   );
 }

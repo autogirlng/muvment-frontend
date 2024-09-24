@@ -40,16 +40,28 @@ export const isSpaceValid = (password: string) => {
 };
 
 export const addSpaceBeforeUppercase = (str: string): string => {
-  return str.replace(/([a-z])([A-Z])/g, "$1 $2");
+  return str?.replace(/([a-z])([A-Z])/g, "$1 $2");
+};
+
+export const keyAndValueInAChip = (key: string, value: string | number) => {
+  return `${addSpaceBeforeUppercase(key.charAt(0).toUpperCase() + key.slice(1))}: ${value}`;
+};
+
+export const getInitialsFromName = (firstName: string, lastName: string) => {
+  const firstInitial = firstName.charAt(0).toUpperCase();
+  const lastInitial = lastName.charAt(0).toUpperCase();
+
+  return `${firstInitial}${lastInitial}`;
 };
 
 export const formatNumberWithCommas = (number: string | number) => {
-  return number.toLocaleString();
+  return number?.toLocaleString();
 };
 
 export const calculateServiceFee = (price: number, standardFee: number) => {
   return price * standardFee;
 };
+
 export const calculateRateGuestsWillSee = (
   price: number,
   serviceFee: number
@@ -64,6 +76,11 @@ export const handleErrors = (
 ) => {
   console.log(`${page} error`, error.response?.status, error.response?.data);
   const ERR_CODE = error.response?.data?.ERR_CODE;
+
+  if (error?.message === "Network Error") {
+    console.log(error);
+    return toast.error("Network Error");
+  }
 
   if (ERR_CODE === "USER_ALREADY_EXIST")
     toast.error("Email already registered");

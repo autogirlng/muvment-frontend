@@ -11,14 +11,16 @@ import {
   setListings,
   updateListingByIdData,
 } from "@/lib/features/listingsSlice";
+import { useRouter } from "next/navigation";
 
 export default function useListings() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.user);
 
   const getListings = useQuery({
     queryKey: ["getListings"],
-    queryFn: () => api.get(`/api/listings/host/${user?.id}?page=1&limit=10`),
+    queryFn: () => api.get(`/api/listings/host/${user?.id}?page=4&limit=10`),
   });
 
   useEffect(() => {
@@ -45,12 +47,22 @@ export default function useListings() {
     mutationFn: (id: string) => api.get(`/api/listings/details/${id}`),
 
     onSuccess: (data) => {
-      console.log("Get Listing details By Id", data.data);
-      dispatch(updateListingByIdData(data.data));
+      console.log("Get Listing details By Id", {
+        ...data.data.vehicle,
+        statistics: data.data.statistics,
+      });
+      dispatch(
+        updateListingByIdData({
+          ...data.data.vehicle,
+          statistics: data.data.statistics,
+        })
+      );
     },
 
-    onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Get Listing details By Id", error),
+    onError: (error: AxiosError<ErrorResponse>) => {
+      handleErrors("Get Listing details By Id", error);
+      router.push("/listings");
+    },
   });
 
   return {

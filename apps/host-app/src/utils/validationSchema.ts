@@ -161,3 +161,14 @@ export const availabilityAndPricingSchema = object().shape({
   // sevenDaysDiscount: string().required("Please enter the amount"),
   // thirtyDaysDiscount: string().required("Please enter the amount"),
 });
+
+export const assignNewDriverFormValidationSchema = object().shape({
+  firstName: string().required("Please enter your first name"),
+  lastName: string().required("Please enter your last name"),
+  phoneNumber: string()
+    .required("Please enter your phone number")
+    .test("phoneNumber", "Invalid phone number", function (val) {
+      return isValidPhoneNumber(val);
+    }),
+  country: string().required("Please enter your country code"),
+});

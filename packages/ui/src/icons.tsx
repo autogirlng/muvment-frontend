@@ -673,6 +673,65 @@ const Icons = {
       />
     </svg>
   ),
+  ic_wheel: (
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 22 22"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M21 11C21 16.5228 16.5228 21 11 21C5.47715 21 1 16.5228 1 11C1 5.47715 5.47715 1 11 1C16.5228 1 21 5.47715 21 11Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M20.0757 8.8517C18.8044 9.40818 16.8838 9.9085 15.1448 9.25093C12.6578 8.31055 11.3793 8.31055 10.9998 8.31055C10.6202 8.31055 9.34178 8.31055 6.85479 9.25093C5.11576 9.9085 3.19512 9.40818 1.9238 8.8517M20.1831 12.5805C17.3685 13.1162 13.1091 14.7101 12.9989 20.1177M9.00068 20.1177C8.8904 14.7101 4.63104 13.1162 1.81641 12.5805"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M11.0588 13.0562L11.0498 13.0562"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  ),
+  ic_star_empty: (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M9.0013 1.1665L11.5763 6.38317L17.3346 7.22484L13.168 11.2832L14.1513 17.0165L9.0013 14.3082L3.8513 17.0165L4.83464 11.2832L0.667969 7.22484L6.4263 6.38317L9.0013 1.1665Z"
+        stroke="#667185"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  ),
+  ic_star_filled: (
+    <svg
+      width="18"
+      height="17"
+      viewBox="0 0 18 17"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M9.0013 0.166504L11.5763 5.38317L17.3346 6.22484L13.168 10.2832L14.1513 16.0165L9.0013 13.3082L3.8513 16.0165L4.83464 10.2832L0.667969 6.22484L6.4263 5.38317L9.0013 0.166504Z"
+        fill="#F5B546"
+      />
+    </svg>
+  ),
   ic_checkmark_badge: (
     <svg
       width="25"

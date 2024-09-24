@@ -1,6 +1,6 @@
-import FullPageDialog from "@repo/ui/fullPageDialog";
 import cn from "classnames";
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
+import { FullPageDialog } from "@repo/ui/dialog";
 import EarningsModal from "./Modal/EarningsModal";
 
 type Props = {
@@ -33,6 +33,7 @@ export default function ActivityCard({
       <div className="flex justify-between gap-2 text-xs 2xl:text-sm">
         <p>{title}</p>
         {modalTitle && (
+          // move this to the earnings modal component
           <FullPageDialog
             title="Earnings"
             trigger={

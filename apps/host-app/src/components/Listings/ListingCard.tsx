@@ -1,10 +1,10 @@
-import { formatNumberWithCommas } from "@/utils/functions";
+import { formatNumberWithCommas, keyAndValueInAChip } from "@/utils/functions";
 import {
   ListingStatus,
   VehicleInformation,
   VehicleStatus,
 } from "@/utils/types";
-import { ListingBadge } from "@repo/ui/badge";
+import { ListingBadge, VehicleListingBadge } from "@repo/ui/badge";
 import Chip from "@repo/ui/chip";
 import Icons from "@repo/ui/icons";
 import Image from "next/image";
@@ -104,7 +104,7 @@ export default function ListingCard({ listing }: Props) {
                 </Link>
               )}
             </h5>
-            <ListingBadge status={listing?.vehicleStatus} />
+            <VehicleListingBadge status={listing?.vehicleStatus} />
           </div>
           {listing?.vehicleStatus !== "draft" && (
             <p className="text-base 3xl:text-xl !font-medium text-primary-500">
@@ -129,7 +129,7 @@ export default function ListingCard({ listing }: Props) {
                 return (
                   <Chip
                     key={index}
-                    text={`${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}`}
+                    text={keyAndValueInAChip(key, value)}
                     variant="filled"
                     radius="sm"
                     color="lighter"

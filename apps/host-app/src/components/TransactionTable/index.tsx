@@ -23,7 +23,7 @@ export default function TransactionTable({ items }: Props) {
     <EmptyState
       title="No Data Yet"
       message="No Transaction History"
-      image="/images/empty_state.png"
+      image="/icons/empty_state.png"
     />
   );
 }

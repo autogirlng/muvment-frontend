@@ -61,7 +61,7 @@ export default function TopRatedVehicle({ topRatedVehicle }: Props) {
         {Object.keys(topRatedVehicle || {}).length > 0 && (
           <div className="relative w-6/12 min-w-5/12">
             <Image
-              src="/images/top_rated.png"
+              src="/icons/top_rated.png"
               alt=""
               width={100}
               height={100}

@@ -10,7 +10,7 @@ export default function VehiclePhotosTips({ photoTipIndex }: Props) {
       <div className="flex flex-col md:flex-row gap-6 md:items-center">
         <div className="flex md:block gap-3 items-center min-w-fit">
           <Image
-            src="/images/bulb.png"
+            src="/icons/bulb.png"
             alt=""
             width={72}
             height={72}

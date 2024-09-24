@@ -13,6 +13,7 @@ import { StepperNavigation } from "@repo/ui/stepper";
 import {
   addSpaceBeforeUppercase,
   formatNumberWithCommas,
+  keyAndValueInAChip,
 } from "@/utils/functions";
 import { SingleCheckBox } from "@repo/ui/checkbox";
 import useVehicleSummary from "./useVehicleSummary";
@@ -102,7 +103,7 @@ export default function VehicleSummary({ steps }: Props) {
                 return (
                   <Chip
                     key={index}
-                    text={`${addSpaceBeforeUppercase(key.charAt(0).toUpperCase() + key.slice(1))}: ${value}`}
+                    text={keyAndValueInAChip(key, value)}
                     variant="filled"
                     radius="sm"
                     color="dark"

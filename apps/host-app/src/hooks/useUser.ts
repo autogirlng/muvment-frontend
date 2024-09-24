@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { clearUser, setUser } from "@/lib/features/userSlice";
 import { useAppDispatch } from "@/lib/hooks";
+import { toast } from "react-toastify";
 
 export default function useUser() {
   const [userToken, setUserToken] = useState("");
@@ -19,7 +20,7 @@ export default function useUser() {
     if (!user_token) {
       router.push("/login");
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getUser = useQuery({
@@ -43,10 +44,16 @@ export default function useUser() {
 
     if (getUser.isError) {
       dispatch(clearUser());
-      router.push("/login");
+      if (getUser.error?.message === "Network Error") {
+        console.log(getUser.error?.message);
+        toast.error("Network Error");
+      } else {
+        router.push("/login");
+      }
+
       console.log("Error fetching user", getUser.error);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getUser.isError, getUser.isSuccess]);
 
   return {

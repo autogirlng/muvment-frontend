@@ -121,6 +121,14 @@ export interface AdditionalVehicleInformationValues {
   numberOfSeats: string;
 }
 
+export interface AssignNewDriver {
+  vehicleId: string;
+  // bookingId: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+}
+
 export interface VehiclePhotos {
   frontView: string;
   backView: string;
@@ -162,15 +170,20 @@ export enum TransactionBadgeStatus {
 export enum VehicleStatus {
   DRAFT = "draft",
   PENDING = "pending",
-  REJECTED = "rejected",
-  // ACTIVE = "active",
-  APPROVED = "approved",
+  SUBMITTED = "submitted",
+  ACTIVE = "active",
+  BOOKED = "booked",
+  MAINTENANCE = "maintenance",
+  UNAVAILABLE = "unavailable",
+  INACTIVE = "inactive",
 }
 export enum ListingStatus {
-  DRAFT = "draft",
-  PENDING = "pending",
+  REVIEW = "review",
   REJECTED = "rejected",
   APPROVED = "approved",
+  ACCEPTED = "accepted",
+  FEEDBACK = "feedback",
+  SUSPENDED = "suspended",
 }
 
 export enum DriverStatus {
@@ -314,6 +327,13 @@ export interface AssignedDriver {
   updatedAt: string;
 }
 
+export interface EarningsStatistics {
+  bookingsCompleted: number;
+  canceledBookings: number;
+  numberOfCustomers: number;
+  totalRevenue: number;
+}
+
 export interface ListingInformation {
   id?: string;
   listingName: string;
@@ -347,6 +367,7 @@ export interface ListingInformation {
   user: User;
   AssignedDriver: AssignedDriver[];
   Booking: BookingInformation[];
+  statistics: EarningsStatistics;
 }
 
 // ==================== hard coded types - to be changed ====================//

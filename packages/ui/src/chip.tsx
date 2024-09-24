@@ -22,12 +22,12 @@ const Chip = ({ text, variant, color, radius, icon }: ChipProps) => {
 
   const textColor =
     color === "primary"
-      ? "text-primary-600 bg-primary-50 py-[10px]"
+      ? "text-primary-600 bg-primary-50 py-3 h-10"
       : color === "lighter"
         ? "text-grey-600 bg-grey-75 py-2"
         : color === "dark"
           ? "text-grey-800 !font-medium py-2"
-          : "text-grey-900 py-3";
+          : "text-grey-900 py-3 h-10";
 
   return (
     <p

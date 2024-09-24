@@ -124,12 +124,12 @@ export default function useVehicleSummary() {
       setVehicleDetails(mappedVehicleDetails);
 
       const mappedVehicleImages = [
-        vehicle?.VehicleImage.frontView,
-        vehicle?.VehicleImage.backView,
-        vehicle?.VehicleImage.sideView1,
-        vehicle?.VehicleImage.sideView2,
-        vehicle?.VehicleImage.interior,
-        vehicle?.VehicleImage.other,
+        vehicle?.VehicleImage?.frontView,
+        vehicle?.VehicleImage?.backView,
+        vehicle?.VehicleImage?.sideView1,
+        vehicle?.VehicleImage?.sideView2,
+        vehicle?.VehicleImage?.interior,
+        vehicle?.VehicleImage?.other,
       ];
       setVehicleImages(mappedVehicleImages);
     }
