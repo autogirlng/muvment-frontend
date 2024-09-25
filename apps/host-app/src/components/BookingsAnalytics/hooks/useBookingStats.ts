@@ -15,7 +15,6 @@ export default function useBookingStats() {
 
   const { data, isError, error, isLoading, isSuccess } = useQuery({
     queryKey: ["getBookingStats", user?.id],
-
     queryFn: () => api.get("/api/statistics/hostBookings"),
     enabled: !!user?.id,
   });

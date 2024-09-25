@@ -26,15 +26,15 @@ export default function useUpcomingBookings() {
   useEffect(() => {
     if (isSuccess) {
       console.log("bookings fetched successfully", data.data);
-      dispatch(
-        setUpcomingBookings({
-          upcomingBookings: data?.data?.data,
-          // pageLimit: data?.data?.limit,
-          // pageNumber: data?.data?.page,
-          totalItemsCount: data?.data?.totalCount,
-          totalPagesCount: data?.data?.totalPages,
-        })
-      );
+      // dispatch(
+      //   setUpcomingBookings({
+      //     upcomingBookings: data?.data?.data,
+      //     // pageLimit: data?.data?.limit,
+      //     // pageNumber: data?.data?.page,
+      //     totalItemsCount: data?.data?.totalCount,
+      //     totalPagesCount: data?.data?.totalPages,
+      //   })
+      // );
     }
 
     if (isError) {

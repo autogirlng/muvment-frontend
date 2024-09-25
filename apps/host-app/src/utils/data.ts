@@ -6,6 +6,75 @@ import {
   TransactionTableRow,
 } from "./types";
 
+export const dashboardNavItems = [
+  {
+    icon: Icons.ic_dashboard,
+    name: "Dashboard",
+    link: "/dashboard",
+  },
+  {
+    icon: Icons.ic_ticket,
+    name: "Bookings",
+    link: "/bookings",
+  },
+  {
+    icon: Icons.ic_car,
+    name: "Listings",
+    link: "/listings",
+  },
+  {
+    icon: Icons.ic_wallet,
+    name: "Wallet",
+    link: "/wallet",
+  },
+  {
+    icon: Icons.ic_support,
+    name: "Support",
+    link: "/support",
+  },
+];
+
+export const popupNavItems = [
+  {
+    icon: Icons.ic_user_account,
+    name: "My account",
+    link: "/dashboard",
+  },
+  {
+    icon: Icons.ic_setting,
+    name: "Settings",
+    link: "/dashboard",
+  },
+  {
+    icon: Icons.ic_help_circle,
+    name: "About Us",
+    link: "/dashboard",
+  },
+  {
+    icon: Icons.ic_logout,
+    name: "Log out",
+    link: "/dashboard",
+  },
+];
+
+export const popupNavItemsforNoUser = [
+  {
+    icon: Icons.ic_host,
+    name: "Become a host",
+    link: "/signup",
+  },
+  {
+    icon: Icons.ic_login,
+    name: "Login",
+    link: "/login",
+  },
+  {
+    icon: Icons.ic_help_circle,
+    name: "About Us",
+    link: "/dashboard",
+  },
+];
+
 export const completeAccountSetupTasks: AccountSetupTask[] = [
   {
     icon: Icons.ic_lock,
@@ -235,7 +304,6 @@ export const bookingOverviewTableHeadItems: string[] = [
   "Actions",
 ];
 
-
 export const bookingAnalyticsTableHeadItems: string[] = [
   "Guest Name",
   "Booking ID",
@@ -248,7 +316,6 @@ export const bookingAnalyticsTableHeadItems: string[] = [
   "Price",
   "Actions",
 ];
-
 
 export const transactionTableHeadItems: string[] = [
   "Transaction ID",
@@ -316,7 +383,7 @@ export const bookingFilters = [
       { label: "Active", value: "active" },
       { label: "Pending", value: "pending" },
       { label: "Completed", value: "completed" },
-      { label: "Canceled", value: "canceled" },
+      { label: "Cancelled", value: "cancelled" },
       { label: "Rejected", value: "rejected" },
     ],
   },

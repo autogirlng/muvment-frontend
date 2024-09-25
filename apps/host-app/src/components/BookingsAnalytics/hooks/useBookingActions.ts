@@ -1,28 +1,43 @@
 import { api } from "@/lib/api";
-import { useAppSelector } from "@/lib/hooks";
+import {
+  setBookingDetail,
+  updateBookingDetailData,
+} from "@/lib/features/bookingsSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { handleErrors } from "@/utils/functions";
-import { BookingInformation, ErrorResponse } from "@/utils/types";
+import { ErrorResponse, MappedInformation } from "@/utils/types";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function useBookingActions(
   handleModal?: (open: boolean) => void,
   id?: string
 ) {
+  const dispatch = useAppDispatch();
   const router = useRouter();
+  const { bookingDetail } = useAppSelector((state) => state.bookings);
 
-  const { bookings } = useAppSelector((state) => state.bookings);
+  const [openReportModal, setOpenReportModal] = useState<boolean>(false);
 
-  const [bookingDetail, setBookingDetail] = useState<BookingInformation | null>(null);
+  const [vehicleDetails, setVehicleDetails] = useState<MappedInformation[]>([]);
+  const [bookingDates, setBookingDates] = useState<MappedInformation[]>([]);
+  const [contactInformation, setContactInformation] = useState<
+    MappedInformation[]
+  >([]);
+
+  const handleReportModal = () => {
+    setOpenReportModal(!openReportModal);
+  };
 
   const getBookingById = useMutation({
     mutationFn: (id: string) => api.get(`/api/bookings/${id}`),
 
     onSuccess: (data) => {
       console.log("Get Bookings details By Id", data.data);
-      setBookingDetail(data.data);
+      dispatch(setBookingDetail(data.data));
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -32,14 +47,20 @@ export default function useBookingActions(
   });
 
   const declineBooking = useMutation({
-    mutationFn: () => api.put(`/api/.../${id}`),
+    mutationFn: () =>
+      api.put(`/api/bookings/updateStatus/${id}`, {
+        status: "CANCELLED",
+      }),
 
     onSuccess: (data) => {
       console.log("Decline Bookings successful", data.data);
-      setBookingDetail({
-        ...bookingDetail,
-        ...data.data,
-      });
+      dispatch(
+        updateBookingDetailData({
+          ...bookingDetail,
+          ...data.data,
+        })
+      );
+      toast.error("Trip Declined Successfully");
 
       //     filter the Bookings to remove it from from listings
 
@@ -55,10 +76,12 @@ export default function useBookingActions(
 
     onSuccess: (data) => {
       console.log("Report Bookings successful", data.data);
-      setBookingDetail({
-        ...bookingDetail,
-        ...data.data,
-      });
+      dispatch(
+        updateBookingDetailData({
+          ...bookingDetail,
+          ...data.data,
+        })
+      );
 
       handleModal && handleModal(false);
     },
@@ -68,13 +91,21 @@ export default function useBookingActions(
   });
 
   const acceptBooking = useMutation({
-    mutationFn: () => api.delete(`/api/.../${id}`),
+    mutationFn: () =>
+      api.put(`/api/bookings/updateStatus/${id}`, {
+        status: "APPROVED",
+      }),
 
     onSuccess: (data) => {
       console.log("Accept Bookings successful", data.data);
-      setBookingDetail(null);
+      dispatch(
+        updateBookingDetailData({
+          ...bookingDetail,
+          ...data.data,
+        })
+      );
+      toast.success("Trip Accepted Successfully");
 
-      router.push("/bookings");
       handleModal && handleModal(false);
     },
 
@@ -87,5 +118,15 @@ export default function useBookingActions(
     bookingDetail,
     declineBooking,
     acceptBooking,
+
+    vehicleDetails,
+    setVehicleDetails,
+    bookingDates,
+    setBookingDates,
+    contactInformation,
+    setContactInformation,
+
+    openReportModal,
+    handleReportModal,
   };
 }

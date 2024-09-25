@@ -5,9 +5,10 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { useAppSelector } from "@/lib/hooks";
 import { FullPageSpinner } from "@repo/ui/spinner";
-import SideNav from "@/components/SideNav";
-import TopHeader from "@/components/TopHeader";
+import SideNav from "@/components/Navbar/SideNav";
+import TopHeader from "@/components/Navbar/TopHeader";
 import useUser from "@/hooks/useUser";
+import MobileNav from "@/components/Navbar/MobileNav";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -40,6 +41,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         children
       ) : (
         <>
+          <MobileNav />
           <SideNav />
           <div className="w-full md:w-[calc(100%-250px)] 2xl:w-[calc(100%-272px)] ml-0 md:ml-[250px] 2xl:ml-[272px]">
             <TopHeader />

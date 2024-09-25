@@ -1,10 +1,7 @@
+import { ReactNode } from "react";
 import { keyAndValueInAChip } from "@/utils/functions";
+import { MappedInformation } from "@/utils/types";
 import Chip from "@repo/ui/chip";
-import React, { ReactNode } from "react";
-
-type MappedVehicleDetail = {
-  [key: string]: string | number;
-};
 
 type Extras = {
   name: string;
@@ -12,7 +9,7 @@ type Extras = {
   id: string;
 };
 
-type Props = { vehicleDetails: MappedVehicleDetail[]; extras: Extras[] };
+type Props = { vehicleDetails: MappedInformation[]; extras: Extras[] };
 
 export default function ListingDetailsVehicleDetails({
   vehicleDetails,

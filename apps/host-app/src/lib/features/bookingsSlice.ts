@@ -9,6 +9,8 @@ interface BookingsState {
   // pageNumber: number;
   totalItemsCount: number;
   totalPagesCount: number;
+
+  bookingDetail: null | BookingInformation;
 }
 
 const initialState: BookingsState = {
@@ -18,6 +20,7 @@ const initialState: BookingsState = {
   // pageNumber: 1,
   totalItemsCount: 0,
   totalPagesCount: 0,
+  bookingDetail: null,
 };
 
 const userSlice = createSlice({
@@ -40,9 +43,25 @@ const userSlice = createSlice({
       if (state.bookings)
         state.bookings = { ...state.bookings, ...action.payload };
     },
+
+    setBookingDetail: (state, action: PayloadAction<BookingInformation>) => {
+      state.bookingDetail = action.payload;
+    },
+    updateBookingDetailData: (
+      state,
+      action: PayloadAction<Partial<BookingInformation>>
+    ) => {
+      if (state.bookingDetail)
+        state.bookingDetail = { ...state.bookingDetail, ...action.payload };
+    },
   },
 });
 
-export const { setBookings, updateBookingsData, setUpcomingBookings } =
-  userSlice.actions;
+export const {
+  setBookings,
+  updateBookingsData,
+  setUpcomingBookings,
+  setBookingDetail,
+  updateBookingDetailData,
+} = userSlice.actions;
 export default userSlice.reducer;

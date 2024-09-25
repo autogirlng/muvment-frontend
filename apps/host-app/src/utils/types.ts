@@ -31,7 +31,11 @@ export interface AccountSetupTask {
   taskId: keyof User;
 }
 
-// <================= FORM VALUES =================>
+export type MappedInformation = {
+  [key: string]: string | number;
+};
+
+// <================= FORM VALUES BEGINS =================>
 export interface SignupFormValues {
   firstName: string;
   lastName: string;
@@ -47,6 +51,7 @@ export interface LoginFormValues {
   email: string;
   password: string;
 }
+
 export interface verifyEmailValues {
   email: string;
   token: string;
@@ -121,6 +126,29 @@ export interface AdditionalVehicleInformationValues {
   numberOfSeats: string;
 }
 
+export interface ProfileFormValues {
+  firstName: string;
+  lastName: string;
+  // phoneNumber: string;
+  // email: string;
+  country: string;
+  countryCode: string;
+  bio: string;
+
+  profileImage: string;
+  city: string;
+  isBusiness: boolean;
+  businessAddress: string;
+  businessEmail: string;
+  businessLogo: string;
+  businessName: string;
+  businessPhoneNumber: string;
+  businessCountry?: string;
+  businessCountryCode?: string;
+}
+
+// <================= FORM VALUES ENDS =================>
+
 export interface AssignNewDriver {
   vehicleId: string;
   // bookingId: string;
@@ -156,11 +184,11 @@ export interface AvailabilityAndPricingValues {
 
 // <================= STATUS =================>
 export enum BookingBadgeStatus {
-  ACCEPTED = "accepted",
-  PENDING = "pending",
-  CANCELED = "canceled",
-  APPROVED = "approved",
-  COMPLTETED = "completed",
+  ACCEPTED = "ACCEPTED",
+  PENDING = "PENDING",
+  CANCELLED = "CANCELLED",
+  APPROVED = "APPROVED",
+  COMPLTETED = "COMPLETED",
 }
 
 export enum TransactionBadgeStatus {
@@ -303,7 +331,6 @@ export interface BookingInformation {
   updatedAt: string;
   currencyCode: string;
 }
-
 export interface VehicleInformation {
   id?: string;
   listingName: string;
@@ -348,7 +375,7 @@ export interface AssignedDriver {
 
 export interface EarningsStatistics {
   bookingsCompleted: number;
-  canceledBookings: number;
+  cancelledBookings: number;
   numberOfCustomers: number;
   totalRevenue: number;
 }

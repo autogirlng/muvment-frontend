@@ -27,9 +27,7 @@ const TableCell = ({ content, className, isBadge, type, icon }: Props) => (
           status={content.toLocaleLowerCase() as TransactionBadgeStatus}
         />
       ) : (
-        <BookingTableBadge
-          status={content.toLocaleLowerCase() as BookingBadgeStatus}
-        />
+        <BookingTableBadge status={content as BookingBadgeStatus} />
       )
     ) : (
       content

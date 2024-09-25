@@ -172,3 +172,12 @@ export const assignNewDriverFormValidationSchema = object().shape({
     }),
   country: string().required("Please enter your country code"),
 });
+
+export const profileFormValidationSchema = object().shape({
+  firstName: string().required("Please enter your first name"),
+  lastName: string().required("Please enter your last name"),
+
+  country: string().required("Please enter your country code"),
+  bio: string().required("Please enter your bio"),
+  city: string().required("Please select your city"),
+});

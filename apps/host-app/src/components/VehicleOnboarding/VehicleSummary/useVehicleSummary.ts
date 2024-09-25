@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { handleErrors } from "@/utils/functions";
-import { ErrorResponse } from "@/utils/types";
+import { ErrorResponse, MappedInformation } from "@/utils/types";
 import { api } from "@/lib/api";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
@@ -18,10 +18,6 @@ type VehiclePerksProp = {
   name: string;
   id: string;
   status: boolean;
-};
-
-type MappedVehicleDetail = {
-  [key: string]: string | number;
 };
 
 const vehicleSummaryPerks: VehiclePerksProp[] = [
@@ -72,9 +68,7 @@ export default function useVehicleSummary() {
   );
 
   const [perks, setPerks] = useState(vehicleSummaryPerks);
-  const [vehicleDetails, setVehicleDetails] = useState<MappedVehicleDetail[]>(
-    []
-  );
+  const [vehicleDetails, setVehicleDetails] = useState<MappedInformation[]>([]);
   const [vehicleImages, setVehicleImages] = useState<string[]>([]);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
@@ -111,7 +105,7 @@ export default function useVehicleSummary() {
           }
         })
       );
-      const mappedVehicleDetails: MappedVehicleDetail[] = [
+      const mappedVehicleDetails: MappedInformation[] = [
         { make: vehicle?.make || "N/A" },
         { model: vehicle?.model || "N/A" },
         { year: vehicle?.yearOfRelease || "N/A" },

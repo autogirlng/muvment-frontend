@@ -1,16 +1,16 @@
 import cn from "classnames";
 
 type BookingBadgeProps = {
-  status: "accepted" | "pending" | "canceled" | "approved" | "completed";
+  status: "ACCEPTED" | "PENDING" | "CANCELLED" | "APPROVED" | "COMPLETED";
 };
 
 export const BookingTableBadge = ({ status }: BookingBadgeProps) => {
   const badgeColor =
-    status === "accepted" || status === "approved"
+    status === "ACCEPTED" || status === "APPROVED"
       ? "bg-success-500"
-      : status === "canceled"
+      : status === "CANCELLED"
         ? "bg-error-900"
-        : status === "pending"
+        : status === "PENDING"
           ? "bg-warning-400"
           : "bg-grey-500";
 
@@ -21,18 +21,18 @@ export const BookingTableBadge = ({ status }: BookingBadgeProps) => {
         badgeColor
       )}
     >
-      {status === "approved" ? "Accepted" : status}
+      {status === "APPROVED" ? "accepted" : status.toLocaleLowerCase()}
     </div>
   );
 };
 
 export const BookingBadge = ({ status }: BookingBadgeProps) => {
   const badgeColor =
-    status === "approved"
+    status === "APPROVED"
       ? "bg-success-100 text-success-600"
-      : status === "canceled"
+      : status === "CANCELLED"
         ? "bg-error-100 text-error-600"
-        : status === "pending"
+        : status === "PENDING"
           ? "bg-warning-75 text-warning-500"
           : "bg-grey-90 text-grey-500";
 
@@ -43,7 +43,7 @@ export const BookingBadge = ({ status }: BookingBadgeProps) => {
         badgeColor
       )}
     >
-      {status}
+      {status.toLocaleLowerCase()}
     </div>
   );
 };

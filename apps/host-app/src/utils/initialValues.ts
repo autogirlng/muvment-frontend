@@ -3,6 +3,7 @@ import {
   AvailabilityAndPricingValues,
   BasicVehicleInformationValues,
   LoginFormValues,
+  ProfileFormValues,
   ResetPasswordEmailValues,
   SetNewPasswordValues,
   SignupFormValues,
@@ -119,4 +120,23 @@ export const availabilityAndPricingValues: AvailabilityAndPricingValues = {
   thirtyDaysDiscount: "",
   outskirtsLocation: [],
   outskirtsPrice: "",
+};
+
+export const profileFormInitialValues: ProfileFormValues = {
+  firstName: "",
+  lastName: "",
+  // phoneNumber: "",
+  country: "",
+  countryCode: "",
+  // email: "",
+  bio: "",
+  // dob: "",
+  profileImage: "",
+  city: "",
+  isBusiness: true,
+  businessAddress: "",
+  businessEmail: "",
+  businessLogo: "",
+  businessName: "",
+  businessPhoneNumber: "",
 };

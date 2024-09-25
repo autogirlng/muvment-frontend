@@ -1,23 +1,15 @@
+import cn from "classnames";
+import Link from "next/link";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 import { formatNumberWithCommas, keyAndValueInAChip } from "@/utils/functions";
-import {
-  ListingStatus,
-  VehicleInformation,
-  VehicleStatus,
-} from "@/utils/types";
-import { ListingBadge, VehicleListingBadge } from "@repo/ui/badge";
+import { MappedInformation, VehicleInformation } from "@/utils/types";
+import { VehicleListingBadge } from "@repo/ui/badge";
+import MoreButton from "@repo/ui/moreButton";
 import Chip from "@repo/ui/chip";
 import Icons from "@repo/ui/icons";
-import Image from "next/image";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import cn from "classnames";
-import MoreButton from "@repo/ui/moreButton";
 
 type Props = { listing: VehicleInformation };
-
-type MappedVehicleDetail = {
-  [key: string]: string | number;
-};
 
 const initialExtras = [
   { name: "Fuel Included", icon: Icons.ic_fuel_station, id: "fuelProvided" },
@@ -39,14 +31,12 @@ const initialExtras = [
 ];
 
 export default function ListingCard({ listing }: Props) {
-  const [vehicleDetails, setVehicleDetails] = useState<MappedVehicleDetail[]>(
-    []
-  );
+  const [vehicleDetails, setVehicleDetails] = useState<MappedInformation[]>([]);
   const [extras, setExtras] = useState(initialExtras);
 
   useEffect(() => {
     if (listing) {
-      const mappedVehicleDetails: MappedVehicleDetail[] = [
+      const mappedVehicleDetails: MappedInformation[] = [
         { make: listing?.make || "N/A" },
         { colour: listing?.vehicleColor || "N/A" },
         { seatingCapacity: listing?.numberOfSeats || "N/A" },

@@ -8,6 +8,8 @@ import MoreButton from "@repo/ui/moreButton";
 import { Popup } from "@repo/ui/popup";
 import { format } from "date-fns";
 import Link from "next/link";
+import AcceptTrip from "./Details/modals/AcceptTrip";
+import DeclineTrip from "./Details/modals/DeclineTrip";
 
 const BookingRow = ({ items }: { items: BookingInformation }) => {
   return (
@@ -42,20 +44,28 @@ const BookingRow = ({ items }: { items: BookingInformation }) => {
             <>
               <p className="!text-xs 3xl:!text-base !font-semibold">Actions</p>
               <ul className="space-y-2 *:py-2">
-                {items.bookingStatus.toLowerCase() !==
-                  BookingBadgeStatus.APPROVED &&
-                  items.bookingStatus.toLocaleLowerCase() !==
-                    BookingBadgeStatus.ACCEPTED && (
+                {items.bookingStatus !== BookingBadgeStatus.APPROVED &&
+                  items.bookingStatus !== BookingBadgeStatus.ACCEPTED && (
                     <>
                       <li>
-                        <button className="!text-xs 3xl:!text-base ">
-                          Decline Trip
-                        </button>
+                        <DeclineTrip
+                          id={items.id}
+                          trigger={
+                            <button className="!text-xs 3xl:!text-base ">
+                              Decline Trip
+                            </button>
+                          }
+                        />
                       </li>
                       <li>
-                        <button className="!text-xs 3xl:!text-base ">
-                          Accept Trip
-                        </button>
+                        <AcceptTrip
+                          id={items.id}
+                          trigger={
+                            <button className="!text-xs 3xl:!text-base ">
+                              Accept Trip
+                            </button>
+                          }
+                        />
                       </li>
                     </>
                   )}

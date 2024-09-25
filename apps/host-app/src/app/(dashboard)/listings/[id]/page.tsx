@@ -6,7 +6,7 @@ import { ReactNode, useEffect, useState } from "react";
 import AppTabs from "@repo/ui/tabs";
 import Icons from "@repo/ui/icons";
 import { FullPageSpinner } from "@repo/ui/spinner";
-import { useAppSelector } from "@/lib/hooks";
+import { MappedInformation } from "@/utils/types";
 
 import ListingDetailsHeader from "@/components/Listings/Details/Header";
 import ListingDetailsVehicleImages from "@/components/Listings/Details/VehicleImages";
@@ -14,15 +14,10 @@ import ListingDetailsVehicleAvailability from "@/components/Listings/Details/Veh
 import ListingDetailsVehicleDetails from "@/components/Listings/Details/VehicleDetails";
 import ListingDetailsEarnings from "@/components/Listings/Details/Earnings";
 import ListingDetailsUpcomingBookings from "@/components/Listings/Details/UpcomingBookings";
-
 import VehicleInformation from "@/components/Listings/Details/VehicleInformation";
 import Reviews from "@/components/Listings/Details/Reviews";
 import DriversDetails from "@/components/Listings/Details/DriversDetails";
 import useListingsActions from "@/components/Listings/Details/hooks/useListingsActions";
-
-type MappedVehicleDetail = {
-  [key: string]: string | number;
-};
 
 type Extras = {
   name: string;
@@ -62,9 +57,7 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
   const [tabs, setTabs] = useState(initialtabs);
   const [extras, setExtras] = useState<Extras[]>(initialExtras);
   const [vehicleImages, setVehicleImages] = useState<string[]>([]);
-  const [vehicleDetails, setVehicleDetails] = useState<MappedVehicleDetail[]>(
-    []
-  );
+  const [vehicleDetails, setVehicleDetails] = useState<MappedInformation[]>([]);
 
   useEffect(() => {
     if (!params.id) {
@@ -78,7 +71,7 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
   useEffect(() => {
     if (listingDetail) {
       // update vehicle details
-      const mappedVehicleDetails: MappedVehicleDetail[] = [
+      const mappedVehicleDetails: MappedInformation[] = [
         { make: listingDetail?.make || "N/A" },
         { model: listingDetail?.model || "N/A" },
         { year: listingDetail?.yearOfRelease || "N/A" },

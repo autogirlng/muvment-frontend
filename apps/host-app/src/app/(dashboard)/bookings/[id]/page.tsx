@@ -1,50 +1,52 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { forwardRef, ReactNode, useEffect, useState } from "react";
-
-import { FullPageSpinner } from "@repo/ui/spinner";
-import useBookingActions from "@/components/BookingsAnalytics/hooks/useBookingActions";
-import BackLink from "@/components/BackLink";
-import Link from "next/link";
-import Chip from "@repo/ui/chip";
-import { keyAndValueInAChip } from "@/utils/functions";
-import Icons from "@repo/ui/icons";
-import { BookingBadge, TransactionBadge } from "@repo/ui/badge";
-import { BookingBadgeStatus, TransactionBadgeStatus } from "@/utils/types";
-import { format } from "date-fns";
 import cn from "classnames";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { forwardRef, ReactNode, useEffect } from "react";
+import { format } from "date-fns";
+import { keyAndValueInAChip } from "@/utils/functions";
+import { BookingBadge, TransactionBadge } from "@repo/ui/badge";
 import { Popup } from "@repo/ui/popup";
 import { BlurredDialog } from "@repo/ui/dialog";
-import Image from "next/image";
+import { FullPageSpinner } from "@repo/ui/spinner";
+import MoreButton from "@repo/ui/moreButton";
+import Chip from "@repo/ui/chip";
+import Icons from "@repo/ui/icons";
+import BackLink from "@/components/BackLink";
 import DeclineTrip from "@/components/BookingsAnalytics/Details/modals/DeclineTrip";
 import ReportTrip from "@/components/BookingsAnalytics/Details/modals/ReportTrip";
-import MoreButton from "@repo/ui/moreButton";
+import AcceptTrip from "@/components/BookingsAnalytics/Details/modals/AcceptTrip";
+import useBookingActions from "@/components/BookingsAnalytics/hooks/useBookingActions";
+import {
+  BookingBadgeStatus,
+  MappedInformation,
+  TransactionBadgeStatus,
+} from "@/utils/types";
+import { useAppSelector } from "@/lib/hooks";
 
-type MappedInformation = {
-  [key: string]: string | number;
-};
-
-export default function ListingsPage({ params }: { params: { id: string } }) {
+export default function BookingDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const router = useRouter();
-  const { getBookingById, bookingDetail } = useBookingActions();
-  const [vehicleDetails, setVehicleDetails] = useState<MappedInformation[]>([]);
-  const [bookingDates, setBookingDates] = useState<MappedInformation[]>([]);
-  const [contactInformation, setContactInformation] = useState<
-    MappedInformation[]
-  >([]);
+  const { bookingDetail } = useAppSelector((state) => state.bookings);
+  const {
+    getBookingById,
 
-  const [openDeclineModal, setOpenDeclineModal] = useState(false);
+    vehicleDetails,
+    setVehicleDetails,
+    bookingDates,
+    setBookingDates,
+    contactInformation,
+    setContactInformation,
 
-  const handleDeclineModal = () => {
-    setOpenDeclineModal(!openDeclineModal);
-  };
+    openReportModal,
 
-  const [openReportModal, setOpenReportModal] = useState(false);
-
-  const handleReportModal = () => {
-    setOpenReportModal(!openReportModal);
-  };
+    handleReportModal,
+  } = useBookingActions();
 
   useEffect(() => {
     if (!params.id) {
@@ -144,8 +146,6 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
               content={
                 <BookingActions
                   id={params.id}
-                  openDeclineModal={openDeclineModal}
-                  handleDeclineModal={handleDeclineModal}
                   openReportModal={openReportModal}
                   handleReportModal={handleReportModal}
                   bookingStatus={
@@ -158,8 +158,6 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
           <div className="hidden lg:block">
             <BookingActions
               id={params.id}
-              openDeclineModal={openDeclineModal}
-              handleDeclineModal={handleDeclineModal}
               openReportModal={openReportModal}
               handleReportModal={handleReportModal}
               bookingStatus={bookingDetail?.bookingStatus as BookingBadgeStatus}
@@ -232,11 +230,7 @@ const BookingInfoCards = ({
             )}
             {copyText && <span>{Icons.ic_copy}</span>}
           </h5>
-          {status && (
-            <BookingBadge
-              status={status.toLocaleLowerCase() as BookingBadgeStatus}
-            />
-          )}
+          {status && <BookingBadge status={status} />}
         </div>
         <div className="space-y-2">
           <p className="text-grey-500 text-sm 3xl:text-base">{chipTitle}</p>
@@ -263,8 +257,7 @@ const BookingInfoCards = ({
 
 type BookingActionsProps = {
   id: string;
-  openDeclineModal: boolean;
-  handleDeclineModal: () => void;
+
   openReportModal: boolean;
   handleReportModal: () => void;
   bookingStatus: BookingBadgeStatus;
@@ -272,42 +265,44 @@ type BookingActionsProps = {
 
 const BookingActions = ({
   id,
-  openDeclineModal,
-  handleDeclineModal,
+
   openReportModal,
   handleReportModal,
   bookingStatus,
 }: BookingActionsProps) => {
-  const status = bookingStatus?.toLocaleLowerCase();
   return (
     <div className="flex flex-col lg:flex-row items-start lg:items-center gap-1">
       <>
-        <ActionButton
-          color="bg-success-500 disabled:!text-success-500 disabled:!bg-success-50"
-          text={status === BookingBadgeStatus.APPROVED ? "Accepted" : "Accept"}
-          icon={Icons.ic_done_circle}
-          disabled={status === BookingBadgeStatus.APPROVED ? true : false}
-        />
-        <BlurredDialog
-          open={openDeclineModal}
-          onOpenChange={handleDeclineModal}
-          title={
-            <Image
-              src="/icons/warning.png"
-              alt=""
-              width={56}
-              height={56}
-              className="w-10 md:w-[50px] h-10 md:h-[50px]"
+        <AcceptTrip
+          trigger={
+            <ActionButton
+              color="bg-success-500 disabled:!text-success-500 disabled:!bg-success-50"
+              text={
+                bookingStatus === BookingBadgeStatus.APPROVED
+                  ? "Accepted"
+                  : "Accept"
+              }
+              icon={Icons.ic_done_circle}
+              disabled={
+                bookingStatus === BookingBadgeStatus.APPROVED ? true : false
+              }
             />
           }
+          id={id}
+        />
+
+        <DeclineTrip
           trigger={
             <ActionButton
               color=" bg-error-900"
               text="Decline"
               icon={Icons.ic_cancel_circle}
+              disabled={
+                bookingStatus === BookingBadgeStatus.CANCELLED ? true : false
+              }
             />
           }
-          content={<DeclineTrip handleModal={handleDeclineModal} id={id} />}
+          id={id}
         />
       </>
 

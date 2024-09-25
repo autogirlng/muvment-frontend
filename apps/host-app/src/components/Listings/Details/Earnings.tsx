@@ -25,8 +25,8 @@ export default function ListingDetailsEarnings({ statistics }: Props) {
           value={`${statistics?.bookingsCompleted || "-"}`}
         />
         <ActivityCard
-          title="Canceled Bookings"
-          value={`${statistics?.canceledBookings || "-"}`}
+          title="Cancelled Bookings"
+          value={`${statistics?.cancelledBookings || "-"}`}
         />
       </div>
     </div>
