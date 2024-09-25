@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 
-import useListings from "@/hooks/useListings";
 import AppTabs from "@repo/ui/tabs";
 import Icons from "@repo/ui/icons";
 import { FullPageSpinner } from "@repo/ui/spinner";
@@ -19,6 +18,7 @@ import ListingDetailsUpcomingBookings from "@/components/Listings/Details/Upcomi
 import VehicleInformation from "@/components/Listings/Details/VehicleInformation";
 import Reviews from "@/components/Listings/Details/Reviews";
 import DriversDetails from "@/components/Listings/Details/DriversDetails";
+import useListingsActions from "@/components/Listings/Details/hooks/useListingsActions";
 
 type MappedVehicleDetail = {
   [key: string]: string | number;
@@ -57,8 +57,7 @@ const initialtabs = [
 
 export default function ListingsPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { listingById } = useAppSelector((state) => state.listings);
-  const { getListingById } = useListings();
+  const { getListingById, listingDetail } = useListingsActions();
 
   const [tabs, setTabs] = useState(initialtabs);
   const [extras, setExtras] = useState<Extras[]>(initialExtras);
@@ -77,16 +76,16 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
 
   // use useMemo here
   useEffect(() => {
-    if (listingById) {
+    if (listingDetail) {
       // update vehicle details
       const mappedVehicleDetails: MappedVehicleDetail[] = [
-        { make: listingById?.make || "N/A" },
-        { model: listingById?.model || "N/A" },
-        { year: listingById?.yearOfRelease || "N/A" },
-        { colour: listingById?.vehicleColor || "N/A" },
-        { city: listingById?.location || "N/A" },
-        { vehicleType: listingById?.vehicleType || "N/A" },
-        { seatingCapacity: listingById?.numberOfSeats || "N/A" },
+        { make: listingDetail?.make || "N/A" },
+        { model: listingDetail?.model || "N/A" },
+        { year: listingDetail?.yearOfRelease || "N/A" },
+        { colour: listingDetail?.vehicleColor || "N/A" },
+        { city: listingDetail?.location || "N/A" },
+        { vehicleType: listingDetail?.vehicleType || "N/A" },
+        { seatingCapacity: listingDetail?.numberOfSeats || "N/A" },
       ];
       setVehicleDetails(mappedVehicleDetails);
 
@@ -95,12 +94,12 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
         if (extra.id === "fuelProvided") {
           return {
             ...extra,
-            status: listingById?.tripSettings?.fuelProvided || false,
+            status: listingDetail?.tripSettings?.fuelProvided || false,
           };
         } else if (extra.id === "provideDriver") {
           return {
             ...extra,
-            status: listingById?.tripSettings?.provideDriver || false,
+            status: listingDetail?.tripSettings?.provideDriver || false,
           };
         }
         return extra;
@@ -109,12 +108,12 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
 
       // update vehicle images
       const mappedVehicleImages = [
-        listingById?.VehicleImage?.frontView,
-        listingById?.VehicleImage?.backView,
-        listingById?.VehicleImage?.sideView1,
-        listingById?.VehicleImage?.sideView2,
-        listingById?.VehicleImage?.interior,
-        listingById?.VehicleImage?.other,
+        listingDetail?.VehicleImage?.frontView,
+        listingDetail?.VehicleImage?.backView,
+        listingDetail?.VehicleImage?.sideView1,
+        listingDetail?.VehicleImage?.sideView2,
+        listingDetail?.VehicleImage?.interior,
+        listingDetail?.VehicleImage?.other,
       ];
       setVehicleImages(mappedVehicleImages);
 
@@ -123,7 +122,7 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
         if (tab.value === "tab1") {
           return {
             ...tab,
-            content: <VehicleInformation listingDetails={listingById} />,
+            content: <VehicleInformation listingDetails={listingDetail} />,
           };
         }
         if (tab.value === "tab3") {
@@ -136,10 +135,14 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
       });
       setTabs(updatedTabs);
     }
-  }, [listingById]);
+  }, [listingDetail]);
 
   if (getListingById.isPending) {
     return <FullPageSpinner />;
+  }
+
+  if (getListingById.isError) {
+    return <p>something went wrong </p>;
   }
 
   return (
@@ -148,15 +151,15 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
         <div className="text-grey-800 space-y-[52px]">
           {/* name */}
           <ListingDetailsHeader
-            name={listingById?.listingName}
-            id={listingById?.id}
-            status={listingById?.status}
+            name={listingDetail?.listingName}
+            id={listingDetail?.id}
+            status={listingDetail?.status}
           />
           <ListingDetailsVehicleImages vehicleImages={vehicleImages} />
 
           <ListingDetailsVehicleAvailability
-            vehicleStatus={listingById?.vehicleStatus}
-            isActive={listingById?.isActive}
+            vehicleStatus={listingDetail?.vehicleStatus}
+            isActive={listingDetail?.isActive}
           />
 
           <ListingDetailsVehicleDetails
@@ -164,7 +167,7 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
             vehicleDetails={vehicleDetails}
           />
 
-          <ListingDetailsEarnings statistics={listingById?.statistics} />
+          <ListingDetailsEarnings statistics={listingDetail?.statistics} />
 
           <AppTabs label="listing details tabs" tabs={tabs} />
         </div>

@@ -11,7 +11,7 @@ const MoreButton = forwardRef<HTMLButtonElement, Props>(
         ref={ref}
         onClick={onClick}
         className={cn(
-          "border border-grey-200 bg-white text-black rounded-lg p-2 w-fit mx-auto",
+          "block border border-grey-200 bg-white text-black rounded-lg p-2 w-fit mx-auto",
           className
         )}
         {...rest}

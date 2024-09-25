@@ -4,33 +4,31 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { setListings } from "@/lib/features/listingsSlice";
-import { useRouter } from "next/navigation";
+import { setBookings } from "@/lib/features/bookingsSlice";
 
-export default function useListings() {
-  const router = useRouter();
+export default function useBookings() {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.user);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const pageLimit = 10;
 
   const { data, isError, error, isLoading, isSuccess } = useQuery({
-    queryKey: ["getListings", user?.id, currentPage],
+    queryKey: ["getBookings", user?.id, currentPage],
 
     queryFn: () =>
       api.get(
-        `/api/listings/host/${user?.id}?page=${currentPage}&limit=${pageLimit}`
+        `/api/bookings/host/${user?.id}?page=${currentPage}&limit=${pageLimit}`
       ),
     enabled: !!user?.id,
   });
 
   useEffect(() => {
     if (isSuccess) {
-      console.log("LIsting data fetched successfully", data.data);
+      console.log("bookings fetched successfully", data.data);
       dispatch(
-        setListings({
-          listings: data?.data?.data,
+        setBookings({
+          bookings: data?.data?.data,
           // pageLimit: data?.data?.limit,
           // pageNumber: data?.data?.page,
           totalItemsCount: data?.data?.totalCount,
@@ -40,7 +38,7 @@ export default function useListings() {
     }
 
     if (isError) {
-      console.log("Error fetching listings", error);
+      console.log("Error fetching bookings", error);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isError, isSuccess]);
@@ -51,6 +49,7 @@ export default function useListings() {
     error,
     isLoading,
     isSuccess,
+
     currentPage,
     setCurrentPage,
     pageLimit,

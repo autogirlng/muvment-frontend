@@ -1,11 +1,12 @@
 import { api } from "@/lib/api";
-import {
-  updateListingByIdData,
-  updateListings,
-} from "@/lib/features/listingsSlice";
+import { updateListings } from "@/lib/features/listingsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { handleErrors } from "@/utils/functions";
-import { ErrorResponse, VehicleStatus } from "@/utils/types";
+import {
+  ErrorResponse,
+  ListingInformation,
+  VehicleStatus,
+} from "@/utils/types";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
@@ -18,19 +19,41 @@ export default function useListingsActions(
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const { listingById, listings } = useAppSelector((state) => state.listings);
+  const { listings } = useAppSelector((state) => state.listings);
+
+  const [listingDetail, setListingDetail] = useState<ListingInformation | null>(
+    null
+  );
+
+  const getListingById = useMutation({
+    mutationFn: (id: string) => api.get(`/api/listings/details/${id}`),
+
+    onSuccess: (data) => {
+      console.log("Get Listing details By Id", {
+        ...data.data.vehicle,
+        statistics: data.data.statistics,
+      });
+      setListingDetail({
+        ...data.data.vehicle,
+        statistics: data.data.statistics,
+      });
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) => {
+      handleErrors("Get Listing details By Id", error);
+      router.push("/listings");
+    },
+  });
 
   const deactivateListing = useMutation({
-    mutationFn: () => api.put(`/api/listings/deactivate/${listingById?.id}`),
+    mutationFn: () => api.put(`/api/listings/deactivate/${id}`),
 
     onSuccess: (data) => {
       console.log("Deactivate Listing successful", data.data);
-      dispatch(
-        updateListingByIdData({
-          ...listingById,
-          ...data.data,
-        })
-      );
+      setListingDetail({
+        ...listingDetail,
+        ...data.data,
+      });
 
       //     filter the listing to remove it from from listings
 
@@ -42,16 +65,16 @@ export default function useListingsActions(
   });
 
   const moveListingToDraft = useMutation({
-    mutationFn: () => api.put(`/api/listings/draft/${listingById?.id}`),
+    mutationFn: () => api.put(`/api/listings/draft/${id}`),
 
     onSuccess: (data) => {
       console.log("Move Listing to Draft successful", data.data);
-      dispatch(
-        updateListingByIdData({
-          ...listingById,
-          ...data.data,
-        })
-      );
+      // dispatch(
+      setListingDetail({
+        ...listingDetail,
+        ...data.data,
+      });
+      // );
 
       //     update listing array
       const listingIndex = listings.findIndex((listing) => listing.id === id);
@@ -76,11 +99,11 @@ export default function useListingsActions(
   });
 
   const deleteListing = useMutation({
-    mutationFn: () => api.delete(`/api/listings/${listingById?.id}`),
+    mutationFn: () => api.delete(`/api/listings/${id}`),
 
     onSuccess: (data) => {
       console.log("Delete Listing successful", data.data);
-      dispatch(updateListingByIdData({}));
+      setListingDetail(null);
 
       const updatedListings = listings.filter((listing) => listing.id !== id);
       dispatch(updateListings(updatedListings));
@@ -94,17 +117,16 @@ export default function useListingsActions(
   });
 
   const updateListingStatus = useMutation({
-    mutationFn: (value) =>
-      api.put(`/api/listings/status/${listingById?.id}`, value),
+    mutationFn: (value) => api.put(`/api/listings/status/${id}`, value),
 
     onSuccess: (data) => {
       console.log("Update Listing status successful", data.data);
-      dispatch(
-        updateListingByIdData({
-          ...listingById,
-          ...data.data,
-        })
-      );
+      // dispatch(
+      setListingDetail({
+        ...listingDetail,
+        ...data.data,
+      });
+      // );
 
       //     filter the listing to remove it from from listings
 
@@ -116,9 +138,11 @@ export default function useListingsActions(
   });
 
   return {
+    getListingById,
     deactivateListing,
     deleteListing,
     moveListingToDraft,
     updateListingStatus,
+    listingDetail,
   };
 }

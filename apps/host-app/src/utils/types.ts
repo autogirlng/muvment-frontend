@@ -159,12 +159,16 @@ export enum BookingBadgeStatus {
   ACCEPTED = "accepted",
   PENDING = "pending",
   CANCELED = "canceled",
+  APPROVED = "approved",
+  COMPLTETED = "completed",
 }
 
 export enum TransactionBadgeStatus {
   SUCCESSFUL = "successful",
   PENDING = "pending",
   FAILED = "failed",
+  PAID = "paid",
+  CANCELLED = "cancelled",
 }
 
 export enum VehicleStatus {
@@ -189,6 +193,11 @@ export enum ListingStatus {
 export enum DriverStatus {
   ASSIGNED = "ASSIGNED",
   UNASSIGNED = "UNASSIGNED",
+}
+
+export const enum BookingType {
+  SINGLE_DAY = "SINGLE_DAY",
+  MULTI_DAY = "MULTI_DAY",
 }
 
 // <================= USER/LISTING/BOOKING/VEHICLE =================>
@@ -262,27 +271,37 @@ export interface AvailabilityAndPricing {
   outskirtsPrice?: number;
 }
 
+export interface BookingStatistics {
+  totalBookings: number;
+  pendingApprovals: number;
+  rejectedBookings: number;
+  approvedRequests: number;
+}
+
 export interface BookingInformation {
   id: string;
   startDate: string;
   endDate: string;
   duration: number;
-  bookingType: "SINGLE_DAY" | "MULTI_DAY"; //check booking status
+  bookingType: BookingType;
   amount: number;
-  paymentStatus: "PENDING" | "PAID" | "FAILED"; //check booking status
+  paymentStatus: TransactionBadgeStatus;
   paymentMethod: "BANK_TRANSFER" | "CARD_PAYMENT" | "CASH"; //check booking status
   rentalAgreement: string | null;
-  bookingStatus: "PENDING" | "CONFIRMED" | "CANCELLED"; //check booking status
+  bookingStatus: BookingBadgeStatus;
   guestName: string;
   guestEmail: string;
   guestPhoneNumber: string;
   pickupLocation: string;
   dropoffLocation: string;
   emergencyContact: string;
+  vehicle: ListingInformation;
   vehicleId: string;
+  user: User;
   userId: string;
   createdAt: string;
   updatedAt: string;
+  currencyCode: string;
 }
 
 export interface VehicleInformation {
@@ -370,6 +389,31 @@ export interface ListingInformation {
   statistics: EarningsStatistics;
 }
 
+export interface BookingDetailsInformation {
+  id: string;
+  startDate: string;
+  endDate: string;
+  duration: number;
+  // bookingType: string;
+  amount: number;
+  // paymentStatus: string;
+  // paymentMethod: string;
+  // rentalAgreement: string | null;
+  // bookingStatus: string;
+  guestName: string;
+  guestEmail: string;
+  guestPhoneNumber: string;
+  pickupLocation: string;
+  dropoffLocation: string;
+  emergencyContact: string;
+  vehicleId: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  // vehicle: Vehicle;
+  // travelCompanions: TravelCompanion[];
+}
+
 // ==================== hard coded types - to be changed ====================//
 export type TopRatedVehicleType = {
   make: string;
@@ -381,7 +425,7 @@ export type TopRatedVehicleType = {
   totalEarnings: string;
 };
 
-export type BookingOverviewTableRow = {
+export type BookingTableRow = {
   vehicle: string;
   guestName: string;
   bookingId: string;

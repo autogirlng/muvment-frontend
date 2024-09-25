@@ -1,13 +1,19 @@
-import React from "react";
 import * as Avatar from "@radix-ui/react-avatar";
+import cn from "classnames";
 
 type AvatarProps = {
   image?: string;
   initials: string;
+  size?: string;
 };
 
-export const AvatarImage = ({ image, initials }: AvatarProps) => (
-  <Avatar.Root className="bg-blackA1 inline-flex h-[45px] w-[45px] select-none items-center justify-center overflow-hidden rounded-full align-middle">
+export const AvatarImage = ({ image, initials, size }: AvatarProps) => (
+  <Avatar.Root
+    className={cn(
+      "inline-flex h-[45px] w-[45px] select-none items-center justify-center overflow-hidden rounded-full align-middle",
+      size ? size : ""
+    )}
+  >
     <Avatar.Image
       className="h-full w-full rounded-[inherit] object-cover"
       src={image}

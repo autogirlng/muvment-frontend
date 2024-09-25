@@ -4,7 +4,8 @@ import { getInitialsFromName } from "@/utils/functions";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import { BlurredDialog } from "@repo/ui/dialog";
 import AssignDriverForm from "./modals/AssignDriverForm";
-import useFetchDrivers from "./hooks/useFetchDrivers";
+import useListingDrivers from "./hooks/useListingDrivers";
+import { useEffect } from "react";
 
 type Props = { id: string };
 
@@ -14,30 +15,21 @@ type Driver = {
   phoneNumber: string;
   numberOfBookingsAssigned?: number;
 };
-// const drivers: Driver[] = [
-//   {
-//     firstName: "Aisha",
-//     lastName: "O",
-//     phoneNumber: "09039032585",
-//     numberOfBookingsAssigned: 20,
-//   },
-//   {
-//     firstName: "Aisha",
-//     lastName: "O",
-//     phoneNumber: "09039032585",
-//     numberOfBookingsAssigned: 20,
-//   },
-//   {
-//     firstName: "Aisha",
-//     lastName: "O",
-//     phoneNumber: "09039032585",
-//     numberOfBookingsAssigned: 20,
-//   },
-// ];
 
 export default function DriversDetails({ id }: Props) {
-  const { getAssignedDrivers, openModal, handleModal, listingById } =
-    useFetchDrivers(id);
+  const {
+    getAssignedDrivers,
+    assignNewDriver,
+    openModal,
+    handleModal,
+    drivers,
+  } = useListingDrivers();
+
+  useEffect(() => {
+    if (id) {
+      getAssignedDrivers.mutate(id);
+    }
+  }, [id]);
 
   if (getAssignedDrivers.isPending) {
     return <FullPageSpinner />;
@@ -58,11 +50,18 @@ export default function DriversDetails({ id }: Props) {
               Assign New Driver
             </Button>
           }
-          content={<AssignDriverForm handleModal={handleModal} />}
+          content={
+            <AssignDriverForm
+              handleModal={handleModal}
+              assignNewDriver={(values) => assignNewDriver.mutate(values)}
+              isPending={assignNewDriver.isPending}
+              vehicleId={id}
+            />
+          }
         />
       </div>
 
-      {listingById?.AssignedDriver?.map((driver, index) => (
+      {drivers?.map((driver, index) => (
         <DriverCard key={index} driver={driver} />
       ))}
     </div>

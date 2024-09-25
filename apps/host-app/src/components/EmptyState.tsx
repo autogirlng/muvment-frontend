@@ -1,9 +1,10 @@
 import Image from "next/image";
 import cn from "classnames";
+import { ReactNode } from "react";
 
 type Props = {
   title: string;
-  message?: string;
+  message?: string | ReactNode;
   image: string;
   imageSize?: string;
 };

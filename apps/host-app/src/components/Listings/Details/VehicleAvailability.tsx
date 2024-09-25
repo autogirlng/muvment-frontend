@@ -21,11 +21,7 @@ export default function ListingDetailsVehicleAvailability({
             neccessary
           </p>
         </div>
-        {vehicleStatus && (
-          <VehicleListingBadge
-            status={isActive ? vehicleStatus : VehicleStatus.INACTIVE}
-          />
-        )}
+        {vehicleStatus && <VehicleListingBadge status={vehicleStatus} />}
       </div>
       <Popup
         trigger={

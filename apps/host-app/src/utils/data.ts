@@ -1,7 +1,7 @@
 import Icons from "@repo/ui/icons";
 import {
   AccountSetupTask,
-  BookingOverviewTableRow,
+  BookingTableRow,
   TopRatedVehicleType,
   TransactionTableRow,
 } from "./types";
@@ -235,6 +235,21 @@ export const bookingOverviewTableHeadItems: string[] = [
   "Actions",
 ];
 
+
+export const bookingAnalyticsTableHeadItems: string[] = [
+  "Guest Name",
+  "Booking ID",
+  "Booking Type",
+  "Duration",
+  "Vehicle",
+  "Start Date",
+  "End Date",
+  "Status",
+  "Price",
+  "Actions",
+];
+
+
 export const transactionTableHeadItems: string[] = [
   "Transaction ID",
   "Date",
@@ -345,7 +360,7 @@ export const topRatedVehicle: TopRatedVehicleType = {
   totalEarnings: "$330,000",
 };
 
-export const bookingOverviewTableItems: BookingOverviewTableRow[] = [
+export const bookingOverviewTableItems: BookingTableRow[] = [
   {
     vehicle: "Toyota Camry 2021",
     guestName: "Chioma Nwosu",

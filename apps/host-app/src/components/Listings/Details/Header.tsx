@@ -93,7 +93,10 @@ export default function ListingDetailsHeader({ name, status, id }: Props) {
                     </button>
                   }
                   content={
-                    <DeactivateListing handleModal={handleDeactivateModal} />
+                    <DeactivateListing
+                      handleModal={handleDeactivateModal}
+                      id={id}
+                    />
                   }
                 />
               </li>

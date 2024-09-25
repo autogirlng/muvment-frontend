@@ -1,8 +1,8 @@
 import TableCell from "../TableCell";
-import { BookingOverviewTableRow } from "@/utils/types";
+import { BookingTableRow } from "@/utils/types";
 import MoreButton from "@repo/ui/moreButton";
 
-const BookingRow = ({ items }: { items: BookingOverviewTableRow }) => {
+const BookingRow = ({ items }: { items: BookingTableRow }) => {
   return (
     <tr>
       <TableCell content={items?.vehicle} />

@@ -64,6 +64,7 @@ const config: Config = {
         900: "#E61C1C",
       },
       success: {
+        50: "#EFFEF1",
         100: "#B6FCBF",
         500: "#0AAF24",
         600: "#0C8921",

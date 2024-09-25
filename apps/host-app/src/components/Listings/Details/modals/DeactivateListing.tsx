@@ -1,10 +1,10 @@
 import Button from "@repo/ui/button";
 import useListingsActions from "../hooks/useListingsActions";
 
-type Props = { handleModal: (open: boolean) => void };
+type Props = { handleModal: (open: boolean) => void; id?: string };
 
-const DeactivateListing = ({ handleModal }: Props) => {
-  const { deactivateListing } = useListingsActions(handleModal);
+const DeactivateListing = ({ handleModal, id }: Props) => {
+  const { deactivateListing } = useListingsActions(handleModal,id);
   return (
     <div className="space-y-6">
       <h6 className="text-base sm:text-xl 3xl:text-h6 !font-semibold text-grey-800">

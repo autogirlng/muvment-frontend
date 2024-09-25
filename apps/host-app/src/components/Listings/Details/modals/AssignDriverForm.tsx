@@ -6,13 +6,22 @@ import {
 import InputField from "@repo/ui/inputField";
 import PhoneNumberAndCountryField from "@repo/ui/phoneNumberAndCountryField";
 import Button from "@repo/ui/button";
-import useAssignDriver from "../hooks/useAssignDriver";
 import { assignNewDriverFormValidationSchema } from "@/utils/validationSchema";
+import { AssignNewDriver } from "@/utils/types";
 
-type Props = { handleModal: (open: boolean) => void };
+type Props = {
+  handleModal: (open: boolean) => void;
+  vehicleId: string;
+  assignNewDriver: (values: AssignNewDriver) => void;
+  isPending:boolean
+};
 
-const AssignDriverForm = ({ handleModal }: Props) => {
-  const { assignNewDriver, vehicleId } = useAssignDriver(handleModal);
+const AssignDriverForm = ({
+  handleModal,
+  assignNewDriver,
+  vehicleId,
+  isPending,
+}: Props) => {
   return (
     <div>
       <Formik
@@ -25,7 +34,7 @@ const AssignDriverForm = ({ handleModal }: Props) => {
         }}
         onSubmit={async (values, { setSubmitting }) => {
           console.log(values);
-          assignNewDriver.mutate({
+          assignNewDriver({
             firstName: values.firstName,
             lastName: values.lastName,
             phoneNumber: values.phoneNumber,
@@ -144,8 +153,8 @@ const AssignDriverForm = ({ handleModal }: Props) => {
                   variant="filled"
                   color="primary"
                   type="submit"
-                  loading={isSubmitting || assignNewDriver.isPending}
-                  disabled={isSubmitting || assignNewDriver.isPending}
+                  loading={isSubmitting || isPending}
+                  disabled={isSubmitting || isPending}
                   className="!py-4"
                 >
                   Assign Driver

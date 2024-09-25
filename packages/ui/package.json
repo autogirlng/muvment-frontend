@@ -20,9 +20,12 @@
     "./inputField": "./src/inputField.tsx",
     "./moreButton": "./src/moreButton.tsx",
     "./otpField": "./src/otpField.tsx",
+    "./pagination": "./src/pagination.tsx",
     "./phoneNumberAndCountryField": "./src/phoneNumberAndCountryField.tsx",
     "./photoUpload": "./src/photoUpload.tsx",
     "./popup": "./src/popup.tsx",
+        "./searchInput": "./src/searchInput.tsx",
+
     "./select": "./src/select.tsx",
     "./selectCountry": "./src/selectCountry.tsx",
     "./searchSelectInput": "./src/searchSelectInput.tsx",
@@ -64,6 +67,7 @@
     "flag-icons": "^7.2.3",
     "react": "^18.2.0",
     "react-otp-input": "^3.1.1",
+    "react-paginate": "^8.2.0",
     "react-phone-number-input": "^3.4.5",
     "reactjs-otp-input": "^2.0.10"
   }
