@@ -19,8 +19,9 @@ export const AvatarImage = ({ image, initials, size, color }: AvatarProps) => (
     <Avatar.Image
       className="h-full w-full rounded-[inherit] object-cover"
       src={image}
-      alt="Colm Tuite"
+      alt=""
     />
+
     <Avatar.Fallback
       className={cn(
         "text-white flex h-full w-full items-center justify-center bg-grey-800 text-sm 3xl:text-base font-medium",

@@ -31,7 +31,20 @@ export default function useUpdateProfile(
       handleErrors("Update Profile", error),
   });
 
+  const uploadImage = useMutation({
+    mutationFn: (values: FormData) => api.put("api/user/imageUpload", values),
+
+    onSuccess: (data) => {
+      console.log("Update Image successful", data);
+      dispatch(updateUserData({ ...user, ...data?.data }));
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) =>
+      handleErrors("Update Image", error),
+  });
+
   return {
     updateProfileMutation,
+    uploadImage,
   };
 }

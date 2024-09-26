@@ -24,8 +24,8 @@
     "./phoneNumberAndCountryField": "./src/phoneNumberAndCountryField.tsx",
     "./photoUpload": "./src/photoUpload.tsx",
     "./popup": "./src/popup.tsx",
-        "./searchInput": "./src/searchInput.tsx",
-
+    "./profilePhotoUpload": "./src/profilePhotoUpload.tsx",
+    "./searchInput": "./src/searchInput.tsx",
     "./select": "./src/select.tsx",
     "./selectCountry": "./src/selectCountry.tsx",
     "./searchSelectInput": "./src/searchSelectInput.tsx",

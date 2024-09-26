@@ -10,6 +10,8 @@ import Button from "@repo/ui/button";
 import InputField from "@repo/ui/inputField";
 import PhoneNumberAndCountryField from "@repo/ui/phoneNumberAndCountryField";
 import TextArea from "@repo/ui/textarea";
+import ProfilePhotoUpload from "@repo/ui/profilePhotoUpload";
+
 import { ProfileFormValues } from "@/utils/types";
 import { useAppSelector } from "@/lib/hooks";
 import SelectInput from "@repo/ui/select";
@@ -17,12 +19,14 @@ import { citiesOptions } from "@/utils/data";
 import AppSwitch from "@repo/ui/switch";
 import { useState } from "react";
 import useUpdateProfile from "@/hooks/useUpdateProfile";
+import Icons from "@repo/ui/icons";
 
 export default function ProfilePage() {
   const { user } = useAppSelector((state) => state.user);
 
   const [isProfileEditable, setIsProfileEditable] = useState(false);
-  const { updateProfileMutation } = useUpdateProfile(setIsProfileEditable);
+  const { updateProfileMutation, uploadImage } =
+    useUpdateProfile(setIsProfileEditable);
 
   return (
     <main className="py-[56px] md:space-y-11 text-grey-700">
@@ -85,7 +89,27 @@ export default function ProfilePage() {
 
               <Form className="max-w-[800px] space-y-[60px]">
                 <div className="space-y-7">
-                  {/* profile image */}
+                  <ProfilePhotoUpload
+                    id="profileImage"
+                    name="profileImage"
+                    label=""
+                    value={values.profileImage}
+                    image={user?.profileImage || null}
+                    onChange={async (fieldName, file) => {
+                      setFieldTouched(fieldName, true);
+                      setFieldValue(fieldName, file);
+
+                      if (file) {
+                        const formData = new FormData();
+                        formData.append(fieldName, file);
+                        console.log(formData);
+
+                        uploadImage.mutate(formData);
+                      }
+                    }}
+                    isLoading={uploadImage.isPending}
+                    disabled={!isProfileEditable}
+                  />
                   <div className="max-w-[370px] space-y-7">
                     <InputField
                       name="firstName"
@@ -227,7 +251,27 @@ export default function ProfilePage() {
                     </h4>
 
                     <div className="max-w-[370px] space-y-7">
-                      {/* profile image */}
+                      <ProfilePhotoUpload
+                        id="businessLogo"
+                        name="businessLogo"
+                        label=""
+                        value={values.businessLogo}
+                        image={user?.businessLogo || null}
+                        onChange={async (fieldName, file) => {
+                          setFieldTouched(fieldName, true);
+                          setFieldValue(fieldName, file);
+
+                          if (file) {
+                            const formData = new FormData();
+                            formData.append(fieldName, file);
+                            console.log(formData);
+
+                            uploadImage.mutate(formData);
+                          }
+                        }}
+                        isLoading={uploadImage.isPending}
+                        disabled={!isProfileEditable}
+                      />
                       <InputField
                         name="businessName"
                         id="businessName"
