@@ -89,13 +89,13 @@ const Pagination = ({
     if (shouldShowLeftDots && shouldShowRightDots) {
       let middleRange = range(leftSiblingIndex, rightSiblingIndex);
       return [firstPageIndex, DOTS, ...middleRange, DOTS, lastPageIndex];
+    } else {
+      return [];
     }
   }, [totalCount, pageLimit, siblingCount, currentPage]);
 
   // If there are less than 2 times in pagination range we shall not render the component
   if (currentPage === 0 || paginationRange.length < 2) {
-    console.log(paginationRange);
-
     return null;
   }
 
@@ -120,14 +120,10 @@ const Pagination = ({
 
       <div className="flex items-center gap-[2px]">
         {paginationRange.map((pageNumber: number | string, index: number) => {
-          // If the pageItem is a DOT, render the DOTS unicode character
           if (pageNumber === DOTS) {
-            console.log("dots");
-
             return <li className="pagination-item dots">...</li>;
           }
 
-          // Render our Page Pills
           return (
             <button
               key={index}

@@ -1,5 +1,5 @@
 import { bookingAnalyticsTableHeadItems } from "@/utils/data";
-import { BookingInformation, BookingTableRow } from "@/utils/types";
+import { BookingInformation } from "@/utils/types";
 import TableHead from "@/components/TableHead";
 import EmptyState from "@/components/EmptyState";
 import BookingRow from "@/components/BookingsAnalytics/BookingRow";
