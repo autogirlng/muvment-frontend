@@ -54,7 +54,7 @@ const SearchSelectInput = ({
   disabled = false,
   isLoading,
 }: Props) => {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState<string>("");
 
   const filteredBanks =
     query === ""

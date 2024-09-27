@@ -2,90 +2,79 @@
 
 import DashboardSectionTitle from "@/components/DashboardSectionTitle";
 import ListingCard from "@/components/Listings/ListingCard";
+import useListings from "@/hooks/useListings";
+import { useAppSelector } from "@/lib/hooks";
 import Icons from "@repo/ui/icons";
-
-const listings = [
-  {
-    image: "/images/listing/vehicle_image.png",
-    name: "Hyundai Tuscon 2018",
-    price: "NGN 20,000/day",
-    status: "approved",
-    extras: [
-      { name: "Fuel Included", icon: Icons.ic_fuel_station },
-      { name: "Driver Available", icon: Icons.ic_driver_provided },
-    ],
-    vehicleDetails: [
-      { make: "Hyundai" },
-      { colour: "White" },
-      { seatingCapacity: 4 },
-      { location: "Lagos" },
-      { "vehicle type": "Sedan" },
-    ],
-  },
-  {
-    image: "/images/listing/vehicle_image.png",
-    name: "Hyundai Tuscon 2018",
-    price: "NGN 20,000/day",
-    status: "pending",
-    extras: [
-      { name: "Fuel Included", icon: Icons.ic_fuel_station },
-      { name: "Driver Available", icon: Icons.ic_driver_provided },
-    ],
-    vehicleDetails: [
-      { make: "Hyundai" },
-      { colour: "White" },
-      { seatingCapacity: 4 },
-      { location: "Lagos" },
-      { "vehicle type": "Sedan" },
-    ],
-  },
-  {
-    image: "/images/listing/vehicle_image.png",
-    name: "Hyundai Tuscon 2018",
-    price: "NGN 20,000/day",
-    status: "draft",
-    extras: [
-      { name: "Fuel Included", icon: Icons.ic_fuel_station },
-      { name: "Driver Available", icon: Icons.ic_driver_provided },
-    ],
-    vehicleDetails: [
-      { make: "Hyundai" },
-      { colour: "White" },
-      { seatingCapacity: 4 },
-      { location: "Lagos" },
-      { "vehicle type": "Sedan" },
-    ],
-  },
-  {
-    image: "/images/listing/vehicle_image.png",
-    name: "Hyundai Tuscon 2018",
-    price: "NGN 20,000/day",
-    status: "rejected",
-    extras: [
-      { name: "Fuel Included", icon: Icons.ic_fuel_station },
-      { name: "Driver Available", icon: Icons.ic_driver_provided },
-    ],
-    vehicleDetails: [
-      { make: "Hyundai" },
-      { colour: "White" },
-      { seatingCapacity: 4 },
-      { location: "Lagos" },
-      { "vehicle type": "Sedan" },
-    ],
-  },
-];
+import { FullPageSpinner } from "@repo/ui/spinner";
+import Pagination from "@repo/ui/pagination";
+import SearchInput from "@repo/ui/searchInput";
+import { ChangeEvent, useState } from "react";
+import Button from "@repo/ui/button";
+import Link from "next/link";
+import EmptyState from "@/components/EmptyState";
 
 export default function ListingsPage() {
-  // get listings
-  
+  const [search, setSearch] = useState<string>("");
+
+  const { listings, totalItemsCount } = useAppSelector(
+    (state) => state.listings
+  );
+
+  const { isLoading, isError, currentPage, setCurrentPage, pageLimit } =
+    useListings();
+
   return (
     <main className="space-y-6 py-[56px]">
       <DashboardSectionTitle icon={Icons.ic_car} title="Listings" />
-      {/* search bar and filter */}
-
-      {listings.map((listing, index) => (
-        <ListingCard key={index} listing={listing} />
-      ))}
+      <div className="flex justify-between items-center">
+        <SearchInput
+          placeholder="Search"
+          name="listingsSearch"
+          value={search}
+          onChange={(event: ChangeEvent<HTMLInputElement>) =>
+            setSearch(event.target.value)
+          }
+        />
+        <Link href="/vehicle-onboarding">
+          <Button
+            variant="filled"
+            color="primary"
+            className="flex items-center gap-2 !py-2 !px-4 !text-sm 3xl:!text-base button_icon"
+          >
+            {Icons.ic_add_circle} <span>Add New Vehicle</span>
+          </Button>
+        </Link>
+      </div>
+      {isLoading ? (
+        <FullPageSpinner />
+      ) : isError ? (
+        <p>something went wrong</p>
+      ) : (
+        <>
+          {listings.length > 0 ? (
+            listings.map((listing, index) => (
+              <ListingCard key={index} listing={listing} />
+            ))
+          ) : (
+            <EmptyState
+              title="No Listing"
+              message={
+                <Link href="/vehicle-onboarding" className="text-primary-500">
+                  add your first vehicle
+                </Link>
+              }
+              image="/icons/empty_booking_state.png"
+            />
+          )}
+        </>
+      )}
+      <Pagination
+        className="pagination-bar"
+        currentPage={currentPage}
+        totalCount={totalItemsCount}
+        pageLimit={pageLimit}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
     </main>
   );
 }

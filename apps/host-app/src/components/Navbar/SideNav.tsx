@@ -1,37 +1,9 @@
 import React from "react";
-import NavItem from "@/components/SideNav/NavItem";
-import Icons from "@repo/ui/icons";
+import SideNavItem from "@/components/Navbar/SideNavItem";
 import Image from "next/image";
+import { dashboardNavItems } from "@/utils/data";
 
 type Props = {};
-
-const navItems = [
-  {
-    icon: Icons.ic_dashboard,
-    name: "Dashboard",
-    link: "/dashboard",
-  },
-  {
-    icon: Icons.ic_ticket,
-    name: "Bookings",
-    link: "/bookings",
-  },
-  {
-    icon: Icons.ic_car,
-    name: "Listings",
-    link: "/listings",
-  },
-  {
-    icon: Icons.ic_wallet,
-    name: "Wallet",
-    link: "/wallet",
-  },
-  {
-    icon: Icons.ic_support,
-    name: "Support",
-    link: "/support",
-  },
-];
 
 export default function SideNav({}: Props) {
   return (
@@ -47,8 +19,8 @@ export default function SideNav({}: Props) {
           />
         </div>
         <ul className="list-none space-y-3">
-          {navItems.map((item, index) => (
-            <NavItem
+          {dashboardNavItems.map((item, index) => (
+            <SideNavItem
               key={index}
               icon={item.icon}
               name={item.name}

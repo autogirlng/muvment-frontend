@@ -37,13 +37,11 @@ const PricingRow = ({
   handleChange,
   handleBlur,
 }: PricingRowProps) => {
-  const [serviceFee, setServiceFee] = useState(0);
-  const [guestWillSee, setGuestWillSee] = useState(0);
+  const [serviceFee, setServiceFee] = useState<number>(0);
+  const [guestWillSee, setGuestWillSee] = useState<number>(0);
 
   useEffect(() => {
     const value = parseInt(rateValue);
-    console.log(value);
-    
 
     if (rateValue === "" || isNaN(value)) {
       setServiceFee(0);

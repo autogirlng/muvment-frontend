@@ -1,6 +1,6 @@
-import React from "react";
 import { Formik, Form } from "formik";
 import SelectInput from "@repo/ui/select";
+import AppSwitch from "@repo/ui/switch";
 import Tooltip from "@repo/ui/tooltip";
 import Collapse from "@repo/ui/collapsible";
 import Icons from "@repo/ui/icons";
@@ -26,6 +26,8 @@ const AvailabilityAndPricingForm = ({ steps }: Props) => {
     saveStep4,
     mapValuesToApiPayload,
     initialValues,
+    showOuskirts,
+    setShowOuskirts,
   } = useAvailabilityAndPricingForm();
   return (
     <Formik
@@ -322,23 +324,18 @@ const AvailabilityAndPricingForm = ({ steps }: Props) => {
           </div>
 
           <div>
-            <Collapse
-              title={
-                <p className="text-h6 3xl:text-h5 font-medium text-black">
-                  Do you charge extra for outskirt locations?
-                </p>
-              }
-              closeText={
-                <p className="text-primary-500 font-medium text-sm 3xl:text-xl flex items-center gap-1 ">
-                  {Icons.ic_add} <span>Add Loactions</span>
-                </p>
-              }
-              openText={
-                <p className="text-primary-500 font-medium text-sm 3xl:text-xl flex items-center gap-1">
-                  {Icons.ic_remove} <span>Remove Loactions</span>
-                </p>
-              }
-            >
+            <div className="flex justify-between gap-3">
+              <p className="text-h6 3xl:text-h5 font-medium text-black">
+                Do you charge extra for outskirt locations?
+              </p>
+              <AppSwitch
+                id="outskirtLocations"
+                name="outskirtLocations"
+                value={showOuskirts}
+                onChange={(checked) => setShowOuskirts(checked)}
+              />
+            </div>
+            {showOuskirts && (
               <div className="space-y-8">
                 <OutskirtRow
                   rateName="outskirtsPrice"
@@ -350,6 +347,7 @@ const AvailabilityAndPricingForm = ({ steps }: Props) => {
                   touched={touched}
                   handleChange={handleChange}
                   handleBlur={handleBlur}
+                  dailyRateValue={values.dailyRate}
                 />
                 <div className="space-y-3">
                   <label
@@ -386,7 +384,7 @@ const AvailabilityAndPricingForm = ({ steps }: Props) => {
                   </div>
                 </div>
               </div>
-            </Collapse>
+            )}
           </div>
 
           <StepperNavigation

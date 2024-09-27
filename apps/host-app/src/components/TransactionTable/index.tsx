@@ -5,7 +5,7 @@ import EmptyState from "../EmptyState";
 import { TransactionTableRow } from "@/utils/types";
 import TransactionRow from "./TransactionRow";
 
-type Props = { items: TransactionTableRow[]; };
+type Props = { items: TransactionTableRow[] };
 
 export default function TransactionTable({ items }: Props) {
   return items.length > 0 ? (
@@ -23,7 +23,7 @@ export default function TransactionTable({ items }: Props) {
     <EmptyState
       title="No Data Yet"
       message="No Transaction History"
-      image="/images/empty_state.png"
+      image="/icons/empty_booking_state.png"
     />
   );
 }

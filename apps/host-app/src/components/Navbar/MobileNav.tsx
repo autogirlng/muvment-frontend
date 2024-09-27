@@ -1,0 +1,115 @@
+import { useAppSelector } from "@/lib/hooks";
+import { getInitialsFromName } from "@/utils/functions";
+import { AvatarImage, AvatarInitials } from "@repo/ui/avatar";
+import Icons from "@repo/ui/icons";
+import Image from "next/image";
+import Link from "next/link";
+import React, { useState } from "react";
+import MobileNavItem from "./MobileNavItem";
+import { dashboardNavItems, popupNavItems } from "@/utils/data";
+import cn from "classnames";
+
+type Props = {};
+
+export default function MobileNav({}: Props) {
+  const { user } = useAppSelector((state) => state.user);
+
+  const [openNav, setOpenNav] = useState<boolean>(false);
+
+  return (
+    <div className="block md:hidden px-8 py-3 bg-grey-50">
+      <div className="flex items-center justify-between">
+        <Image
+          className=""
+          src="/images/logo.png"
+          alt=""
+          width={100}
+          height={15}
+        />
+        <button
+          className="bg-white border border-grey-300 rounded-[33px] p-1 pr-2 flex items-center gap-2"
+          onClick={() => setOpenNav(!openNav)}
+        >
+          <AvatarInitials
+            initials={
+              user
+                ? getInitialsFromName(user.firstName, user.lastName)
+                : Icons.ic_user
+            }
+            size="!w-7 !h-7"
+            color="!bg-primary-100 !text-primary-800 !text-[10px] !font-bold"
+          />
+          {Icons.ic_menu}
+        </button>
+      </div>
+      <div
+        className={cn(
+          "fixed top-[60px] transition-transform overflow-auto",
+          openNav
+            ? "right-0 z-10 w-full min-h-screen h-full bg-white px-8 py-14 translate-x-0 visible"
+            : "h-0 w-0 translate-x-[100%] invisible"
+        )}
+      >
+        {user ? (
+          <div className="space-y-6 pb-8">
+            <AvatarImage
+              image="/images/top_header_avatar.png"
+              initials={getInitialsFromName(user.firstName, user.lastName)}
+              size="!w-20 !h-20"
+            />
+            <div className="space-y-1">
+              <p className="text-sm">
+                {user.firstName} {user.lastName}
+              </p>
+              <Link href="/profile" className="text-xs text-primary-500">
+                View profile
+              </Link>
+            </div>
+
+            <div className="h-px w-full bg-grey-200" />
+
+            <ul className="list-none space-y-3">
+              {dashboardNavItems.map((item, index) => (
+                <MobileNavItem
+                  handleClick={() => setOpenNav(false)}
+                  key={index}
+                  icon={item.icon}
+                  name={item.name}
+                  link={item.link}
+                />
+              ))}
+            </ul>
+
+            <div className="h-px w-full bg-grey-200" />
+
+            <ul className="list-none space-y-3">
+              {popupNavItems.map((item, index) => (
+                <MobileNavItem
+                  handleClick={() => setOpenNav(false)}
+                  key={index}
+                  icon={item.icon}
+                  name={item.name}
+                  link={item.link}
+                  className="!py-[6px]"
+                />
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <ul className="list-none space-y-3 pb-8">
+            {popupNavItems.map((item, index) => (
+              <MobileNavItem
+                handleClick={() => setOpenNav(false)}
+                key={index}
+                icon={item.icon}
+                name={item.name}
+                link={item.link}
+                className="!py-[6px]"
+              />
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}

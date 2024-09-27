@@ -1,7 +1,8 @@
-import FullPageDialog from "@repo/ui/fullPageDialog";
 import cn from "classnames";
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
+import { FullPageDialog } from "@repo/ui/dialog";
 import EarningsModal from "./Modal/EarningsModal";
+import { Spinner } from "@repo/ui/spinner";
 
 type Props = {
   primary?: boolean;
@@ -10,6 +11,8 @@ type Props = {
   modalTitle?: string;
   modalName?: string;
   modalIcon?: ReactNode;
+  isLoading?: boolean;
+  className?: string;
 };
 
 export default function ActivityCard({
@@ -19,6 +22,8 @@ export default function ActivityCard({
   modalTitle,
   modalName,
   modalIcon,
+  isLoading,
+  className,
 }: Props) {
   return (
     <div
@@ -27,12 +32,14 @@ export default function ActivityCard({
 
         primary && value !== "-"
           ? "bg-primary-500 border border-grey-200 text-white"
-          : "bg-white border border-grey-200 text-grey-500"
+          : "bg-white border border-grey-200 text-grey-500",
+        className
       )}
     >
       <div className="flex justify-between gap-2 text-xs 2xl:text-sm">
         <p>{title}</p>
         {modalTitle && (
+          // move this to the earnings modal component
           <FullPageDialog
             title="Earnings"
             trigger={
@@ -45,18 +52,22 @@ export default function ActivityCard({
           />
         )}
       </div>
-      <h2
-        className={cn(
-          "text-h3 2xl:text-4xl",
-          primary && value === "-"
-            ? "text-primary-500"
-            : primary && value !== "-"
-              ? "text-white"
-              : "text-black"
-        )}
-      >
-        {value}
-      </h2>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <h2
+          className={cn(
+            "text-h3 2xl:text-4xl",
+            primary && value === "-"
+              ? "text-primary-500"
+              : primary && value !== "-"
+                ? "text-white"
+                : "text-black"
+          )}
+        >
+          {value}
+        </h2>
+      )}
     </div>
   );
 }

@@ -152,6 +152,10 @@ label svg {
   width: 1em;
 }
 
+.button_icon svg {
+  width: 1.5em;
+}
+
 .container {
   position: relative;
   width: 100%;

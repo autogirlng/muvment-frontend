@@ -46,9 +46,9 @@ export default function RootLayout({
           theme="light"
         />
 
-        <ReactQueryClientProvider>
-          <StoreProvider>{children}</StoreProvider>
-        </ReactQueryClientProvider>
+        <StoreProvider>
+          <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
+        </StoreProvider>
       </body>
     </html>
   );

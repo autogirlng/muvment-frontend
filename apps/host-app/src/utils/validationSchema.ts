@@ -161,3 +161,33 @@ export const availabilityAndPricingSchema = object().shape({
   // sevenDaysDiscount: string().required("Please enter the amount"),
   // thirtyDaysDiscount: string().required("Please enter the amount"),
 });
+
+export const assignNewDriverFormValidationSchema = object().shape({
+  firstName: string().required("Please enter your first name"),
+  lastName: string().required("Please enter your last name"),
+  phoneNumber: string()
+    .required("Please enter your phone number")
+    .test("phoneNumber", "Invalid phone number", function (val) {
+      return isValidPhoneNumber(val);
+    }),
+  country: string().required("Please enter your country code"),
+});
+
+export const profileFormValidationSchema = object().shape({
+  firstName: string().required("Please enter your first name"),
+  lastName: string().required("Please enter your last name"),
+
+  country: string().required("Please enter your country code"),
+  bio: string().required("Please enter your bio"),
+  city: string().required("Please select your city"),
+});
+
+export const changePasswordValidationSchema = object().shape({
+  currentPassword: string().required("Please enter your current password"),
+
+  password: string().required("Please enter your new password"),
+
+  confirmPassword: string()
+    .required("Please confirm your password")
+    .oneOf([ref("password")], "The passwords doesn’t match."),
+});

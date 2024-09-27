@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { handleErrors } from "@/utils/functions";
-import { ErrorResponse } from "@/utils/types";
+import { ErrorResponse, MappedInformation } from "@/utils/types";
 import { api } from "@/lib/api";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
@@ -18,10 +18,6 @@ type VehiclePerksProp = {
   name: string;
   id: string;
   status: boolean;
-};
-
-type MappedVehicleDetail = {
-  [key: string]: string | number;
 };
 
 const vehicleSummaryPerks: VehiclePerksProp[] = [
@@ -71,12 +67,10 @@ export default function useVehicleSummary() {
     (state) => state.vehicleOnboarding
   );
 
-  const [perks, setPerks] = useState(vehicleSummaryPerks);
-  const [vehicleDetails, setVehicleDetails] = useState<MappedVehicleDetail[]>(
-    []
-  );
+  const [perks, setPerks] = useState<VehiclePerksProp[]>(vehicleSummaryPerks);
+  const [vehicleDetails, setVehicleDetails] = useState<MappedInformation[]>([]);
   const [vehicleImages, setVehicleImages] = useState<string[]>([]);
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [agreeToTerms, setAgreeToTerms] = useState<boolean>(false);
 
   const setCurrentStep = (step: number) =>
     dispatch(setVehicleOnboardingCurrentStep(step));
@@ -111,7 +105,7 @@ export default function useVehicleSummary() {
           }
         })
       );
-      const mappedVehicleDetails: MappedVehicleDetail[] = [
+      const mappedVehicleDetails: MappedInformation[] = [
         { make: vehicle?.make || "N/A" },
         { model: vehicle?.model || "N/A" },
         { year: vehicle?.yearOfRelease || "N/A" },
@@ -124,12 +118,12 @@ export default function useVehicleSummary() {
       setVehicleDetails(mappedVehicleDetails);
 
       const mappedVehicleImages = [
-        vehicle?.VehicleImage.frontView,
-        vehicle?.VehicleImage.backView,
-        vehicle?.VehicleImage.sideView1,
-        vehicle?.VehicleImage.sideView2,
-        vehicle?.VehicleImage.interior,
-        vehicle?.VehicleImage.other,
+        vehicle?.VehicleImage?.frontView,
+        vehicle?.VehicleImage?.backView,
+        vehicle?.VehicleImage?.sideView1,
+        vehicle?.VehicleImage?.sideView2,
+        vehicle?.VehicleImage?.interior,
+        vehicle?.VehicleImage?.other,
       ];
       setVehicleImages(mappedVehicleImages);
     }

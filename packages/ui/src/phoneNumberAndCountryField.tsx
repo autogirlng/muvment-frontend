@@ -55,8 +55,8 @@ const PhoneNumberAndCountryField = ({
   selectClassname,
   inputError,
   selectError,
-  inputDisabled,
-  selectDisabled,
+  inputDisabled = false,
+  selectDisabled = false,
 
   variant,
 }: PhoneNumberAndCountryFieldProps) => (
@@ -78,6 +78,7 @@ const PhoneNumberAndCountryField = ({
       error={selectError}
       className={selectClassname}
       onBlur={selectOnBlur}
+      disabled={selectDisabled}
     />
     <div className={cn("w-full space-y-1", inputError && "-mb-[25px]")}>
       <PhoneInput
@@ -85,7 +86,7 @@ const PhoneNumberAndCountryField = ({
         id={inputId}
         type="text"
         className={cn(
-          "w-full rounded-[18px] p-4 pr-8 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400",
+          "w-full rounded-[18px] p-4 pr-8 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400 disabled:bg-grey-100 disabled:text-grey-400 disabled:border-grey-300",
           inputError
             ? "border border-error-500 focus:border-error-500"
             : variant === "filled"
@@ -97,6 +98,7 @@ const PhoneNumberAndCountryField = ({
         onChange={inputOnChange}
         value={inputValue}
         onBlur={inputOnBlur}
+        disabled={inputDisabled}
       />
       {inputError && (
         <p className="text-error-500 text-sm mt-2">{inputError}</p>

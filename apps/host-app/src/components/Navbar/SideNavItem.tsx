@@ -5,7 +5,7 @@ import cn from "classnames";
 
 type Props = { link: string; name: string; icon: ReactNode };
 
-export default function NavItem({ link, name, icon }: Props) {
+export default function SideNavItem({ link, name, icon }: Props) {
   const pathname = usePathname();
   return (
     <li>

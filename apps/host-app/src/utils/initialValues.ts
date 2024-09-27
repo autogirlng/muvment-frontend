@@ -2,7 +2,9 @@ import {
   AdditionalVehicleInformationValues,
   AvailabilityAndPricingValues,
   BasicVehicleInformationValues,
+  ChangePasswordValues,
   LoginFormValues,
+  ProfileFormValues,
   ResetPasswordEmailValues,
   SetNewPasswordValues,
   SignupFormValues,
@@ -42,6 +44,20 @@ export const resetPasswordEmailInitialValues: ResetPasswordEmailValues = {
 export const setNewPasswordInitialValues: SetNewPasswordValues = {
   email: "",
   token: "",
+  password: "",
+  confirmPassword: "",
+  password_checks: {
+    length: false,
+    uppercase_letters: false,
+    lowercase_letters: false,
+    digit: false,
+    special_character: false,
+    no_space: false,
+  },
+};
+
+export const changePasswordInitialValues: ChangePasswordValues = {
+  currentPassword: "",
   password: "",
   confirmPassword: "",
   password_checks: {
@@ -119,4 +135,23 @@ export const availabilityAndPricingValues: AvailabilityAndPricingValues = {
   thirtyDaysDiscount: "",
   outskirtsLocation: [],
   outskirtsPrice: "",
+};
+
+export const profileFormInitialValues: ProfileFormValues = {
+  firstName: "",
+  lastName: "",
+  // phoneNumber: "",
+  country: "",
+  countryCode: "",
+  // email: "",
+  bio: "",
+  // dob: "",
+  profileImage: "",
+  city: "",
+  isBusiness: true,
+  businessAddress: "",
+  businessEmail: "",
+  businessLogo: "",
+  businessName: "",
+  businessPhoneNumber: "",
 };

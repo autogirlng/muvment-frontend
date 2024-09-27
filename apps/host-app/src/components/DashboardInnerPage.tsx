@@ -5,7 +5,7 @@ import BackLink from "./BackLink";
 type Props = {
   isInnerPage?: boolean;
   title: string;
-  description: string;
+  description?: string;
   backLink?: string;
   children: ReactNode;
 };
@@ -29,7 +29,7 @@ export default function DashboardInnerPage({
         <h2 className="text-grey-700 text-h4 2xl:text-4xl font-bold">
           {title}
         </h2>
-        <p className="text-grey-500 text-sm 2xl:text-base">{description}</p>
+       {description && <p className="text-grey-500 text-sm 2xl:text-base">{description}</p>}
         {!isInnerPage && (
           <h6 className="text-base 2xl:text-h6 text-black font-semibold">
             Tasks

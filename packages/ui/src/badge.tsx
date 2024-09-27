@@ -1,21 +1,79 @@
 import cn from "classnames";
 
 type BookingBadgeProps = {
-  status: "accepted" | "pending" | "canceled";
+  status: "ACCEPTED" | "PENDING" | "CANCELLED" | "APPROVED" | "COMPLETED";
 };
 
-export const BookingBadge = ({ status }: BookingBadgeProps) => {
+export const BookingTableBadge = ({ status }: BookingBadgeProps) => {
   const badgeColor =
-    status === "accepted"
+    status === "ACCEPTED" || status === "APPROVED"
       ? "bg-success-500"
-      : status === "canceled"
+      : status === "CANCELLED"
         ? "bg-error-900"
-        : "bg-warning-400";
+        : status === "PENDING"
+          ? "bg-warning-400"
+          : "bg-grey-500";
 
   return (
     <div
       className={cn(
-        "px-3 py-[2px] text-sm font-medium capitalize text-white rounded-xl",
+        "px-3 py-[2px] text-sm font-medium capitalize text-white rounded-xl w-fit",
+        badgeColor
+      )}
+    >
+      {status === "APPROVED" ? "accepted" : status.toLocaleLowerCase()}
+    </div>
+  );
+};
+
+export const BookingBadge = ({ status }: BookingBadgeProps) => {
+  const badgeColor =
+    status === "APPROVED"
+      ? "bg-success-100 text-success-600"
+      : status === "CANCELLED"
+        ? "bg-error-100 text-error-600"
+        : status === "PENDING"
+          ? "bg-warning-75 text-warning-500"
+          : "bg-grey-90 text-grey-500";
+
+  return (
+    <div
+      className={cn(
+        "px-6 py-2 text-sm 3xl:text-base font-medium capitalize rounded-[121px] w-fit",
+        badgeColor
+      )}
+    >
+      {status.toLocaleLowerCase()}
+    </div>
+  );
+};
+
+type VehicleListingBadgeProps = {
+  status:
+    | "draft"
+    | "active"
+    | "pending"
+    | "maintenance"
+    | "booked"
+    | "submitted"
+    | "unavailable"
+    | "inactive";
+};
+
+export const VehicleListingBadge = ({ status }: VehicleListingBadgeProps) => {
+  const badgeColor =
+    status === "booked" || status === "active"
+      ? "bg-success-100 text-success-600"
+      : status === "pending" || status === "maintenance"
+        ? "bg-warning-75 text-warning-500"
+        : status === "unavailable" || status === "inactive"
+          ? "bg-error-100 text-error-600"
+          : "bg-grey-300 text-grey-500";
+
+  return (
+    <div
+      className={cn(
+        "px-6 py-2 text-sm 3xl:text-base font-medium capitalize rounded-[121px]",
         badgeColor
       )}
     >
@@ -25,16 +83,22 @@ export const BookingBadge = ({ status }: BookingBadgeProps) => {
 };
 
 type ListingBadgeProps = {
-  status: "draft" | "approved" | "pending" | "rejected";
+  status:
+    | "suspended"
+    | "approved"
+    | "rejected"
+    | "review"
+    | "feedback"
+    | "accepted";
 };
 
 export const ListingBadge = ({ status }: ListingBadgeProps) => {
   const badgeColor =
     status === "approved"
       ? "bg-success-100 text-success-600"
-      : status === "pending"
+      : status === "review"
         ? "bg-warning-75 text-warning-500"
-        : status === "rejected"
+        : status === "rejected" || status === "feedback"
           ? "bg-error-100 text-error-600"
           : "bg-grey-300 text-grey-500";
 
@@ -51,14 +115,14 @@ export const ListingBadge = ({ status }: ListingBadgeProps) => {
 };
 
 type TransactionBadgeProps = {
-  status: "successful" | "pending" | "failed";
+  status: "successful" | "pending" | "failed" | "paid" | "cancelled";
 };
 
 export const TransactionBadge = ({ status }: TransactionBadgeProps) => {
   const badgeColor =
-    status === "successful"
+    status === "successful" || status === "paid"
       ? "bg-success-500"
-      : status === "failed"
+      : status === "failed" || status === "cancelled"
         ? "bg-error-800"
         : "bg-warning-500";
 

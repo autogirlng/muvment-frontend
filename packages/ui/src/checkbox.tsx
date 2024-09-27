@@ -33,7 +33,7 @@ export const GroupCheckBox = ({
           {Icons.ic_check}
         </Checkbox.Indicator>
       </Checkbox.Root>
-      <label htmlFor={feature} className="text-sm">
+      <label htmlFor={feature} className="text-sm capitalize">
         {feature}
       </label>
     </div>

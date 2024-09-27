@@ -1,23 +1,21 @@
 import TableCell from "../TableCell";
-import { BookingOverviewTableRow } from "@/utils/types";
-import Icons from "@repo/ui/icons";
+import { BookingInformation } from "@/utils/types";
+import MoreButton from "@repo/ui/moreButton";
 
-const BookingRow = ({ items }: { items: BookingOverviewTableRow }) => {
+const BookingRow = ({ items }: { items: BookingInformation }) => {
   return (
     <tr>
-      <TableCell content={items?.vehicle} />
+      <TableCell content={items?.vehicle?.listingName} />
       <TableCell content={items?.guestName} className="text-grey-900" />
-      <TableCell content={items?.bookingId} />
+      <TableCell content={items?.id} />
       <TableCell content={items?.bookingType} />
-      <TableCell content={items?.duration} />
+      <TableCell content={`${items?.duration} days`} />
       <TableCell content={items?.startDate} />
       <TableCell content={items?.endDate} />
-      <TableCell content={items?.status} isBadge type="booking" />
-      <TableCell content={items?.price} />
+      <TableCell content={items?.bookingStatus} isBadge type="booking" />
+      <TableCell content={`${items?.currencyCode} ${items?.amount}`} />
       <td>
-        <div className="border border-grey-200 bg-white text-black rounded-lg p-2 w-fit mx-auto">
-          {Icons.ic_more}
-        </div>
+        <MoreButton />
       </td>
     </tr>
   );

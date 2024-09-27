@@ -28,7 +28,7 @@ export default function VehicleOnboardingSuccessPage({
     <main className="p-8 min-h-screen h-full w-full flex items-center justify-center">
       <div className="space-y-12 flex flex-col items-center text-center">
         <Image
-          src="/images/success_confetti.png"
+          src="/icons/success_confetti.png"
           alt=""
           height={100}
           width={100}

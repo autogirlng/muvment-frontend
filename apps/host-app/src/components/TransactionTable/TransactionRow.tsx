@@ -1,6 +1,7 @@
 import { TransactionTableRow } from "@/utils/types";
 import Icons from "@repo/ui/icons";
 import TableCell from "@/components/TableCell";
+import MoreButton from "@repo/ui/moreButton";
 
 const TransactionRow = ({ items }: { items: TransactionTableRow }) => {
   return (
@@ -28,9 +29,7 @@ const TransactionRow = ({ items }: { items: TransactionTableRow }) => {
       <TableCell content={items?.amount} />
       <TableCell content={items?.status} isBadge type="transaction" />
       <td>
-        <div className="border border-grey-200 bg-white text-black rounded-lg p-2 w-fit mx-auto">
-          {Icons.ic_more}
-        </div>
+        <MoreButton />
       </td>
     </tr>
   );

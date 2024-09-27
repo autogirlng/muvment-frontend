@@ -51,7 +51,7 @@ function Overview({}: Props) {
             />
             <div className="hidden lg:block lg:absolute right-16 top-0">
               <Image
-                src="/images/stars.png"
+                src="/icons/stars.png"
                 alt="stars"
                 width={88}
                 height={84}

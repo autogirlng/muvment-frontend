@@ -1,6 +1,8 @@
 import { ReactNode } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
+import * as Popover from "@radix-ui/react-popover";
 import Icons from "@repo/ui/icons";
+import cn from "classnames";
 
 type Props = {
   trigger: ReactNode;
@@ -32,4 +34,28 @@ export const TipsPopup = ({ trigger, content }: Props) => (
   </Dialog.Root>
 );
 
-// export default TipsPopup;
+export const Popup = ({
+  content,
+  trigger,
+  className,
+}: {
+  content: ReactNode;
+  trigger: ReactNode;
+  className?: string;
+}) => (
+  <Popover.Root>
+    <Popover.Trigger asChild>{trigger}</Popover.Trigger>
+    <Popover.Portal>
+      <Popover.Content
+        align="end"
+        className={cn(
+          "rounded-xl p-4 w-[255px] bg-white border border-grey-200 will-change-[transform,opacity] data-[state=open]:data-[side=top]:animate-slideDownAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade",
+          className
+        )}
+        sideOffset={5}
+      >
+        {content}
+      </Popover.Content>
+    </Popover.Portal>
+  </Popover.Root>
+);

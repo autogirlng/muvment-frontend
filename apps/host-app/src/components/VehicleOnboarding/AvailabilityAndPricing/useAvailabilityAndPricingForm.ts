@@ -14,10 +14,12 @@ import {
   setVehicleOnboardingCurrentStep,
   updateVehicleInformation,
 } from "@/lib/features/vehicleOnboardingSlice";
+import { useState } from "react";
 
 export default function useAvailabilityAndPricingForm() {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const [showOuskirts, setShowOuskirts] = useState<boolean>(false);
 
   const { currentStep, vehicle } = useAppSelector(
     (state) => state.vehicleOnboarding
@@ -128,5 +130,7 @@ export default function useAvailabilityAndPricingForm() {
     vehicle,
     mapValuesToApiPayload,
     initialValues,
+    showOuskirts,
+    setShowOuskirts,
   };
 }

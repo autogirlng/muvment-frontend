@@ -1,10 +1,78 @@
 import Icons from "@repo/ui/icons";
 import {
   AccountSetupTask,
-  BookingOverviewTableRow,
   TopRatedVehicleType,
   TransactionTableRow,
 } from "./types";
+
+export const dashboardNavItems = [
+  {
+    icon: Icons.ic_dashboard,
+    name: "Dashboard",
+    link: "/dashboard",
+  },
+  {
+    icon: Icons.ic_ticket,
+    name: "Bookings",
+    link: "/bookings",
+  },
+  {
+    icon: Icons.ic_car,
+    name: "Listings",
+    link: "/listings",
+  },
+  {
+    icon: Icons.ic_wallet,
+    name: "Wallet",
+    link: "/wallet",
+  },
+  {
+    icon: Icons.ic_support,
+    name: "Support",
+    link: "/support",
+  },
+];
+
+export const popupNavItems = [
+  {
+    icon: Icons.ic_user_account,
+    name: "My account",
+    link: "/account",
+  },
+  {
+    icon: Icons.ic_setting,
+    name: "Settings",
+    link: "/dashboard",
+  },
+  {
+    icon: Icons.ic_help_circle,
+    name: "About Us",
+    link: "/dashboard",
+  },
+  {
+    icon: Icons.ic_logout,
+    name: "Log out",
+    // link: "/dashboard",
+  },
+];
+
+export const popupNavItemsforNoUser = [
+  {
+    icon: Icons.ic_host,
+    name: "Become a host",
+    link: "/signup",
+  },
+  {
+    icon: Icons.ic_login,
+    name: "Login",
+    link: "/login",
+  },
+  {
+    icon: Icons.ic_help_circle,
+    name: "About Us",
+    link: "/dashboard",
+  },
+];
 
 export const completeAccountSetupTasks: AccountSetupTask[] = [
   {
@@ -109,9 +177,11 @@ export const vehicleFeaturesOptions: string[] = [
 
 // add type
 export const citiesOptions = [
-  { value: "Lagos", option: "Lagos" },
-  { value: "Accra", option: "Accra" },
   { value: "Abuja", option: "Abuja" },
+  { value: "Accra", option: "Accra" },
+  { value: "Benin", option: "Benin City" },
+  { value: "Enugu", option: "Enugu" },
+  { value: "Lagos", option: "Lagos" },
   { value: "Port Harcourt", option: "Port Harcourt" },
 ];
 
@@ -171,6 +241,16 @@ export const outskirtsLocationOptions: string[] = [
   "Egbeda",
 ];
 
+export const daysOfTheWeek: string[] = [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+];
+
 export const monthsFilter: string[] = [
   "Jan",
   "Feb",
@@ -226,6 +306,19 @@ export const bookingOverviewTableHeadItems: string[] = [
   "Booking ID",
   "Booking Type",
   "Duration",
+  "Start Date",
+  "End Date",
+  "Status",
+  "Price",
+  "Actions",
+];
+
+export const bookingAnalyticsTableHeadItems: string[] = [
+  "Guest Name",
+  "Booking ID",
+  "Booking Type",
+  "Duration",
+  "Vehicle",
   "Start Date",
   "End Date",
   "Status",
@@ -299,7 +392,7 @@ export const bookingFilters = [
       { label: "Active", value: "active" },
       { label: "Pending", value: "pending" },
       { label: "Completed", value: "completed" },
-      { label: "Canceled", value: "canceled" },
+      { label: "Cancelled", value: "cancelled" },
       { label: "Rejected", value: "rejected" },
     ],
   },
@@ -342,129 +435,6 @@ export const topRatedVehicle: TopRatedVehicleType = {
   totalRides: "440",
   totalEarnings: "$330,000",
 };
-
-export const bookingOverviewTableItems: BookingOverviewTableRow[] = [
-  {
-    vehicle: "Toyota Camry 2021",
-    guestName: "Chioma Nwosu",
-    bookingId: "BKG-1234-AB56",
-    bookingType: "Instant",
-    duration: "Leading text",
-    startDate: "Apr 12, 2023",
-    endDate: "Apr 12, 2023",
-    status: "Accepted",
-    price: "NGN 100,000",
-    actions: "Leading text",
-  },
-  {
-    vehicle: "Honda Civic 2019",
-    guestName: "Oluwaseun Ojo",
-    bookingId: "BKG-4567-GH12",
-    bookingType: "Leading text",
-    duration: "1 day",
-    startDate: "Apr 12, 2023",
-    endDate: "Leading text",
-    status: "Accepted",
-    price: "Leading text",
-    actions: "Leading text",
-  },
-  {
-    vehicle: "Mercedes-Benz C-Class 2019",
-    guestName: "Chukwuemeka Okeke",
-    bookingId: "BKG-4567-GH12",
-    bookingType: "Pick-up & drop-off",
-    duration: "3 days",
-    startDate: "Apr 11, 2023",
-    endDate: "Leading text",
-    status: "Accepted",
-    price: "NGN 20,000",
-    actions: "Leading text",
-  },
-  {
-    vehicle: "Subaru Outback 2020",
-    guestName: "Chigozie Nnamani",
-    bookingId: "BKG-5678-IJ34",
-    bookingType: "Long term",
-    duration: "1 week",
-    startDate: "Apr 11, 2023",
-    endDate: "Leading text",
-    status: "Accepted",
-    price: "NGN 14,000",
-    actions: "Leading text",
-  },
-  {
-    vehicle: "Toyota Camry 2021",
-    guestName: "Ezinne Chukwu",
-    bookingId: "BKG-8901-MN78",
-    bookingType: "Long term",
-    duration: "Leading text",
-    startDate: "Apr 10, 2023",
-    endDate: "Apr 10, 2023",
-    status: "Accepted",
-    price: "NGN 30,000",
-    actions: "Leading text",
-  },
-  {
-    vehicle: "Mercedes-Benz C-Class 2019",
-    guestName: "Oluchi Eze",
-    bookingId: "BKG-0123-QR12",
-    bookingType: "Instant",
-    duration: "Leading text",
-    startDate: "Apr 09, 2023",
-    endDate: "Apr 09, 2023",
-    status: "Accepted",
-    price: "NGN 16,000",
-    actions: "Leading text",
-  },
-  {
-    vehicle: "Toyota Camry 2021",
-    guestName: "Chika Ibe",
-    bookingId: "BKG-3456-EF90",
-    bookingType: "Instant",
-    duration: "1 day",
-    startDate: "Apr 09, 2023",
-    endDate: "Leading text",
-    status: "Accepted",
-    price: "NGN 42,000",
-    actions: "Leading text",
-  },
-  {
-    vehicle: "Toyota Camry 2021",
-    guestName: "Nnamdi Kalu",
-    bookingId: "BKG-4567-GH12",
-    bookingType: "Pick-up & drop-off",
-    duration: "Leading text",
-    startDate: "Apr 08, 2023",
-    endDate: "Leading text",
-    status: "Accepted",
-    price: "NGN 65,000",
-    actions: "Leading text",
-  },
-  {
-    vehicle: "Toyota Camry 2021",
-    guestName: "Obinna Anozie",
-    bookingId: "BKG-6789-KL56",
-    bookingType: "Leading text",
-    duration: "3 days",
-    startDate: "Apr 07, 2023",
-    endDate: "Apr 07, 2023",
-    status: "Accepted",
-    price: "NGN 70,000",
-    actions: "Leading text",
-  },
-  {
-    vehicle: "Mercedes-Benz C-Class 2019",
-    guestName: "Adebayo Olatunji",
-    bookingId: "BKG-3851-ZW76",
-    bookingType: "Instant",
-    duration: "2 days",
-    startDate: "Apr 06, 2023",
-    endDate: "Leading text",
-    status: "Accepted",
-    price: "NGN 50,000",
-    actions: "Leading text",
-  },
-];
 
 export const transactionData: TransactionTableRow[] = [
   {

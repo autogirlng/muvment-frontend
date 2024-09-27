@@ -26,10 +26,13 @@ const config: Config = {
       transparent: "transparent",
       primary: {
         50: "#EDF8FF",
+        75: "#D6EDFF",
+        100: "#B5E2FF",
         500: "#0673FF",
         400: "#1E93FF",
         600: "#005EFF",
         700: "#0848C5",
+        800: "#0D419B",
         900: "#0E285D",
       },
       grey: {
@@ -63,6 +66,7 @@ const config: Config = {
         900: "#E61C1C",
       },
       success: {
+        50: "#EFFEF1",
         100: "#B6FCBF",
         500: "#0AAF24",
         600: "#0C8921",
