@@ -316,7 +316,8 @@ export interface DashboardStatistics {
   totalOnboardedVehicles: number;
   totalCompletedRides: number;
   walletBalance: number;
-  topRatedVehicle: null | TopRatedVehicle;
+  // topRatedVehicle: null | TopRatedVehicle;
+  topRatedVehicle: null | TopRatedVehicleType;
 }
 
 export interface BookingStatistics {
