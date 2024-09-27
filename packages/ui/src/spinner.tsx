@@ -1,10 +1,16 @@
 import Icons from "@repo/ui/icons";
+import cn from "classnames";
 
-type Props = {};
+type Props = { className?: string };
 
-export function FullPageSpinner({}: Props) {
+export function FullPageSpinner({ className }: Props) {
   return (
-    <div className="w-full min-h-screen flex justify-center items-center">
+    <div
+      className={cn(
+        "w-full min-h-screen flex justify-center items-center",
+        className
+      )}
+    >
       <div className="animate-spin w-fit *:w-8 *:h-8 text-grey-500">
         {Icons.ic_spinner}
       </div>

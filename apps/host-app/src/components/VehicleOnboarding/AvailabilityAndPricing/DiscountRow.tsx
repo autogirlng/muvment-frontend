@@ -30,7 +30,7 @@ const DiscountRow = ({
   handleChange,
   handleBlur,
 }: DiscountRowProps) => {
-  const [whatYouWillReceive, setWhatYouWillReceive] = useState(0);
+  const [whatYouWillReceive, setWhatYouWillReceive] = useState<number>(0);
 
   const calculateDiscount = (dailyRateValue: string, rateValue: string) => {
     const valueInPercentage = parseInt(rateValue);

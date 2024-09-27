@@ -8,33 +8,34 @@ import {
   specialCharRegex,
   uppercaseRegex,
 } from "@/utils/constants";
+import { daysOfTheWeek } from "./data";
 
-export const isLengthValid = (password: string) => {
+export const isLengthValid = (password: string): boolean => {
   const isLengthValid = password.length >= 8;
   return isLengthValid;
 };
 
-export const isUpperCaseValid = (password: string) => {
+export const isUpperCaseValid = (password: string): boolean => {
   const hasUppercase = uppercaseRegex.test(password);
   return hasUppercase;
 };
 
-export const isLowerCaseValid = (password: string) => {
+export const isLowerCaseValid = (password: string): boolean => {
   const hasLowercase = lowercaseRegex.test(password);
   return hasLowercase;
 };
 
-export const isDigitValid = (password: string) => {
+export const isDigitValid = (password: string): boolean => {
   const hasNumber = numberRegex.test(password);
   return hasNumber;
 };
 
-export const isSpecialCharacterValid = (password: string) => {
+export const isSpecialCharacterValid = (password: string): boolean => {
   const hasSpecialChar = specialCharRegex.test(password);
   return hasSpecialChar;
 };
 
-export const isSpaceValid = (password: string) => {
+export const isSpaceValid = (password: string): boolean => {
   const noSpace = spacesRegex.test(password);
   return noSpace;
 };
@@ -43,29 +44,58 @@ export const addSpaceBeforeUppercase = (str: string): string => {
   return str?.replace(/([a-z])([A-Z])/g, "$1 $2");
 };
 
-export const keyAndValueInAChip = (key: string, value: string | number) => {
+export const keyAndValueInAChip = (
+  key: string,
+  value: string | number
+): string => {
   return `${addSpaceBeforeUppercase(key.charAt(0).toUpperCase() + key.slice(1))}: ${value}`;
 };
 
-export const getInitialsFromName = (firstName: string, lastName: string) => {
+export const getInitialsFromName = (
+  firstName: string,
+  lastName: string
+): string => {
   const firstInitial = firstName.charAt(0).toUpperCase();
   const lastInitial = lastName.charAt(0).toUpperCase();
 
   return `${firstInitial}${lastInitial}`;
 };
 
-export const formatNumberWithCommas = (number: string | number) => {
+export const mapRentalAvailabilityToArray = (days: {
+  [key: string]: boolean;
+}): string[] => {
+  return Object.keys(days).filter((day) => days[day]);
+};
+
+export const mapRentalAvailabilityArrayToObject = (
+  daysArray: string[]
+): {
+  [key: string]: boolean;
+} => {
+  return daysOfTheWeek.reduce(
+    (acc, day) => {
+      acc[day] = daysArray.includes(day);
+      return acc;
+    },
+    {} as { [key: string]: boolean }
+  );
+};
+
+export const formatNumberWithCommas = (number: string | number): string => {
   return number?.toLocaleString();
 };
 
-export const calculateServiceFee = (price: number, standardFee: number) => {
+export const calculateServiceFee = (
+  price: number,
+  standardFee: number
+): number => {
   return price * standardFee;
 };
 
 export const calculateRateGuestsWillSee = (
   price: number,
   serviceFee: number
-) => {
+): number => {
   return price + serviceFee;
 };
 
@@ -104,6 +134,9 @@ export const handleErrors = (
 
   if (error.response?.data?.ERR_CODE === "PHONE_NUMBER_NOT_FOUND")
     toast.error("Phone Number not found");
+
+  if (error.response?.data?.ERR_CODE === "HOST_NOT_OWNER_OF_VEHICLE")
+    toast.error("Host not owner of vehicle");
 
   if (error.response?.data?.message) toast.error(error.response?.data?.message);
 };

@@ -1,5 +1,9 @@
 import { api } from "@/lib/api";
-import { updateListings } from "@/lib/features/listingsSlice";
+import {
+  setListingDetail,
+  updateListingDetailData,
+  updateListings,
+} from "@/lib/features/listingsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { handleErrors } from "@/utils/functions";
 import {
@@ -10,7 +14,6 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 export default function useListingsActions(
   handleModal?: (open: boolean) => void,
@@ -19,11 +22,7 @@ export default function useListingsActions(
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const { listings } = useAppSelector((state) => state.listings);
-
-  const [listingDetail, setListingDetail] = useState<ListingInformation | null>(
-    null
-  );
+  const { listings, listingDetail } = useAppSelector((state) => state.listings);
 
   const getListingById = useMutation({
     mutationFn: (id: string) => api.get(`/api/listings/details/${id}`),
@@ -33,10 +32,12 @@ export default function useListingsActions(
         ...data.data.vehicle,
         statistics: data.data.statistics,
       });
-      setListingDetail({
-        ...data.data.vehicle,
-        statistics: data.data.statistics,
-      });
+      dispatch(
+        setListingDetail({
+          ...data.data.vehicle,
+          statistics: data.data.statistics,
+        })
+      );
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -50,10 +51,7 @@ export default function useListingsActions(
 
     onSuccess: (data) => {
       console.log("Deactivate Listing successful", data.data);
-      setListingDetail({
-        ...listingDetail,
-        ...data.data,
-      });
+      dispatch(updateListingDetailData(data.data));
 
       //     filter the listing to remove it from from listings
 
@@ -69,12 +67,7 @@ export default function useListingsActions(
 
     onSuccess: (data) => {
       console.log("Move Listing to Draft successful", data.data);
-      // dispatch(
-      setListingDetail({
-        ...listingDetail,
-        ...data.data,
-      });
-      // );
+      dispatch(updateListingDetailData(data.data));
 
       //     update listing array
       const listingIndex = listings.findIndex((listing) => listing.id === id);
@@ -103,7 +96,7 @@ export default function useListingsActions(
 
     onSuccess: (data) => {
       console.log("Delete Listing successful", data.data);
-      setListingDetail(null);
+      dispatch(setListingDetail(null));
 
       const updatedListings = listings.filter((listing) => listing.id !== id);
       dispatch(updateListings(updatedListings));
@@ -116,21 +109,61 @@ export default function useListingsActions(
       handleErrors("Delete Listing", error),
   });
 
-  const updateListingStatus = useMutation({
+  const updateListingStatusToBooked = useMutation({
+    mutationFn: () =>
+      api.put(`/api/listings/status/${id}`, { status: VehicleStatus.BOOKED }),
+
+    onSuccess: (data) => {
+      console.log("Update Listing status to booked successful", data.data);
+      dispatch(updateListingDetailData(data.data));
+
+      //     filter the listing to remove it from from listings
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) =>
+      handleErrors("Update Listing status to booked", error),
+  });
+
+  const updateListingStatusToAvaliable = useMutation({
+    mutationFn: () =>
+      api.put(`/api/listings/status/${id}`, { status: VehicleStatus.ACTIVE }),
+
+    onSuccess: (data) => {
+      console.log("Update Listing status to available successful", data.data);
+      dispatch(updateListingDetailData(data.data));
+
+      //     filter the listing to remove it from from listings
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) =>
+      handleErrors("Update Listing status to available", error),
+  });
+
+  const updateListingStatusToMaintenance = useMutation({
+    mutationFn: () =>
+      api.put(`/api/listings/status/${id}`, {
+        status: VehicleStatus.MAINTENANCE,
+      }),
+
+    onSuccess: (data) => {
+      console.log("Update Listing status to maintenance successful", data.data);
+      dispatch(updateListingDetailData(data.data));
+
+      //     filter the listing to remove it from from listings
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) =>
+      handleErrors("Update Listing status to maintenance", error),
+  });
+
+  const updateListingStatusToUnavaliable = useMutation({
     mutationFn: (value) => api.put(`/api/listings/status/${id}`, value),
 
     onSuccess: (data) => {
       console.log("Update Listing status successful", data.data);
-      // dispatch(
-      setListingDetail({
-        ...listingDetail,
-        ...data.data,
-      });
-      // );
+      dispatch(updateListingDetailData(data.data));
 
       //     filter the listing to remove it from from listings
-
-      handleModal && handleModal(false);
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>
@@ -142,7 +175,10 @@ export default function useListingsActions(
     deactivateListing,
     deleteListing,
     moveListingToDraft,
-    updateListingStatus,
+    updateListingStatusToBooked,
+    updateListingStatusToAvaliable,
+    updateListingStatusToMaintenance,
+
     listingDetail,
   };
 }

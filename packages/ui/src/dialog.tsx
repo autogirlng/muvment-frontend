@@ -4,7 +4,7 @@ import Icons from "@repo/ui/icons";
 
 type Props = {
   trigger: ReactNode;
-  title: string|ReactNode;
+  title?: string | ReactNode;
   description?: string;
   content: ReactNode | string;
   open?: boolean;
@@ -26,7 +26,17 @@ export const BlurredDialog = ({
       <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-0 left-0 min-h-screen h-full w-full flex justify-center items-center focus:outline-none py-14 px-4 overflow-y-auto">
         <div className="space-y-6 w-full max-w-[950px] rounded-[56px] bg-grey-50 border border-grey-400 py-9 sm:py-14 3xl:py-[107px] px-5 sm:px-9 3xl:px-[67px] m-auto">
           <Dialog.Title className="text-grey-800 text-xl 3xl:text-h6 !font-semibold">
-            {title}
+            {title ? (
+              title
+            ) : (
+              <img
+                src="/icons/warning.png"
+                alt=""
+                width={56}
+                height={56}
+                className="w-10 md:w-[50px] h-10 md:h-[50px]"
+              />
+            )}
           </Dialog.Title>
           {description && (
             <Dialog.Description className="text-grey-500 my-5 text-base">

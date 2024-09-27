@@ -19,12 +19,11 @@ import { citiesOptions } from "@/utils/data";
 import AppSwitch from "@repo/ui/switch";
 import { useState } from "react";
 import useUpdateProfile from "@/hooks/useUpdateProfile";
-import Icons from "@repo/ui/icons";
 
 export default function ProfilePage() {
   const { user } = useAppSelector((state) => state.user);
 
-  const [isProfileEditable, setIsProfileEditable] = useState(false);
+  const [isProfileEditable, setIsProfileEditable] = useState<boolean>(false);
   const { updateProfileMutation, uploadImage } =
     useUpdateProfile(setIsProfileEditable);
 
@@ -56,8 +55,13 @@ export default function ProfilePage() {
         onSubmit={async (values, { setSubmitting }) => {
           console.log(values);
 
-          const { businessCountry, businessCountryCode, ...submittedValues } =
-            values;
+          const {
+            businessCountry,
+            businessCountryCode,
+            profileImage,
+            businessLogo,
+            ...submittedValues
+          } = values;
 
           updateProfileMutation.mutate(submittedValues);
           setSubmitting(false);
@@ -93,7 +97,7 @@ export default function ProfilePage() {
                     id="profileImage"
                     name="profileImage"
                     label=""
-                    value={values.profileImage}
+                    value={values?.profileImage||''}
                     image={user?.profileImage || null}
                     onChange={async (fieldName, file) => {
                       setFieldTouched(fieldName, true);
@@ -110,7 +114,7 @@ export default function ProfilePage() {
                     isLoading={uploadImage.isPending}
                     disabled={!isProfileEditable}
                   />
-                  <div className="max-w-[370px] space-y-7">
+                  <div className="md:max-w-[370px] space-y-7">
                     <InputField
                       name="firstName"
                       id="firstName"
@@ -200,7 +204,7 @@ export default function ProfilePage() {
                     disabled={!isProfileEditable}
                   />
 
-                  <div className="max-w-[370px] space-y-7">
+                  <div className="md:max-w-[370px] space-y-7">
                     <SelectInput
                       id="city"
                       label="City"
@@ -250,12 +254,12 @@ export default function ProfilePage() {
                       BUSINESS INFORMATION
                     </h4>
 
-                    <div className="max-w-[370px] space-y-7">
+                    <div className="md:max-w-[370px] space-y-7">
                       <ProfilePhotoUpload
                         id="businessLogo"
                         name="businessLogo"
                         label=""
-                        value={values.businessLogo}
+                        value={values?.businessLogo||''}
                         image={user?.businessLogo || null}
                         onChange={async (fieldName, file) => {
                           setFieldTouched(fieldName, true);

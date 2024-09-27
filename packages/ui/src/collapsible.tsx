@@ -9,7 +9,7 @@ type Props = {
 };
 
 const Collapse = ({ title, openText, closeText, children }: Props) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
 
   return (
     <Collapsible.Root open={open} onOpenChange={setOpen} className="space-y-2">

@@ -85,6 +85,13 @@ export interface SetNewPasswordValues {
   password_checks?: PasswordChecks;
 }
 
+export interface ChangePasswordValues {
+  currentPassword: string;
+  password: string;
+  confirmPassword: string;
+  password_checks?: PasswordChecks;
+}
+
 export interface VerifyPhoneNumberValues {
   phoneNumber: string;
   countryCode: string;
@@ -135,12 +142,12 @@ export interface ProfileFormValues {
   countryCode: string;
   bio: string;
 
-  profileImage: string;
+  profileImage?: string;
   city: string;
   isBusiness: boolean;
   businessAddress: string;
   businessEmail: string;
-  businessLogo: string;
+  businessLogo?: string;
   businessName: string;
   businessPhoneNumber: string;
   businessCountry?: string;
@@ -299,6 +306,19 @@ export interface AvailabilityAndPricing {
   outskirtsPrice?: number;
 }
 
+// update this
+export interface TopRatedVehicle {
+  id: string;
+}
+
+export interface DashboardStatistics {
+  totalEarnings: number;
+  totalOnboardedVehicles: number;
+  totalCompletedRides: number;
+  walletBalance: number;
+  topRatedVehicle: null | TopRatedVehicle;
+}
+
 export interface BookingStatistics {
   totalBookings: number;
   pendingApprovals: number;
@@ -450,19 +470,6 @@ export type TopRatedVehicleType = {
   seatingCapacity: string;
   totalRides: string;
   totalEarnings: string;
-};
-
-export type BookingTableRow = {
-  vehicle: string;
-  guestName: string;
-  bookingId: string;
-  bookingType: string;
-  duration: string;
-  startDate: string;
-  endDate: string;
-  status: string;
-  price: string;
-  actions: string;
 };
 
 export type TransactionTableRow = {

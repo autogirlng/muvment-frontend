@@ -9,7 +9,7 @@ import { ReactNode, useEffect, useState } from "react";
 export default function AuthLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const { user_token } = useAuth();
 
   const otpRoutes = ["/verify-email", "/forgot-password/otp"];

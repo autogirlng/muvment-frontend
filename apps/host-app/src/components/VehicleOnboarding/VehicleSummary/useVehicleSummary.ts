@@ -67,10 +67,10 @@ export default function useVehicleSummary() {
     (state) => state.vehicleOnboarding
   );
 
-  const [perks, setPerks] = useState(vehicleSummaryPerks);
+  const [perks, setPerks] = useState<VehiclePerksProp[]>(vehicleSummaryPerks);
   const [vehicleDetails, setVehicleDetails] = useState<MappedInformation[]>([]);
   const [vehicleImages, setVehicleImages] = useState<string[]>([]);
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [agreeToTerms, setAgreeToTerms] = useState<boolean>(false);
 
   const setCurrentStep = (step: number) =>
     dispatch(setVehicleOnboardingCurrentStep(step));

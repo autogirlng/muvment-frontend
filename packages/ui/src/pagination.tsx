@@ -119,7 +119,7 @@ const Pagination = ({
       </button>
 
       <div className="flex items-center gap-[2px]">
-        {paginationRange.map((pageNumber: number | string) => {
+        {paginationRange.map((pageNumber: number | string, index: number) => {
           // If the pageItem is a DOT, render the DOTS unicode character
           if (pageNumber === DOTS) {
             console.log("dots");
@@ -130,6 +130,7 @@ const Pagination = ({
           // Render our Page Pills
           return (
             <button
+              key={index}
               className={cn(
                 "py-2 px-3 text-xs 3xl:text-sm",
                 pageNumber === currentPage

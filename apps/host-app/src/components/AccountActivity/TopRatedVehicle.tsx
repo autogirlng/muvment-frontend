@@ -4,10 +4,12 @@ import Link from "next/link";
 import React from "react";
 
 import { TopRatedVehicleType } from "@/utils/types";
+import { Spinner } from "@repo/ui/spinner";
 
 type Props = {
   // change data to vehicle info type
   topRatedVehicle: TopRatedVehicleType | null;
+  isLoading: boolean;
 };
 
 const Tag = ({ value, title }: { value: string; title: string }) => (
@@ -16,7 +18,7 @@ const Tag = ({ value, title }: { value: string; title: string }) => (
   </p>
 );
 
-export default function TopRatedVehicle({ topRatedVehicle }: Props) {
+export default function TopRatedVehicle({ topRatedVehicle, isLoading }: Props) {
   return (
     <div className="rounded-xl px-4 py-6 space-y-4 bg-white border border-grey-200 text-grey-500 min-h-[250px]">
       <div className="flex gap-4 2xl:gap-0">
@@ -27,7 +29,9 @@ export default function TopRatedVehicle({ topRatedVehicle }: Props) {
           )}
         >
           <p className="text-xs 2xl:text-sm">Top Rated Vehicle</p>
-          {Object.keys(topRatedVehicle || {}).length > 0 ? (
+          {isLoading ? (
+            <Spinner />
+          ) : Object.keys(topRatedVehicle || {}).length > 0 ? (
             <div className="space-y-10">
               <h6 className="text-grey-800 text-xl 2xl:text-h6 font-medium">
                 {`${topRatedVehicle?.make} ${topRatedVehicle?.model} ${topRatedVehicle?.year}`}

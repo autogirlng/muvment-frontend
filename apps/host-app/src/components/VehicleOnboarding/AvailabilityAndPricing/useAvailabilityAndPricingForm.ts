@@ -19,7 +19,7 @@ import { useState } from "react";
 export default function useAvailabilityAndPricingForm() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [showOuskirts, setShowOuskirts] = useState(false);
+  const [showOuskirts, setShowOuskirts] = useState<boolean>(false);
 
   const { currentStep, vehicle } = useAppSelector(
     (state) => state.vehicleOnboarding

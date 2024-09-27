@@ -8,6 +8,7 @@ import { VehicleListingBadge } from "@repo/ui/badge";
 import MoreButton from "@repo/ui/moreButton";
 import Chip from "@repo/ui/chip";
 import Icons from "@repo/ui/icons";
+import { Popup } from "@repo/ui/popup";
 
 type Props = { listing: VehicleInformation };
 
@@ -83,16 +84,9 @@ export default function ListingCard({ listing }: Props) {
         <div className="space-y-[14px] md:max-w-[400px] 3xl:max-w-[450px]">
           <div className="flex items-center gap-6">
             <h5 className="text-h6 3xl:text-h5 !font-medium">
-              {/* {listing?.vehicleStatus === "draft"
+              {listing?.vehicleStatus === "draft"
                 ? "Unfinished Listing"
-                : listing?.listingName} */}
-              {listing?.vehicleStatus === "draft" ? (
-                "Unfinished Listing"
-              ) : (
-                <Link href={`/listings/${listing?.id}`}>
-                  {listing?.listingName}
-                </Link>
-              )}
+                : listing?.listingName}
             </h5>
             <VehicleListingBadge status={listing?.vehicleStatus} />
           </div>
@@ -151,7 +145,23 @@ export default function ListingCard({ listing }: Props) {
               </div>
             </div>
             <div className="h-[150px] w-[1px] bg-grey-300 hidden md:block" />
-            <MoreButton className="mx-0" />
+            <Popup
+              trigger={<MoreButton className="!mx-0" />}
+              content={
+                <>
+                  <p className="!text-xs 3xl:!text-base !font-semibold">
+                    Actions
+                  </p>
+                  <ul className="space-y-2 *:py-2">
+                    <li className="!text-xs 3xl:!text-base">
+                      <Link href={`/listings/${listing?.id}`}>
+                        View Vehicle Details
+                      </Link>
+                    </li>
+                  </ul>
+                </>
+              }
+            />
           </>
         )}
       </div>

@@ -181,3 +181,13 @@ export const profileFormValidationSchema = object().shape({
   bio: string().required("Please enter your bio"),
   city: string().required("Please select your city"),
 });
+
+export const changePasswordValidationSchema = object().shape({
+  currentPassword: string().required("Please enter your current password"),
+
+  password: string().required("Please enter your new password"),
+
+  confirmPassword: string()
+    .required("Please confirm your password")
+    .oneOf([ref("password")], "The passwords doesn’t match."),
+});

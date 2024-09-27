@@ -31,7 +31,7 @@ const OutskirtRow = ({
   handleChange,
   handleBlur,
 }: OutskirtRowProps) => {
-  const [guestWillSee, setGuestWillSee] = useState(0);
+  const [guestWillSee, setGuestWillSee] = useState<number>(0);
 
   useEffect(() => {
     if (dailyRateValue) {

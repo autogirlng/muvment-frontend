@@ -2,13 +2,23 @@ import { VehicleStatus } from "@/utils/types";
 import { VehicleListingBadge } from "@repo/ui/badge";
 import Button from "@repo/ui/button";
 import { Popup } from "@repo/ui/popup";
+import { Spinner } from "@repo/ui/spinner";
+import cn from "classnames";
+import useListingsActions from "./hooks/useListingsActions";
+import Icons from "@repo/ui/icons";
 
-type Props = { vehicleStatus?: VehicleStatus; isActive?: boolean };
+type Props = { vehicleStatus?: VehicleStatus; isActive?: boolean; id?: string };
 
 export default function ListingDetailsVehicleAvailability({
   isActive,
   vehicleStatus,
+  id,
 }: Props) {
+  const {
+    updateListingStatusToBooked,
+    updateListingStatusToAvaliable,
+    updateListingStatusToMaintenance,
+  } = useListingsActions(() => {}, id);
   return (
     <div className="flex gap-3 justify-between items-start md:items-center bg-grey-75 md:bg-transparent rounded-[32px] px-5 py-6 md:p-0">
       <div className="bg-grey-75 md:py-3 md:pl-8 md:pr-5 flex flex-col md:flex-row gap-3 items-start md:items-center md:rounded-[128px]">
@@ -35,50 +45,37 @@ export default function ListingDetailsVehicleAvailability({
               <p className="!text-xs 3xl:!text-base !font-semibold">
                 Vehicle Status
               </p>
-              <li>
-                <button
-                  className="!py-3 !px-2 !bg-grey-90 !text-grey-900 !font-normal text-left w-full text-sm rounded-xl"
-                  // loading={deactivateListing.isPending}
-                  // disabled={deactivateListing.isPending}
-                  // onClick={() => deactivateListing.mutate()}
-                >
-                  Booked
-                </button>
-              </li>
-              {vehicleStatus === VehicleStatus.MAINTENANCE ? (
-                <li>
-                  <button
-                    className="!py-3 !px-2 !bg-grey-90 !text-grey-900 !font-normal text-left w-full text-sm rounded-xl"
-                    // loading={deactivateListing.isPending}
-                    // disabled={deactivateListing.isPending}
-                    // onClick={() => deactivateListing.mutate()}
-                  >
-                    Available
-                  </button>
-                </li>
-              ) : (
-                <li>
-                  <button
-                    className="!py-3 !px-2 !bg-grey-90 !text-grey-900 !font-normal text-left w-full text-sm rounded-xl"
-                    // loading={deactivateListing.isPending}
-                    // disabled={deactivateListing.isPending}
-                    // onClick={() => deactivateListing.mutate()}
-                  >
-                    In maintenance
-                  </button>
-                </li>
-              )}
 
-              <li>
-                <button
-                  className="!py-3 !px-2 !bg-grey-90 !text-grey-900 !font-normal text-left w-full text-sm rounded-xl"
-                  // loading={deactivateListing.isPending}
-                  // disabled={deactivateListing.isPending}
-                  // onClick={() => deactivateListing.mutate()}
-                >
-                  Unavailable
-                </button>
-              </li>
+              <StatusButton
+                status="Booked"
+                active={vehicleStatus === VehicleStatus.BOOKED}
+                onClick={() => updateListingStatusToBooked.mutate()}
+                loading={updateListingStatusToBooked.isPending}
+              />
+              {/* {vehicleStatus === VehicleStatus.MAINTENANCE ? ( */}
+
+              <StatusButton
+                status="Available"
+                active={vehicleStatus === VehicleStatus.ACTIVE}
+                onClick={() => updateListingStatusToAvaliable.mutate()}
+                loading={updateListingStatusToAvaliable.isPending}
+              />
+              {/* ) : ( */}
+              <StatusButton
+                status="In maintenance"
+                active={vehicleStatus === VehicleStatus.MAINTENANCE}
+                onClick={() => updateListingStatusToMaintenance.mutate()}
+                loading={updateListingStatusToMaintenance.isPending}
+              />
+              {/* )} */}
+
+              <StatusButton
+                status="Unavailable"
+                active={vehicleStatus === VehicleStatus.UNAVAILABLE}
+                // open calendar
+                onClick={() => {}}
+                loading={false}
+              />
             </ul>
           </>
         }
@@ -86,3 +83,35 @@ export default function ListingDetailsVehicleAvailability({
     </div>
   );
 }
+
+const StatusButton = ({
+  status,
+  onClick,
+  loading,
+  active,
+  // disabled,
+}: {
+  status: string;
+  onClick: () => void;
+  loading: boolean;
+  active: boolean;
+  // disabled: boolean;
+}) => {
+  return (
+    <li>
+      <button
+        className={cn(
+          "py-3 px-2 font-normal text-left w-full text-sm rounded-xl",
+          active
+            ? "bg-primary-500 text-white flex items-center gap-1"
+            : "bg-grey-90 text-grey-900"
+        )}
+        onClick={onClick}
+        disabled={loading || active}
+      >
+        {active && Icons.ic_done_circle}
+        {loading ? <Spinner /> : <span>{status}</span>}
+      </button>
+    </li>
+  );
+};

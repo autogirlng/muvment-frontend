@@ -12,13 +12,12 @@ export default function Bookings({}: Props) {
   const [search, setSearch] = useState<string>("");
 
   const tabs = [
-    { name: "History", value: "tab1", content: <BookingHistory /> },
     {
       name: "Upcoming",
-      value: "tab2",
+      value: "tab1",
       content: <UpcomingBookings />,
     },
-    //   { name: "History", value: "tab2", content: <BookingHistory /> },
+    { name: "History", value: "tab2", content: <BookingHistory /> },
   ];
 
   return (

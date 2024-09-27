@@ -17,6 +17,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { getUser } = useUser();
 
   useEffect(() => {
+    console.log(user);
+
     if (user) {
       if (pathname.includes("/account-setup")) {
         return;

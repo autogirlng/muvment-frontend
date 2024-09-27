@@ -1,5 +1,5 @@
 import { bookingOverviewTableHeadItems } from "@/utils/data";
-import { BookingTableRow } from "@/utils/types";
+import { BookingInformation } from "@/utils/types";
 import TableHead from "@/components/TableHead";
 import EmptyState from "@/components/EmptyState";
 import BookingRow from "@/components/BookingsOverview/BookingRow";
@@ -8,7 +8,7 @@ export default function BookingTable({
   items,
   emptyStateMessage,
 }: {
-  items: BookingTableRow[];
+  items: BookingInformation[];
   emptyStateMessage: string;
 }) {
   return items.length > 0 ? (
@@ -24,7 +24,7 @@ export default function BookingTable({
     <EmptyState
       title="No Data Yet"
       message={emptyStateMessage}
-      image="/icons/empty_state.png"
+      image="/icons/empty_booking_state.png"
     />
   );
 }

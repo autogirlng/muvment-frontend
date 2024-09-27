@@ -1,7 +1,6 @@
 import Button from "@repo/ui/button";
 import useBookingActions from "../../hooks/useBookingActions";
 import { ReactNode, useState } from "react";
-import Image from "next/image";
 import { BlurredDialog } from "@repo/ui/dialog";
 
 type Props = { handleModal: (open: boolean) => void; id?: string };
@@ -16,15 +15,6 @@ const DeclineTrip = ({ id, trigger }: { id: string; trigger: ReactNode }) => {
     <BlurredDialog
       open={openDeclineModal}
       onOpenChange={handleDeclineModal}
-      title={
-        <Image
-          src="/icons/warning.png"
-          alt=""
-          width={56}
-          height={56}
-          className="w-10 md:w-[50px] h-10 md:h-[50px]"
-        />
-      }
       trigger={trigger}
       content={<PopupContent handleModal={handleDeclineModal} id={id} />}
     />

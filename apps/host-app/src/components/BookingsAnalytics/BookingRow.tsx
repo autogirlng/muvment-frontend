@@ -1,9 +1,5 @@
 import TableCell from "../TableCell";
-import {
-  BookingBadgeStatus,
-  BookingInformation,
-  BookingTableRow,
-} from "@/utils/types";
+import { BookingBadgeStatus, BookingInformation } from "@/utils/types";
 import MoreButton from "@repo/ui/moreButton";
 import { Popup } from "@repo/ui/popup";
 import { format } from "date-fns";
@@ -80,7 +76,7 @@ const BookingRow = ({ items }: { items: BookingInformation }) => {
               </ul>
             </>
           }
-        ></Popup>
+        />
       </td>
     </tr>
   );

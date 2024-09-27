@@ -21,7 +21,7 @@ import {
 } from "@/utils/types";
 
 export default function useAuth() {
-  const [userToken, setUserToken] = useState("");
+  const [userToken, setUserToken] = useState<string>("");
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { forgotPasswordOtp } = useAppSelector((state) => state.forgotPassword);

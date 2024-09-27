@@ -6,13 +6,16 @@ import { api } from "@/lib/api";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { setListings } from "@/lib/features/listingsSlice";
 import { useRouter } from "next/navigation";
+import { handleErrors } from "@/utils/functions";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/utils/types";
 
 export default function useListings() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.user);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const pageLimit = 10;
 
   const { data, isError, error, isLoading, isSuccess } = useQuery({
@@ -35,12 +38,16 @@ export default function useListings() {
           // pageNumber: data?.data?.page,
           totalItemsCount: data?.data?.totalCount,
           totalPagesCount: data?.data?.totalPages,
+          listingDetail: null,
         })
       );
     }
 
     if (isError) {
-      console.log("Error fetching listings", error);
+      handleErrors(
+        "Error fetching listings",
+        error as AxiosError<ErrorResponse>
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isError, isSuccess]);

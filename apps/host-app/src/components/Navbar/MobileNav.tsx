@@ -14,7 +14,7 @@ type Props = {};
 export default function MobileNav({}: Props) {
   const { user } = useAppSelector((state) => state.user);
 
-  const [openNav, setOpenNav] = useState(false);
+  const [openNav, setOpenNav] = useState<boolean>(false);
 
   return (
     <div className="block md:hidden px-8 py-3 bg-grey-50">

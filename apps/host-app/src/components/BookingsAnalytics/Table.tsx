@@ -26,7 +26,7 @@ export default function BookingAnalyticsTable({
     <EmptyState
       title={emptyStateTitle || "No Data Yet"}
       message={emptyStateMessage}
-      image="/icons/empty_state.png"
+      image="/icons/empty_booking_state.png"
     />
   );
 }

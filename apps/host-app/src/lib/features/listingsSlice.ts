@@ -7,6 +7,7 @@ interface ListingsState {
   // pageNumber: number;
   totalItemsCount: number;
   totalPagesCount: number;
+  listingDetail: ListingInformation | null;
 }
 
 const initialState: ListingsState = {
@@ -15,6 +16,7 @@ const initialState: ListingsState = {
   // pageNumber: 1,
   totalItemsCount: 0,
   totalPagesCount: 0,
+  listingDetail: null,
 };
 
 const userSlice = createSlice({
@@ -27,13 +29,30 @@ const userSlice = createSlice({
       // state.pageNumber = action.payload.pageNumber;
       state.totalItemsCount = action.payload.totalItemsCount;
       state.totalPagesCount = action.payload.totalPagesCount;
+      state.listingDetail = action.payload.listingDetail;
     },
 
     updateListings: (state, action: PayloadAction<VehicleInformation[]>) => {
       state.listings = action.payload;
     },
+
+    setListingDetail: (state, action: PayloadAction<ListingInformation|null>) => {
+      state.listingDetail = action.payload;
+    },
+    updateListingDetailData: (
+      state,
+      action: PayloadAction<Partial<VehicleInformation>>
+    ) => {
+      if (state.listingDetail)
+        state.listingDetail = { ...state.listingDetail, ...action.payload };
+    },
   },
 });
 
-export const { setListings, updateListings } = userSlice.actions;
+export const {
+  setListings,
+  updateListings,
+  setListingDetail,
+  updateListingDetailData,
+} = userSlice.actions;
 export default userSlice.reducer;

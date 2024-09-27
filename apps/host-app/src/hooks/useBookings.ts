@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { setBookings } from "@/lib/features/bookingsSlice";
+import { handleErrors } from "@/utils/functions";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/utils/types";
 
 export default function useBookings() {
   const dispatch = useAppDispatch();
@@ -33,12 +36,16 @@ export default function useBookings() {
           // pageNumber: data?.data?.page,
           totalItemsCount: data?.data?.totalCount,
           totalPagesCount: data?.data?.totalPages,
+          bookingDetail: null,
         })
       );
     }
 
     if (isError) {
-      console.log("Error fetching bookings", error);
+      handleErrors(
+        "Error fetching bookings",
+        error as AxiosError<ErrorResponse>
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isError, isSuccess]);

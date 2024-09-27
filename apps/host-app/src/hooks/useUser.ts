@@ -9,7 +9,7 @@ import { useAppDispatch } from "@/lib/hooks";
 import { toast } from "react-toastify";
 
 export default function useUser() {
-  const [userToken, setUserToken] = useState("");
+  const [userToken, setUserToken] = useState<string>("");
   const dispatch = useAppDispatch();
   const router = useRouter();
 

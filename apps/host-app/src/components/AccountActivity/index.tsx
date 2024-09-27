@@ -5,10 +5,20 @@ import { TopRatedVehicleType } from "@/utils/types";
 import DashboardSectionTitle from "@/components/DashboardSectionTitle";
 import { topRatedVehicle } from "@/utils/data";
 import Icons from "@repo/ui/icons";
+import useDashboardStats from "@/hooks/useHostStats";
 
 type Props = {};
 
 export default function AccountActivity({}: Props) {
+  const {
+    isError,
+    error,
+    isLoading,
+    isSuccess,
+
+    dashboardStats,
+  } = useDashboardStats();
+
   return (
     <div className="space-y-6 2xl:space-y-8">
       <DashboardSectionTitle
@@ -20,22 +30,37 @@ export default function AccountActivity({}: Props) {
           <ActivityCard
             primary
             title="Total Earnings"
-            value="-"
-            modalTitle="Show Graph"
+            value={`${dashboardStats?.totalEarnings || "-"}`}
+            modalTitle={dashboardStats?.totalEarnings ? "Show Graph" : ""}
             modalName="graph"
             modalIcon={Icons.ic_chart}
+            isLoading={isLoading}
           />
-          <ActivityCard title="Total onboarded vehicles" value="-" />
+          <ActivityCard
+            title="Total onboarded vehicles"
+            value={`${dashboardStats?.totalOnboardedVehicles || "-"}`}
+            isLoading={isLoading}
+          />
           <ActivityCard
             title="Total Completed Rides"
-            value="-"
-            //      modalTitle="Show Reviews"
-            //      modalName="review"
-            //      modalIcon={Icons.ic_star_square}
+            value={`${dashboardStats?.totalOnboardedVehicles || "-"}`}
+            modalTitle={
+              dashboardStats?.totalCompletedRides ? "Show Reviews" : ""
+            }
+            modalName="review"
+            modalIcon={Icons.ic_star_square}
+            isLoading={isLoading}
           />
-          <ActivityCard title="Total Wallet Balance" value="-" />
+          <ActivityCard
+            title="Total Wallet Balance"
+            value={`${dashboardStats?.walletBalance || "-"}`}
+            isLoading={isLoading}
+          />
         </div>
-        <TopRatedVehicle topRatedVehicle={null} />
+        <TopRatedVehicle
+          topRatedVehicle={dashboardStats?.topRatedVehicle || null}
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );

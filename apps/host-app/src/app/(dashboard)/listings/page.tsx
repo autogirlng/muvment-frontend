@@ -63,7 +63,7 @@ export default function ListingsPage() {
                   add your first vehicle
                 </Link>
               }
-              image="/icons/empty_state.png"
+              image="/icons/empty_booking_state.png"
             />
           )}
         </>

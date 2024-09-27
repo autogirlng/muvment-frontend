@@ -7,7 +7,7 @@ type Props = { handleModal: (open: boolean) => void; id?: string };
 
 const ReportTrip = ({ handleModal, id }: Props) => {
   const { declineBooking } = useBookingActions(handleModal, id);
-  const [report, setReport] = useState("");
+  const [report, setReport] = useState<string>("");
 
   return (
     <div className="space-y-6">

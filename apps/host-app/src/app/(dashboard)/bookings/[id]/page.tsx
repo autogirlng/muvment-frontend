@@ -1,7 +1,6 @@
 "use client";
 
 import cn from "classnames";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { forwardRef, ReactNode, useEffect } from "react";
@@ -309,15 +308,6 @@ const BookingActions = ({
       <BlurredDialog
         open={openReportModal}
         onOpenChange={handleReportModal}
-        title={
-          <Image
-            src="/icons/warning.png"
-            alt=""
-            width={56}
-            height={56}
-            className="w-10 md:w-[50px] h-10 md:h-[50px]"
-          />
-        }
         trigger={
           <ActionButton
             color="bg-grey-700"

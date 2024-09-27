@@ -7,7 +7,6 @@ import Link from "next/link";
 import React, { useState } from "react";
 import DeleteListing from "./modals/DeleteListing";
 import DeactivateListing from "./modals/DeactivateListing";
-import Image from "next/image";
 import MoreButton from "@repo/ui/moreButton";
 
 type Props = {
@@ -17,8 +16,8 @@ type Props = {
 };
 
 export default function ListingDetailsHeader({ name, status, id }: Props) {
-  const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [openDeactivateModal, setOpenDeactivateModal] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
+  const [openDeactivateModal, setOpenDeactivateModal] = useState<boolean>(false);
 
   const handleDeleteModal = () => {
     setOpenDeleteModal(!openDeleteModal);
@@ -38,7 +37,7 @@ export default function ListingDetailsHeader({ name, status, id }: Props) {
       </div>
 
       <Popup
-        trigger={<MoreButton className="mx-0" />}
+        trigger={<MoreButton className="!mx-0" />}
         content={
           <>
             <p className="!text-xs 3xl:!text-base !font-semibold">Actions</p>
@@ -55,15 +54,6 @@ export default function ListingDetailsHeader({ name, status, id }: Props) {
                 <BlurredDialog
                   open={openDeleteModal}
                   onOpenChange={handleDeleteModal}
-                  title={
-                    <Image
-                      src="/icons/warning.png"
-                      alt=""
-                      width={56}
-                      height={56}
-                      className="w-10 md:w-[50px] h-10 md:h-[50px]"
-                    />
-                  }
                   trigger={
                     <button className="!text-xs 3xl:!text-base ">
                       Delete listing
@@ -78,15 +68,6 @@ export default function ListingDetailsHeader({ name, status, id }: Props) {
                 <BlurredDialog
                   open={openDeactivateModal}
                   onOpenChange={handleDeactivateModal}
-                  title={
-                    <Image
-                      src="/icons/warning.png"
-                      alt=""
-                      width={56}
-                      height={56}
-                      className="w-10 md:w-[50px] h-10 md:h-[50px]"
-                    />
-                  }
                   trigger={
                     <button className="!text-xs 3xl:!text-base ">
                       Deactivate listing

@@ -1,9 +1,13 @@
 import { useState } from "react";
 
 export default function usePasswordValidation() {
-  const [isPasswordHidden, setIsPasswordHidden] = useState(true);
+  const [isPasswordHidden, setIsPasswordHidden] = useState<boolean>(true);
+  const [isCurrentPasswordHidden, setIsCurrentPasswordHidden] =
+    useState<boolean>(true);
 
   const toggleHiddenPassword = () => setIsPasswordHidden(!isPasswordHidden);
+  const toggleCurrentHiddenPassword = () =>
+    setIsCurrentPasswordHidden(!isCurrentPasswordHidden);
 
   const isLengthValid = (password: string) => {
     const isLengthValid = password.length >= 8;
@@ -49,6 +53,8 @@ export default function usePasswordValidation() {
   return {
     isPasswordHidden,
     toggleHiddenPassword,
+    isCurrentPasswordHidden,
+    toggleCurrentHiddenPassword,
     isLengthValid,
     isUpperCaseValid,
     isLowerCaseValid,

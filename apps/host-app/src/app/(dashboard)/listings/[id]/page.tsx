@@ -18,6 +18,7 @@ import VehicleInformation from "@/components/Listings/Details/VehicleInformation
 import Reviews from "@/components/Listings/Details/Reviews";
 import DriversDetails from "@/components/Listings/Details/DriversDetails";
 import useListingsActions from "@/components/Listings/Details/hooks/useListingsActions";
+import { useAppSelector } from "@/lib/hooks";
 
 type Extras = {
   name: string;
@@ -52,7 +53,8 @@ const initialtabs = [
 
 export default function ListingsPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { getListingById, listingDetail } = useListingsActions();
+  const { getListingById } = useListingsActions();
+  const { listingDetail } = useAppSelector((state) => state.listings);
 
   const [tabs, setTabs] = useState(initialtabs);
   const [extras, setExtras] = useState<Extras[]>(initialExtras);
@@ -140,7 +142,7 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
 
   return (
     <main className="flex gap-10">
-      <div className="py-[56px] w-full lg:w-[calc(100%-320px)] 3xl:w-[calc(100%-500px)]">
+      <div className="py-[56px] w-full lg:w-[calc(100%-320px)] xl:w-[calc(100%-360px)] 3xl:w-[calc(100%-500px)]">
         <div className="text-grey-800 space-y-[52px]">
           {/* name */}
           <ListingDetailsHeader
@@ -152,7 +154,8 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
 
           <ListingDetailsVehicleAvailability
             vehicleStatus={listingDetail?.vehicleStatus}
-            isActive={listingDetail?.isActive}
+            // isActive={listingDetail?.isActive}
+            id={listingDetail?.id}
           />
 
           <ListingDetailsVehicleDetails
@@ -166,7 +169,7 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
         </div>
       </div>
 
-      <ListingDetailsUpcomingBookings />
+      <ListingDetailsUpcomingBookings vehicleId={listingDetail?.id || ""} />
     </main>
   );
 }

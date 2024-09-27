@@ -4,7 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { useAppSelector } from "@/lib/hooks";
-import { BookingStatistics } from "@/utils/types";
+import { BookingStatistics, ErrorResponse } from "@/utils/types";
+import { handleErrors } from "@/utils/functions";
+import { AxiosError } from "axios";
 
 export default function useBookingStats() {
   const { user } = useAppSelector((state) => state.user);
@@ -26,7 +28,10 @@ export default function useBookingStats() {
     }
 
     if (isError) {
-      console.log("Error fetching bookings stats", error);
+      handleErrors(
+        "Error fetching bookings stats",
+        error as AxiosError<ErrorResponse>
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isError, isSuccess]);

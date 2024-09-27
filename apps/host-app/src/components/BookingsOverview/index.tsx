@@ -1,14 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Icons from "@repo/ui/icons";
 import SelectInput from "@repo/ui/select";
 import FilterBy from "@repo/ui/filter";
 import Table from "@/components/BookingsOverview/BookingTable";
 import DashboardSectionTitle from "@/components/DashboardSectionTitle";
-import {
-  bookingOverviewFilters,
-  bookingOverviewTableItems,
-  monthsFilter,
-} from "@/utils/data";
+import { bookingOverviewFilters, monthsFilter } from "@/utils/data";
+import useBookings from "@/hooks/useBookings";
+import { FullPageSpinner } from "@repo/ui/spinner";
 
 type Props = {};
 
@@ -16,12 +14,19 @@ export default function BookingsOverview({}: Props) {
   const handleFilterChange = (selectedFilters: Record<string, string[]>) => {
     console.log("Selected filters:", selectedFilters);
   };
+
+  const { data, isError, error, isLoading, isSuccess } = useBookings();
+
+  useEffect(() => {
+    console.log(data?.data?.data);
+  }, [data]);
+
   return (
     <div className="space-y-8">
       <DashboardSectionTitle icon={Icons.ic_ticket} title="Bookings" />
       {[].length > 0 && (
         <div className="flex justify-between gap-2">
-          <div className="flex gap-2 justify-between items-center w-full">
+          {/* <div className="flex gap-2 justify-between items-center w-full">
             <div className="flex gap-2">
               <div className="divide-x divide-grey-300 border border-grey-300 rounded-lg w-fit h-fit flex">
                 {monthsFilter.map((month) => (
@@ -53,19 +58,19 @@ export default function BookingsOverview({}: Props) {
               categories={bookingOverviewFilters}
               onChange={handleFilterChange}
             />
-          </div>
-          {/* <div className="w-[106px]">
-          <SelectInput
-            variant="outlined"
-            id="filter"
-            options={[
-             
-            ]}
-          />
-        </div> */}
+          </div> */}
         </div>
       )}
-      <Table items={[]} emptyStateMessage="Your Bookings Will Appear Here" />
+      {isLoading ? (
+        <FullPageSpinner />
+      ) : isError ? (
+        <p>something went wrong</p>
+      ) : (
+        <Table
+          items={data?.data?.data || []}
+          emptyStateMessage="Your Bookings Will Appear Here"
+        />
+      )}
     </div>
   );
 }

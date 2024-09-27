@@ -33,13 +33,21 @@ const userSlice = createSlice({
       state.totalPagesCount = action.payload.totalPagesCount;
     },
 
-    setUpcomingBookings: (state, action: PayloadAction<BookingsState>) => {
-      state.upcomingBookings = action.payload.bookings;
-      state.totalItemsCount = action.payload.totalItemsCount;
-      state.totalPagesCount = action.payload.totalPagesCount;
+    setUpcomingBookings: (
+      state,
+      action: PayloadAction<Partial<BookingsState>>
+    ) => {
+      console.log(action.payload);
+
+      state.upcomingBookings = action.payload.upcomingBookings;
+      state.totalItemsCount = action.payload.totalItemsCount || 0;
+      state.totalPagesCount = action.payload.totalPagesCount || 0;
     },
 
-    updateBookingsData: (state, action: PayloadAction<Partial<any>>) => {
+    updateBookingsData: (
+      state,
+      action: PayloadAction<Partial<BookingInformation>>
+    ) => {
       if (state.bookings)
         state.bookings = { ...state.bookings, ...action.payload };
     },
