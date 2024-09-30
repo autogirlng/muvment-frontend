@@ -10,11 +10,13 @@ import VehicleOptions from "@/components/LandingPageComponents/VehicleOptions";
 import VehiclePackages from "@/components/LandingPageComponents/VehiclePackages";
 import NavBar from "@/components/LandingPageComponents/NavBar";
 import GetStarted from "@/components/LandingPageComponents/GetStarted";
+import MobileNav from "@/components/Navbar/MobileNav";
 
 export default function HomePage() {
   return (
     <main className="overflow-x-hidden">
       <NavBar />
+      <MobileNav/>
       <Hero />
       <Benefits />
       <JoinUs />

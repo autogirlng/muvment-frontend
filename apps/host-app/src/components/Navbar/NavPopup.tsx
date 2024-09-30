@@ -5,6 +5,7 @@ import { AvatarImage } from "@repo/ui/avatar";
 import { getInitialsFromName } from "@/utils/functions";
 import { useAppSelector } from "@/lib/hooks";
 import Link from "next/link";
+import { HorizontalDivider } from "@repo/ui/divider";
 
 type Props = { handleClick?: () => void };
 
@@ -31,7 +32,7 @@ export default function NavPopup({ handleClick }: Props) {
         </>
       )}
 
-      <div className="h-px w-full bg-grey-200" />
+      <HorizontalDivider variant="light" />
 
       <ul className="list-none space-y-3">
         {popupNavItems.map((item, index) => (

@@ -3,8 +3,6 @@ import BookingAnalyticsTable from "./Table";
 import Pagination from "@repo/ui/pagination";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import { useAppSelector } from "@/lib/hooks";
-import SearchInput from "@repo/ui/searchInput";
-import { ChangeEvent } from "react";
 
 type Props = {};
 
@@ -13,16 +11,8 @@ export default function BookingHistory({}: Props) {
     (state) => state.bookings
   );
 
-  const {
-    data,
-    isError,
-    error,
-    isLoading,
-    isSuccess,
-    currentPage,
-    setCurrentPage,
-    pageLimit,
-  } = useBookings();
+  const { isError, isLoading, currentPage, setCurrentPage, pageLimit } =
+    useBookings();
 
   return (
     <div className="space-y-4">

@@ -36,7 +36,6 @@ export default function useBookings() {
           // pageNumber: data?.data?.page,
           totalItemsCount: data?.data?.totalCount,
           totalPagesCount: data?.data?.totalPages,
-          bookingDetail: null,
         })
       );
     }
@@ -49,6 +48,8 @@ export default function useBookings() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isError, isSuccess]);
+
+  
 
   return {
     data,

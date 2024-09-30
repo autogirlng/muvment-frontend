@@ -16,6 +16,7 @@
     "./chip": "./src/chip.tsx",
     "./filter": "./src/filter.tsx",
     "./dialog": "./src/dialog.tsx",
+    "./divider": "./src/divider.tsx",
     "./icons": "./src/icons.tsx",
     "./inputField": "./src/inputField.tsx",
     "./moreButton": "./src/moreButton.tsx",

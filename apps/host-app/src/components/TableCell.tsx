@@ -1,4 +1,4 @@
-import { BookingBadgeStatus, TransactionBadgeStatus } from "@/utils/types";
+import { BookingBadgeStatus, TransactionStatus } from "@/utils/types";
 import { BookingTableBadge, TransactionBadge } from "@repo/ui/badge";
 import { ReactNode } from "react";
 
@@ -12,7 +12,7 @@ type Props = {
 
 const TableCell = ({ content, className, isBadge, type, icon }: Props) => (
   <td
-    className={`px-6 py-[26px] whitespace-nowrap w-full text-sm text-grey-700 ${
+    className={`px-6 py-[26px] whitespace-nowrap w-fit text-sm text-grey-700 ${
       className ?? ""
     }`}
   >
@@ -23,9 +23,7 @@ const TableCell = ({ content, className, isBadge, type, icon }: Props) => (
       </div>
     ) : isBadge ? (
       type === "transaction" ? (
-        <TransactionBadge
-          status={content.toLocaleLowerCase() as TransactionBadgeStatus}
-        />
+        <TransactionBadge status={content as TransactionStatus} />
       ) : (
         <BookingTableBadge status={content as BookingBadgeStatus} />
       )

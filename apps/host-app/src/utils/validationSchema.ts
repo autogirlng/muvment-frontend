@@ -191,3 +191,12 @@ export const changePasswordValidationSchema = object().shape({
     .required("Please confirm your password")
     .oneOf([ref("password")], "The passwords doesn’t match."),
 });
+
+export const withdrawalSchema = object().shape({
+  amount: string().required("Please enter amount to withdraw"),
+  // minimum of 20k
+});
+
+export const reportBookingSchema = object().shape({
+  message: string().required("Please type a message"),
+});

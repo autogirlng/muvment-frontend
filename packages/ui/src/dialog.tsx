@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import Icons from "@repo/ui/icons";
+import cn from "classnames";
 
 type Props = {
   trigger: ReactNode;
@@ -9,6 +10,7 @@ type Props = {
   content: ReactNode | string;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  width?: string;
 };
 
 export const BlurredDialog = ({
@@ -18,13 +20,19 @@ export const BlurredDialog = ({
   content,
   open,
   onOpenChange,
+  width = "max-w-[950px]",
 }: Props) => (
   <Dialog.Root modal open={open} onOpenChange={onOpenChange}>
     <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
     <Dialog.Portal>
       <Dialog.Overlay className="bg-[#00000061] backdrop-blur-xl data-[state=open]:animate-overlayShow fixed inset-0" />
       <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-0 left-0 min-h-screen h-full w-full flex justify-center items-center focus:outline-none py-14 px-4 overflow-y-auto">
-        <div className="space-y-6 w-full max-w-[950px] rounded-[56px] bg-grey-50 border border-grey-400 py-9 sm:py-14 3xl:py-[107px] px-5 sm:px-9 3xl:px-[67px] m-auto">
+        <div
+          className={cn(
+            "space-y-6 w-full rounded-[56px] bg-grey-50 border border-grey-400 py-9 sm:py-14 3xl:py-[107px] px-5 sm:px-9 3xl:px-[67px] m-auto",
+            width
+          )}
+        >
           <Dialog.Title className="text-grey-800 text-xl 3xl:text-h6 !font-semibold">
             {title ? (
               title

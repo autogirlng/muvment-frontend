@@ -9,6 +9,7 @@ import MoreButton from "@repo/ui/moreButton";
 import Chip from "@repo/ui/chip";
 import Icons from "@repo/ui/icons";
 import { Popup } from "@repo/ui/popup";
+import { VerticalDivider } from "@repo/ui/divider";
 
 type Props = { listing: VehicleInformation };
 
@@ -126,7 +127,8 @@ export default function ListingCard({ listing }: Props) {
 
         {listing?.vehicleStatus !== "draft" && (
           <>
-            <div className="h-[150px] w-[1px] bg-grey-300 hidden md:block" />
+            <VerticalDivider className="hidden md:block" />
+
             <div className="space-y-[14px] md:max-w-[400px] 3xl:max-w-[450px]">
               <p className="uppercase text-xs !font-semibold">Extras</p>
               <div className="flex flex-wrap gap-3">
@@ -144,7 +146,7 @@ export default function ListingCard({ listing }: Props) {
                 })}
               </div>
             </div>
-            <div className="h-[150px] w-[1px] bg-grey-300 hidden md:block" />
+            <VerticalDivider className="hidden md:block" />
             <Popup
               trigger={<MoreButton className="!mx-0" />}
               content={

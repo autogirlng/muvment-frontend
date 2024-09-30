@@ -1,11 +1,11 @@
 import { transactionTableHeadItems } from "@/utils/data";
 import React from "react";
-import TableHead from "../TableHead";
-import EmptyState from "../EmptyState";
-import { TransactionTableRow } from "@/utils/types";
+import TableHead from "../../TableHead";
+import EmptyState from "../../EmptyState";
+import { Transaction } from "@/utils/types";
 import TransactionRow from "./TransactionRow";
 
-type Props = { items: TransactionTableRow[] };
+type Props = { items: Transaction[] };
 
 export default function TransactionTable({ items }: Props) {
   return items.length > 0 ? (

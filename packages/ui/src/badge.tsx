@@ -115,10 +115,34 @@ export const ListingBadge = ({ status }: ListingBadgeProps) => {
 };
 
 type TransactionBadgeProps = {
-  status: "successful" | "pending" | "failed" | "paid" | "cancelled";
+  status: "SUCCESS" | "PENDING" | "FAILED";
 };
 
 export const TransactionBadge = ({ status }: TransactionBadgeProps) => {
+  const badgeColor =
+    status === "SUCCESS"
+      ? "bg-success-500"
+      : status === "FAILED"
+        ? "bg-error-800"
+        : "bg-warning-500";
+
+  return (
+    <div
+      className={cn(
+        "px-3 py-[2px] text-sm font-medium capitalize text-white rounded-xl w-fit",
+        badgeColor
+      )}
+    >
+      {status.toLocaleLowerCase()}
+    </div>
+  );
+};
+
+type PaymentBadgeProps = {
+  status: "successful" | "pending" | "failed" | "paid" | "cancelled";
+};
+
+export const PaymentBadge = ({ status }: PaymentBadgeProps) => {
   const badgeColor =
     status === "successful" || status === "paid"
       ? "bg-success-500"

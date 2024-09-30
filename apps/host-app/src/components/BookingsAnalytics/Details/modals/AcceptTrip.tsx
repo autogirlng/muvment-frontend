@@ -1,31 +1,52 @@
 import Button from "@repo/ui/button";
-import useBookingActions from "../../hooks/useBookingActions";
 import { BlurredDialog } from "@repo/ui/dialog";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 
-type Props = { handleModal: (open: boolean) => void; id?: string };
+type AcceptTripProps = {
+  handleAction: () => void;
+  openModal: boolean;
+  handleModal: (value?: boolean) => void;
+  trigger: ReactNode;
+  isLoading: boolean;
+};
 
-const AcceptTrip = ({ id, trigger }: { id: string; trigger: ReactNode }) => {
-  const [openAcceptModal, setOpenAcceptModal] = useState<boolean>(false);
-
-  const handleAcceptModal = () => {
-    setOpenAcceptModal(!openAcceptModal);
-  };
-
+const AcceptTrip = ({
+  trigger,
+  handleAction,
+  openModal,
+  handleModal,
+  isLoading,
+}: AcceptTripProps) => {
   return (
     <BlurredDialog
-      open={openAcceptModal}
-      onOpenChange={handleAcceptModal}
+      open={openModal}
+      onOpenChange={handleModal}
       trigger={trigger}
-      content={<PopupContent handleModal={handleAcceptModal} id={id} />}
+      content={
+        <PopupContent
+          handleAction={handleAction}
+          handleModal={handleModal}
+          isLoading={isLoading}
+        />
+      }
     />
   );
 };
 
 export default AcceptTrip;
 
-const PopupContent = ({ handleModal, id }: Props) => {
-  const { acceptBooking } = useBookingActions(handleModal, id);
+type PopupContentProps = {
+  handleAction: () => void;
+  // openModal: boolean;
+  handleModal: (value?: boolean) => void;
+  isLoading: boolean;
+};
+
+const PopupContent = ({
+  handleAction,
+  handleModal,
+  isLoading,
+}: PopupContentProps) => {
   return (
     <div className="space-y-6">
       <h6 className="text-base sm:text-xl 3xl:text-h6 !font-semibold text-grey-800">
@@ -51,9 +72,9 @@ const PopupContent = ({ handleModal, id }: Props) => {
           variant="filled"
           color="white"
           className="!py-4 !bg-grey-90 !text-grey-700"
-          loading={acceptBooking.isPending}
-          disabled={acceptBooking.isPending}
-          onClick={() => acceptBooking.mutate()}
+          loading={isLoading}
+          disabled={isLoading}
+          onClick={handleAction}
         >
           Yes, Accept
         </Button>

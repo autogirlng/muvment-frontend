@@ -12,6 +12,7 @@ import {
   VerifyIdentityValues,
   VerifyPhoneNumberValues,
   WithdrawalAccountValues,
+  WithdrawalValues,
 } from "@/utils/types";
 
 export const signUpFormInitialValues: SignupFormValues = {
@@ -155,3 +156,8 @@ export const profileFormInitialValues: ProfileFormValues = {
   businessName: "",
   businessPhoneNumber: "",
 };
+
+export const withdrawalValues: WithdrawalValues = {
+  amount: "",
+};
+

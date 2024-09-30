@@ -6,8 +6,18 @@ import { format } from "date-fns";
 import Link from "next/link";
 import AcceptTrip from "./Details/modals/AcceptTrip";
 import DeclineTrip from "./Details/modals/DeclineTrip";
+import useBookingActions from "./hooks/useBookingActions";
 
 const BookingRow = ({ items }: { items: BookingInformation }) => {
+  const {
+    openAcceptModal,
+    handleAcceptModal,
+    acceptBooking,
+
+    openDeclineModal,
+    handleDeclineModal,
+    declineBooking,
+  } = useBookingActions({ id: items.id });
   return (
     <tr>
       <TableCell
@@ -17,7 +27,7 @@ const BookingRow = ({ items }: { items: BookingInformation }) => {
       <TableCell content={items?.id} />
       <TableCell content={items?.bookingType} />
       <TableCell content={`${items?.duration} days`} />
-      <TableCell content={items?.vehicle.listingName} />
+      <TableCell content={items?.vehicle?.listingName} />
       <TableCell
         content={
           items?.startDate
@@ -45,7 +55,10 @@ const BookingRow = ({ items }: { items: BookingInformation }) => {
                     <>
                       <li>
                         <DeclineTrip
-                          id={items.id}
+                          openModal={openDeclineModal}
+                          handleModal={() => handleDeclineModal()}
+                          isLoading={declineBooking.isPending}
+                          handleAction={() => declineBooking.mutate()}
                           trigger={
                             <button className="!text-xs 3xl:!text-base ">
                               Decline Trip
@@ -55,7 +68,10 @@ const BookingRow = ({ items }: { items: BookingInformation }) => {
                       </li>
                       <li>
                         <AcceptTrip
-                          id={items.id}
+                          openModal={openAcceptModal}
+                          handleModal={() => handleAcceptModal()}
+                          isLoading={acceptBooking.isPending}
+                          handleAction={() => acceptBooking.mutate()}
                           trigger={
                             <button className="!text-xs 3xl:!text-base ">
                               Accept Trip

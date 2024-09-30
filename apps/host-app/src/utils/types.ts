@@ -154,6 +154,10 @@ export interface ProfileFormValues {
   businessCountryCode?: string;
 }
 
+export interface WithdrawalValues {
+  amount: string | number;
+}
+
 // <================= FORM VALUES ENDS =================>
 
 export interface AssignNewDriver {
@@ -198,7 +202,7 @@ export enum BookingBadgeStatus {
   COMPLTETED = "COMPLETED",
 }
 
-export enum TransactionBadgeStatus {
+export enum PaymentBadgeStatus {
   SUCCESSFUL = "successful",
   PENDING = "pending",
   FAILED = "failed",
@@ -233,6 +237,22 @@ export enum DriverStatus {
 export const enum BookingType {
   SINGLE_DAY = "SINGLE_DAY",
   MULTI_DAY = "MULTI_DAY",
+}
+
+export enum TransactionType {
+  CREDIT = "CREDIT",
+  DEBIT = "DEBIT",
+}
+
+export enum TransactionStatus {
+  SUCCESS = "SUCCESS",
+  PENDING = "PENDING",
+  FAILED = "FAILED",
+}
+
+export enum TransactionOrigin {
+  WITHDRAWAL = "WITHDRAWAL",
+  BOOKING = "BOOKING",
 }
 
 // <================= USER/LISTING/BOOKING/VEHICLE =================>
@@ -334,7 +354,7 @@ export interface BookingInformation {
   duration: number;
   bookingType: BookingType;
   amount: number;
-  paymentStatus: TransactionBadgeStatus;
+  paymentStatus: PaymentBadgeStatus;
   paymentMethod: "BANK_TRANSFER" | "CARD_PAYMENT" | "CASH"; //check booking status
   rentalAgreement: string | null;
   bookingStatus: BookingBadgeStatus;
@@ -461,6 +481,46 @@ export interface BookingDetailsInformation {
   // vehicle: Vehicle;
   // travelCompanions: TravelCompanion[];
 }
+
+export type Transaction = {
+  id: string;
+  transactionId: string;
+  apiTransactionReference: string | null;
+  date: string;
+  time: string;
+  amount: number;
+  currencyCode: string;
+  type: TransactionType;
+  status: TransactionStatus;
+  origin: TransactionOrigin;
+  userId: string;
+  bookingId: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type Review = {
+  id: string;
+  rating: number;
+  message: string;
+  userId: string;
+  bookingId: string;
+  createdAt: string;
+  updatedAt: string;
+  user: User;
+};
+
+export type Notification = {
+  id: string;
+  title: string;
+  message: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  isRead: boolean;
+  trxReference: null;
+  transaction: null;
+};
 
 // ==================== hard coded types - to be changed ====================//
 export type TopRatedVehicleType = {

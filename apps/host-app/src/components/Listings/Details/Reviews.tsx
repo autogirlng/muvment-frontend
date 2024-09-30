@@ -1,58 +1,50 @@
-import StarRating from "@repo/ui/starRating";
 import Image from "next/image";
 import React from "react";
+import useReviews from "./hooks/useReviews";
+import StarRating from "@repo/ui/starRating";
+import { FullPageSpinner } from "@repo/ui/spinner";
+import { Review } from "@/utils/types";
+import Pagination from "@repo/ui/pagination";
 
-type Props = {};
+type Props = { id: string };
 
-type Review = {
-  image: string;
-  name: string;
-  time: string;
-  stars: number;
-  message: string;
-};
+export default function VehicleReviews({ id }: Props) {
+  const {
+    vehicleReviews,
+    isError,
+    error,
+    isLoading,
+    currentPage,
+    setCurrentPage,
+    pageLimit,
+    totalItemsCount,
+  } = useReviews(id);
 
-const reviews: Review[] = [
-  {
-    image: "/images/avatar.png",
-    name: "Aisha O",
-    time: "June 5, 2024|2:30PM",
-    stars: 4,
-    message:
-      "I had an amazing experience renting from Jeffrey. The car was in pristine condition and exactly as de...",
-  },
-  {
-    image: "/images/avatar.png",
-    name: "Aisha O",
-    time: "June 5, 2024|2:30PM",
-    stars: 4,
-    message:
-      "I had an amazing experience renting from Jeffrey. The car was in pristine condition and exactly as de...",
-  },
-  {
-    image: "/images/avatar.png",
-    name: "Aisha O",
-    time: "June 5, 2024|2:30PM",
-    stars: 4,
-    message:
-      "I had an amazing experience renting from Jeffrey. The car was in pristine condition and exactly as de...",
-  },
-  {
-    image: "/images/avatar.png",
-    name: "Aisha O",
-    time: "June 5, 2024|2:30PM",
-    stars: 4,
-    message:
-      "I had an amazing experience renting from Jeffrey. The car was in pristine condition and exactly as de...",
-  },
-];
+  if (isLoading) {
+    return <FullPageSpinner />;
+  }
+  if (isError) {
+    return <p>Something went wrong</p>;
+  }
 
-export default function Reviews({}: Props) {
   return (
-    <div className="space-y-10">
-      {reviews.map((review, index: number) => (
-        <ReviewCard key={index} review={review} />
-      ))}
+    <div className="space-y-6">
+      <div className="space-y-10">
+        {vehicleReviews.length > 0 ? (
+          vehicleReviews.map((review: Review, index: number) => (
+            <ReviewCard key={index} review={review} />
+          ))
+        ) : (
+          <p>No reviews found</p>
+        )}
+      </div>
+      <Pagination
+        className="pagination-bar"
+        currentPage={currentPage}
+        totalCount={totalItemsCount}
+        pageLimit={pageLimit}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
     </div>
   );
 }
@@ -62,19 +54,23 @@ const ReviewCard = ({ review }: { review: Review }) => {
     <div className="space-y-6 p-6 bg-grey-90 rounded-[32px]">
       <div className="flex items-center justify-between gap-3">
         <div className="flex gap-3 items-center">
-          <Image
-            src={review.image}
-            alt=""
-            height={40}
-            width={40}
-            className="w-10 h-10 rounded-full"
-          />
+          {review.user.profileImage && (
+            <Image
+              src={review.user.profileImage}
+              alt=""
+              height={40}
+              width={40}
+              className="w-10 h-10 rounded-full"
+            />
+          )}
           <div className="space-y-[2px]">
-            <p className="text-grey-700 text-sm 3xl:text-base">{review.name}</p>
-            <p className="text-grey-500 text-xs 3xl:text-sm">{review.time}</p>
+            <p className="text-grey-700 text-sm 3xl:text-base">{`${review.user.firstName} ${review.user.lastName}`}</p>
+            <p className="text-grey-500 text-xs 3xl:text-sm">
+              {review.updatedAt}
+            </p>
           </div>
         </div>
-        <StarRating n={review.stars} />
+        <StarRating n={review.rating} />
       </div>
       <div className="text-black text-sm 3xl:text-base">{review.message}</div>
     </div>

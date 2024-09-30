@@ -2,12 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
-
+import { MappedInformation } from "@/utils/types";
+import { useAppSelector } from "@/lib/hooks";
+import { FullPageSpinner } from "@repo/ui/spinner";
 import AppTabs from "@repo/ui/tabs";
 import Icons from "@repo/ui/icons";
-import { FullPageSpinner } from "@repo/ui/spinner";
-import { MappedInformation } from "@/utils/types";
-
 import ListingDetailsHeader from "@/components/Listings/Details/Header";
 import ListingDetailsVehicleImages from "@/components/Listings/Details/VehicleImages";
 import ListingDetailsVehicleAvailability from "@/components/Listings/Details/VehicleAvailability";
@@ -15,10 +14,9 @@ import ListingDetailsVehicleDetails from "@/components/Listings/Details/VehicleD
 import ListingDetailsEarnings from "@/components/Listings/Details/Earnings";
 import ListingDetailsUpcomingBookings from "@/components/Listings/Details/UpcomingBookings";
 import VehicleInformation from "@/components/Listings/Details/VehicleInformation";
-import Reviews from "@/components/Listings/Details/Reviews";
+import VehicleReviews from "@/components/Listings/Details/Reviews";
 import DriversDetails from "@/components/Listings/Details/DriversDetails";
 import useListingsActions from "@/components/Listings/Details/hooks/useListingsActions";
-import { useAppSelector } from "@/lib/hooks";
 
 type Extras = {
   name: string;
@@ -47,7 +45,7 @@ const initialExtras: Extras[] = [
 
 const initialtabs = [
   { name: "Vehicle information", value: "tab1", content: <></> },
-  { name: "Reviews", value: "tab2", content: <Reviews /> },
+  { name: "Reviews", value: "tab2", content: <></> },
   { name: "Driver details", value: "tab3", content: <></> },
 ];
 
@@ -118,6 +116,12 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
           return {
             ...tab,
             content: <VehicleInformation listingDetails={listingDetail} />,
+          };
+        }
+        if (tab.value === "tab2") {
+          return {
+            ...tab,
+            content: <VehicleReviews id={params.id} />,
           };
         }
         if (tab.value === "tab3") {

@@ -1,6 +1,5 @@
 "use client";
 
-import ActivityCard from "@/components/ActivityCard";
 import Bookings from "@/components/BookingsAnalytics";
 import BookingsStats from "@/components/BookingsAnalytics/BookingsStats";
 import DashboardSectionTitle from "@/components/DashboardSectionTitle";

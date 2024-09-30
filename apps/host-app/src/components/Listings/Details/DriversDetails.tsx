@@ -1,11 +1,10 @@
-import Button from "@repo/ui/button";
 import { AvatarInitials } from "@repo/ui/avatar";
 import { getInitialsFromName } from "@/utils/functions";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import { BlurredDialog } from "@repo/ui/dialog";
-import AssignDriverForm from "./modals/AssignDriverForm";
-import useListingDrivers from "./hooks/useListingDrivers";
-import { useEffect } from "react";
+import Button from "@repo/ui/button";
+import AssignDriverForm from "@/components/Listings/Details/modals/AssignDriverForm";
+import useListingDrivers from "@/components/Listings/Details/hooks/useListingDrivers";
 
 type Props = { id: string };
 
@@ -17,21 +16,10 @@ type Driver = {
 };
 
 export default function DriversDetails({ id }: Props) {
-  const {
-    getAssignedDrivers,
-    assignNewDriver,
-    openModal,
-    handleModal,
-    drivers,
-  } = useListingDrivers();
+  const { isLoading, assignNewDriver, openModal, handleModal, drivers } =
+    useListingDrivers(id);
 
-  useEffect(() => {
-    if (id) {
-      getAssignedDrivers.mutate(id);
-    }
-  }, [id]);
-
-  if (getAssignedDrivers.isPending) {
+  if (isLoading) {
     return <FullPageSpinner />;
   }
 
