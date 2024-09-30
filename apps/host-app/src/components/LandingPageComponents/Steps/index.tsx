@@ -1,4 +1,5 @@
 import LandingPageSectionHeader from "@/components/Header/LandingPageSectionHeader";
+import { HorizontalDivider } from "@repo/ui/divider";
 import cn from "classnames";
 import React from "react";
 
@@ -42,6 +43,7 @@ function Steps({}: Props) {
               className="md:h-[400px] 3xl:h-[600px] last:md:h-0 relative"
             >
               <div className="h-full w-[5px] bg-grey-400 mx-auto" />
+
               <div
                 className={cn(
                   "md:absolute md:-top-[80px]",

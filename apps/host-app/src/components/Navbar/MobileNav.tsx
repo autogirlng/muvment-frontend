@@ -1,6 +1,7 @@
 import { useAppSelector } from "@/lib/hooks";
 import { getInitialsFromName } from "@/utils/functions";
 import { AvatarImage, AvatarInitials } from "@repo/ui/avatar";
+import { HorizontalDivider } from "@repo/ui/divider";
 import Icons from "@repo/ui/icons";
 import Image from "next/image";
 import Link from "next/link";
@@ -66,7 +67,7 @@ export default function MobileNav({}: Props) {
               </Link>
             </div>
 
-            <div className="h-px w-full bg-grey-200" />
+            <HorizontalDivider variant="light" />
 
             <ul className="list-none space-y-3">
               {dashboardNavItems.map((item, index) => (
@@ -80,7 +81,7 @@ export default function MobileNav({}: Props) {
               ))}
             </ul>
 
-            <div className="h-px w-full bg-grey-200" />
+            <HorizontalDivider variant="light" />
 
             <ul className="list-none space-y-3">
               {popupNavItems.map((item, index) => (

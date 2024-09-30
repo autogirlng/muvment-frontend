@@ -1,30 +1,52 @@
 import Button from "@repo/ui/button";
-import useBookingActions from "../../hooks/useBookingActions";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { BlurredDialog } from "@repo/ui/dialog";
 
-type Props = { handleModal: (open: boolean) => void; id?: string };
+type DeclineTripProps = {
+  handleAction: () => void;
+  openModal: boolean;
+  handleModal: (value?: boolean) => void;
+  trigger: ReactNode;
+  isLoading: boolean;
+};
 
-const DeclineTrip = ({ id, trigger }: { id: string; trigger: ReactNode }) => {
-  const [openDeclineModal, setOpenDeclineModal] = useState<boolean>(false);
-  const handleDeclineModal = () => {
-    setOpenDeclineModal(!openDeclineModal);
-  };
-
+const DeclineTrip = ({
+  trigger,
+  handleAction,
+  openModal,
+  handleModal,
+  isLoading,
+}: DeclineTripProps) => {
   return (
     <BlurredDialog
-      open={openDeclineModal}
-      onOpenChange={handleDeclineModal}
+      open={openModal}
+      onOpenChange={handleModal}
       trigger={trigger}
-      content={<PopupContent handleModal={handleDeclineModal} id={id} />}
+      content={
+        <PopupContent
+          handleAction={handleAction}
+          handleModal={handleModal}
+          isLoading={isLoading}
+        />
+      }
     />
   );
 };
 
 export default DeclineTrip;
 
-const PopupContent = ({ handleModal, id }: Props) => {
-  const { declineBooking } = useBookingActions(handleModal, id);
+type PopupContentProps = {
+  handleAction: () => void;
+  // openModal: boolean;
+  handleModal: (value?: boolean) => void;
+  isLoading: boolean;
+};
+
+const PopupContent = ({
+  handleAction,
+  handleModal,
+  isLoading,
+}: PopupContentProps) => {
   return (
     <div className="space-y-6">
       <h6 className="text-base sm:text-xl 3xl:text-h6 !font-semibold text-grey-800">
@@ -50,9 +72,9 @@ const PopupContent = ({ handleModal, id }: Props) => {
           variant="filled"
           color="white"
           className="!py-4 !bg-grey-90 !text-grey-700"
-          loading={declineBooking.isPending}
-          disabled={declineBooking.isPending}
-          onClick={() => declineBooking.mutate()}
+          loading={isLoading}
+          disabled={isLoading}
+          onClick={handleAction}
         >
           Yes, decline
         </Button>

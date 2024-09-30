@@ -54,6 +54,8 @@ const OtpVerification = ({
 
   useEffect(() => {
     if (otp.length === numInputs) {
+      console.log('verify');
+      
       verifyOtp();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

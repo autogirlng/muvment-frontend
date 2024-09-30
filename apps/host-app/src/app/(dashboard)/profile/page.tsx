@@ -19,6 +19,7 @@ import { citiesOptions } from "@/utils/data";
 import AppSwitch from "@repo/ui/switch";
 import { useState } from "react";
 import useUpdateProfile from "@/hooks/useUpdateProfile";
+import { HorizontalDivider } from "@repo/ui/divider";
 
 export default function ProfilePage() {
   const { user } = useAppSelector((state) => state.user);
@@ -43,11 +44,11 @@ export default function ProfilePage() {
             profileImage: user?.profileImage || "",
             city: user?.city || "",
             isBusiness: user?.businessName ? true : false,
-            businessAddress: user?.businessAddress || "",
-            businessEmail: user?.businessEmail || "",
+            businessAddress: user?.businessAddress || null,
+            businessEmail: user?.businessEmail || null,
             businessLogo: user?.businessLogo || "",
-            businessName: user?.businessName || "",
-            businessPhoneNumber: user?.businessPhoneNumber || "",
+            businessName: user?.businessName || null,
+            businessPhoneNumber: user?.businessPhoneNumber || null,
             businessCountry: "",
             businessCountryCode: "",
           } as ProfileFormValues
@@ -97,7 +98,7 @@ export default function ProfilePage() {
                     id="profileImage"
                     name="profileImage"
                     label=""
-                    value={values?.profileImage||''}
+                    value={values?.profileImage || ""}
                     image={user?.profileImage || null}
                     onChange={async (fieldName, file) => {
                       setFieldTouched(fieldName, true);
@@ -246,7 +247,7 @@ export default function ProfilePage() {
                 </div>
 
                 {/* business */}
-                <div className="h-px w-full bg-grey-400" />
+                <HorizontalDivider variant="dark" />
 
                 {values.isBusiness && (
                   <>
@@ -259,7 +260,7 @@ export default function ProfilePage() {
                         id="businessLogo"
                         name="businessLogo"
                         label=""
-                        value={values?.businessLogo||''}
+                        value={values?.businessLogo || ""}
                         image={user?.businessLogo || null}
                         onChange={async (fieldName, file) => {
                           setFieldTouched(fieldName, true);

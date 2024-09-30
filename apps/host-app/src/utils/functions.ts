@@ -1,6 +1,8 @@
-import { AxiosError } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { ErrorResponse } from "@/utils/types";
+import { useQuery } from "@tanstack/react-query";
+
 import {
   lowercaseRegex,
   numberRegex,
@@ -9,6 +11,7 @@ import {
   uppercaseRegex,
 } from "@/utils/constants";
 import { daysOfTheWeek } from "./data";
+import { api } from "@/lib/api";
 
 export const isLengthValid = (password: string): boolean => {
   const isLengthValid = password.length >= 8;
@@ -81,6 +84,11 @@ export const mapRentalAvailabilityArrayToObject = (
   );
 };
 
+export const copyToCipboard = (text: string) => {
+  navigator.clipboard.writeText(text);
+  toast.success("Copied to clipboard");
+};
+
 export const formatNumberWithCommas = (number: string | number): string => {
   return number?.toLocaleString();
 };
@@ -112,31 +120,73 @@ export const handleErrors = (
     return toast.error("Network Error");
   }
 
-  if (ERR_CODE === "USER_ALREADY_EXIST")
-    toast.error("Email already registered");
+  if (ERR_CODE === "USER_ALREADY_EXIST") {
+    return toast.error("Email already registered");
+  }
 
-  if (error.response?.data?.ERR_CODE === "PHONE_ALREADY_USED")
-    toast.error("Phone number already registered");
+  if (error.response?.data?.ERR_CODE === "PHONE_ALREADY_USED") {
+    return toast.error("Phone number already registered");
+  }
 
-  if (error.response?.data?.ERR_CODE === "INVALID_CREDENTIALS")
-    toast.error("Invalid login credentials");
+  if (error.response?.data?.ERR_CODE === "INVALID_CREDENTIALS") {
+    return toast.error("Invalid login credentials");
+  }
 
-  if (error.response?.data?.ERR_CODE === "USER_NOT_FOUND")
-    toast.error("User not found");
+  if (error.response?.data?.ERR_CODE === "USER_NOT_FOUND") {
+    return toast.error("User not found");
+  }
 
   if (error.response?.data?.ERR_CODE === "EMAIL_NOT_CONFIRMED") {
     toast.error("Email not verified");
-    redirectUser && redirectUser();
+    return redirectUser && redirectUser();
   }
 
-  if (error.response?.data?.ERR_CODE === "EMAIL_ALREADY_CONFIRMED")
-    toast.error("Email already confirmed");
+  if (error.response?.data?.ERR_CODE === "EMAIL_ALREADY_CONFIRMED") {
+    return toast.error("Email already confirmed");
+  }
 
-  if (error.response?.data?.ERR_CODE === "PHONE_NUMBER_NOT_FOUND")
-    toast.error("Phone Number not found");
+  if (error.response?.data?.ERR_CODE === "PHONE_NUMBER_NOT_FOUND") {
+    return toast.error("Phone Number not found");
+  }
 
-  if (error.response?.data?.ERR_CODE === "HOST_NOT_OWNER_OF_VEHICLE")
-    toast.error("Host not owner of vehicle");
+  if (error.response?.data?.ERR_CODE === "HOST_NOT_OWNER_OF_VEHICLE") {
+    return toast.error("Host not owner of vehicle");
+  }
 
-  if (error.response?.data?.message) toast.error(error.response?.data?.message);
+  if (error.response?.data?.ERR_CODE === "INCORRECT_OTP") {
+    return toast.error("Incorrect OTP");
+  }
+
+  if (error.response?.data?.ERR_CODE) {
+    return toast.error(error.response?.data?.ERR_CODE);
+  }
+
+  if (error.response?.data?.message) {
+    return toast.error(error.response?.data?.message);
+  }
+};
+
+export const useCustomQuery = (
+  url: string,
+  queryKey: Array<unknown>,
+  enabled: boolean,
+  onCompleted: (
+    data: AxiosResponse<any, any> | undefined,
+    isSuccess: boolean,
+    isError: boolean,
+    error: AxiosError<ErrorResponse>
+  ) => void,
+  onError: void
+) => {
+  const { data, isError, error, isLoading, isSuccess } = useQuery({
+    queryKey,
+    queryFn: () => api.get(url),
+    enabled,
+  });
+
+  onCompleted(data, isSuccess, isError, error as AxiosError<ErrorResponse>);
+
+  alert("Mounted");
+
+  return { data, isError, error, isLoading, isSuccess };
 };

@@ -9,8 +9,6 @@ interface BookingsState {
   // pageNumber: number;
   totalItemsCount: number;
   totalPagesCount: number;
-
-  bookingDetail: null | BookingInformation;
 }
 
 const initialState: BookingsState = {
@@ -20,7 +18,6 @@ const initialState: BookingsState = {
   // pageNumber: 1,
   totalItemsCount: 0,
   totalPagesCount: 0,
-  bookingDetail: null,
 };
 
 const userSlice = createSlice({
@@ -44,32 +41,25 @@ const userSlice = createSlice({
       state.totalPagesCount = action.payload.totalPagesCount || 0;
     },
 
-    updateBookingsData: (
-      state,
-      action: PayloadAction<Partial<BookingInformation>>
-    ) => {
-      if (state.bookings)
-        state.bookings = { ...state.bookings, ...action.payload };
-    },
+    updateBookingsData: (state, action: PayloadAction<BookingInformation>) => {
+      console.log("action.payload", action.payload);
 
-    setBookingDetail: (state, action: PayloadAction<BookingInformation>) => {
-      state.bookingDetail = action.payload;
-    },
-    updateBookingDetailData: (
-      state,
-      action: PayloadAction<Partial<BookingInformation>>
-    ) => {
-      if (state.bookingDetail)
-        state.bookingDetail = { ...state.bookingDetail, ...action.payload };
+      if (state.bookings) {
+        state.bookings = state.bookings.map((booking) =>
+          booking.id === action.payload.id ? action.payload : booking
+        );
+        console.log(state.bookings);
+      }
+      if (state.upcomingBookings) {
+        state.upcomingBookings = state.upcomingBookings.map((booking) =>
+          booking.id === action.payload.id ? action.payload : booking
+        );
+        console.log(state.bookings);
+      }
     },
   },
 });
 
-export const {
-  setBookings,
-  updateBookingsData,
-  setUpcomingBookings,
-  setBookingDetail,
-  updateBookingDetailData,
-} = userSlice.actions;
+export const { setBookings, updateBookingsData, setUpcomingBookings } =
+  userSlice.actions;
 export default userSlice.reducer;

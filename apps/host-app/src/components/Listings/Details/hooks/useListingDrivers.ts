@@ -1,34 +1,44 @@
+import { AxiosError } from "axios";
+import { useEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+import { useAppSelector } from "@/lib/hooks";
 import { handleErrors } from "@/utils/functions";
 import { AssignNewDriver, ErrorResponse } from "@/utils/types";
-import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { useState } from "react";
 
-export default function useListingDrivers() {
+export default function useListingDrivers(id: string) {
+  const { user } = useAppSelector((state) => state.user);
+
   const [drivers, setDrivers] = useState<AssignNewDriver[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const handleModal = (value: boolean) => setOpenModal(value);
 
-  const getAssignedDrivers = useMutation({
-    mutationFn: (id: string) => api.get(`/api/drivers/vehicle/${id}`),
+  const { data, isError, error, isLoading, isSuccess } = useQuery({
+    queryKey: ["getAssignedDrivers", user?.id, id],
 
-    onSuccess: (data) => {
+    queryFn: () => api.get(`/api/drivers/vehicle/${id}`),
+    enabled: !!user?.id,
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
       console.log("Get Drivers successful", data.data);
       setDrivers(data.data);
-    },
+    }
 
-    onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Get Drivers", error),
-  });
+    if (isError) {
+      handleErrors("Get Drivers", error as AxiosError<ErrorResponse>);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isError, isSuccess]);
 
   const assignNewDriver = useMutation({
     mutationFn: (values: AssignNewDriver) => api.post("/api/drivers", values),
 
     onSuccess: (data) => {
       console.log("Assign New Driver successful", data.data);
-      const newDrivers = drivers
-      newDrivers.push(data.data)
+      const newDrivers = drivers;
+      newDrivers.push(data.data);
       setDrivers(newDrivers);
       handleModal(false);
     },
@@ -38,7 +48,7 @@ export default function useListingDrivers() {
   });
 
   return {
-    getAssignedDrivers,
+    isLoading,
     openModal,
     handleModal,
     assignNewDriver,
