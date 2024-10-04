@@ -1,46 +1,49 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { api } from "@/lib/api";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { handleErrors } from "@/utils/functions";
-import { ErrorResponse, ProfileFormValues } from "@/utils/types";
-import { updateUserData } from "@/lib/features/userSlice";
 import { Dispatch, SetStateAction } from "react";
 import { toast } from "react-toastify";
+import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { handleErrors } from "@/utils/functions";
+import { ErrorResponse, ProfileFormValues, User } from "@/utils/types";
+import { updateUserData } from "@/lib/features/userSlice";
+import { useHttp } from "./useHttp";
 
 export default function useUpdateProfile(
   setIsProfileEditable: Dispatch<SetStateAction<boolean>>
 ) {
+  const http = useHttp();
+
   const { user } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
   const updateProfileMutation = useMutation({
     mutationFn: (values: ProfileFormValues) =>
-      api.put("/api/user", { ...values }),
+      http.put<User>("/api/user", { ...values }),
 
     onSuccess: (data) => {
       console.log("Update Profile successful", data);
-      dispatch(updateUserData({ ...user, ...data?.data }));
+      dispatch(updateUserData({ ...user, ...data }));
       setIsProfileEditable(false);
       toast.success("Profile Updated");
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Update Profile", error),
+      handleErrors(error, "Update Profile"),
   });
 
   const uploadImage = useMutation({
-    mutationFn: (values: FormData) => api.put("api/user/imageUpload", values),
+    mutationFn: (values: FormData) =>
+      http.put<User>("api/user/imageUpload", values),
 
     onSuccess: (data) => {
       console.log("Update Image successful", data);
-      dispatch(updateUserData({ ...user, ...data?.data }));
+      dispatch(updateUserData({ ...user, ...data }));
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Update Image", error),
+      handleErrors(error, "Update Image"),
   });
 
   return {

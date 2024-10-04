@@ -3,14 +3,14 @@ import { getCountryCallingCode } from "react-phone-number-input";
 import { parsePhoneNumber } from "react-phone-number-input";
 import { verifyPhoneNumberValues } from "@/utils/initialValues";
 import { verifyPhoneNumberSchema } from "@/utils/validationSchema";
-import useAccountSetup from "@/hooks/useAccountSetup";
 import Button from "@repo/ui/button";
 import PhoneNumberAndCountryField from "@repo/ui/phoneNumberAndCountryField";
+import usePhoneNumberVerification from "../hooks/usePhoneNumberVerification";
 
 type Props = {};
 
 export default function VerifyPhoneNumber({}: Props) {
-  const { sendPhoneNumberToken } = useAccountSetup();
+  const { sendPhoneNumberToken } = usePhoneNumberVerification();
   return (
     <Formik
       initialValues={verifyPhoneNumberValues}

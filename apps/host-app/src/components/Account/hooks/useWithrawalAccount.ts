@@ -1,13 +1,13 @@
 "use client";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { useAppSelector } from "@/lib/hooks";
 import { ErrorResponse } from "@/utils/types";
 import { handleErrors } from "@/utils/functions";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
+import { useHttp } from "@/hooks/useHttp";
 
 interface WithdrawalAccount {
   id: string;
@@ -24,54 +24,44 @@ interface WithdrawalAccount {
 }
 
 export default function useWithrawalAccount() {
+  const http = useHttp();
+  const queryClient = useQueryClient();
+
   const { user } = useAppSelector((state) => state.user);
 
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
-  const [withdrawalAccountDetails, setWithdrawalAccountDetails] =
-    useState<WithdrawalAccount | null>(null);
 
   const handleOpenDeleteModal = () => setOpenDeleteModal(!openDeleteModal);
 
-  const { data, isError, error, isLoading, isSuccess } = useQuery({
-    queryKey: ["getAccountDetails", user?.id],
+  const { data, isError, error, isLoading } = useQuery({
+    queryKey: ["getAccountDetails"],
 
-    queryFn: () => api.get(`/api/withdrawal-account`),
+    queryFn: () => http.get<WithdrawalAccount>(`/api/withdrawal-account`),
     enabled: !!user?.id,
   });
 
-  useEffect(() => {
-    if (isSuccess) {
-      console.log("withdrawal account details fetched successfully", data.data);
-      setWithdrawalAccountDetails(data?.data);
-    }
-
-    if (isError) {
-      handleErrors(
-        "Error fetching withdrawal account details",
-        error as AxiosError<ErrorResponse>
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isError, isSuccess]);
-
   const deleteBankAccount = useMutation({
-    mutationFn: () => api.delete("/api/withdrawal-account"),
+    mutationFn: () => http.delete("/api/withdrawal-account"),
 
     onSuccess: (data) => {
-      console.log("Withdrawal Account deleted Successfully", data.data);
+      console.log("Withdrawal Account deleted Successfully", data);
 
-      setWithdrawalAccountDetails(null);
+      queryClient.invalidateQueries({
+        queryKey: ["getAccountDetails"],
+      });
+      // queryClient.invalidateQueries({
+      //   queryKey: ["getUser"],
+      // });
       toast.success("Account deleted successfully ");
-      //       dispatch(updateUserData({ withdrawalAccountVerified: true }));
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
-      handleErrors("deleted Withdrawal Account", error);
+      handleErrors(error, "deleted Withdrawal Account");
     },
   });
 
   return {
-    withdrawalAccountDetails,
+    withdrawalAccountDetails: data,
     isError,
     error,
     isLoading,

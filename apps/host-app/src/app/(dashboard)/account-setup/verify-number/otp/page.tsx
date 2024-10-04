@@ -5,12 +5,12 @@ import { useEffect, useState } from "react";
 import { useAppSelector } from "@/lib/hooks";
 import DashboardInnerPage from "@/components/DashboardInnerPage";
 import OtpVerification from "@/components/OtpVerification";
-import useAccountSetup from "@/hooks/useAccountSetup";
+import usePhoneNumberVerification from "@/components/AccountSetupTasks/hooks/usePhoneNumberVerification";
 
 export default function VerifyNumberOtpPage() {
   const [otp, setOtp] = useState<string>("");
   const { user, verifyPhoneNumberToken, resendVerifyPhoneToken } =
-    useAccountSetup();
+    usePhoneNumberVerification();
 
   const { phoneNumberToVerify } = useAppSelector((state) => state.accountSetup);
 

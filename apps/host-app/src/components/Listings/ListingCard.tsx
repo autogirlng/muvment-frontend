@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 import { formatNumberWithCommas, keyAndValueInAChip } from "@/utils/functions";
 import { MappedInformation, VehicleInformation } from "@/utils/types";
 import { VehicleListingBadge } from "@repo/ui/badge";
+import { Popup } from "@repo/ui/popup";
+import { VerticalDivider } from "@repo/ui/divider";
 import MoreButton from "@repo/ui/moreButton";
 import Chip from "@repo/ui/chip";
 import Icons from "@repo/ui/icons";
-import { Popup } from "@repo/ui/popup";
-import { VerticalDivider } from "@repo/ui/divider";
 
 type Props = { listing: VehicleInformation };
 
@@ -65,6 +65,7 @@ export default function ListingCard({ listing }: Props) {
 
       setExtras(updatedExtras);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listing]);
 
   return (

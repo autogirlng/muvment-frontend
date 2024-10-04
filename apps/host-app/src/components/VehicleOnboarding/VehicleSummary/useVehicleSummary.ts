@@ -4,14 +4,15 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { handleErrors } from "@/utils/functions";
-import { ErrorResponse, MappedInformation } from "@/utils/types";
-import { api } from "@/lib/api";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
-  setVehicleOnboardingCurrentStep,
-  updateVehicleInformation,
-} from "@/lib/features/vehicleOnboardingSlice";
+  ErrorResponse,
+  MappedInformation,
+  VehicleInformation,
+} from "@/utils/types";
+import { useAppDispatch } from "@/lib/hooks";
+import { updateVehicleInformation } from "@/lib/features/vehicleOnboardingSlice";
 import Icons from "@repo/ui/icons";
+import { useHttp } from "@/hooks/useHttp";
 
 type VehiclePerksProp = {
   icon: ReactNode;
@@ -59,21 +60,24 @@ const vehicleSummaryPerks: VehiclePerksProp[] = [
   },
 ];
 
-export default function useVehicleSummary() {
+export default function useVehicleSummary({
+  vehicle,
+  currentStep,
+  setCurrentStep,
+}: {
+  vehicle: VehicleInformation | null;
+  currentStep?: number;
+  setCurrentStep?: (step: number) => void;
+}) {
+  const http = useHttp();
+
   const router = useRouter();
   const dispatch = useAppDispatch();
-
-  const { currentStep, vehicle } = useAppSelector(
-    (state) => state.vehicleOnboarding
-  );
 
   const [perks, setPerks] = useState<VehiclePerksProp[]>(vehicleSummaryPerks);
   const [vehicleDetails, setVehicleDetails] = useState<MappedInformation[]>([]);
   const [vehicleImages, setVehicleImages] = useState<string[]>([]);
   const [agreeToTerms, setAgreeToTerms] = useState<boolean>(false);
-
-  const setCurrentStep = (step: number) =>
-    dispatch(setVehicleOnboardingCurrentStep(step));
 
   useEffect(() => {
     if (vehicle) {
@@ -131,23 +135,21 @@ export default function useVehicleSummary() {
 
   const submitVehicleOnboarding = useMutation({
     mutationFn: () =>
-      api.put(`/api/vehicle-onboarding/submit-summary/${vehicle?.id}`),
+      http.put<VehicleInformation>(
+        `/api/vehicle-onboarding/submit-summary/${vehicle?.id}`
+      ),
 
     onSuccess: (data) => {
-      console.log(
-        "Vehicle Onboarding Submitted for Review Successful",
-        data.data
-      );
-      dispatch(updateVehicleInformation({ ...vehicle, ...data.data }));
+      console.log("Vehicle Onboarding Submitted for Review Successful", data);
+      dispatch(updateVehicleInformation({ ...vehicle, ...data }));
       router.push(`/vehicle-onboarding/success/${vehicle?.id}`);
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Vehicle Onboarding Submitted for Review", error),
+      handleErrors(error, "Vehicle Onboarding Submitted for Review"),
   });
 
   return {
-    currentStep,
     submitVehicleOnboarding,
     vehicle,
     perks,
@@ -155,6 +157,5 @@ export default function useVehicleSummary() {
     vehicleImages,
     agreeToTerms,
     setAgreeToTerms,
-    setCurrentStep,
   };
 }

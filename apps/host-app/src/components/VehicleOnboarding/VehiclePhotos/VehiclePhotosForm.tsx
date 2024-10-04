@@ -10,20 +10,20 @@ import useVehiclePhotosForm from "@/components/VehicleOnboarding/VehiclePhotos/u
 type Props = {
   steps: string[];
   setPhotoTipIndex: Dispatch<SetStateAction<number>>;
+    currentStep: number;
+  setCurrentStep: (step: number) => void;
 };
 
-const VehiclePhotosForm = ({ steps, setPhotoTipIndex }: Props) => {
+const VehiclePhotosForm = ({ steps, setPhotoTipIndex ,currentStep,setCurrentStep}: Props) => {
   const {
     initialValues,
-    currentStep,
     photoViews,
     setPhotoViews,
-    setCurrentStep,
     submitStep3,
     saveStep3,
     appendFormData,
     photoViewOptions,
-  } = useVehiclePhotosForm(setPhotoTipIndex);
+  } = useVehiclePhotosForm({setPhotoTipIndex,currentStep,setCurrentStep});
 
   // Set the initial photoTipIndex when the component mounts
   useEffect(() => {

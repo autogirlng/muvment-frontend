@@ -6,9 +6,11 @@ import VehiclePhotosTips from "./VehiclePhotosTips";
 
 type Props = {
   steps: string[];
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
 };
 
-const VehiclePhotos = ({ steps }: Props) => {
+const VehiclePhotos = ({ steps, currentStep, setCurrentStep }: Props) => {
   const [photoTipIndex, setPhotoTipIndex] = useState<number>(0);
 
   useEffect(() => {
@@ -20,7 +22,12 @@ const VehiclePhotos = ({ steps }: Props) => {
       <DesktopTips photoTipIndex={photoTipIndex} />
       <MobileTips photoTipIndex={photoTipIndex} />
 
-      <VehiclePhotosForm steps={steps} setPhotoTipIndex={setPhotoTipIndex} />
+      <VehiclePhotosForm
+        steps={steps}
+        currentStep={currentStep}
+        setCurrentStep={setCurrentStep}
+        setPhotoTipIndex={setPhotoTipIndex}
+      />
     </div>
   );
 };

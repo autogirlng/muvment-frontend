@@ -1,7 +1,6 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { api } from "@/lib/api";
 import { ErrorResponse } from "@/utils/types";
 import { handleErrors } from "@/utils/functions";
 import { AxiosError } from "axios";
@@ -19,7 +18,7 @@ export default function useLogout() {
   };
 
   //   const logoutUser = useMutation({
-  //     mutationFn: () => api.put("/api/user/logout"),
+  //     mutationFn: () => http.put("/api/user/logout"),
 
   //     onSuccess: (data) => {
   //       console.log("User logged out Successfully", data.data);

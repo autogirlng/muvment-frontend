@@ -2,31 +2,32 @@
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { api } from "@/lib/api";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { handleErrors } from "@/utils/functions";
 import {
   AvailabilityAndPricing,
   AvailabilityAndPricingValues,
   ErrorResponse,
+  VehicleInformation,
 } from "@/utils/types";
-import {
-  setVehicleOnboardingCurrentStep,
-  updateVehicleInformation,
-} from "@/lib/features/vehicleOnboardingSlice";
+import { updateVehicleInformation } from "@/lib/features/vehicleOnboardingSlice";
 import { useState } from "react";
+import { useHttp } from "@/hooks/useHttp";
 
-export default function useAvailabilityAndPricingForm() {
+export default function useAvailabilityAndPricingForm({
+  currentStep,
+  setCurrentStep,
+}: {
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
+}) {
+  const http = useHttp();
   const router = useRouter();
   const dispatch = useAppDispatch();
+
   const [showOuskirts, setShowOuskirts] = useState<boolean>(false);
 
-  const { currentStep, vehicle } = useAppSelector(
-    (state) => state.vehicleOnboarding
-  );
-
-  const setCurrentStep = (step: number) =>
-    dispatch(setVehicleOnboardingCurrentStep(step));
+  const { vehicle } = useAppSelector((state) => state.vehicleOnboarding);
 
   const initialValues: AvailabilityAndPricingValues = {
     advanceNoticeInDays: vehicle?.tripSettings?.advanceNotice || "",
@@ -97,34 +98,38 @@ export default function useAvailabilityAndPricingForm() {
 
   const saveStep4 = useMutation({
     mutationFn: (values: AvailabilityAndPricing) =>
-      api.put(`/api/vehicle-onboarding/step4/${vehicle?.id}`, values, {}),
+      http.put<VehicleInformation>(
+        `/api/vehicle-onboarding/step4/${vehicle?.id}`,
+        values
+      ),
 
     onSuccess: (data) => {
-      console.log("Vehicle Onboarding Step 4 Saved", data.data);
-      dispatch(updateVehicleInformation({ ...vehicle, ...data.data }));
-      //       router.push("/listings");
+      console.log("Vehicle Onboarding Step 4 Saved", data);
+      dispatch(updateVehicleInformation({ ...vehicle, ...data }));
+      router.push("/listings");
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Vehicle Onboarding Step 4", error),
+      handleErrors(error, "Vehicle Onboarding Step 4"),
   });
   const submitStep4 = useMutation({
     mutationFn: (values: AvailabilityAndPricing) =>
-      api.put(`/api/vehicle-onboarding/step4/${vehicle?.id}`, values),
+      http.put<VehicleInformation>(
+        `/api/vehicle-onboarding/step4/${vehicle?.id}`,
+        values
+      ),
 
     onSuccess: (data) => {
-      console.log("Vehicle Onboarding Step 4 Submitted", data.data);
-      dispatch(updateVehicleInformation({ ...vehicle, ...data.data }));
+      console.log("Vehicle Onboarding Step 4 Submitted", data);
+      dispatch(updateVehicleInformation({ ...vehicle, ...data }));
       setCurrentStep(currentStep + 1);
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Vehicle Onboarding Step 4", error),
+      handleErrors(error, "Vehicle Onboarding Step 4"),
   });
 
   return {
-    currentStep,
-    setCurrentStep,
     submitStep4,
     saveStep4,
     vehicle,

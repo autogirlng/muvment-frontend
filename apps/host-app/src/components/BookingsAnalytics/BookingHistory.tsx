@@ -1,18 +1,19 @@
-import useBookings from "@/hooks/useBookings";
 import BookingAnalyticsTable from "./Table";
 import Pagination from "@repo/ui/pagination";
 import { FullPageSpinner } from "@repo/ui/spinner";
-import { useAppSelector } from "@/lib/hooks";
+import { useState } from "react";
+import useBookings from "./hooks/useBookings";
 
 type Props = {};
 
 export default function BookingHistory({}: Props) {
-  const { bookings, totalItemsCount } = useAppSelector(
-    (state) => state.bookings
-  );
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageLimit = 10;
 
-  const { isError, isLoading, currentPage, setCurrentPage, pageLimit } =
-    useBookings();
+  const { bookings, totalCount, isError, isLoading } = useBookings({
+    currentPage,
+    pageLimit,
+  });
 
   return (
     <div className="space-y-4">
@@ -22,15 +23,15 @@ export default function BookingHistory({}: Props) {
         <p>something went wrong</p>
       ) : (
         <BookingAnalyticsTable
-          items={bookings || []}
-          emptyStateTitle="No Upcoming Bookings"
-          emptyStateMessage="Your Upcoming Bookings Will Appear Here"
+          items={bookings}
+          emptyStateTitle="No Bookings"
+          emptyStateMessage="Your Bookings Will Appear Here"
         />
       )}
 
       <Pagination
         currentPage={currentPage}
-        totalCount={totalItemsCount}
+        totalCount={totalCount}
         pageLimit={pageLimit}
         onPageChange={(page) => setCurrentPage(page)}
       />

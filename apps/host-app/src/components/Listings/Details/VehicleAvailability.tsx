@@ -6,6 +6,7 @@ import { Spinner } from "@repo/ui/spinner";
 import cn from "classnames";
 import useListingsActions from "./hooks/useListingsActions";
 import Icons from "@repo/ui/icons";
+import { ReactNode } from "react";
 
 type Props = { vehicleStatus?: VehicleStatus; isActive?: boolean; id?: string };
 
@@ -18,7 +19,9 @@ export default function ListingDetailsVehicleAvailability({
     updateListingStatusToBooked,
     updateListingStatusToAvaliable,
     updateListingStatusToMaintenance,
+    updateListingStatusToUnavaliable,
   } = useListingsActions(() => {}, id);
+
   return (
     <div className="flex gap-3 justify-between items-start md:items-center bg-grey-75 md:bg-transparent rounded-[32px] px-5 py-6 md:p-0">
       <div className="bg-grey-75 md:py-3 md:pl-8 md:pr-5 flex flex-col md:flex-row gap-3 items-start md:items-center md:rounded-[128px]">
@@ -72,9 +75,9 @@ export default function ListingDetailsVehicleAvailability({
               <StatusButton
                 status="Unavailable"
                 active={vehicleStatus === VehicleStatus.UNAVAILABLE}
-                // open calendar
-                onClick={() => {}}
-                loading={false}
+                onClick={() => updateListingStatusToUnavaliable.mutate()}
+                loading={updateListingStatusToUnavaliable.isPending}
+                setUnavailableTime={vehicleStatus === VehicleStatus.UNAVAILABLE}
               />
             </ul>
           </>
@@ -90,28 +93,47 @@ const StatusButton = ({
   loading,
   active,
   // disabled,
+  setUnavailableTime,
 }: {
   status: string;
   onClick: () => void;
   loading: boolean;
   active: boolean;
   // disabled: boolean;
+  setUnavailableTime?: boolean;
 }) => {
+  const buttonClass = cn(
+    "py-3 px-2 font-normal text-left w-full text-sm rounded-xl ",
+    active
+      ? "bg-primary-500 text-white flex items-center gap-1"
+      : "bg-grey-90 text-grey-900"
+  );
+
   return (
     <li>
-      <button
-        className={cn(
-          "py-3 px-2 font-normal text-left w-full text-sm rounded-xl",
-          active
-            ? "bg-primary-500 text-white flex items-center gap-1"
-            : "bg-grey-90 text-grey-900"
-        )}
-        onClick={onClick}
-        disabled={loading || active}
-      >
-        {active && Icons.ic_done_circle}
-        {loading ? <Spinner /> : <span>{status}</span>}
-      </button>
+      {setUnavailableTime ? (
+        <div className={cn(buttonClass, "flex items-center justify-between")}>
+          <button
+            className="flex items-center gap-1"
+            onClick={onClick}
+            disabled={loading || active}
+          >
+            {active && Icons.ic_done_circle}
+            {loading ? <Spinner /> : <span>{status}</span>}
+          </button>
+          {Icons.ic_calendar}
+          
+        </div>
+      ) : (
+        <button
+          className={buttonClass}
+          onClick={onClick}
+          disabled={loading || active}
+        >
+          {active && Icons.ic_done_circle}
+          {loading ? <Spinner /> : <span>{status}</span>}
+        </button>
+      )}
     </li>
   );
 };

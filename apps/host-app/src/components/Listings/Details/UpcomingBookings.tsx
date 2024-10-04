@@ -49,8 +49,8 @@ export default function ListingDetailsUpcomingBookings({ vehicleId }: Props) {
           <Spinner />
         ) : isError ? (
           <p>something went wrong</p>
-        ) : upcomingBookings.length > 0 ? (
-          upcomingBookings.map((data, index) => {
+        ) : upcomingBookings?.length > 0 ? (
+          upcomingBookings?.map((data, index) => {
             return (
               <BookingCard
                 key={index}

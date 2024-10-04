@@ -20,15 +20,12 @@ const IconWrapper = ({ icon }: any) => {
 };
 
 export default function TopHeader({}: Props) {
+  const pageLimit = 5;
   const { user } = useAppSelector((state) => state.user);
-  const {
-    notifications,
-    isError,
-    isLoading,
-
-    totalItemsCount,
-    totalUnread,
-  } = useNotifications({ pageLimit: 5 });
+  const { notifications, isError, isLoading, totalCount } = useNotifications({
+    pageLimit,
+    currentPage: 1,
+  });
 
   return (
     <div className="hidden md:flex w-full md:px-6 2xl:px-8 py-5 items-center justify-between bg-white border-b border-grey-300 shadow-[0_4px_100px_0_#00000012]">
@@ -47,7 +44,7 @@ export default function TopHeader({}: Props) {
             <div className="space-y-7">
               <h6 className="text-xl 3xl:text-h6 text-grey-700 !font-semibold">
                 Notifications{" "}
-                <span className="text-primary-500">{`(${totalItemsCount})`}</span>
+                <span className="text-primary-500">{`(${totalCount})`}</span>
               </h6>
               <Notifications
                 notifications={notifications}

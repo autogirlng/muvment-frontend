@@ -9,6 +9,7 @@ import VehicleSummary from "@/components/VehicleOnboarding/VehicleSummary";
 import { Stepper } from "@repo/ui/stepper";
 import useVehicleOnboarding from "../../../hooks/useVehicleOnboarding";
 import { FullPageSpinner } from "@repo/ui/spinner";
+import { useState } from "react";
 
 const steps = [
   "Basic Vehicle Information",
@@ -18,9 +19,14 @@ const steps = [
 ];
 
 export default function VehicleOnboardingPage() {
-  const { currentStep, setCurrentStep, loading } = useVehicleOnboarding();
+  const { isLoading } = useVehicleOnboarding();
+  const [currentStep, setCurrentStep] = useState<number>(0);
 
-  if (loading) {
+  const handleCurrentStep = (step: number) => {
+    setCurrentStep(step);
+  };
+
+  if (isLoading) {
     return <FullPageSpinner />;
   }
 
@@ -41,11 +47,41 @@ export default function VehicleOnboardingPage() {
           </h2>
         </div>
         <Stepper steps={steps} currentStep={currentStep}>
-          {currentStep === 0 && <BasicVehicleInformation steps={steps} />}
-          {currentStep === 1 && <AdditionalInformation steps={steps} />}
-          {currentStep === 2 && <VehiclePhotos steps={steps} />}
-          {currentStep === 3 && <AvailabilityAndPricing steps={steps} />}
-          {currentStep === 4 && <VehicleSummary steps={steps} />}
+          {currentStep === 0 && (
+            <BasicVehicleInformation
+              steps={steps}
+              currentStep={currentStep}
+              setCurrentStep={handleCurrentStep}
+            />
+          )}
+          {currentStep === 1 && (
+            <AdditionalInformation
+              steps={steps}
+              currentStep={currentStep}
+              setCurrentStep={handleCurrentStep}
+            />
+          )}
+          {currentStep === 2 && (
+            <VehiclePhotos
+              steps={steps}
+              currentStep={currentStep}
+              setCurrentStep={handleCurrentStep}
+            />
+          )}
+          {currentStep === 3 && (
+            <AvailabilityAndPricing
+              steps={steps}
+              currentStep={currentStep}
+              setCurrentStep={handleCurrentStep}
+            />
+          )}
+          {currentStep === 4 && (
+            <VehicleSummary
+              steps={steps}
+              currentStep={currentStep}
+              setCurrentStep={handleCurrentStep}
+            />
+          )}
         </Stepper>
       </div>
     </main>

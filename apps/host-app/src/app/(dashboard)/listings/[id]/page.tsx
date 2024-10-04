@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import { MappedInformation } from "@/utils/types";
-import { useAppSelector } from "@/lib/hooks";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import AppTabs from "@repo/ui/tabs";
 import Icons from "@repo/ui/icons";
@@ -16,7 +15,7 @@ import ListingDetailsUpcomingBookings from "@/components/Listings/Details/Upcomi
 import VehicleInformation from "@/components/Listings/Details/VehicleInformation";
 import VehicleReviews from "@/components/Listings/Details/Reviews";
 import DriversDetails from "@/components/Listings/Details/DriversDetails";
-import useListingsActions from "@/components/Listings/Details/hooks/useListingsActions";
+import useGetListingById from "@/components/Listings/Details/hooks/useGetListingById";
 
 type Extras = {
   name: string;
@@ -51,37 +50,28 @@ const initialtabs = [
 
 export default function ListingsPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { getListingById } = useListingsActions();
-  const { listingDetail } = useAppSelector((state) => state.listings);
-
   const [tabs, setTabs] = useState(initialtabs);
   const [extras, setExtras] = useState<Extras[]>(initialExtras);
-  const [vehicleImages, setVehicleImages] = useState<string[]>([]);
-  const [vehicleDetails, setVehicleDetails] = useState<MappedInformation[]>([]);
+  const {
+    listingDetail,
+    isError,
+    isLoading,
+    isSuccess,
+    vehicleDetails,
+    vehicleImages,
+  } = useGetListingById({
+    id: params.id,
+  });
 
   useEffect(() => {
     if (!params.id) {
       router.push("/listings");
-    } else {
-      getListingById.mutate(params.id);
     }
   }, [params.id]);
 
   // use useMemo here
   useEffect(() => {
-    if (listingDetail) {
-      // update vehicle details
-      const mappedVehicleDetails: MappedInformation[] = [
-        { make: listingDetail?.make || "N/A" },
-        { model: listingDetail?.model || "N/A" },
-        { year: listingDetail?.yearOfRelease || "N/A" },
-        { colour: listingDetail?.vehicleColor || "N/A" },
-        { city: listingDetail?.location || "N/A" },
-        { vehicleType: listingDetail?.vehicleType || "N/A" },
-        { seatingCapacity: listingDetail?.numberOfSeats || "N/A" },
-      ];
-      setVehicleDetails(mappedVehicleDetails);
-
+    if (isSuccess) {
       // update extras
       const updatedExtras = extras.map((extra) => {
         if (extra.id === "fuelProvided") {
@@ -98,17 +88,6 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
         return extra;
       });
       setExtras(updatedExtras);
-
-      // update vehicle images
-      const mappedVehicleImages = [
-        listingDetail?.VehicleImage?.frontView,
-        listingDetail?.VehicleImage?.backView,
-        listingDetail?.VehicleImage?.sideView1,
-        listingDetail?.VehicleImage?.sideView2,
-        listingDetail?.VehicleImage?.interior,
-        listingDetail?.VehicleImage?.other,
-      ];
-      setVehicleImages(mappedVehicleImages);
 
       // update tabs
       const updatedTabs = tabs.map((tab) => {
@@ -134,13 +113,13 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
       });
       setTabs(updatedTabs);
     }
-  }, [listingDetail]);
+  }, [isSuccess]);
 
-  if (getListingById.isPending) {
+  if (isLoading) {
     return <FullPageSpinner />;
   }
 
-  if (getListingById.isError) {
+  if (isError) {
     return <p>something went wrong </p>;
   }
 
@@ -154,7 +133,9 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
             id={listingDetail?.id}
             status={listingDetail?.status}
           />
-          <ListingDetailsVehicleImages vehicleImages={vehicleImages} />
+          <ListingDetailsVehicleImages
+            vehicleImages={vehicleImages as string[]}
+          />
 
           <ListingDetailsVehicleAvailability
             vehicleStatus={listingDetail?.vehicleStatus}
@@ -164,7 +145,7 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
 
           <ListingDetailsVehicleDetails
             extras={extras}
-            vehicleDetails={vehicleDetails}
+            vehicleDetails={vehicleDetails as MappedInformation[]}
           />
 
           <ListingDetailsEarnings statistics={listingDetail?.statistics} />

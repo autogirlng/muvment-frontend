@@ -91,7 +91,7 @@ export default function PhotoUpload({
                 type="file"
                 id={id}
                 name={name}
-                accept=".png, .jpg, .jpeg"
+                accept=".png, .jpg, .jpeg, .webp"
                 onChange={handleFileInputChange}
                 style={{ display: "none" }}
                 disabled={disabled}

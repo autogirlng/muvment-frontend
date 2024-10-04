@@ -5,12 +5,14 @@ import AvailabilityAndPricingTips from "./AvailabilityAndPricingTips";
 
 type Props = {
   steps: string[];
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
 };
 
-export default function AvailabilityAndPricing({ steps }: Props) {
+export default function AvailabilityAndPricing({ steps,setCurrentStep,currentStep }: Props) {
   return (
     <div className="flex justify-between flex-col-reverse md:flex-row gap-8">
-      <AvailabilityAndPricingForm steps={steps} />
+      <AvailabilityAndPricingForm steps={steps} currentStep={currentStep} setCurrentStep={setCurrentStep} />
       <DesktopTips />
       <MobileTips />
     </div>

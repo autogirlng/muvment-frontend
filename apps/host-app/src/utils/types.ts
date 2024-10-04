@@ -160,6 +160,16 @@ export interface WithdrawalValues {
 
 // <================= FORM VALUES ENDS =================>
 
+export type BankCodes = {
+  bankId: string;
+  baseUssdCode: string;
+  code: string;
+  name: string;
+  nipBankCode: string;
+  transferUssdTemplate: string;
+  ussdTemplate: string;
+};
+
 export interface AssignNewDriver {
   vehicleId: string;
   // bookingId: string;
@@ -497,6 +507,16 @@ export type Transaction = {
   bookingId: string | null;
   createdAt: string;
   updatedAt: string;
+};
+
+export type WalletBalance = {
+  id: string;
+  userId: string;
+  walletBalance: number;
+  // otpExpires: null;
+  locked: boolean;
+  // createdAt: string;
+  // updatedAt: string;
 };
 
 export type Review = {

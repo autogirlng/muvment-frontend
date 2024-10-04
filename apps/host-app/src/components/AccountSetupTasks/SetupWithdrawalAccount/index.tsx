@@ -7,7 +7,7 @@ import Button from "@repo/ui/button";
 import InputField from "@repo/ui/inputField";
 import SelectSearchInput from "@repo/ui/searchSelectInput";
 import Icons from "@repo/ui/icons";
-import useAccountSetup from "@/hooks/useAccountSetup";
+import useSetupWithdrawalAccount from "../hooks/useSetupWithdrawalAccount";
 
 type Props = {};
 
@@ -16,17 +16,12 @@ export default function SetupWithdrawalAccount({}: Props) {
     credentialsError,
     accountDetails,
     bankCodes,
-    getAllBankCodes,
+    isLoading,
     validateBankAccount,
     setCredentialsError,
     loading,
     setLoading,
-  } = useAccountSetup();
-
-  useEffect(() => {
-    getAllBankCodes.mutate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  } = useSetupWithdrawalAccount();
 
   return (
     <Formik
@@ -64,7 +59,7 @@ export default function SetupWithdrawalAccount({}: Props) {
               label="Bank"
               id="bank"
               banks={bankCodes}
-              isLoading={getAllBankCodes.isPending}
+              isLoading={isLoading}
               value={values.bank}
               onChange={(bank: BankProp) => {
                 setFieldTouched("bank", true);

@@ -3,10 +3,16 @@ import Tips from "@/components/VehicleOnboarding//Tips";
 import AdditionalInformationForm from "./AdditionalInformationForm";
 import AdditionalInformationTips from "./AdditionalInformationTips";
 
-const AdditionalInformation = ({ steps }: { steps: string[] }) => {
+const AdditionalInformation = ({
+  steps,currentStep,setCurrentStep
+}: {
+  steps: string[];
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
+}) => {
   return (
     <div className="flex justify-between flex-col-reverse md:flex-row gap-8">
-      <AdditionalInformationForm steps={steps} />
+      <AdditionalInformationForm steps={steps} currentStep={currentStep} setCurrentStep={setCurrentStep} />
 
       <DesktopTips />
       <MobileTips />

@@ -1,21 +1,22 @@
 "use client";
 
+import { useState } from "react";
 import useNotifications from "@/components/Notifications/useNotifications";
 import Notifications from "@/components/Notifications";
 import Pagination from "@repo/ui/pagination";
 
-export default function ListingsPage() {
+export default function NotificationsPage() {
+  const pageLimit = 20;
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
   const {
     notifications,
     isError,
     isLoading,
 
-    currentPage,
-    setCurrentPage,
-    pageLimit,
-    totalItemsCount,
-    totalUnread,
-  } = useNotifications({ pageLimit: 20 });
+    totalCount,
+    // unreadCount,
+  } = useNotifications({ pageLimit, currentPage });
 
   return (
     <main className="py-[56px] space-y-10">
@@ -30,7 +31,7 @@ export default function ListingsPage() {
       />
       <Pagination
         currentPage={currentPage}
-        totalCount={totalItemsCount}
+        totalCount={totalCount}
         pageLimit={pageLimit}
         onPageChange={(page) => setCurrentPage(page)}
       />

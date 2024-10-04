@@ -1,17 +1,11 @@
-import { api } from "@/lib/api";
-import {
-  setListingDetail,
-  updateListingDetailData,
-  updateListings,
-} from "@/lib/features/listingsSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { useHttp } from "@/hooks/useHttp";
 import { handleErrors } from "@/utils/functions";
 import {
   ErrorResponse,
-  ListingInformation,
+  VehicleInformation,
   VehicleStatus,
 } from "@/utils/types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 
@@ -19,166 +13,155 @@ export default function useListingsActions(
   handleModal?: (open: boolean) => void,
   id?: string
 ) {
-  const dispatch = useAppDispatch();
+  const http = useHttp();
+  const queryClient = useQueryClient();
   const router = useRouter();
-
-  const { listings, listingDetail } = useAppSelector((state) => state.listings);
-
-  const getListingById = useMutation({
-    mutationFn: (id: string) => api.get(`/api/listings/details/${id}`),
-
-    onSuccess: (data) => {
-      console.log("Get Listing details By Id", {
-        ...data.data.vehicle,
-        statistics: data.data.statistics,
-      });
-      dispatch(
-        setListingDetail({
-          ...data.data.vehicle,
-          statistics: data.data.statistics,
-        })
-      );
-    },
-
-    onError: (error: AxiosError<ErrorResponse>) => {
-      handleErrors("Get Listing details By Id", error);
-      router.push("/listings");
-    },
-  });
+  const listingsByIdQueryKey = ["getListingById", id];
 
   const deactivateListing = useMutation({
-    mutationFn: () => api.put(`/api/listings/deactivate/${id}`),
+    mutationFn: () =>
+      http.put<VehicleInformation>(`/api/listings/deactivate/${id}`),
 
     onSuccess: (data) => {
-      console.log("Deactivate Listing successful", data.data);
-      dispatch(updateListingDetailData(data.data));
-
-      //     filter the listing to remove it from from listings
+      console.log("Deactivate Listing successful", data);
+      queryClient.invalidateQueries({
+        queryKey: listingsByIdQueryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["getListings"],
+      });
 
       handleModal && handleModal(false);
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Deactivate Listing", error),
+      handleErrors(error, "Deactivate Listing"),
   });
 
   const moveListingToDraft = useMutation({
-    mutationFn: () => api.put(`/api/listings/draft/${id}`),
+    mutationFn: () => http.put(`/api/listings/draft/${id}`),
 
     onSuccess: (data) => {
-      console.log("Move Listing to Draft successful", data.data);
-      dispatch(updateListingDetailData(data.data));
+      console.log("Move Listing to Draft successful", data);
 
-      //     update listing array
-      const listingIndex = listings.findIndex((listing) => listing.id === id);
-      if (listingIndex !== -1) {
-        const updatedListings = [...listings];
-
-        updatedListings[listingIndex] = {
-          ...updatedListings[listingIndex],
-          vehicleStatus: VehicleStatus.DRAFT,
-        };
-
-        console.log(updatedListings);
-
-        dispatch(updateListings(updatedListings));
-      }
+      queryClient.invalidateQueries({
+        queryKey: listingsByIdQueryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["getListings"],
+      });
 
       handleModal && handleModal(false);
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Move Listing to Draft", error),
+      handleErrors(error, "Move Listing to Draft"),
   });
 
   const deleteListing = useMutation({
-    mutationFn: () => api.delete(`/api/listings/${id}`),
+    mutationFn: () => http.delete(`/api/listings/${id}`),
 
     onSuccess: (data) => {
-      console.log("Delete Listing successful", data.data);
-      dispatch(setListingDetail(null));
-
-      const updatedListings = listings.filter((listing) => listing.id !== id);
-      dispatch(updateListings(updatedListings));
+      console.log("Delete Listing successful", data);
+      queryClient.invalidateQueries({
+        queryKey: listingsByIdQueryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["getListings"],
+      });
 
       router.push("/listings");
       handleModal && handleModal(false);
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Delete Listing", error),
+      handleErrors(error, "Delete Listing"),
   });
 
   const updateListingStatusToBooked = useMutation({
     mutationFn: () =>
-      api.put(`/api/listings/status/${id}`, { status: VehicleStatus.BOOKED }),
+      http.put(`/api/listings/status/${id}`, { status: VehicleStatus.BOOKED }),
 
     onSuccess: (data) => {
-      console.log("Update Listing status to booked successful", data.data);
-      dispatch(updateListingDetailData(data.data));
-
-      //     filter the listing to remove it from from listings
+      console.log("Update Listing status to booked successful", data);
+      queryClient.invalidateQueries({
+        queryKey: listingsByIdQueryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["getListings"],
+      });
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Update Listing status to booked", error),
+      handleErrors(error, "Update Listing status to booked"),
   });
 
   const updateListingStatusToAvaliable = useMutation({
     mutationFn: () =>
-      api.put(`/api/listings/status/${id}`, { status: VehicleStatus.ACTIVE }),
+      http.put(`/api/listings/status/${id}`, { status: VehicleStatus.ACTIVE }),
 
     onSuccess: (data) => {
-      console.log("Update Listing status to available successful", data.data);
-      dispatch(updateListingDetailData(data.data));
+      console.log("Update Listing status to available successful", data);
 
-      //     filter the listing to remove it from from listings
+      queryClient.invalidateQueries({
+        queryKey: listingsByIdQueryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["getListings"],
+      });
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Update Listing status to available", error),
+      handleErrors(error, "Update Listing status to available"),
   });
 
   const updateListingStatusToMaintenance = useMutation({
     mutationFn: () =>
-      api.put(`/api/listings/status/${id}`, {
+      http.put(`/api/listings/status/${id}`, {
         status: VehicleStatus.MAINTENANCE,
       }),
 
     onSuccess: (data) => {
-      console.log("Update Listing status to maintenance successful", data.data);
-      dispatch(updateListingDetailData(data.data));
-
-      //     filter the listing to remove it from from listings
+      console.log("Update Listing status to maintenance successful", data);
+      queryClient.invalidateQueries({
+        queryKey: listingsByIdQueryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["getListings"],
+      });
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Update Listing status to maintenance", error),
+      handleErrors(error, "Update Listing status to maintenance"),
   });
 
   const updateListingStatusToUnavaliable = useMutation({
-    mutationFn: (value) => api.put(`/api/listings/status/${id}`, value),
+    mutationFn: () =>
+      http.put(`/api/listings/status/${id}`, {
+        status: VehicleStatus.UNAVAILABLE,
+      }),
 
     onSuccess: (data) => {
-      console.log("Update Listing status successful", data.data);
-      dispatch(updateListingDetailData(data.data));
-
-      //     filter the listing to remove it from from listings
+      console.log("Update Listing status successful", data);
+      queryClient.invalidateQueries({
+        queryKey: listingsByIdQueryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["getListings"],
+      });
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Update Listing status", error),
+      handleErrors(error, "Update Listing status"),
   });
 
   return {
-    getListingById,
     deactivateListing,
     deleteListing,
     moveListingToDraft,
     updateListingStatusToBooked,
     updateListingStatusToAvaliable,
     updateListingStatusToMaintenance,
-
-    listingDetail,
+    updateListingStatusToUnavaliable,
   };
 }
