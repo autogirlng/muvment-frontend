@@ -10,7 +10,7 @@ import {
 } from "@/utils/functions";
 
 type Props = {
-  listingDetails: ListingInformation | null | undefined;
+  listingDetails: ListingInformation | null;
 };
 
 export default function VehicleInformation({ listingDetails }: Props) {

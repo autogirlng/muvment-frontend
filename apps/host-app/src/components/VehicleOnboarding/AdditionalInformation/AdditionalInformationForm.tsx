@@ -10,9 +10,15 @@ import SelectInput from "@repo/ui/select";
 import FormRow from "../FormRow";
 import useAdditionalInformationForm from "./useAdditionalInformationForm";
 
-const AdditionalInformationForm = ({ steps }: { steps: string[] }) => {
-  const { currentStep, setCurrentStep, submitStep2, saveStep2, initialValues } =
-    useAdditionalInformationForm();
+const AdditionalInformationForm = ({
+  steps,currentStep,setCurrentStep
+}: {
+  steps: string[];
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
+}) => {
+  const {  submitStep2, saveStep2, initialValues } =
+    useAdditionalInformationForm({currentStep,setCurrentStep});
 
   return (
     <Formik

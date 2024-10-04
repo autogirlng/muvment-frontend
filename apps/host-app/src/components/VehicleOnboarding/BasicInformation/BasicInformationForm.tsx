@@ -16,11 +16,19 @@ import useBasicInformationForm from "./useBasicInformationForm";
 
 type Props = {
   steps: string[];
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
 };
 
-const BasicVehicleInformationForm = ({ steps }: Props) => {
-  const { currentStep, setCurrentStep, submitStep1, saveStep1, initialValues } =
-    useBasicInformationForm();
+const BasicVehicleInformationForm = ({
+  steps,
+  currentStep,
+  setCurrentStep,
+}: Props) => {
+  const { submitStep1, saveStep1, initialValues } = useBasicInformationForm({
+    currentStep,
+    setCurrentStep,
+  });
 
   return (
     <Formik

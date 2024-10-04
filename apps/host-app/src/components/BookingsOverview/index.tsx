@@ -5,8 +5,8 @@ import FilterBy from "@repo/ui/filter";
 import Table from "@/components/BookingsOverview/BookingTable";
 import DashboardSectionTitle from "@/components/DashboardSectionTitle";
 import { bookingOverviewFilters, monthsFilter } from "@/utils/data";
-import useBookings from "@/hooks/useBookings";
 import { FullPageSpinner } from "@repo/ui/spinner";
+import useBookingsOverview from "./hooks/useBookingsOverview";
 
 type Props = {};
 
@@ -15,11 +15,7 @@ export default function BookingsOverview({}: Props) {
     console.log("Selected filters:", selectedFilters);
   };
 
-  const { data, isError, error, isLoading, isSuccess } = useBookings();
-
-  useEffect(() => {
-    console.log(data?.data?.data);
-  }, [data]);
+  const { bookings, isError, isLoading } = useBookingsOverview();
 
   return (
     <div className="space-y-8">
@@ -67,7 +63,7 @@ export default function BookingsOverview({}: Props) {
         <p>something went wrong</p>
       ) : (
         <Table
-          items={data?.data?.data || []}
+          items={bookings}
           emptyStateMessage="Your Bookings Will Appear Here"
         />
       )}

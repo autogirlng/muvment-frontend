@@ -3,9 +3,6 @@ import userReducer from "./features/userSlice";
 import forgotPasswordReducer from "./features/forgotPasswordSlice";
 import accountSetupReducer from "./features/accountSetupSlice";
 import vehicleOnboardingReducer from "./features/vehicleOnboardingSlice";
-import listingsReducer from "./features/listingsSlice";
-import bookingsReducer from "./features/bookingsSlice";
-import transactionsReducer from "./features/transactionsSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -14,9 +11,6 @@ export const makeStore = () => {
       forgotPassword: forgotPasswordReducer,
       accountSetup: accountSetupReducer,
       vehicleOnboarding: vehicleOnboardingReducer,
-      listings: listingsReducer,
-      bookings: bookingsReducer,
-      transactions: transactionsReducer,
     },
   });
 };

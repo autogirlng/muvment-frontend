@@ -17,7 +17,8 @@ type Props = {
 
 export default function ListingDetailsHeader({ name, status, id }: Props) {
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
-  const [openDeactivateModal, setOpenDeactivateModal] = useState<boolean>(false);
+  const [openDeactivateModal, setOpenDeactivateModal] =
+    useState<boolean>(false);
 
   const handleDeleteModal = () => {
     setOpenDeleteModal(!openDeleteModal);
@@ -82,14 +83,17 @@ export default function ListingDetailsHeader({ name, status, id }: Props) {
                 />
               </li>
               <li>
-                <Link href={`/`} className="!text-xs 3xl:!text-base ">
+                <Link
+                  href={`/listings/view-as-customer/${id}`}
+                  className="!text-xs 3xl:!text-base "
+                >
                   View as customer
                 </Link>
               </li>
             </ul>
           </>
         }
-      ></Popup>
+      />
     </div>
   );
 }

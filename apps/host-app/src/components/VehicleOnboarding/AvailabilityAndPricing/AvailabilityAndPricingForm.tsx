@@ -16,19 +16,20 @@ import useAvailabilityAndPricingForm from "./useAvailabilityAndPricingForm";
 
 type Props = {
   steps: string[];
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
 };
 
-const AvailabilityAndPricingForm = ({ steps }: Props) => {
+const AvailabilityAndPricingForm = ({ steps,setCurrentStep,currentStep }: Props) => {
   const {
-    currentStep,
-    setCurrentStep,
+
     submitStep4,
     saveStep4,
     mapValuesToApiPayload,
     initialValues,
     showOuskirts,
     setShowOuskirts,
-  } = useAvailabilityAndPricingForm();
+  } = useAvailabilityAndPricingForm({currentStep,setCurrentStep});
   return (
     <Formik
       initialValues={initialValues}

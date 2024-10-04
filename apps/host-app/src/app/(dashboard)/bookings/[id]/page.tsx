@@ -8,10 +8,14 @@ import { FullPageSpinner } from "@repo/ui/spinner";
 import MoreButton from "@repo/ui/moreButton";
 import BackLink from "@/components/BackLink";
 import useBookingActions from "@/components/BookingsAnalytics/hooks/useBookingActions";
-import
-BookingInfoCards from "@/components/BookingsAnalytics/Details/BookingInfoCards";
+import BookingInfoCards from "@/components/BookingsAnalytics/Details/BookingInfoCards";
 import BookingActions from "@/components/BookingsAnalytics/Details/BookingActions";
-import { BookingBadgeStatus, PaymentBadgeStatus } from "@/utils/types";
+import {
+  BookingBadgeStatus,
+  MappedInformation,
+  PaymentBadgeStatus,
+} from "@/utils/types";
+import useGetBookingById from "@/components/BookingsAnalytics/hooks/useGetBookingById";
 
 export default function BookingDetailPage({
   params,
@@ -19,14 +23,17 @@ export default function BookingDetailPage({
   params: { id: string };
 }) {
   const router = useRouter();
-  const {
-    bookingDetail,
-    getBookingById,
 
+  const {
+    isError,
+    isLoading,
+    bookingDetail,
     vehicleDetails,
     bookingDates,
     contactInformation,
+  } = useGetBookingById({ id: params.id });
 
+  const {
     openReportModal,
     handleReportModal,
     reportBooking,
@@ -42,22 +49,18 @@ export default function BookingDetailPage({
     declineBooking,
   } = useBookingActions({ id: params.id });
 
-  // use  
-
   useEffect(() => {
     if (!params.id) {
       router.push("/bookings");
-    } else {
-      getBookingById.mutate(params.id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
-  if (getBookingById.isPending) {
+  if (isLoading) {
     return <FullPageSpinner />;
   }
 
-  if (getBookingById.isError) {
+  if (isError) {
     return <p>something went wrong </p>;
   }
 
@@ -70,7 +73,7 @@ export default function BookingDetailPage({
           <BookingInfoCards
             title="BOOKING INFORMATION"
             chipTitle="Booking Dates"
-            chipData={bookingDates}
+            chipData={bookingDates as MappedInformation[]}
             nameTitle="Booking ID"
             nameValue={bookingDetail?.id || ""}
             copyText={bookingDetail?.id || ""}
@@ -148,7 +151,7 @@ export default function BookingDetailPage({
         <BookingInfoCards
           title="GUEST INFORMATION"
           chipTitle="Contact Information"
-          chipData={contactInformation}
+          chipData={contactInformation as MappedInformation[]}
           nameTitle="Guest Name"
           nameValue={bookingDetail?.guestName || ""}
         />
@@ -157,7 +160,7 @@ export default function BookingDetailPage({
         <BookingInfoCards
           title="VEHICLE INFORMATION"
           chipTitle="Vehicle Details"
-          chipData={vehicleDetails}
+          chipData={vehicleDetails as MappedInformation[]}
           nameTitle="Vehicle Requested"
           nameValue={bookingDetail?.vehicle?.listingName || ""}
           link={`/listings/${bookingDetail?.vehicleId}`}

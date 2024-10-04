@@ -1,50 +1,38 @@
 "use client";
 
 import { useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
+import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
-import { api } from "@/lib/api";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { handleErrors } from "@/utils/functions";
-import { ErrorResponse } from "@/utils/types";
-import {
-  setVehicleOnboardingCurrentStep,
-  updateVehicleInformation,
-} from "@/lib/features/vehicleOnboardingSlice";
+import { VehicleInformation } from "@/utils/types";
+import { updateVehicleInformation } from "@/lib/features/vehicleOnboardingSlice";
+import { useHttp } from "./useHttp";
 
 export default function useVehicleOnboarding() {
   const dispatch = useAppDispatch();
   const routeParams = useSearchParams();
   const vehicleId = routeParams.get("id");
 
-  const { currentStep } = useAppSelector((state) => state.vehicleOnboarding);
+  const http = useHttp();
 
-  const setCurrentStep = (step: number) =>
-    dispatch(setVehicleOnboardingCurrentStep(step));
+  const { user } = useAppSelector((state) => state.user);
 
-  const getVehicleById = useMutation({
-    mutationFn: (id: string) => api.get(`/api/vehicle-onboarding/${id}`),
-
-    onSuccess: (data) => {
-      console.log("Get Vehicle Information By Id", data.data);
-      dispatch(updateVehicleInformation(data.data));
-    },
-
-    onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Get Vehicle Information By Id", error),
+  const { data, isError, isLoading, isSuccess } = useQuery({
+    queryKey: ["getVehicleById"],
+    queryFn: () =>
+      http.get<VehicleInformation>(`/api/vehicle-onboarding/${vehicleId}`),
+    enabled: !!user?.id && !!vehicleId,
   });
-
   useEffect(() => {
-    if (vehicleId) {
-      getVehicleById.mutate(vehicleId);
+    if (isSuccess) {
+      console.log("Get Vehicle Information By Id", data);
+      dispatch(updateVehicleInformation(data));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vehicleId]);
-
+  }, [isSuccess]);
   return {
-    currentStep,
-    setCurrentStep,
-    loading: getVehicleById.isPending,
+    data,
+    isError,
+    isLoading,
   };
 }

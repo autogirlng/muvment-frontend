@@ -4,28 +4,27 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { api } from "@/lib/api";
 import { handleErrors } from "@/utils/functions";
 import { photoViewOptions } from "@/utils/data";
 import { ErrorResponse, VehiclePhotos } from "@/utils/types";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import {
-  setVehicleOnboardingCurrentStep,
-  updateVehicleInformation,
-} from "@/lib/features/vehicleOnboardingSlice";
+import { updateVehicleInformation } from "@/lib/features/vehicleOnboardingSlice";
+import { useHttp } from "@/hooks/useHttp";
 
-export default function useVehiclePhotosForm(
-  setPhotoTipIndex: Dispatch<SetStateAction<number>>
-) {
+export default function useVehiclePhotosForm({
+  setPhotoTipIndex,
+  currentStep,
+  setCurrentStep,
+}: {
+  setPhotoTipIndex: Dispatch<SetStateAction<number>>;
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
+}) {
+  const http = useHttp();
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const { currentStep, vehicle } = useAppSelector(
-    (state) => state.vehicleOnboarding
-  );
-
-  const setCurrentStep = (step: number) =>
-    dispatch(setVehicleOnboardingCurrentStep(step));
+  const { vehicle } = useAppSelector((state) => state.vehicleOnboarding);
 
   const appendFormData = (values: VehiclePhotos) => {
     const formData = new FormData();
@@ -57,44 +56,42 @@ export default function useVehiclePhotosForm(
 
   const saveStep3 = useMutation({
     mutationFn: (values: FormData) =>
-      api.put(`/api/vehicle-onboarding/step3/${vehicle?.id}`, values),
+      http.put(`/api/vehicle-onboarding/step3/${vehicle?.id}`, values),
 
     onSuccess: (data) => {
-      console.log("Vehicle Onboarding Step 3 Saved", data.data);
+      console.log("Vehicle Onboarding Step 3 Saved", data);
       dispatch(
         // @ts-ignore
-        updateVehicleInformation({ ...vehicle, VehicleImage: data.data })
+        updateVehicleInformation({ ...vehicle, VehicleImage: data })
       );
-      //       router.push("/listings");
+      router.push("/listings");
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Vehicle Onboarding Step 3", error),
+      handleErrors(error, "Vehicle Onboarding Step 3"),
   });
 
   const submitStep3 = useMutation({
     mutationFn: (values: FormData) =>
-      api.put(`/api/vehicle-onboarding/step3/${vehicle?.id}`, values),
+      http.put(`/api/vehicle-onboarding/step3/${vehicle?.id}`, values),
 
     onSuccess: (data) => {
-      console.log("Vehicle Onboarding Step 3 Submitted", data.data);
+      console.log("Vehicle Onboarding Step 3 Submitted", data);
       dispatch(
         // @ts-ignore
-        updateVehicleInformation({ ...vehicle, VehicleImage: data.data })
+        updateVehicleInformation({ ...vehicle, VehicleImage: data })
       );
       setCurrentStep(currentStep + 1);
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Vehicle Onboarding Step 3", error),
+      handleErrors(error, "Vehicle Onboarding Step 3"),
   });
 
   return {
     initialValues,
-    currentStep,
     photoViews,
     setPhotoViews,
-    setCurrentStep,
     submitStep3,
     saveStep3,
     vehicle,

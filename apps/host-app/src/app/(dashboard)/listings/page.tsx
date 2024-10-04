@@ -1,27 +1,26 @@
 "use client";
 
+import Link from "next/link";
+import { ChangeEvent, useState } from "react";
+import { FullPageSpinner } from "@repo/ui/spinner";
+import Icons from "@repo/ui/icons";
+import Button from "@repo/ui/button";
+import Pagination from "@repo/ui/pagination";
+import SearchInput from "@repo/ui/searchInput";
+import EmptyState from "@/components/EmptyState";
 import DashboardSectionTitle from "@/components/DashboardSectionTitle";
 import ListingCard from "@/components/Listings/ListingCard";
 import useListings from "@/hooks/useListings";
-import { useAppSelector } from "@/lib/hooks";
-import Icons from "@repo/ui/icons";
-import { FullPageSpinner } from "@repo/ui/spinner";
-import Pagination from "@repo/ui/pagination";
-import SearchInput from "@repo/ui/searchInput";
-import { ChangeEvent, useState } from "react";
-import Button from "@repo/ui/button";
-import Link from "next/link";
-import EmptyState from "@/components/EmptyState";
 
 export default function ListingsPage() {
   const [search, setSearch] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageLimit = 10;
 
-  const { listings, totalItemsCount } = useAppSelector(
-    (state) => state.listings
-  );
-
-  const { isLoading, isError, currentPage, setCurrentPage, pageLimit } =
-    useListings();
+  const { listings, totalCount, isError, isLoading } = useListings({
+    currentPage,
+    pageLimit,
+  });
 
   return (
     <main className="space-y-6 py-[56px]">
@@ -71,7 +70,7 @@ export default function ListingsPage() {
       <Pagination
         className="pagination-bar"
         currentPage={currentPage}
-        totalCount={totalItemsCount}
+        totalCount={totalCount}
         pageLimit={pageLimit}
         onPageChange={(page) => setCurrentPage(page)}
       />

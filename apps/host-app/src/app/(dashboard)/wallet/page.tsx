@@ -1,85 +1,30 @@
 "use client";
-
-import { transactionData, transactionFilters } from "@/utils/data";
+import { useState } from "react";
+import { transactionFilters } from "@/utils/data";
+import { FullPageSpinner } from "@repo/ui/spinner";
+import FilterBy from "@repo/ui/filter";
+import Pagination from "@repo/ui/pagination";
+import EmptyState from "@/components/EmptyState";
+import useTransactions from "@/components/Wallet/hooks/useTransactions";
+import WalletBalance from "@/components/Wallet/WalletBalance";
 import DashboardSectionTitle from "@/components/DashboardSectionTitle";
 import TransactionTable from "@/components/Wallet/TransactionTable";
-import Button from "@repo/ui/button";
-import FilterBy from "@repo/ui/filter";
-import { BlurredDialog } from "@repo/ui/dialog";
-import { useState } from "react";
-import Withdraw from "@/components/Wallet/Withdraw";
-import useWallet from "@/components/Wallet/hooks/useWallet";
-import Pagination from "@repo/ui/pagination";
-import { FullPageSpinner } from "@repo/ui/spinner";
-import { useAppSelector } from "@/lib/hooks";
-import EmptyState from "@/components/EmptyState";
-import Image from "next/image";
-import VerifyOtp from "@/components/Wallet/VerifyOtp";
 
 export default function WalletPage() {
-  const { transactions, totalItemsCount } = useAppSelector(
-    (state) => state.transactions
-  );
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageLimit = 10;
 
-  const {
-    isError,
-    error,
-    isLoading,
-
+  const { transactions, totalCount, isError, isLoading } = useTransactions({
     currentPage,
-    setCurrentPage,
     pageLimit,
-
-    withdrawFunds,
-    sendOtp,
-    verifyOtp,
-    amount,
-    setAmount,
-    otp,
-    setOtp,
-
-    openWithdrawModal,
-    handleWithdrawModal,
-    openVerifyOtpModal,
-    handleVerifyOtpModal,
-  } = useWallet();
+  });
 
   const handleFilterChange = (selectedFilters: Record<string, string[]>) => {
     console.log("Selected filters:", selectedFilters);
   };
   return (
     <main className="py-11 space-y-11">
-      <div className="flex items-center justify-between bg-grey-75 rounded-3xl py-11 px-14">
-        <div className="space-y-6">
-          <p className="uppercase text-xs !font-semibold">BALANCE</p>
-          <h1 className="text-primary-900 text-h2 3xl:text-h1 !font-bold">
-            NGN 490,000
-          </h1>
-        </div>
-        <BlurredDialog
-          open={openWithdrawModal}
-          onOpenChange={handleWithdrawModal}
-          trigger={
-            <Button
-              variant="filled"
-              color="primary"
-              className="!py-3 3xl:!py-4 !px-5 3xl:!px-6 !text-base 3xl:!text-xl"
-            >
-              Withdraw Funds
-            </Button>
-          }
-          content={
-            <Withdraw
-              amount={amount}
-              setAmount={setAmount}
-              handleWithdrawal={() => sendOtp.mutate()}
-              handleModal={handleWithdrawModal}
-              isLoading={false}
-            />
-          }
-          width="max-w-[750px] 3xl:max-w-[950px]"
-        />
-      </div>
+      <WalletBalance />
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-">
           <DashboardSectionTitle title="Transaction History" />
@@ -104,31 +49,11 @@ export default function WalletPage() {
         <Pagination
           className="pagination-bar"
           currentPage={currentPage}
-          totalCount={totalItemsCount}
+          totalCount={totalCount}
           pageLimit={pageLimit}
           onPageChange={(page) => setCurrentPage(page)}
         />
       </div>
-
-      <BlurredDialog
-        title={
-          <Image src="/icons/mailbox.png" alt="" width={140} height={93} />
-        }
-        open={openVerifyOtpModal}
-        onOpenChange={handleVerifyOtpModal}
-        trigger={<button />}
-        content={
-          <VerifyOtp
-            handleVerifyOtp={() => verifyOtp.mutate(otp)}
-            handleModal={handleWithdrawModal}
-            isLoading={sendOtp.isPending}
-            otp={otp}
-            setOtp={setOtp}
-            handleResendOtp={() => sendOtp.mutate()}
-          />
-        }
-        width="max-w-[750px] 3xl:max-w-[950px]"
-      />
     </main>
   );
 }

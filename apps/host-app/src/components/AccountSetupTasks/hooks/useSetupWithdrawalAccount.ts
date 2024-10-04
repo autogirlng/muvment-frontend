@@ -1,0 +1,143 @@
+"use client";
+
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import { updateUserData } from "@/lib/features/userSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import {
+  setAccountDetails,
+  setWithdrawalAccountSetupOtp,
+} from "@/lib/features/accountSetupSlice";
+import { handleErrors } from "@/utils/functions";
+import {
+  BankCodes,
+  ErrorResponse,
+  VerifyOtpValues,
+  WithdrawalAccountValues,
+} from "@/utils/types";
+import { useHttp } from "@/hooks/useHttp";
+
+export default function useSetupWithdrawalAccount() {
+  const http = useHttp();
+
+  const { user } = useAppSelector((state) => state.user);
+  const { accountDetails, withdrawalAccountSetupOtp } = useAppSelector(
+    (state) => state.accountSetup
+  );
+
+  const [credentialsError, setCredentialsError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const { data, isError, error, isLoading } = useQuery({
+    queryKey: ["getAllBankCodes"],
+    queryFn: () => http.get<BankCodes[]>("/api/withdrawal-account/bankCodes"),
+  });
+
+  const validateBankAccount = useMutation({
+    mutationFn: (values: WithdrawalAccountValues) =>
+      http.get<WithdrawalAccountValues>(
+        `/api/withdrawal-account/validateBank?accountNumber=${values.accountNumber}&bankCode=${values.bankCode}`
+      ),
+
+    onSuccess: (data) => {
+      console.log("Bank Account Verified Successfully", data);
+      dispatch(setAccountDetails(data));
+      sendBankAccountOtp.mutate();
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) => {
+      setLoading(false);
+      setCredentialsError(true);
+      handleErrors(error, "Verify Bank Account");
+    },
+  });
+
+  const sendBankAccountOtp = useMutation({
+    mutationFn: () => http.get("/api/withdrawal-account/send-otp"),
+
+    onSuccess: (data) => {
+      setLoading(false);
+      console.log("Bank Account Otp Sent Successfully", data);
+      router.push(`/account-setup/withdrawal-account/otp`);
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) => {
+      setLoading(false);
+      handleErrors(error, "Send Bank Account Otp");
+    },
+  });
+
+  const verifyBankAccountOtp = useMutation({
+    mutationFn: (values: VerifyOtpValues) =>
+      http.post("/api/withdrawal-account/verify-otp", values),
+
+    onMutate: (values) => {
+      return { token: values.token };
+    },
+    onSuccess: (data, _values, context) => {
+      console.log("Bank Account Otp Verified", data);
+      dispatch(setWithdrawalAccountSetupOtp(context.token));
+      addBankAccount.mutate(accountDetails);
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) => {
+      setLoading(false);
+      handleErrors(error, "Verify Bank Account Otp");
+    },
+  });
+
+  const addBankAccount = useMutation({
+    mutationFn: (values: WithdrawalAccountValues) =>
+      http.post("/api/withdrawal-account/addWithdrawalAccount", {
+        ...values,
+        country: user?.country,
+        token: withdrawalAccountSetupOtp,
+      }),
+
+    onSuccess: (data) => {
+      console.log(accountDetails, withdrawalAccountSetupOtp);
+
+      dispatch(
+        setAccountDetails({
+          accountNumber: "",
+          bankCode: "",
+          accountName: "",
+        })
+      );
+      dispatch(setWithdrawalAccountSetupOtp(""));
+      setLoading(false);
+      console.log("Withdrawal Account Added Successfully", data);
+      toast.success("Withdrawal Account Added Successfully");
+      dispatch(updateUserData({ withdrawalAccountVerified: true }));
+      router.push(`/account-setup`);
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) => {
+      {
+        setLoading(false);
+        handleErrors(error, "Add Withdrawal Account");
+      }
+    },
+  });
+
+  return {
+    validateBankAccount,
+    bankCodes: data || [],
+    isLoading,
+    accountDetails,
+    credentialsError,
+    setCredentialsError,
+    sendBankAccountOtp,
+    verifyBankAccountOtp,
+    addBankAccount,
+    loading,
+    setLoading,
+    user,
+  };
+}

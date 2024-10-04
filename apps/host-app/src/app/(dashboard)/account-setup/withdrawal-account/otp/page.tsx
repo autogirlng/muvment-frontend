@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import OtpVerification from "@/components/OtpVerification";
 import DashboardInnerPage from "@/components/DashboardInnerPage";
-import useAccountSetup from "@/hooks/useAccountSetup";
+import useSetupWithdrawalAccount from "@/components/AccountSetupTasks/hooks/useSetupWithdrawalAccount";
 
 export default function WithdrawalAccountSetupOtpPage() {
   const router = useRouter();
@@ -15,7 +15,7 @@ export default function WithdrawalAccountSetupOtpPage() {
     sendBankAccountOtp,
     loading,
     setLoading,
-  } = useAccountSetup();
+  } = useSetupWithdrawalAccount();
 
   useEffect(() => {
     if (!accountDetails.accountName) {

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import useReviews from "./hooks/useReviews";
 import StarRating from "@repo/ui/starRating";
 import { FullPageSpinner } from "@repo/ui/spinner";
@@ -9,16 +9,15 @@ import Pagination from "@repo/ui/pagination";
 type Props = { id: string };
 
 export default function VehicleReviews({ id }: Props) {
+  const pageLimit = 20;
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const {
     vehicleReviews,
     isError,
-    error,
     isLoading,
-    currentPage,
-    setCurrentPage,
-    pageLimit,
-    totalItemsCount,
-  } = useReviews(id);
+
+    totalCount,
+  } = useReviews({ id, currentPage, pageLimit });
 
   if (isLoading) {
     return <FullPageSpinner />;
@@ -41,7 +40,7 @@ export default function VehicleReviews({ id }: Props) {
       <Pagination
         className="pagination-bar"
         currentPage={currentPage}
-        totalCount={totalItemsCount}
+        totalCount={totalCount}
         pageLimit={pageLimit}
         onPageChange={(page) => setCurrentPage(page)}
       />

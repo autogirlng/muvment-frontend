@@ -25,6 +25,7 @@ const userSlice = createSlice({
     setToken: (state, action: PayloadAction<string>) => {
       state.userToken = action.payload;
       localStorage.setItem("user_token", action.payload);
+      state.isAuthenticated = true;
     },
     setUser: (state, action: PayloadAction<UserState>) => {
       state.user = action.payload.user;
@@ -40,6 +41,7 @@ const userSlice = createSlice({
       state.isAuthenticated = false;
       state.userToken = "";
       localStorage.removeItem("user_token");
+      localStorage.clear();
     },
   },
 });

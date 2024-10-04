@@ -11,6 +11,7 @@
     "./avatar": "./src/avatar.tsx",
     "./badge": "./src/badge.tsx",
     "./button": "./src/button.tsx",
+    "./calendar": "./src/calendar.tsx",
     "./collapsible": "./src/collapsible.tsx",
     "./checkbox": "./src/checkbox.tsx",
     "./chip": "./src/chip.tsx",
@@ -49,6 +50,7 @@
     "@types/eslint": "^8.56.5",
     "@types/node": "^20.11.24",
     "@types/react": "^18.2.61",
+    "@types/react-datepicker": "^7.0.0",
     "@types/react-dom": "^18.2.19",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",
@@ -67,8 +69,7 @@
     "classnames": "^2.5.1",
     "flag-icons": "^7.2.3",
     "react": "^18.2.0",
-    "react-otp-input": "^3.1.1",
-    "react-paginate": "^8.2.0",
+    "react-datepicker": "^7.4.0",
     "react-phone-number-input": "^3.4.5",
     "reactjs-otp-input": "^2.0.10"
   }

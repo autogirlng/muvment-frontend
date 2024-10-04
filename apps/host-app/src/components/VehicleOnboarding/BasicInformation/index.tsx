@@ -5,12 +5,22 @@ import BasicInformationTips from "@/components/VehicleOnboarding/BasicInformatio
 
 type Props = {
   steps: string[];
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
 };
 
-const BasicVehicleInformation = ({ steps }: Props) => {
+const BasicVehicleInformation = ({
+  steps,
+  currentStep,
+  setCurrentStep,
+}: Props) => {
   return (
     <div className="flex justify-between flex-col-reverse md:flex-row gap-8">
-      <BasicVehicleInformationForm steps={steps} />
+      <BasicVehicleInformationForm
+        steps={steps}
+        currentStep={currentStep}
+        setCurrentStep={setCurrentStep}
+      />
       <DesktopTips />
       <MobileTips />
     </div>

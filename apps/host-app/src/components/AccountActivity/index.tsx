@@ -12,10 +12,7 @@ type Props = {};
 export default function AccountActivity({}: Props) {
   const {
     isError,
-    error,
     isLoading,
-    isSuccess,
-
     dashboardStats,
   } = useDashboardStats();
 

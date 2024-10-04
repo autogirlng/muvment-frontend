@@ -1,53 +1,54 @@
 import { AxiosError } from "axios";
-import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/api";
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAppSelector } from "@/lib/hooks";
 import { handleErrors } from "@/utils/functions";
 import { AssignNewDriver, ErrorResponse } from "@/utils/types";
+import { useHttp } from "@/hooks/useHttp";
 
 export default function useListingDrivers(id: string) {
+  const http = useHttp();
+  const queryClient = useQueryClient();
+
   const { user } = useAppSelector((state) => state.user);
 
-  const [drivers, setDrivers] = useState<AssignNewDriver[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const handleModal = (value: boolean) => setOpenModal(value);
 
-  const { data, isError, error, isLoading, isSuccess } = useQuery({
+  const {
+    data: drivers,
+    isError,
+    isLoading,
+  } = useQuery({
     queryKey: ["getAssignedDrivers", user?.id, id],
 
-    queryFn: () => api.get(`/api/drivers/vehicle/${id}`),
-    enabled: !!user?.id,
+    queryFn: () => http.get<AssignNewDriver[]>(`/api/drivers/vehicle/${id}`),
+    enabled: !!user?.id && !!id,
   });
 
-  useEffect(() => {
-    if (isSuccess) {
-      console.log("Get Drivers successful", data.data);
-      setDrivers(data.data);
-    }
-
-    if (isError) {
-      handleErrors("Get Drivers", error as AxiosError<ErrorResponse>);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isError, isSuccess]);
-
   const assignNewDriver = useMutation({
-    mutationFn: (values: AssignNewDriver) => api.post("/api/drivers", values),
+    mutationFn: (values: AssignNewDriver) =>
+      http.post<AssignNewDriver>("/api/drivers", values),
 
     onSuccess: (data) => {
-      console.log("Assign New Driver successful", data.data);
+      console.log("Assign New Driver successful", data);
+
       const newDrivers = drivers;
-      newDrivers.push(data.data);
-      setDrivers(newDrivers);
+      newDrivers ? newDrivers.push(data) : data;
+      queryClient.setQueryData(
+        ["getAssignedDrivers", user?.id, id],
+        () => newDrivers
+      );
+
       handleModal(false);
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>
-      handleErrors("Assign New Driver", error),
+      handleErrors(error, "Assign New Driver"),
   });
 
   return {
+    isError,
     isLoading,
     openModal,
     handleModal,
