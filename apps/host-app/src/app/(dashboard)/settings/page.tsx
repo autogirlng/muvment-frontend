@@ -35,7 +35,7 @@ export default function AccountPage() {
 
   return (
     <main className="py-[56px] md:space-y-11 text-grey-700">
-      <h5 className="text-h5 md:text-h3 3xl:text-4xl !font-bold">My Account</h5>
+      <h5 className="text-h5 md:text-h3 3xl:text-4xl !font-bold">Settings</h5>
       <AppTabs label="account page tabs" tabs={tabs} />
     </main>
   );

@@ -20,7 +20,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     console.log(user);
 
     if (user) {
-      if (pathname.includes("/account-setup")) {
+      if (
+        pathname.includes("/account-setup") ||
+        pathname.includes("/notifications") ||
+        pathname.includes("/profile") ||
+        pathname.includes("/settings")
+      ) {
         return;
       }
       if (
