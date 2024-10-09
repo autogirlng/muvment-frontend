@@ -8,6 +8,15 @@ body {
   line-height: 24px;
 }
 
+a {
+  transition: all 0.3s ease-in-out;
+}
+
+a:hover,
+a:hover span {
+  color: #0673ff;
+}
+
 .Toastify__toast-container {
   z-index: 9999999999 !important;
   right: 75px !important;

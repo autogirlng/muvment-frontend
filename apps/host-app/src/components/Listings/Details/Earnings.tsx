@@ -10,7 +10,7 @@ export default function ListingDetailsEarnings({ statistics }: Props) {
       <p className="text-base 3xl:text-xl text-grey-700 font-medium">
         Earnings
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-[6px]">
+      <div className="flex sm:grid sm:grid-cols-2 gap-[6px] overflow-x-auto *:w-full *:text-nowrap"> 
         <ActivityCard
           primary
           title="Revenue Generated"
