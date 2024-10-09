@@ -53,7 +53,7 @@ function Footer({}: Props) {
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-10 md:gap-8 3xl:gap-10 gap-y-10">
             <div className="md:col-span-3 lg:col-span-2 space-y-10 max-w-[471px]">
               <Image
-                src="/images/footer_logo.png"
+                src="/images/logo/footer_logo.png"
                 alt=""
                 width={438}
                 height={45}

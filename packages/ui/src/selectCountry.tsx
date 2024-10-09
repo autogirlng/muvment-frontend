@@ -1,12 +1,6 @@
 import cn from "classnames";
-import "react-phone-number-input/style.css";
-import "flag-icons/css/flag-icons.min.css";
-
-import {
-  getCountries,
-  getCountryCallingCode,
-} from "react-phone-number-input/input";
 import SelectInput from "@repo/ui/select";
+import Icons from "@repo/ui/icons";
 
 type SelectCountryProps = {
   name: string;
@@ -22,7 +16,10 @@ type SelectCountryProps = {
   [key: string]: any;
 };
 
-const allowedCountries = ["NG", "GH"];
+const allowedCountries = [
+  { flag: Icons.ic_country_nigeria, option: "+234", value: "NG" },
+  { flag: Icons.ic_country_ghana, option: "+233", value: "GH" },
+];
 
 const SelectCountry = ({
   label,
@@ -35,14 +32,14 @@ const SelectCountry = ({
   className,
   ...rest
 }: SelectCountryProps) => {
-  const countryOptions = getCountries()
-    .filter((country) => allowedCountries.includes(country))
-    .map((country) => ({
-      value: country,
-      option: `+${getCountryCallingCode(country)}`,
-      // option: `${labels[country]} (+${getCountryCallingCode(country)})`,
-      flag: `fi fi-${country.toLowerCase()}`,
-    }));
+  // const countryOptions = getCountries()
+  //   .filter((country) => allowedCountries.includes(country))
+  //   .map((country) => ({
+  //     value: country,
+  //     option: `+${getCountryCallingCode(country)}`,
+  //     // option: `${labels[country]} (+${getCountryCallingCode(country)})`,
+  //     flag: `fi fi-${country.toLowerCase()}`,
+  //   }));
   return (
     <div className={cn("w-full space-y-1", className, error && "-mb-[28px]")}>
       {label && (
@@ -57,10 +54,10 @@ const SelectCountry = ({
         </label>
       )}
       <SelectInput
-        defaultValue="+234"
+        defaultValue="NG"
         variant="outlined"
         id="bank"
-        options={countryOptions}
+        options={allowedCountries}
         value={value}
         onChange={(value) => onChange(value)}
         error={error}

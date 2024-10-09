@@ -8,12 +8,13 @@ import PhoneNumberAndCountryField from "@repo/ui/phoneNumberAndCountryField";
 import Button from "@repo/ui/button";
 import { assignNewDriverFormValidationSchema } from "@/utils/validationSchema";
 import { AssignNewDriver } from "@/utils/types";
+import { replaceCharactersWithString } from "@/utils/functions";
 
 type Props = {
   handleModal: (open: boolean) => void;
   vehicleId: string;
   assignNewDriver: (values: AssignNewDriver) => void;
-  isPending:boolean
+  isPending: boolean;
 };
 
 const AssignDriverForm = ({
@@ -29,8 +30,8 @@ const AssignDriverForm = ({
           firstName: "",
           lastName: "",
           phoneNumber: "",
-          country: "",
-          countryCode: "",
+          country: "NG",
+          countryCode: "+234",
         }}
         onSubmit={async (values, { setSubmitting }) => {
           console.log(values);
@@ -104,14 +105,10 @@ const AssignDriverForm = ({
                 selectPlaceholder="+234"
                 inputValue={values.phoneNumber}
                 selectValue={values.country}
-                inputOnChange={(number: any) => {
-                  const phoneNumber = parsePhoneNumber(number || "");
-                  setFieldValue("country", phoneNumber?.country || "");
-                  setFieldValue(
-                    "countryCode",
-                    phoneNumber?.countryCallingCode || ""
+                inputOnChange={(event) => {
+                  const number = replaceCharactersWithString(
+                    event.target.value
                   );
-
                   setFieldTouched("phoneNumber", true);
                   setFieldValue("phoneNumber", number);
                 }}
@@ -119,7 +116,6 @@ const AssignDriverForm = ({
                   const countryCode = `+${getCountryCallingCode(value as any)}`;
                   setFieldValue("country", value);
                   setFieldValue("countryCode", countryCode);
-                  setFieldValue("phoneNumber", countryCode);
                 }}
                 inputOnBlur={handleBlur}
                 selectOnBlur={handleBlur}
@@ -143,7 +139,7 @@ const AssignDriverForm = ({
                   type="submit"
                   loading={isSubmitting}
                   disabled={isSubmitting}
-                  className="!py-4 !bg-grey-90 !text-grey-700"
+                  className="!bg-grey-90 !text-grey-700"
                   onClick={() => handleModal(false)}
                 >
                   Cancel
@@ -155,7 +151,6 @@ const AssignDriverForm = ({
                   type="submit"
                   loading={isSubmitting || isPending}
                   disabled={isSubmitting || isPending}
-                  className="!py-4"
                 >
                   Assign Driver
                 </Button>

@@ -6,6 +6,7 @@ import { verifyPhoneNumberSchema } from "@/utils/validationSchema";
 import Button from "@repo/ui/button";
 import PhoneNumberAndCountryField from "@repo/ui/phoneNumberAndCountryField";
 import usePhoneNumberVerification from "../hooks/usePhoneNumberVerification";
+import { replaceCharactersWithString } from "@/utils/functions";
 
 type Props = {};
 
@@ -48,14 +49,8 @@ export default function VerifyPhoneNumber({}: Props) {
               selectPlaceholder="+234"
               inputValue={values.phoneNumber}
               selectValue={values.country}
-              inputOnChange={(number: any) => {
-                const phoneNumber = parsePhoneNumber(number || "");
-                setFieldValue("country", phoneNumber?.country || "");
-                setFieldValue(
-                  "countryCode",
-                  phoneNumber?.countryCallingCode || ""
-                );
-
+              inputOnChange={(event) => {
+                const number = replaceCharactersWithString(event.target.value);
                 setFieldTouched("phoneNumber", true);
                 setFieldValue("phoneNumber", number);
               }}
@@ -63,7 +58,6 @@ export default function VerifyPhoneNumber({}: Props) {
                 const countryCode = `+${getCountryCallingCode(value as any)}`;
                 setFieldValue("country", value);
                 setFieldValue("countryCode", countryCode);
-                setFieldValue("phoneNumber", countryCode);
               }}
               inputOnBlur={handleBlur}
               selectOnBlur={handleBlur}

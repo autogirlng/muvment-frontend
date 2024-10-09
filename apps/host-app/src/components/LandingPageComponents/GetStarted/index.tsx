@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "@repo/ui/button";
+import Link from "next/link";
 
 type Props = {};
 
@@ -16,9 +17,11 @@ function GetStarted({}: Props) {
             Rent it out and earn extra income while you’re away.
           </p>
           <br />
-          <Button color="white" variant="filled" radius="lg">
-            Get Started
-          </Button>
+          <Link href="/signup">
+            <Button color="white" variant="filled" radius="lg">
+              Get Started
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

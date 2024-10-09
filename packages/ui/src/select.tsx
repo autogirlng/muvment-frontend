@@ -7,7 +7,7 @@ import Tooltip from "@repo/ui/tooltip";
 type OptionProps = {
   value: string;
   option: string;
-  flag?: string;
+  flag?: string | ReactNode;
 };
 
 type SelectInputProps = {
@@ -25,6 +25,7 @@ type SelectInputProps = {
   tooltipTitle?: string;
   tooltipDescription?: string;
   disabled?: boolean;
+  width?: string;
 };
 
 const SelectInput = ({
@@ -42,6 +43,7 @@ const SelectInput = ({
   tooltipTitle,
   tooltipDescription,
   disabled = false,
+  width,
 }: SelectInputProps) => {
   return (
     <div className="w-full space-y-2 custom-radix-select">
@@ -101,6 +103,7 @@ const SelectInput = ({
           sideOffset={5}
           className={cn(
             "!overflow-auto rounded-3xl z-[999] max-h-[300px] min-w-[300px]",
+            width,
             variant === "filled"
               ? "bg-grey-800 text-grey-400 border-none"
               : "bg-white border border-grey-300 shadow-[0px_4px_6px_-2px_#10192808,0px_16px_24px_-4px_#10192814]"
@@ -114,8 +117,12 @@ const SelectInput = ({
                   value={option.value}
                   className="flex items-center gap-2"
                 >
-                  {option?.flag && <span className={option?.flag}></span>}
-                  <span> {option.option}</span>
+                  <span className="flex items-center gap-0.5">
+                    {option?.flag && (
+                      <span className="w-6 h-6">{option?.flag}</span>
+                    )}
+                    <span> {option.option}</span>
+                  </span>
                 </SelectItem>
               ))}
             </Select.Group>

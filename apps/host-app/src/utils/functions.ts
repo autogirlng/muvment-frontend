@@ -10,6 +10,7 @@ import {
   uppercaseRegex,
 } from "@/utils/constants";
 import { daysOfTheWeek } from "./data";
+import { useRouter } from "next/navigation";
 
 export const isLengthValid = (password: string): boolean => {
   const isLengthValid = password.length >= 8;
@@ -39,6 +40,21 @@ export const isSpecialCharacterValid = (password: string): boolean => {
 export const isSpaceValid = (password: string): boolean => {
   const noSpace = spacesRegex.test(password);
   return noSpace;
+};
+
+export const validatePhoneNumber = (phoneNumber: string, country: string) => {
+  let isPhoneNumberValid = false;
+  if (country === "NG") {
+    isPhoneNumberValid = phoneNumber.length === 11;
+  } else {
+    isPhoneNumberValid = phoneNumber.length === 10;
+  }
+
+  return isPhoneNumberValid;
+};
+
+export const replaceCharactersWithString = (str: string): string => {
+  return str.replace(/\D/g, "");
 };
 
 export const addSpaceBeforeUppercase = (str: string): string => {
@@ -105,10 +121,23 @@ export const calculateRateGuestsWillSee = (
   return price + serviceFee;
 };
 
+export const debounce = <T extends (...args: any[]) => any>(
+  func: T,
+  delay: number
+) => {
+  let timer: ReturnType<typeof setTimeout> | null;
+
+  return function (...args: Parameters<T>) {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(null, args);
+    }, delay);
+  };
+};
+
 export const handleErrors = (
   error: AxiosError<ErrorResponse>,
-  page?: string,
-  redirectUser?: () => void
+  page?: string
 ) => {
   console.log(
     `${page} error`,
@@ -146,7 +175,11 @@ export const handleErrors = (
 
   if (ERR_CODE === "EMAIL_NOT_CONFIRMED") {
     toast.error("Email not verified");
-    return redirectUser && redirectUser();
+    const parsedData = JSON.parse(error.config?.data);
+    console.log(parsedData);
+
+    window.location.href = `/verify-email?email=${encodeURIComponent(parsedData?.email ?? "")}`;
+    return;
   }
 
   if (ERR_CODE === "EMAIL_ALREADY_CONFIRMED") {
@@ -170,7 +203,7 @@ export const handleErrors = (
   }
 
   if (error.response?.data?.message) {
-    return toast.error(error.response?.data?.message);
+    return toast.error(error.response.data.message);
   }
 
   return {};

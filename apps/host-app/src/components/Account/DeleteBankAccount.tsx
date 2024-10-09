@@ -26,7 +26,6 @@ const DeleteBankAccount = ({ handleModal, handleDelete, isLoading }: Props) => {
           variant="filled"
           color="primary"
           type="submit"
-          className="!py-4"
           onClick={() => handleModal(false)}
         >
           No, go back
@@ -36,7 +35,7 @@ const DeleteBankAccount = ({ handleModal, handleDelete, isLoading }: Props) => {
           fullWidth
           variant="filled"
           color="white"
-          className="!py-4 !bg-grey-90 !text-grey-700"
+          className="!bg-grey-90 !text-grey-700"
           loading={isLoading}
           disabled={isLoading}
           onClick={() => handleDelete()}

@@ -68,6 +68,10 @@ body {
   min-height: 24px !important;
 }
 
+div[data-radix-popper-content-wrapper] {
+  z-index: 999 !important;
+}
+
 .PhoneInputCountry {
   border-radius: 18px;
   padding: 16px;

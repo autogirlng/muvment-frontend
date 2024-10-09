@@ -43,7 +43,7 @@ export const Popup = ({
   trigger: ReactNode;
   className?: string;
 }) => (
-  <Popover.Root>
+  <Popover.Root >
     <Popover.Trigger asChild>{trigger}</Popover.Trigger>
     <Popover.Portal>
       <Popover.Content

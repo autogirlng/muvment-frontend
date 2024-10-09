@@ -4,7 +4,7 @@ import AppSwitch from "@repo/ui/switch";
 import Tooltip from "@repo/ui/tooltip";
 import Collapse from "@repo/ui/collapsible";
 import Icons from "@repo/ui/icons";
-import { outskirtsLocationOptions } from "@/utils/data";
+import { outskirtsLocationOptions, vehicleAvailabilityOptions } from "@/utils/data";
 import { availabilityAndPricingSchema } from "@/utils/validationSchema";
 import { StepperNavigation } from "@repo/ui/stepper";
 import { GroupCheckBox } from "@repo/ui/checkbox";
@@ -65,12 +65,7 @@ const AvailabilityAndPricingForm = ({ steps,setCurrentStep,currentStep }: Props)
                 placeholder="1 day"
                 variant="outlined"
                 className="max-w-[375px]"
-                options={[
-                  { value: "1 day", option: "1 day" },
-                  { value: "2 days", option: "2 days" },
-                  { value: "3 days", option: "3 days" },
-                  { value: "1 week", option: "1 week" },
-                ]}
+                options={vehicleAvailabilityOptions}
                 value={values.advanceNoticeInDays}
                 onChange={(value: string) => {
                   setFieldTouched("advanceNoticeInDays", true);

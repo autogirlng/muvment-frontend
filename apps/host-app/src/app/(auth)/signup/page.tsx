@@ -14,6 +14,7 @@ import InputField from "@repo/ui/inputField";
 import PasswordChecks from "@/components/PasswordChecks";
 import AuthPageHeader from "@/components/Header/AuthPageHeader";
 import PhoneNumberAndCountryField from "@repo/ui/phoneNumberAndCountryField";
+import { replaceCharactersWithString } from "@/utils/functions";
 
 export default function SignupPage() {
   const { signupMutation } = useAuth();
@@ -95,14 +96,10 @@ export default function SignupPage() {
                 selectPlaceholder="+234"
                 inputValue={values.phoneNumber}
                 selectValue={values.country}
-                inputOnChange={(number: any) => {
-                  const phoneNumber = parsePhoneNumber(number || "");
-                  setFieldValue("country", phoneNumber?.country || "");
-                  setFieldValue(
-                    "countryCode",
-                    phoneNumber?.countryCallingCode || ""
+                inputOnChange={(event) => {
+                  const number = replaceCharactersWithString(
+                    event.target.value
                   );
-
                   setFieldTouched("phoneNumber", true);
                   setFieldValue("phoneNumber", number);
                 }}
@@ -110,12 +107,11 @@ export default function SignupPage() {
                   const countryCode = `+${getCountryCallingCode(value as any)}`;
                   setFieldValue("country", value);
                   setFieldValue("countryCode", countryCode);
-                  setFieldValue("phoneNumber", countryCode);
                 }}
                 inputOnBlur={handleBlur}
                 selectOnBlur={handleBlur}
                 // inputClassname
-                selectClassname="!w-[170px]"
+                selectClassname="!w-[130px]"
                 inputError={
                   errors.phoneNumber && touched.phoneNumber
                     ? errors.phoneNumber

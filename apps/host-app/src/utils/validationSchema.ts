@@ -8,6 +8,7 @@ import {
   uppercaseRegex,
 } from "@/utils/constants";
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { validatePhoneNumber } from "./functions";
 
 export const signupFormValidationSchema = object().shape({
   firstName: string().required("Please enter your first name"),
@@ -15,7 +16,8 @@ export const signupFormValidationSchema = object().shape({
   phoneNumber: string()
     .required("Please enter your phone number")
     .test("phoneNumber", "Invalid phone number", function (val) {
-      return isValidPhoneNumber(val);
+      const { country } = this.parent;
+      return validatePhoneNumber(val, country);
     }),
   country: string().required("Please enter your country code"),
   email: string()
@@ -100,7 +102,8 @@ export const verifyPhoneNumberSchema = object().shape({
   phoneNumber: string()
     .required("Please enter your phone number")
     .test("phoneNumber", "Invalid phone number", function (val) {
-      return isValidPhoneNumber(val);
+      const { country } = this.parent;
+      return validatePhoneNumber(val, country);
     }),
 });
 
@@ -168,7 +171,8 @@ export const assignNewDriverFormValidationSchema = object().shape({
   phoneNumber: string()
     .required("Please enter your phone number")
     .test("phoneNumber", "Invalid phone number", function (val) {
-      return isValidPhoneNumber(val);
+      const { country } = this.parent;
+      return validatePhoneNumber(val, country);
     }),
   country: string().required("Please enter your country code"),
 });

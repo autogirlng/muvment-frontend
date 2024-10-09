@@ -11,8 +11,12 @@ import {
   vehicleModelsOptions,
   vehicleTypesOptions,
   yearOfReleaseOptions,
+  yesOrNoOptions,
 } from "@/utils/data";
 import useBasicInformationForm from "./useBasicInformationForm";
+import { ChangeEvent } from "react";
+
+import { FullPageSpinner } from "@repo/ui/spinner";
 
 type Props = {
   steps: string[];
@@ -25,7 +29,17 @@ const BasicVehicleInformationForm = ({
   currentStep,
   setCurrentStep,
 }: Props) => {
-  const { submitStep1, saveStep1, initialValues } = useBasicInformationForm({
+  const {
+    submitStep1,
+    saveStep1,
+    initialValues,
+    googlePlaces,
+    searchAddressError,
+    searchAddressLoading,
+    setSearchAddressQuery,
+    setShowAddressList,
+    showAddressList,
+  } = useBasicInformationForm({
     currentStep,
     setCurrentStep,
   });
@@ -94,21 +108,52 @@ const BasicVehicleInformationForm = ({
             />
           </FormRow>
 
-          {/* google map address */}
-          <InputField
-            name="address"
-            id="address"
-            type="text"
-            label="Address"
-            placeholder="Enter address"
-            value={values.address}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={errors.address && touched.address ? errors.address : ""}
-            info
-            tooltipTitle="Address:"
-            tooltipDescription="Provide the exact address where the vehicle is located when it’s not in use."
-          />
+          <div className="space-y-2">
+            <InputField
+              name="address"
+              id="address"
+              type="text"
+              label="Address"
+              placeholder="Enter address"
+              value={values.address}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                const value = event.target.value;
+                setSearchAddressQuery(value);
+                setFieldValue("address", value);
+              }}
+              onBlur={handleBlur}
+              error={errors.address && touched.address ? errors.address : ""}
+              info
+              tooltipTitle="Address:"
+              tooltipDescription="Provide the exact address where the vehicle is located when it’s not in use."
+            />
+            {(searchAddressLoading ||
+              (googlePlaces.length > 0 && showAddressList)) && (
+              <ul className="list-none border border-grey-300 rounded-xl py-4 px-2 w-full bg-white border border-grey-200 max-h-[200px] overflow-auto shadow-[-2px_4px_6px_-2px_#10192808,12px_16px_37.4px_-4px_#10192814]">
+                {searchAddressError ? (
+                  <p>{searchAddressError}</p>
+                ) : searchAddressLoading ? (
+                  <FullPageSpinner className="!min-h-[100px]" />
+                ) : (
+                  googlePlaces.map((address, index) => (
+                    <li
+                      key={index}
+                      onClick={() => {
+                        setShowAddressList(false);
+                        setFieldValue(
+                          "address",
+                          address?.formattedAddress || ""
+                        );
+                      }}
+                      className="cursor-pointer hover:bg-primary-75 py-2 px-4 text-sm text-grey-900 rounded-xl"
+                    >
+                      {address?.formattedAddress || ""}
+                    </li>
+                  ))
+                )}
+              </ul>
+            )}
+          </div>
 
           <FormRow>
             <SelectInput
@@ -196,10 +241,7 @@ const BasicVehicleInformationForm = ({
               label="Does your vehicle have insurance?"
               placeholder="Select an option"
               variant="outlined"
-              options={[
-                { value: "yes", option: "Yes" },
-                { value: "no", option: "No" },
-              ]}
+              options={yesOrNoOptions}
               value={values.hasInsurance}
               onChange={(value: string) => {
                 setFieldTouched("hasInsurance", true);
@@ -220,10 +262,7 @@ const BasicVehicleInformationForm = ({
               label="Does your vehicle have a tracker?"
               placeholder="Select an option"
               variant="outlined"
-              options={[
-                { value: "yes", option: "Yes" },
-                { value: "no", option: "No" },
-              ]}
+              options={yesOrNoOptions}
               value={values.hasTracker}
               onChange={(value: string) => {
                 setFieldTouched("hasTracker", true);

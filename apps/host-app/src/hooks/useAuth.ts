@@ -47,7 +47,9 @@ export default function useAuth() {
     },
 
     onSuccess: (data, _values, context) => {
-      router.push(`/verify-email?email=${context?.email}`);
+      router.push(
+        `/verify-email?email=${encodeURIComponent(context?.email ?? "")}`
+      );
       console.log("Signup successful", data);
     },
 
@@ -70,9 +72,15 @@ export default function useAuth() {
     },
 
     onError: (error: AxiosError<ErrorResponse>, _values, context) => {
-      handleErrors(error, "Login", () =>
-        router.push(`/verify-email?email=${context?.email}`)
-      );
+      if (error.response?.data?.ERR_CODE === "EMAIL_NOT_CONFIRMED") {
+        console.log("redirect user");
+
+        router.push(
+          `/verify-email?email=${encodeURIComponent(context?.email ?? "")}`
+        );
+      }
+
+      handleErrors(error, "Login");
     },
   });
 
@@ -100,7 +108,9 @@ export default function useAuth() {
 
     onSuccess: (data, _values, context) => {
       console.log("Email verified successfully", data);
-      router.push(`/reset-password?email=${context?.email}`);
+      router.push(
+        `/reset-password?email=${encodeURIComponent(context?.email ?? "")}`
+      );
       dispatch(setForgotPasswordOtp(context?.otp));
     },
 
@@ -131,7 +141,9 @@ export default function useAuth() {
 
     onSuccess: (data, _values, context) => {
       console.log("Forgot password successful", data);
-      router.push(`/forgot-password/otp?email=${context?.email}`);
+      router.push(
+        `/forgot-password/otp?email=${encodeURIComponent(context?.email ?? "")}`
+      );
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>

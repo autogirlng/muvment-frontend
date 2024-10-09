@@ -185,6 +185,18 @@ export const citiesOptions = [
   { value: "Port Harcourt", option: "Port Harcourt" },
 ];
 
+export const yesOrNoOptions = [
+  { value: "yes", option: "Yes" },
+  { value: "no", option: "No" },
+];
+
+export const vehicleAvailabilityOptions = [
+  { value: "1 day", option: "1 day" },
+  { value: "2 days", option: "2 days" },
+  { value: "3 days", option: "3 days" },
+  { value: "1 week", option: "1 week" },
+];
+
 // add type
 export const photoViewOptions = [
   {

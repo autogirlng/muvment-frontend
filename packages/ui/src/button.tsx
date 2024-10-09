@@ -30,7 +30,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const btnWidth = fullWidth
       ? "w-full py-4 !font-semibold text-sm 2xl:text-base"
-      : "w-fit py-5 2xl:py-6 !font-medium text-base md:text-xl 2xl:text-h6";
+      : "w-fit py-4 2xl:py-5 !font-medium text-base md:text-xl 2xl:text-h6";
 
     const btnRadius =
       radius === "full"

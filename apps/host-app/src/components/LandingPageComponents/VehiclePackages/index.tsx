@@ -34,7 +34,7 @@ function VehiclePackages({}: Props) {
       <div className="space-y-10 md:space-y-[100px] 3xl:space-y-[157px] max-w-[1100px] 3xl:max-w-[1510px] mx-auto">
         <LandingPageSectionHeader
           className="text-primary-900 text-center"
-          title="Here is a plan and package for every vehicle owner"
+          title="There is a plan and package for every vehicle owner"
         />
         <div className="flex flex-col md:flex-row items-center gap-[70px] md:gap-6 lg:gap-[60px] 3xl:gap-[125px] mx-auto md:max-w-full">
           {packages.map((item, index) => (
