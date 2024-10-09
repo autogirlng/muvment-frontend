@@ -38,12 +38,12 @@ export default function VehicleOnboardingSuccessPage({
         </h2>
         <div className="flex flex-col sm:flex-row gap-[18px]">
           <Link href={`/listings/${vehicle?.id}`}>
-            <Button variant="outlined" className="py-4 px-6">
+            <Button variant="outlined" className="px-6">
               View Listing
             </Button>
           </Link>
           <Link href="/">
-            <Button variant="filled" color="primary" className="py-4 px-6">
+            <Button variant="filled" color="primary" className="px-6">
               Go to Dashboard
             </Button>
           </Link>

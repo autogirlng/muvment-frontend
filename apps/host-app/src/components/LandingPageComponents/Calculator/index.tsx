@@ -1,3 +1,8 @@
+import {
+  citiesOptions,
+  vehicleAvailabilityOptions,
+  vehicleTypesOptions,
+} from "@/utils/data";
 import SelectInput from "@repo/ui/select";
 import Image from "next/image";
 import React from "react";
@@ -49,38 +54,23 @@ function Calculator({}: Props) {
                 placeholder="Select city of operation"
                 variant="filled"
                 label="City of operation"
-                id="food"
-                options={[
-                  { value: "lagos", option: "Lagos" },
-                  { value: "abj", option: "Lagos" },
-                  { value: "kogi", option: "Lagos" },
-                  { value: "ogun", option: "Lagos" },
-                ]}
+                id="city"
+                options={citiesOptions}
               />
               <SelectInput
                 placeholder="Select vehicle type"
                 variant="filled"
                 label="Vehicle type"
-                id="food"
-                options={[
-                  { value: "lagos", option: "Lagos" },
-                  { value: "abj", option: "Lagos" },
-                  { value: "kogi", option: "Lagos" },
-                  { value: "ogun", option: "Lagos" },
-                ]}
+                id="vehicleType"
+                options={vehicleTypesOptions}
               />
             </div>
             <SelectInput
               placeholder="Select availability"
               variant="filled"
               label="Availability"
-              id="food"
-              options={[
-                { value: "lagos", option: "Lagos" },
-                { value: "abj", option: "Lagos" },
-                { value: "kogi", option: "Lagos" },
-                { value: "ogun", option: "Lagos" },
-              ]}
+              id="availability"
+              options={vehicleAvailabilityOptions}
             />
           </div>
         </div>

@@ -11,12 +11,20 @@ import VehiclePackages from "@/components/LandingPageComponents/VehiclePackages"
 import NavBar from "@/components/LandingPageComponents/NavBar";
 import GetStarted from "@/components/LandingPageComponents/GetStarted";
 import MobileNav from "@/components/Navbar/MobileNav";
+import { useEffect, useState } from "react";
 
 export default function HomePage() {
+  const [userToken, setUserToken] = useState<string>("");
+
+  useEffect(() => {
+    const user_token = window.localStorage.getItem("user_token");
+    setUserToken(user_token || "");
+  }, []);
+
   return (
     <main className="overflow-x-hidden">
-      <NavBar />
-      <MobileNav/>
+      <NavBar userToken={userToken} />
+      <MobileNav userToken={userToken} />
       <Hero />
       <Benefits />
       <JoinUs />

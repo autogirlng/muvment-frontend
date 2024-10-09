@@ -109,7 +109,7 @@ const PopupContent = ({
                 variant="filled"
                 color="white"
                 type="submit"
-                className="!py-4 !bg-grey-90 !text-grey-700"
+                className="!bg-grey-90 !text-grey-700"
                 onClick={() => handleModal(false)}
               >
                 Cancel
@@ -119,7 +119,6 @@ const PopupContent = ({
                 fullWidth
                 variant="filled"
                 color="primary"
-                className="!py-4"
                 loading={isLoading}
                 disabled={isLoading || !isValid}
                 type="submit"

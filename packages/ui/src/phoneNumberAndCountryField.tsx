@@ -3,6 +3,7 @@ import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input/input";
 import en from "react-phone-number-input/locale/en";
 import SelectCountry from "@repo/ui/selectCountry";
+import InputField from "@repo/ui/inputField";
 
 type PhoneNumberAndCountryFieldProps = {
   inputName: string;
@@ -74,26 +75,19 @@ const PhoneNumberAndCountryField = ({
       label={label}
       placeholder={selectPlaceholder}
       value={selectValue}
+      
       onChange={selectOnChange}
       error={selectError}
       className={selectClassname}
       onBlur={selectOnBlur}
       disabled={selectDisabled}
+      width="!max-h-[116px] !min-w-[116px]"
     />
     <div className={cn("w-full space-y-1", inputError && "-mb-[25px]")}>
-      <PhoneInput
+      <InputField
         name={inputName}
         id={inputId}
         type="text"
-        className={cn(
-          "w-full rounded-[18px] p-4 pr-8 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400 disabled:bg-grey-100 disabled:text-grey-400 disabled:border-grey-300",
-          inputError
-            ? "border border-error-500 focus:border-error-500"
-            : variant === "filled"
-              ? "bg-grey-800 text-grey-400 border-none"
-              : "bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A]",
-          inputClassname
-        )}
         placeholder={inputPlaceholder}
         onChange={inputOnChange}
         value={inputValue}

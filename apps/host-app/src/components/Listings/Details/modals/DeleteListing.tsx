@@ -25,7 +25,6 @@ const DeleteListing = ({ handleModal, id }: Props) => {
           variant="filled"
           color="primary"
           type="submit"
-          className="!py-4"
           onClick={() => handleModal(false)}
         >
           No, go back
@@ -35,7 +34,7 @@ const DeleteListing = ({ handleModal, id }: Props) => {
           variant="filled"
           color="white"
           type="submit"
-          className="!py-4 !bg-grey-90 !text-grey-700"
+          className="!bg-grey-90 !text-grey-700"
           loading={moveListingToDraft.isPending}
           disabled={moveListingToDraft.isPending}
           onClick={() => moveListingToDraft.mutate()}
@@ -47,7 +46,7 @@ const DeleteListing = ({ handleModal, id }: Props) => {
           variant="filled"
           color="white"
           type="submit"
-          className="!py-4 !bg-grey-90 !text-grey-700"
+          className="!bg-grey-90 !text-grey-700"
           loading={deleteListing.isPending}
           disabled={deleteListing.isPending}
           onClick={() => deleteListing.mutate()}

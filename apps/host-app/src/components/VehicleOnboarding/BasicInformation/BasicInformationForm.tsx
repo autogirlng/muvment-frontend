@@ -11,6 +11,7 @@ import {
   vehicleModelsOptions,
   vehicleTypesOptions,
   yearOfReleaseOptions,
+  yesOrNoOptions,
 } from "@/utils/data";
 import useBasicInformationForm from "./useBasicInformationForm";
 
@@ -196,10 +197,7 @@ const BasicVehicleInformationForm = ({
               label="Does your vehicle have insurance?"
               placeholder="Select an option"
               variant="outlined"
-              options={[
-                { value: "yes", option: "Yes" },
-                { value: "no", option: "No" },
-              ]}
+              options={yesOrNoOptions}
               value={values.hasInsurance}
               onChange={(value: string) => {
                 setFieldTouched("hasInsurance", true);
@@ -220,10 +218,7 @@ const BasicVehicleInformationForm = ({
               label="Does your vehicle have a tracker?"
               placeholder="Select an option"
               variant="outlined"
-              options={[
-                { value: "yes", option: "Yes" },
-                { value: "no", option: "No" },
-              ]}
+              options={yesOrNoOptions}
               value={values.hasTracker}
               onChange={(value: string) => {
                 setFieldTouched("hasTracker", true);

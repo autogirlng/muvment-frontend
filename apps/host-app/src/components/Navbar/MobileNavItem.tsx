@@ -30,7 +30,7 @@ export default function MobileNavItem({
       ) : (
         link && (
           <Link
-            onClick={handleClick}
+            onClick={handleClick ? handleClick : () => {}}
             href={link}
             className={cn(
               pathname.includes(link) ? "text-primary-500 " : "text-black",

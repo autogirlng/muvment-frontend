@@ -12,7 +12,7 @@ export default function SideNav({}: Props) {
         <div className="ml-4 pb-5">
           <Image
             className=""
-            src="/images/logo.png"
+            src="/images/logo/logo.png"
             alt=""
             width={114}
             height={40}

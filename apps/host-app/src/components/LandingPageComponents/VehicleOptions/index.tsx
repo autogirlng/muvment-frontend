@@ -1,6 +1,7 @@
 import LandingPageSectionHeader from "@/components/Header/LandingPageSectionHeader";
 import Button from "@repo/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 type Props = {};
@@ -42,9 +43,11 @@ function VehicleOptions({}: Props) {
               there's a demand for your vehicle."
           >
             <br />
-            <Button variant="filled" color="primary" radius="md">
-              Get Started
-            </Button>
+            <Link href="/signup">
+              <Button variant="filled" color="primary" radius="md">
+                Get Started
+              </Button>
+            </Link>
           </LandingPageSectionHeader>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-[165px] gap-y-[93px] max-w-[746px] mx-auto px-5 sm:px-0">

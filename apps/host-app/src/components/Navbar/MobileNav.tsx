@@ -7,22 +7,26 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import MobileNavItem from "./MobileNavItem";
-import { dashboardNavItems, popupNavItems } from "@/utils/data";
+import {
+  dashboardNavItems,
+  popupNavItems,
+  popupNavItemsforNoUser,
+} from "@/utils/data";
 import cn from "classnames";
 
-type Props = {};
+type Props = { userToken?: string };
 
-export default function MobileNav({}: Props) {
+export default function MobileNav({ userToken }: Props) {
   const { user } = useAppSelector((state) => state.user);
 
   const [openNav, setOpenNav] = useState<boolean>(false);
 
   return (
-    <div className="block md:hidden px-8 py-3 bg-grey-50">
+    <header className="block md:hidden px-8 py-3 bg-grey-50">
       <div className="flex items-center justify-between">
         <Image
           className=""
-          src="/images/logo.png"
+          src="/images/logo/mobile_nav_logo.png"
           alt=""
           width={100}
           height={15}
@@ -37,13 +41,13 @@ export default function MobileNav({}: Props) {
                 ? getInitialsFromName(user.firstName, user.lastName)
                 : Icons.ic_user
             }
-            size="!w-7 !h-7"
-            color="!bg-primary-100 !text-primary-800 !text-[10px] !font-bold"
+            size="!w-8 !h-8"
+            color="!bg-primary-100 !text-primary-800 !text-[5px] !font-bold *:!w-5 *!h-5"
           />
           {Icons.ic_menu}
         </button>
       </div>
-      <div
+      <nav
         className={cn(
           "fixed top-[60px] transition-transform overflow-auto",
           openNav
@@ -51,17 +55,23 @@ export default function MobileNav({}: Props) {
             : "h-0 w-0 translate-x-[100%] invisible"
         )}
       >
-        {user ? (
+        {userToken || user ? (
           <div className="space-y-6 pb-8">
             <AvatarImage
               image="/images/top_header_avatar.png"
-              initials={getInitialsFromName(user.firstName, user.lastName)}
+              initials={
+                user
+                  ? getInitialsFromName(user.firstName, user.lastName)
+                  : Icons.ic_user
+              }
               size="!w-20 !h-20"
             />
             <div className="space-y-1">
-              <p className="text-sm">
-                {user.firstName} {user.lastName}
-              </p>
+              {user && (
+                <p className="text-sm">
+                  {user.firstName} {user.lastName}
+                </p>
+              )}
               <Link href="/profile" className="text-xs text-primary-500">
                 View profile
               </Link>
@@ -98,7 +108,7 @@ export default function MobileNav({}: Props) {
           </div>
         ) : (
           <ul className="list-none space-y-3 pb-8">
-            {popupNavItems.map((item, index) => (
+            {popupNavItemsforNoUser.map((item, index) => (
               <MobileNavItem
                 handleClick={() => setOpenNav(false)}
                 key={index}
@@ -110,7 +120,7 @@ export default function MobileNav({}: Props) {
             ))}
           </ul>
         )}
-      </div>
-    </div>
+      </nav>
+    </header>
   );
 }

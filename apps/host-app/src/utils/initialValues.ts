@@ -19,8 +19,8 @@ export const signUpFormInitialValues: SignupFormValues = {
   firstName: "",
   lastName: "",
   phoneNumber: "",
-  country: "",
-  countryCode: "",
+  country: "NG",
+  countryCode: "+234",
   email: "",
   password: "",
   password_checks: {
@@ -73,8 +73,8 @@ export const changePasswordInitialValues: ChangePasswordValues = {
 
 export const verifyPhoneNumberValues: VerifyPhoneNumberValues = {
   phoneNumber: "",
-  countryCode: "",
-  country: "",
+  countryCode: "+234",
+  country: "NG",
 };
 
 export const verifyIdentityValues: VerifyIdentityValues = {
@@ -160,4 +160,3 @@ export const profileFormInitialValues: ProfileFormValues = {
 export const withdrawalValues: WithdrawalValues = {
   amount: "",
 };
-

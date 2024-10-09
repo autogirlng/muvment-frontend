@@ -77,7 +77,7 @@ const Withdraw = ({
                 fullWidth
                 variant="filled"
                 color="white"
-                className="!py-4 !bg-grey-90 !text-grey-700"
+                className="!bg-grey-90 !text-grey-700"
                 onClick={() => handleModal(false)}
               >
                 Cancel
@@ -88,7 +88,6 @@ const Withdraw = ({
                 variant="filled"
                 color="primary"
                 type="submit"
-                className="!py-4"
                 loading={isLoading}
                 disabled={isLoading}
                 //    onClick={() => handleDelete()}
