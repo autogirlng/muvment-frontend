@@ -25,7 +25,7 @@ export default function ListingsPage() {
   return (
     <main className="space-y-6 py-[56px]">
       <DashboardSectionTitle icon={Icons.ic_car} title="Listings" />
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center gap-2">
         <SearchInput
           placeholder="Search"
           name="listingsSearch"
@@ -38,9 +38,10 @@ export default function ListingsPage() {
           <Button
             variant="filled"
             color="primary"
-            className="flex items-center gap-2 !py-2 !px-4 !text-sm 3xl:!text-base button_icon"
+            className="flex items-center gap-2 !py-2 !px-3 md:!px-4 !text-sm 3xl:!text-base button_icon"
           >
-            {Icons.ic_add_circle} <span>Add New Vehicle</span>
+            {Icons.ic_add_circle}
+            <span className="hidden md:block">Add New Vehicle</span>
           </Button>
         </Link>
       </div>

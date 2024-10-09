@@ -17,7 +17,7 @@ export default function VehicleInformation({ listingDetails }: Props) {
   return (
     <>
       <div className="flex flex-col md:flex-row justify-between md:items-center gap-5">
-        <h5 className="text-h6 3xl:text-h5 !font-semibold text-black">
+        <h5 className="text-xl md:text-h6 3xl:text-h5 !font-semibold text-black">
           Vehicle Details
         </h5>
         <Link href={`/vehicle-onboarding?id=${listingDetails?.id}`}>
@@ -130,9 +130,9 @@ const FeatureStatus = ({ status }: { status: boolean }) => (
 );
 
 const PricingSection = ({ text, value }: { text: string; value: string }) => (
-  <div className="py-4 px-7 text-black rounded-lg bg-grey-90 w-fulll flex flex-col sm:flex-row gap-2 justify-between">
+  <div className="py-4 px-7 text-black rounded-[18px] bg-grey-90 w-fulll flex flex-col sm:flex-row gap-2 justify-between">
     <p className="text-sm 3xl:text-base md:font-medium">{text}</p>
-    <p className="text-base 3xl:text-xl font-semibold md:font-normal">
+    <p className="text-sm md:text-base 3xl:text-xl font-semibold md:font-normal">
       {value}
     </p>
   </div>

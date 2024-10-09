@@ -32,23 +32,25 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
     <main>
       <div className="min-h-screen h-full flex">
         <div className="hidden md:block w-1/2 h-auto relative">
-          <Link href="/" className="block absolute top-10 left-14 z-10">
+          <div className="fixed top-0 left-0 w-1/2 h-full">
+            <Link href="/" className="block absolute top-10 left-14 z-10">
+              <Image
+                className="w-16"
+                src="/images/logo/logo_icon_white.png"
+                alt="logo"
+                width={83}
+                height={83}
+              />
+            </Link>
             <Image
-              className="w-16"
-              src="/images/logo/logo_icon_white.png"
-              alt="logo"
-              width={83}
-              height={83}
+              className="h-full w-full object-cover"
+              src={`/images/auth/${pathname === "/login" ? "login_bg" : pathname === "/signup" ? "signup_bg" : "reset_password_bg"}.jpeg`}
+              alt=""
+              width={1000}
+              height={1000}
             />
-          </Link>
-          <Image
-            className="h-full w-full object-cover"
-            src={`/images/auth/${pathname === "/login" ? "login_bg" : pathname === "/signup" ? "signup_bg" : "reset_password_bg"}.jpeg`}
-            alt=""
-            width={1000}
-            height={1000}
-          />
-          <div className="absolute top-0 left-0 w-full h-full bg-black opacity-20" />
+            <div className="absolute top-0 left-0 w-full h-full bg-black opacity-20" />
+          </div>
         </div>
 
         <div className="w-full md:w-1/2 flex justify-center items-center px-5 sm:px-10 py-8 sm:py-14">

@@ -38,7 +38,7 @@ export default function ListingDetailsVehicleAvailability({
       </div>
       <Popup
         trigger={
-          <Button className="!bg-primary-75 text-primary-500 !py-2 3xl:!py-3 !px-7 3xl:!px-10 !text-base 3xl:!text-xl rounded-[93px]">
+          <Button className="!bg-transparent sm:!bg-primary-75 text-primary-500 !py-2 3xl:!py-3 !px-2 sm:!px-7 3xl:!px-10 !text-base 3xl:!text-xl rounded-[93px]">
             Update
           </Button>
         }

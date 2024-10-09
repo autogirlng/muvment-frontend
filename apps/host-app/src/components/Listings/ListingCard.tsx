@@ -69,7 +69,7 @@ export default function ListingCard({ listing }: Props) {
   }, [listing]);
 
   return (
-    <div className="flex flex-col md:flex-row items-center gap-5 py-5 border-b border-grey-200 last:border-none">
+    <div className="flex flex-col md:flex-row items-center gap-5 px-3 md:px-0 py-5 rounded-3xl bg-grey-75 md:bg-transparent md:border-b md:border-grey-200 last:border-none relative">
       <div className="h-[200px] w-full md:w-[200px]">
         <Image
           src={listing?.VehicleImage?.frontView || "/images/vehicles/sedan.png"}
@@ -84,7 +84,7 @@ export default function ListingCard({ listing }: Props) {
       </div>
       <div className="w-full md:w-[calc(100%-220px)] flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-grey-800">
         <div className="space-y-[14px] md:max-w-[400px] 3xl:max-w-[450px]">
-          <div className="flex items-center gap-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-6">
             <h5 className="text-h6 3xl:text-h5 !font-medium">
               {listing?.vehicleStatus === "draft"
                 ? "Unfinished Listing"
@@ -93,7 +93,7 @@ export default function ListingCard({ listing }: Props) {
             <VehicleListingBadge status={listing?.vehicleStatus} />
           </div>
           {listing?.vehicleStatus !== "draft" && (
-            <p className="text-base 3xl:text-xl !font-medium text-primary-500">
+            <p className="text-base 3xl:text-xl !font-medium text-grey-700 md:text-primary-500">
               NGN {formatNumberWithCommas(listing?.pricing?.dailyRate?.value)}
               /day
             </p>
@@ -131,7 +131,9 @@ export default function ListingCard({ listing }: Props) {
             <VerticalDivider className="hidden md:block" />
 
             <div className="space-y-[14px] md:max-w-[400px] 3xl:max-w-[450px]">
-              <p className="uppercase text-xs !font-semibold">Extras</p>
+              <p className="uppercase text-xs !font-semibold hidden md:block">
+                Extras
+              </p>
               <div className="flex flex-wrap gap-3">
                 {extras.map((detail: any, index: number) => {
                   return (
@@ -149,7 +151,7 @@ export default function ListingCard({ listing }: Props) {
             </div>
             <VerticalDivider className="hidden md:block" />
             <Popup
-              trigger={<MoreButton className="!mx-0" />}
+              trigger={<MoreButton className="!mx-0 absolute right-6 top-7 md:relative md:top-0 md:right-0" />}
               content={
                 <>
                   <p className="!text-xs 3xl:!text-base !font-semibold">

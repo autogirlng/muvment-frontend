@@ -55,7 +55,7 @@ export default function SignupPage() {
           } = props;
 
           return (
-            <Form className="space-y-6">
+            <Form className="space-y-6" autoComplete="off">
               <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-6">
                 <InputField
                   name="firstName"

@@ -40,7 +40,7 @@ export default function useAuth() {
 
   const signupMutation = useMutation({
     mutationFn: (values: SignupFormValues) =>
-      http.post("/api/auth/signup", values),
+      http.post("/api/auth/signup", { ...values, userRole: "HOST" }),
 
     onMutate: (values) => {
       return { email: values.email };

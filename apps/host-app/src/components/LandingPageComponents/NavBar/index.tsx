@@ -7,15 +7,31 @@ import Icons from "@repo/ui/icons";
 import { Popup } from "@repo/ui/popup";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import { useState, useEffect } from "react";
+import cn from "classnames";
 
 type Props = { userToken: string };
 
 export default function NavBar({ userToken }: Props) {
   const { user } = useAppSelector((state) => state.user);
 
+  const [sticky, setSticky] = useState<boolean>(false);
+
+  useEffect(() => {
+    window.addEventListener("scroll", () => {
+      setSticky(window.scrollY > 600);
+    });
+  }, []);
+
   return (
-    <header className="hidden md:flex justify-between items-center fixed top-0 left-0 z-[999] w-full px-20 py-5 bg-[#F9FAFB59] backdrop-blur-xl">
+    <header
+      className={cn(
+        "hidden md:flex justify-between items-center fixed top-0 left-0 z-[999] w-full px-20 py-5",
+        sticky
+          ? "bg-white border-b border-grey-200"
+          : "bg-[#F9FAFB59] backdrop-blur-xl"
+      )}
+    >
       <Image
         className=""
         src="/images/logo/nav_logo.png"
@@ -24,7 +40,13 @@ export default function NavBar({ userToken }: Props) {
         height={40}
       />
       <nav className="flex items-center gap-4">
-        <Link className="text-white text-base 3xl:text-xl" href="/">
+        <Link
+          className={cn(
+            "text-base 3xl:text-xl",
+            sticky ? "text-grey-700" : "text-white"
+          )}
+          href="/"
+        >
           Book a ride
         </Link>
         <div className="h-6 w-px bg-white" />

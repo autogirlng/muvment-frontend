@@ -12,7 +12,7 @@ import {
 import { updateVehicleInformation } from "@/lib/features/vehicleOnboardingSlice";
 import { useRouter } from "next/navigation";
 import { useHttp } from "@/hooks/useHttp";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function useBasicInformationForm({
   currentStep,
@@ -58,7 +58,7 @@ export default function useBasicInformationForm({
           : "no",
   };
 
-  const fetchPlaces = async () => {
+  const fetchPlaces = async (query: string) => {
     setSearchAddressLoading(true);
     setSearchAddressError("");
 
@@ -66,7 +66,7 @@ export default function useBasicInformationForm({
       const response = await axios.post(
         `https://places.googleapis.com/v1/places:searchText`,
         {
-          textQuery: searchAddressQuery,
+          textQuery: query,
         },
         {
           headers: {
@@ -89,13 +89,18 @@ export default function useBasicInformationForm({
     }
   };
 
-  const debouncedFetchPlaces = debounce(fetchPlaces, 1500);
+  const debouncedFetchPlaces = useCallback(
+    debounce((query) => {
+      fetchPlaces(query);
+    }, 1500),
+    []
+  );
 
   useEffect(() => {
-    if (searchAddressQuery.length >= 2) {
-      debouncedFetchPlaces();
+    if (searchAddressQuery.length >= 1) {
+      debouncedFetchPlaces(searchAddressQuery);
     }
-  }, [searchAddressQuery]);
+  }, [searchAddressQuery, debouncedFetchPlaces]);
 
   const saveStep1 = useMutation({
     mutationFn: (values: BasicVehicleInformationValues) =>
