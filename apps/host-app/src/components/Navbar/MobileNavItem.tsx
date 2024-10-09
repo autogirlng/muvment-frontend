@@ -24,7 +24,7 @@ export default function MobileNavItem({
   return (
     <li>
       {name === "Log out" ? (
-        <button onClick={() => logoutUser()}>
+        <button onClick={() => logoutUser()} className="hover:text-error-500">
           <NavItem icon={icon} name={name} />
         </button>
       ) : (
@@ -53,7 +53,10 @@ const NavItem = ({ link, name, icon }: Props) => {
       <span
         className={cn(
           "text-sm 2xl:text-base",
-          link && pathname.includes(link) ? "text-primary-500" : "text-grey-700"
+          link && pathname.includes(link)
+            ? "text-primary-500"
+            : "text-grey-700",
+          name === "Log out" && "hover:text-error-500"
         )}
       >
         {name}

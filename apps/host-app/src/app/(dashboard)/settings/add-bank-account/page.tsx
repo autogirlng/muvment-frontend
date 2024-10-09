@@ -5,7 +5,7 @@ import DashboardInnerPage from "@/components/DashboardInnerPage";
 
 export default function AddBankAccountPage() {
   return (
-    <DashboardInnerPage isInnerPage title="Add Account" backLink="/account">
+    <DashboardInnerPage isInnerPage title="Add Account" backLink="/settings">
       <SetupWithdrawalAccount />
     </DashboardInnerPage>
   );

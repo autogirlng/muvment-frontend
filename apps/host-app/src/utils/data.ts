@@ -37,17 +37,17 @@ export const popupNavItems = [
   {
     icon: Icons.ic_user_account,
     name: "My account",
-    link: "/account",
+    link: "/profile",
   },
   {
     icon: Icons.ic_setting,
     name: "Settings",
-    link: "/dashboard",
+    link: "/settings",
   },
   {
     icon: Icons.ic_help_circle,
     name: "About Us",
-    link: "/dashboard",
+    link: "/about",
   },
   {
     icon: Icons.ic_logout,
@@ -70,7 +70,7 @@ export const popupNavItemsforNoUser = [
   {
     icon: Icons.ic_help_circle,
     name: "About Us",
-    link: "/dashboard",
+    link: "/",
   },
 ];
 

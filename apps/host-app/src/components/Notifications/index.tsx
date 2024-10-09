@@ -29,8 +29,8 @@ export default function Notifications({
       {notifications.map((item, index) => (
         <>
           <div key={index} className="flex items-center gap-3">
-            <div className="w-[52px] h-[52px] rounded-full bg-grey-90 flex items-center justify-center *:!w-6 *:!h-6 ">
-              {Icons.ic_payout}
+            <div className="w-[52px] h-[52px] rounded-full bg-grey-90 text-grey-700 flex items-center justify-center *:!w-6 *:!h-6 ">
+              {Icons.ic_lock}
             </div>
             <div className="space-y-2">
               <p className="text-base 3xl:text-xl text-grey-900 !font-medium">
