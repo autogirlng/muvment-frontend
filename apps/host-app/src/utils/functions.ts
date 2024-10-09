@@ -121,6 +121,20 @@ export const calculateRateGuestsWillSee = (
   return price + serviceFee;
 };
 
+export const debounce = <T extends (...args: any[]) => any>(
+  func: T,
+  delay: number
+) => {
+  let timer: ReturnType<typeof setTimeout> | null;
+
+  return function (...args: Parameters<T>) {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(null, args);
+    }, delay);
+  };
+};
+
 export const handleErrors = (
   error: AxiosError<ErrorResponse>,
   page?: string
