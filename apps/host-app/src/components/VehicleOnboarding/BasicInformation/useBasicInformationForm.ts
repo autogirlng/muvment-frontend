@@ -61,7 +61,6 @@ export default function useBasicInformationForm({
   const fetchPlaces = async () => {
     setSearchAddressLoading(true);
     setSearchAddressError("");
-    console.log(searchAddressQuery);
 
     try {
       const response = await axios.post(
@@ -90,7 +89,7 @@ export default function useBasicInformationForm({
     }
   };
 
-  const debouncedFetchPlaces = debounce(fetchPlaces, 300);
+  const debouncedFetchPlaces = debounce(fetchPlaces, 1500);
 
   useEffect(() => {
     if (searchAddressQuery.length >= 2) {
