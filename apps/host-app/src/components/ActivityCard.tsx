@@ -1,8 +1,8 @@
 import cn from "classnames";
 import { ReactNode } from "react";
-import { FullPageDialog } from "@repo/ui/dialog";
-import EarningsModal from "./Modal/EarningsModal";
 import { Spinner } from "@repo/ui/spinner";
+import { FullPageDialog } from "@repo/ui/dialog";
+import EarningsModal from "@/components/Modal/EarningsModal";
 
 type Props = {
   primary?: boolean;

@@ -1,29 +1,25 @@
 "use client";
 
+import { useState } from "react";
 import { Form, Formik } from "formik";
-import {
-  getCountryCallingCode,
-  parsePhoneNumber,
-} from "react-phone-number-input";
-import { profileFormValidationSchema } from "@/utils/validationSchema";
+import { getCountryCallingCode } from "react-phone-number-input";
 import Button from "@repo/ui/button";
 import InputField from "@repo/ui/inputField";
 import PhoneNumberAndCountryField from "@repo/ui/phoneNumberAndCountryField";
 import TextArea from "@repo/ui/textarea";
-import ProfilePhotoUpload from "@repo/ui/profilePhotoUpload";
-
-import { ProfileFormValues } from "@/utils/types";
-import { useAppSelector } from "@/lib/hooks";
 import SelectInput from "@repo/ui/select";
-import { citiesOptions } from "@/utils/data";
+import ProfilePhotoUpload from "@repo/ui/profilePhotoUpload";
 import AppSwitch from "@repo/ui/switch";
-import { useState } from "react";
-import useUpdateProfile from "@/hooks/useUpdateProfile";
 import { HorizontalDivider } from "@repo/ui/divider";
+import useUpdateProfile from "@/hooks/useUpdateProfile";
+import { useAppSelector } from "@/lib/hooks";
+import { ProfileFormValues } from "@/utils/types";
+import { citiesOptions } from "@/utils/data";
+import { replaceCharactersWithString } from "@/utils/functions";
+import { profileFormValidationSchema } from "@/utils/validationSchema";
 
 export default function ProfilePage() {
   const { user } = useAppSelector((state) => state.user);
-
   const [isProfileEditable, setIsProfileEditable] = useState<boolean>(false);
   const { updateProfileMutation, uploadImage } =
     useUpdateProfile(setIsProfileEditable);
@@ -37,8 +33,8 @@ export default function ProfilePage() {
             firstName: user?.firstName || "",
             lastName: user?.lastName || "",
             // phoneNumber: user?.phoneNumber || "",
-            country: user?.country || "",
-            countryCode: user?.countryCode || "",
+            country: user?.country || "NG",
+            countryCode: user?.countryCode || "+234",
             // email: "",
             bio: user?.bio || "",
             profileImage: user?.profileImage || "",
@@ -49,8 +45,8 @@ export default function ProfilePage() {
             businessLogo: user?.businessLogo || "",
             businessName: user?.businessName || null,
             businessPhoneNumber: user?.businessPhoneNumber || null,
-            businessCountry: "",
-            businessCountryCode: "",
+            businessCountry: "NG",
+            businessCountryCode: "+234",
           } as ProfileFormValues
         }
         onSubmit={async (values, { setSubmitting }) => {
@@ -158,14 +154,10 @@ export default function ProfilePage() {
                       selectPlaceholder="+234"
                       inputValue={user?.phoneNumber}
                       selectValue={user?.country}
-                      inputOnChange={(number: any) => {
-                        const phoneNumber = parsePhoneNumber(number || "");
-                        setFieldValue("country", phoneNumber?.country || "");
-                        setFieldValue(
-                          "countryCode",
-                          phoneNumber?.countryCallingCode || ""
+                      inputOnChange={(event) => {
+                        const number = replaceCharactersWithString(
+                          event.target.value
                         );
-
                         setFieldTouched("phoneNumber", true);
                         setFieldValue("phoneNumber", number);
                       }}
@@ -173,7 +165,6 @@ export default function ProfilePage() {
                         const countryCode = `+${getCountryCallingCode(value as any)}`;
                         setFieldValue("country", value);
                         setFieldValue("countryCode", countryCode);
-                        setFieldValue("phoneNumber", countryCode);
                       }}
                       inputOnBlur={handleBlur}
                       selectOnBlur={handleBlur}
@@ -319,19 +310,10 @@ export default function ProfilePage() {
                         selectPlaceholder="+234"
                         inputValue={values.businessPhoneNumber}
                         selectValue={values.businessCountry}
-                        inputOnChange={(number: any) => {
-                          const businessPhoneNumber = parsePhoneNumber(
-                            number || ""
+                        inputOnChange={(event) => {
+                          const number = replaceCharactersWithString(
+                            event.target.value
                           );
-                          setFieldValue(
-                            "businessCountry",
-                            businessPhoneNumber?.country || ""
-                          );
-                          setFieldValue(
-                            "businessCountryCode",
-                            businessPhoneNumber?.countryCallingCode || ""
-                          );
-
                           setFieldTouched("businessPhoneNumber", true);
                           setFieldValue("businessPhoneNumber", number);
                         }}
@@ -339,7 +321,6 @@ export default function ProfilePage() {
                           const countryCode = `+${getCountryCallingCode(value as any)}`;
                           setFieldValue("businessCountry", value);
                           setFieldValue("businessCountryCode", countryCode);
-                          setFieldValue("businessPhoneNumber", countryCode);
                         }}
                         inputOnBlur={handleBlur}
                         selectOnBlur={handleBlur}

@@ -1,5 +1,5 @@
 import cn from "classnames";
-import React from "react";
+import { ReactNode } from "react";
 
 type Props = {
   title: string;
@@ -7,7 +7,7 @@ type Props = {
   className?: string;
   titleClassName?: string;
   descriptionClassName?: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
 };
 
 export default function LandingPageSectionHeader({
@@ -20,9 +20,16 @@ export default function LandingPageSectionHeader({
 }: Props) {
   return (
     <div className={cn("space-y-[11px]", className)}>
-      <h1 className={cn("text-h3 md:text-h2 3xl:text-h1", titleClassName)}>{title}</h1>
+      <h1 className={cn("text-h3 md:text-h2 3xl:text-h1", titleClassName)}>
+        {title}
+      </h1>
       {description && (
-        <p className={cn("text-sm md:text-base 3xl:text-h6", descriptionClassName)}>
+        <p
+          className={cn(
+            "text-sm md:text-base 3xl:text-h6",
+            descriptionClassName
+          )}
+        >
           {description}
         </p>
       )}

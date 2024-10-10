@@ -52,7 +52,33 @@ export const popupNavItems = [
   {
     icon: Icons.ic_logout,
     name: "Log out",
-    // link: "/dashboard",
+  },
+];
+
+export const popupNavItemsHome = [
+  {
+    icon: Icons.ic_dashboard,
+    name: "Go to Dashboard",
+    link: "/dashboard",
+  },
+  {
+    icon: Icons.ic_user_account,
+    name: "My account",
+    link: "/profile",
+  },
+  {
+    icon: Icons.ic_setting,
+    name: "Settings",
+    link: "/settings",
+  },
+  {
+    icon: Icons.ic_help_circle,
+    name: "About Us",
+    link: "/about",
+  },
+  {
+    icon: Icons.ic_logout,
+    name: "Log out",
   },
 ];
 

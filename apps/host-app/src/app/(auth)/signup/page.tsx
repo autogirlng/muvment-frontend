@@ -2,10 +2,7 @@
 
 import Link from "next/link";
 import { Form, Formik } from "formik";
-import {
-  getCountryCallingCode,
-  parsePhoneNumber,
-} from "react-phone-number-input";
+import { getCountryCallingCode } from "react-phone-number-input";
 import { signUpFormInitialValues } from "@/utils/initialValues";
 import { signupFormValidationSchema } from "@/utils/validationSchema";
 import useAuth from "@/hooks/useAuth";

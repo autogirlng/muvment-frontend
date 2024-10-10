@@ -1,18 +1,20 @@
 import { Formik, Form } from "formik";
-import SelectInput from "@repo/ui/select";
-import AppSwitch from "@repo/ui/switch";
-import Tooltip from "@repo/ui/tooltip";
-import Collapse from "@repo/ui/collapsible";
-import Icons from "@repo/ui/icons";
-import { outskirtsLocationOptions, vehicleAvailabilityOptions } from "@/utils/data";
-import { availabilityAndPricingSchema } from "@/utils/validationSchema";
 import { StepperNavigation } from "@repo/ui/stepper";
 import { GroupCheckBox } from "@repo/ui/checkbox";
-import FormRow from "./FormRow";
-import PricingRow from "./PricingRow";
-import DiscountRow from "./DiscountRow";
-import OutskirtRow from "./OutskirtRow";
-import useAvailabilityAndPricingForm from "./useAvailabilityAndPricingForm";
+import SelectInput from "@repo/ui/select";
+import AppSwitch from "@repo/ui/switch";
+import Collapse from "@repo/ui/collapsible";
+import Icons from "@repo/ui/icons";
+import FormRow from "@/components/VehicleOnboarding/AvailabilityAndPricing/FormRow";
+import PricingRow from "@/components/VehicleOnboarding/AvailabilityAndPricing/PricingRow";
+import DiscountRow from "@/components/VehicleOnboarding/AvailabilityAndPricing/DiscountRow";
+import OutskirtRow from "@/components/VehicleOnboarding/AvailabilityAndPricing/OutskirtRow";
+import useAvailabilityAndPricingForm from "@/components/VehicleOnboarding/AvailabilityAndPricing/useAvailabilityAndPricingForm";
+import {
+  outskirtsLocationOptions,
+  vehicleAvailabilityOptions,
+} from "@/utils/data";
+import { availabilityAndPricingSchema } from "@/utils/validationSchema";
 
 type Props = {
   steps: string[];
@@ -20,16 +22,19 @@ type Props = {
   setCurrentStep: (step: number) => void;
 };
 
-const AvailabilityAndPricingForm = ({ steps,setCurrentStep,currentStep }: Props) => {
+const AvailabilityAndPricingForm = ({
+  steps,
+  setCurrentStep,
+  currentStep,
+}: Props) => {
   const {
-
     submitStep4,
     saveStep4,
     mapValuesToApiPayload,
     initialValues,
     showOuskirts,
     setShowOuskirts,
-  } = useAvailabilityAndPricingForm({currentStep,setCurrentStep});
+  } = useAvailabilityAndPricingForm({ currentStep, setCurrentStep });
   return (
     <Formik
       initialValues={initialValues}

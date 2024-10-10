@@ -1,8 +1,8 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import cn from "classnames";
-import useLogout from "./useLogout";
+import useLogout from "@/components/Navbar/useLogout";
 
 type Props = {
   link?: string;
@@ -24,7 +24,7 @@ export default function MobileNavItem({
   return (
     <li>
       {name === "Log out" ? (
-        <button onClick={() => logoutUser()} className="hover:text-error-500">
+        <button onClick={() => logoutUser()}>
           <NavItem icon={icon} name={name} />
         </button>
       ) : (
@@ -48,19 +48,17 @@ export default function MobileNavItem({
 const NavItem = ({ link, name, icon }: Props) => {
   const pathname = usePathname();
   return (
-    <p className="flex items-center gap-3 py-3">
+    <p
+      className={cn(
+        "flex items-center gap-3 py-3 text-sm 2xl:text-base",
+        link && pathname.includes(link)
+          ? "text-primary-500"
+          : "text-grey-700 hover:text-primary-500",
+        name === "Log out" && "hover:!text-error-500"
+      )}
+    >
       <span className="*:!w-5 *:!h-5">{icon}</span>
-      <span
-        className={cn(
-          "text-sm 2xl:text-base",
-          link && pathname.includes(link)
-            ? "text-primary-500"
-            : "text-grey-700",
-          name === "Log out" && "hover:text-error-500"
-        )}
-      >
-        {name}
-      </span>
+      <span>{name}</span>
     </p>
   );
 };

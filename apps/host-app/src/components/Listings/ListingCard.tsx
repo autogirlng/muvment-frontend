@@ -151,7 +151,9 @@ export default function ListingCard({ listing }: Props) {
             </div>
             <VerticalDivider className="hidden md:block" />
             <Popup
-              trigger={<MoreButton className="!mx-0 absolute right-6 top-7 md:relative md:top-0 md:right-0" />}
+              trigger={
+                <MoreButton className="!mx-0 absolute right-6 top-7 md:relative md:top-0 md:right-0" />
+              }
               content={
                 <>
                   <p className="!text-xs 3xl:!text-base !font-semibold">

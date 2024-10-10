@@ -1,6 +1,5 @@
 import { Form, Formik } from "formik";
 import { getCountryCallingCode } from "react-phone-number-input";
-import { parsePhoneNumber } from "react-phone-number-input";
 import { verifyPhoneNumberValues } from "@/utils/initialValues";
 import { verifyPhoneNumberSchema } from "@/utils/validationSchema";
 import Button from "@repo/ui/button";

@@ -3,8 +3,8 @@ import Link from "next/link";
 import { StepperNavigation } from "@repo/ui/stepper";
 import { SingleCheckBox } from "@repo/ui/checkbox";
 import { useAppSelector } from "@/lib/hooks";
-import useVehicleSummary from "./useVehicleSummary";
-import ViewAsCustomer from "./ViewAsCustomer";
+import useVehicleSummary from "@/components/VehicleOnboarding/VehicleSummary/useVehicleSummary";
+import ViewAsCustomer from "@/components/VehicleOnboarding/VehicleSummary/ViewAsCustomer";
 
 type Props = {
   steps: string[];

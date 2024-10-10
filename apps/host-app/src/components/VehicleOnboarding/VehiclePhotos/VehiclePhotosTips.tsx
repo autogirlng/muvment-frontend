@@ -1,5 +1,4 @@
 import Image from "next/image";
-import React from "react";
 import { photoUploadTips } from "@/utils/data";
 
 type Props = { photoTipIndex: number };

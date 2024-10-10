@@ -1,6 +1,5 @@
 import ActivityCard from "@/components/ActivityCard";
 import { EarningsStatistics } from "@/utils/types";
-import React from "react";
 
 type Props = { statistics: EarningsStatistics | null | undefined };
 

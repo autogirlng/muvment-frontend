@@ -1,8 +1,5 @@
 import { Form, Formik } from "formik";
-import {
-  getCountryCallingCode,
-  parsePhoneNumber,
-} from "react-phone-number-input";
+import { getCountryCallingCode } from "react-phone-number-input";
 import InputField from "@repo/ui/inputField";
 import PhoneNumberAndCountryField from "@repo/ui/phoneNumberAndCountryField";
 import Button from "@repo/ui/button";

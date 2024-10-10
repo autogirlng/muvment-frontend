@@ -1,9 +1,12 @@
+import { ChangeEvent } from "react";
 import { Formik, Form } from "formik";
 import { toast } from "react-toastify";
-import FormRow from "@/components/VehicleOnboarding/FormRow";
+import { FullPageSpinner } from "@repo/ui/spinner";
+import { StepperNavigation } from "@repo/ui/stepper";
 import InputField from "@repo/ui/inputField";
 import SelectInput from "@repo/ui/select";
-import { StepperNavigation } from "@repo/ui/stepper";
+import FormRow from "@/components/VehicleOnboarding/FormRow";
+import useBasicInformationForm from "@/components/VehicleOnboarding/BasicInformation/useBasicInformationForm";
 import { basicVehicleInformationSchema } from "@/utils/validationSchema";
 import {
   citiesOptions,
@@ -13,10 +16,6 @@ import {
   yearOfReleaseOptions,
   yesOrNoOptions,
 } from "@/utils/data";
-import useBasicInformationForm from "./useBasicInformationForm";
-import { ChangeEvent } from "react";
-
-import { FullPageSpinner } from "@repo/ui/spinner";
 
 type Props = {
   steps: string[];

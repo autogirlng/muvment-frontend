@@ -1,12 +1,11 @@
+import cn from "classnames";
 import { VehicleStatus } from "@/utils/types";
 import { VehicleListingBadge } from "@repo/ui/badge";
-import Button from "@repo/ui/button";
 import { Popup } from "@repo/ui/popup";
 import { Spinner } from "@repo/ui/spinner";
-import cn from "classnames";
-import useListingsActions from "./hooks/useListingsActions";
 import Icons from "@repo/ui/icons";
-import { ReactNode } from "react";
+import Button from "@repo/ui/button";
+import useListingsActions from "@/components/Listings/Details/hooks/useListingsActions";
 
 type Props = { vehicleStatus?: VehicleStatus; isActive?: boolean; id?: string };
 
@@ -122,7 +121,6 @@ const StatusButton = ({
             {loading ? <Spinner /> : <span>{status}</span>}
           </button>
           {Icons.ic_calendar}
-          
         </div>
       ) : (
         <button

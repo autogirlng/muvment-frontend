@@ -17,8 +17,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { getUser } = useUser();
 
   useEffect(() => {
-    console.log(user);
-
     if (user) {
       if (
         pathname.includes("/account-setup") ||
@@ -36,7 +34,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, pathname]);
+  }, [user]);
 
   if (isLoading || getUser.isLoading) {
     return <FullPageSpinner />;

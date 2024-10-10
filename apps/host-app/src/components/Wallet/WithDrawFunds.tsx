@@ -1,7 +1,7 @@
-import Button from "@repo/ui/button";
-import { BlurredDialog } from "@repo/ui/dialog";
-import Withdraw from "@/components/Wallet/Withdraw";
 import Image from "next/image";
+import { BlurredDialog } from "@repo/ui/dialog";
+import Button from "@repo/ui/button";
+import Withdraw from "@/components/Wallet/Withdraw";
 import VerifyOtp from "@/components/Wallet/VerifyOtp";
 import useWithdrawFunds from "@/components/Wallet/hooks/useWithdrawFunds";
 

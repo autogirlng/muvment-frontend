@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import cn from "classnames";
@@ -11,18 +11,23 @@ export default function SideNavItem({ link, name, icon }: Props) {
     <li>
       <Link
         href={link}
-        className={cn(
-          "flex items-center gap-3 p-4 rounded-[18px]",
-          pathname.includes(link)
-            ? "text-primary-500 bg-primary-50"
-            : "text-black"
-        )}
+        className="flex items-center gap-3 p-4 rounded-[18px] group"
       >
-        {icon}
+        <span
+          className={cn(
+            pathname.includes(link)
+              ? "text-primary-500 bg-primary-50"
+              : "text-black group-hover:text-primary-500"
+          )}
+        >
+          {icon}
+        </span>
         <p
           className={cn(
             "text-sm 2xl:text-base",
-            pathname.includes(link) ? "text-primary-500" : "text-grey-700"
+            pathname.includes(link)
+              ? "text-primary-500"
+              : "text-grey-700 group-hover:text-primary-500"
           )}
         >
           {name}

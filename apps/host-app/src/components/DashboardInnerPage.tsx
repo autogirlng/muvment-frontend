@@ -1,6 +1,6 @@
 import cn from "classnames";
 import { ReactNode } from "react";
-import BackLink from "./BackLink";
+import BackLink from "@/components/BackLink";
 
 type Props = {
   isInnerPage?: boolean;

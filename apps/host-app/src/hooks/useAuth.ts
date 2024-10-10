@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -22,6 +22,7 @@ import { useHttp } from "./useHttp";
 
 export default function useAuth() {
   const http = useHttp();
+  const queryClient = useQueryClient();
 
   const [userToken, setUserToken] = useState<string>("");
   const dispatch = useAppDispatch();
@@ -66,9 +67,10 @@ export default function useAuth() {
     },
 
     onSuccess: (data) => {
-      console.log("Login successful", data);
+      console.log("Login successful");
       dispatch(setToken(data || ""));
       router.push("/dashboard");
+      queryClient.clear();
     },
 
     onError: (error: AxiosError<ErrorResponse>, _values, context) => {

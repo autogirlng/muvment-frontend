@@ -8,10 +8,10 @@ import Overview from "@/components/LandingPageComponents/Overview";
 import Steps from "@/components/LandingPageComponents/Steps";
 import VehicleOptions from "@/components/LandingPageComponents/VehicleOptions";
 import VehiclePackages from "@/components/LandingPageComponents/VehiclePackages";
-import NavBar from "@/components/LandingPageComponents/NavBar";
 import GetStarted from "@/components/LandingPageComponents/GetStarted";
 import MobileNav from "@/components/Navbar/MobileNav";
 import { useEffect, useState } from "react";
+import DesktopNav from "@/components/Navbar/DesktopNav";
 
 export default function HomePage() {
   const [userToken, setUserToken] = useState<string>("");
@@ -23,7 +23,7 @@ export default function HomePage() {
 
   return (
     <main className="overflow-x-hidden">
-      <NavBar userToken={userToken} />
+      <DesktopNav userToken={userToken} />
       <MobileNav userToken={userToken} />
       <Hero />
       <Benefits />

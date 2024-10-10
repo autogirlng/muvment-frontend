@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { TipsPopup } from "@repo/ui/popup";
 import Tips from "@/components/VehicleOnboarding//Tips";
-import VehiclePhotosForm from "./VehiclePhotosForm";
-import VehiclePhotosTips from "./VehiclePhotosTips";
+import VehiclePhotosForm from "@/components/VehicleOnboarding/VehiclePhotos/VehiclePhotosForm";
+import VehiclePhotosTips from "@/components/VehicleOnboarding/VehiclePhotos/VehiclePhotosTips";
 
 type Props = {
   steps: string[];

@@ -1,4 +1,3 @@
-import React from "react";
 import DashboardSectionTitle from "../DashboardSectionTitle";
 import Icons from "@repo/ui/icons";
 

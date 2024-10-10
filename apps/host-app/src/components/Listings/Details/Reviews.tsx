@@ -1,6 +1,6 @@
 import Image from "next/image";
-import React, { useState } from "react";
-import useReviews from "./hooks/useReviews";
+import { useState } from "react";
+import useReviews from "@/components/Listings/Details/hooks/useReviews";
 import StarRating from "@repo/ui/starRating";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import { Review } from "@/utils/types";

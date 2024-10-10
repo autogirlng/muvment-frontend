@@ -8,7 +8,6 @@ import { useAppDispatch } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
 
 export const useHttp = () => {
-  // const user_token = localStorage.getItem("user_token");
 
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -16,7 +15,8 @@ export const useHttp = () => {
   const http = useMemo(() => {
     return axios.create({
       baseURL: apiUrl,
-      timeout: 15000,
+      timeout: 20000,
+      // if aborted rety request ...ECONNABORTED
     });
   }, []);
 

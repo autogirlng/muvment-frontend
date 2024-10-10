@@ -1,6 +1,5 @@
 import ViewAsCustomer from "@/components/VehicleOnboarding/VehicleSummary/ViewAsCustomer";
-import React from "react";
-import useGetCustomerView from "./hooks/useGetCustomerView";
+import useGetCustomerView from "@/components/Listings/Details/hooks/useGetCustomerView";
 import { FullPageSpinner } from "@repo/ui/spinner";
 
 type Props = { id: string };

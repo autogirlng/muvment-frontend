@@ -1,13 +1,9 @@
 import { Form, Formik } from "formik";
 import Button from "@repo/ui/button";
 import InputField from "@repo/ui/inputField";
-import { verifyIdentityValues, withdrawalValues } from "@/utils/initialValues";
-import {
-  verifyIdentitySchema,
-  withdrawalSchema,
-} from "@/utils/validationSchema";
+import { withdrawalValues } from "@/utils/initialValues";
+import { withdrawalSchema } from "@/utils/validationSchema";
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
-import { parse } from "path";
 
 type Props = {
   handleModal: (open: boolean) => void;

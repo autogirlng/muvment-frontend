@@ -1,12 +1,12 @@
 import Icons from "@repo/ui/icons";
-import React from "react";
+import { ReactNode } from "react";
 
 type Props = {};
 
 type benefitProps = {
   title: string;
   description: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
 };
 
 const benefits: benefitProps[] = [

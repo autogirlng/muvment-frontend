@@ -7,9 +7,10 @@ type ChipProps = {
   color?: "dark" | "light" | "lighter" | "primary";
   radius?: "full" | "md" | "sm";
   icon?: ReactNode;
+  className?: string;
 };
 
-const Chip = ({ text, variant, color, radius, icon }: ChipProps) => {
+const Chip = ({ text, variant, color, radius, icon, className }: ChipProps) => {
   const borderRadius =
     radius === "full"
       ? "rounded-full"
@@ -36,7 +37,8 @@ const Chip = ({ text, variant, color, radius, icon }: ChipProps) => {
         icon ? "flex items-center gap-1" : "",
         borderRadius,
         border,
-        textColor
+        textColor,
+        className
       )}
     >
       {icon ? (

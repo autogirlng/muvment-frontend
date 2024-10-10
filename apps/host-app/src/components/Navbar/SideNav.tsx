@@ -1,4 +1,3 @@
-import React from "react";
 import SideNavItem from "@/components/Navbar/SideNavItem";
 import Image from "next/image";
 import { dashboardNavItems } from "@/utils/data";
