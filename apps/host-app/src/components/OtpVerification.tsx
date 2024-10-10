@@ -31,8 +31,8 @@ const OtpVerification = ({
 }: Props) => {
   const handleChange = (otp: string) => setOtp(otp);
 
-  const [minutes, setMinutes] = useState<number>(0);
-  const [seconds, setSeconds] = useState<number>(19);
+  const [minutes, setMinutes] = useState<number>(4);
+  const [seconds, setSeconds] = useState<number>(59);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -98,8 +98,8 @@ const OtpVerification = ({
           className="text-sm 3xl:text-base text-primary-500"
           onClick={() => {
             resendOtp();
-            setMinutes(0);
-            setSeconds(19);
+            setMinutes(4);
+            setSeconds(59);
           }}
         >
           Resend Code

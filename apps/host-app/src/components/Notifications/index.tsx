@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { Notification } from "@/utils/types";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import Icons from "@repo/ui/icons";
-import { format, formatRelative, subDays } from "date-fns";
+import { formatRelative } from "date-fns";
 import { HorizontalDivider } from "@repo/ui/divider";
 
 type Props = {
@@ -19,7 +19,7 @@ export default function Notifications({
   isDivider = false,
 }: Props) {
   if (isLoading) {
-    return <FullPageSpinner className="min-h-[4800px]" />;
+    return <FullPageSpinner className="min-h-[480px]" />;
   }
   if (isError) {
     return <p>Something went wrong</p>;
