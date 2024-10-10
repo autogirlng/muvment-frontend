@@ -1,13 +1,5 @@
-import { Form, Formik } from "formik";
-import Button from "@repo/ui/button";
-import InputField from "@repo/ui/inputField";
-import { verifyIdentityValues, withdrawalValues } from "@/utils/initialValues";
-import {
-  verifyIdentitySchema,
-  withdrawalSchema,
-} from "@/utils/validationSchema";
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
-import OtpVerification from "../OtpVerification";
+import { Dispatch, SetStateAction } from "react";
+import OtpVerification from "@/components/OtpVerification";
 
 type Props = {
   handleModal: (open: boolean) => void;

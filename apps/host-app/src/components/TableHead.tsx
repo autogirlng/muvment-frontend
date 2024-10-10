@@ -1,5 +1,3 @@
-
-
 const TableHead = ({ tableHeadItems }:{tableHeadItems:string[]}) => (
   <thead>
     <tr>

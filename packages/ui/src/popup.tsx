@@ -43,13 +43,13 @@ export const Popup = ({
   trigger: ReactNode;
   className?: string;
 }) => (
-  <Popover.Root >
+  <Popover.Root>
     <Popover.Trigger asChild>{trigger}</Popover.Trigger>
     <Popover.Portal>
       <Popover.Content
         align="end"
         className={cn(
-          "rounded-xl p-4 w-[255px] bg-white border border-grey-200 will-change-[transform,opacity] data-[state=open]:data-[side=top]:animate-slideDownAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade",
+          "rounded-xl p-4 w-[225px] sm:w-[255px] bg-white border border-grey-200 will-change-[transform,opacity] data-[state=open]:data-[side=top]:animate-slideDownAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade",
           className
         )}
         sideOffset={5}

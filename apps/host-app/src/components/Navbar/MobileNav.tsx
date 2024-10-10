@@ -1,18 +1,18 @@
+import cn from "classnames";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 import { useAppSelector } from "@/lib/hooks";
 import { getInitialsFromName } from "@/utils/functions";
 import { AvatarImage, AvatarInitials } from "@repo/ui/avatar";
 import { HorizontalDivider } from "@repo/ui/divider";
 import Icons from "@repo/ui/icons";
-import Image from "next/image";
-import Link from "next/link";
-import React, { useState } from "react";
-import MobileNavItem from "./MobileNavItem";
+import MobileNavItem from "@/components/Navbar/MobileNavItem";
 import {
   dashboardNavItems,
   popupNavItems,
   popupNavItemsforNoUser,
 } from "@/utils/data";
-import cn from "classnames";
 
 type Props = { userToken?: string };
 
@@ -42,7 +42,7 @@ export default function MobileNav({ userToken }: Props) {
                 : Icons.ic_user
             }
             size="!w-8 !h-8"
-            color="!bg-primary-100 !text-primary-800 !text-[5px] !font-bold *:!w-5 *!h-5"
+            color="!bg-primary-100 !text-primary-800 !text-[10px] !font-bold *:!w-5 *!h-5"
           />
           {Icons.ic_menu}
         </button>
@@ -58,7 +58,7 @@ export default function MobileNav({ userToken }: Props) {
         {userToken || user ? (
           <div className="space-y-6 pb-8">
             <AvatarImage
-              image="/images/top_header_avatar.png"
+              image={user?.profileImage ?? "/images/top_header_avatar.png"}
               initials={
                 user
                   ? getInitialsFromName(user.firstName, user.lastName)

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Notification } from "@/utils/types";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import Icons from "@repo/ui/icons";
@@ -27,7 +27,7 @@ export default function Notifications({
   return (
     <div className="space-y-7">
       {notifications.map((item, index) => (
-        <>
+        <Fragment key={index}>
           <div key={index} className="flex items-center gap-3">
             <div className="w-[52px] h-[52px] rounded-full bg-grey-90 text-grey-700 flex items-center justify-center *:!w-6 *:!h-6 ">
               {Icons.ic_lock}
@@ -48,7 +48,7 @@ export default function Notifications({
             </div>
           </div>
           {isDivider && <HorizontalDivider variant="dark" />}
-        </>
+        </Fragment>
       ))}
     </div>
   );

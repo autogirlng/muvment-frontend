@@ -1,10 +1,8 @@
-import AppTabs from "@repo/ui/tabs";
 import React, { ChangeEvent, useState } from "react";
-import Icons from "@repo/ui/icons";
-import ActivityCard from "../ActivityCard";
-import UpcomingBookings from "./UpcomingBookings";
-import BookingHistory from "./BookingHistory";
+import AppTabs from "@repo/ui/tabs";
 import SearchInput from "@repo/ui/searchInput";
+import UpcomingBookings from "@/components/BookingsAnalytics/UpcomingBookings";
+import BookingHistory from "@/components/BookingsAnalytics/BookingHistory";
 
 type Props = {};
 

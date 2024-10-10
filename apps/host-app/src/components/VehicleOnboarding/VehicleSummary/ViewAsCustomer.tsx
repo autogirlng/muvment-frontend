@@ -14,7 +14,7 @@ import {
   formatNumberWithCommas,
   keyAndValueInAChip,
 } from "@/utils/functions";
-import useVehicleSummary from "./useVehicleSummary";
+import useVehicleSummary from "@/components/VehicleOnboarding/VehicleSummary/useVehicleSummary";
 import { VehicleInformation } from "@/utils/types";
 
 type Props = { vehicle: VehicleInformation | null };

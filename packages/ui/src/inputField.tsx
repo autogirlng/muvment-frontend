@@ -74,9 +74,9 @@ const InputField = ({
               ? "bg-grey-800 text-grey-400 border-none"
               : "bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A]"
         )}
-        autoComplete="off"
         autoCorrect="off"
         spellCheck="false"
+        autoComplete={`new-${type || "text"}`}
         {...rest}
       />
       {(id === "password" ||

@@ -1,18 +1,20 @@
-import MobileNavItem from "@/components/Navbar/MobileNavItem";
-import { useAppSelector } from "@/lib/hooks";
-import { popupNavItems, popupNavItemsforNoUser } from "@/utils/data";
-import { getInitialsFromName } from "@/utils/functions";
-import { AvatarInitials } from "@repo/ui/avatar";
-import Icons from "@repo/ui/icons";
-import { Popup } from "@repo/ui/popup";
+import cn from "classnames";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import cn from "classnames";
+import { useAppSelector } from "@/lib/hooks";
+import { popupNavItemsforNoUser } from "@/utils/data";
+import { getInitialsFromName } from "@/utils/functions";
+import { AvatarInitials } from "@repo/ui/avatar";
+import { Popup } from "@repo/ui/popup";
+import Icons from "@repo/ui/icons";
+import NavPopup from "@/components/Navbar/NavPopup";
+import MobileNavItem from "@/components/Navbar/MobileNavItem";
+
 
 type Props = { userToken: string };
 
-export default function NavBar({ userToken }: Props) {
+export default function DesktopNav({ userToken }: Props) {
   const { user } = useAppSelector((state) => state.user);
 
   const [sticky, setSticky] = useState<boolean>(false);
@@ -68,25 +70,19 @@ export default function NavBar({ userToken }: Props) {
           }
           content={
             <ul className="list-none">
-              {userToken
-                ? popupNavItems.map((item, index) => (
-                    <MobileNavItem
-                      key={index}
-                      icon={item.icon}
-                      name={item.name}
-                      link={item.link}
-                      className="!py-[6px]"
-                    />
-                  ))
-                : popupNavItemsforNoUser.map((item, index) => (
-                    <MobileNavItem
-                      key={index}
-                      icon={item.icon}
-                      name={item.name}
-                      link={item.link}
-                      className="!py-[6px]"
-                    />
-                  ))}
+              {userToken ? (
+                <NavPopup />
+              ) : (
+                popupNavItemsforNoUser.map((item, index) => (
+                  <MobileNavItem
+                    key={index}
+                    icon={item.icon}
+                    name={item.name}
+                    link={item.link}
+                    className="!py-[6px]"
+                  />
+                ))
+              )}
             </ul>
           }
         />

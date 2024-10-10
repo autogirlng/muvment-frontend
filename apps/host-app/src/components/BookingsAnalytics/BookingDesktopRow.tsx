@@ -1,14 +1,14 @@
-import TableCell from "../TableCell";
-import { BookingBadgeStatus, BookingInformation } from "@/utils/types";
-import MoreButton from "@repo/ui/moreButton";
-import { Popup } from "@repo/ui/popup";
-import { format } from "date-fns";
 import Link from "next/link";
-import AcceptTrip from "./Details/modals/AcceptTrip";
-import DeclineTrip from "./Details/modals/DeclineTrip";
-import useBookingActions from "./hooks/useBookingActions";
+import { format } from "date-fns";
+import { BookingBadgeStatus, BookingInformation } from "@/utils/types";
+import { Popup } from "@repo/ui/popup";
+import MoreButton from "@repo/ui/moreButton";
+import TableCell from "@/components/TableCell";
+import DeclineTrip from "@/components/BookingsAnalytics/Details/modals/DeclineTrip";
+import AcceptTrip from "@/components/BookingsAnalytics/Details/modals/AcceptTrip";
+import useBookingActions from "@/components/BookingsAnalytics/hooks/useBookingActions";
 
-const BookingRow = ({ items }: { items: BookingInformation }) => {
+const BookingDesktopRow = ({ items }: { items: BookingInformation }) => {
   const {
     openAcceptModal,
     handleAcceptModal,
@@ -98,4 +98,4 @@ const BookingRow = ({ items }: { items: BookingInformation }) => {
   );
 };
 
-export default BookingRow;
+export default BookingDesktopRow;

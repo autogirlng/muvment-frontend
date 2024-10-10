@@ -1,7 +1,6 @@
-import React from "react";
-import useWallet from "./hooks/useWallet";
-import WithDrawFunds from "./WithDrawFunds";
 import { Spinner } from "@repo/ui/spinner";
+import useWallet from "@/components/Wallet/hooks/useWallet";
+import WithDrawFunds from "@/components/Wallet/WithDrawFunds";
 
 type Props = {};
 

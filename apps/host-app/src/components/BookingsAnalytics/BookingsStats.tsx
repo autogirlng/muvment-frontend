@@ -1,6 +1,5 @@
-import React from "react";
-import ActivityCard from "../ActivityCard";
-import useBookingStats from "./hooks/useBookingStats";
+import ActivityCard from "@/components/ActivityCard";
+import useBookingStats from "@/components/BookingsAnalytics/hooks/useBookingStats";
 
 type Props = {};
 

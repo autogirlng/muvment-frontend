@@ -1,9 +1,8 @@
 import { transactionTableHeadItems } from "@/utils/data";
-import React from "react";
-import TableHead from "../../TableHead";
-import EmptyState from "../../EmptyState";
 import { Transaction } from "@/utils/types";
-import TransactionRow from "./TransactionRow";
+import TableHead from "@/components/TableHead";
+import EmptyState from "@/components/EmptyState";
+import TransactionRow from "@/components/Wallet/TransactionTable/TransactionRow";
 
 type Props = { items: Transaction[] };
 

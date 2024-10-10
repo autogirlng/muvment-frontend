@@ -1,8 +1,8 @@
-import BookingAnalyticsTable from "./Table";
-import Pagination from "@repo/ui/pagination";
-import { FullPageSpinner } from "@repo/ui/spinner";
 import { useState } from "react";
-import useBookings from "./hooks/useBookings";
+import { FullPageSpinner } from "@repo/ui/spinner";
+import Pagination from "@repo/ui/pagination";
+import BookingAnalyticsTable from "@/components/BookingsAnalytics//Table";
+import useBookings from "@/components/BookingsAnalytics/hooks/useBookings";
 
 type Props = {};
 

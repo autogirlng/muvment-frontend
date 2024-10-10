@@ -1,7 +1,9 @@
 "use client";
 
+import { useCallback, useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { debounce, handleErrors } from "@/utils/functions";
 import {
@@ -10,9 +12,7 @@ import {
   VehicleInformation,
 } from "@/utils/types";
 import { updateVehicleInformation } from "@/lib/features/vehicleOnboardingSlice";
-import { useRouter } from "next/navigation";
 import { useHttp } from "@/hooks/useHttp";
-import { useCallback, useEffect, useState } from "react";
 
 export default function useBasicInformationForm({
   currentStep,

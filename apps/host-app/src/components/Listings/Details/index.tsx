@@ -1,9 +1,5 @@
-import React from 'react'
-
-type Props = {}
+type Props = {};
 
 export default function ListingDetails({}: Props) {
-  return (
-    <div></div>
-  )
+  return <div></div>;
 }

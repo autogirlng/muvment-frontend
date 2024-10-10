@@ -1,14 +1,14 @@
-import BackLink from "@/components/BackLink";
+import Link from "next/link";
+import { useState } from "react";
 import { ListingStatus } from "@/utils/types";
 import { ListingBadge } from "@repo/ui/badge";
 import { BlurredDialog } from "@repo/ui/dialog";
 import { Popup } from "@repo/ui/popup";
-import Link from "next/link";
-import React, { useState } from "react";
-import DeleteListing from "./modals/DeleteListing";
-import DeactivateListing from "./modals/DeactivateListing";
 import MoreButton from "@repo/ui/moreButton";
 import Icons from "@repo/ui/icons";
+import BackLink from "@/components/BackLink";
+import DeleteListing from "@/components/Listings/Details/modals/DeleteListing";
+import DeactivateListing from "@/components/Listings/Details/modals/DeactivateListing";
 
 type Props = {
   name?: string;
@@ -47,7 +47,7 @@ export default function ListingDetailsHeader({ name, status, id }: Props) {
                   <li>
                     <Link
                       href={`/vehicle-onboarding?id=${id}`}
-                      className="!text-xs 3xl:!text-base "
+                      className="!text-xs 3xl:!text-base"
                     >
                       Edit listing
                     </Link>
@@ -57,7 +57,7 @@ export default function ListingDetailsHeader({ name, status, id }: Props) {
                       open={openDeleteModal}
                       onOpenChange={handleDeleteModal}
                       trigger={
-                        <button className="!text-xs 3xl:!text-base ">
+                        <button className="!text-xs 3xl:!text-base hover:text-error-500">
                           Delete listing
                         </button>
                       }
@@ -74,7 +74,7 @@ export default function ListingDetailsHeader({ name, status, id }: Props) {
                       open={openDeactivateModal}
                       onOpenChange={handleDeactivateModal}
                       trigger={
-                        <button className="!text-xs 3xl:!text-base ">
+                        <button className="!text-xs 3xl:!text-base hover:text-primary-500">
                           Deactivate listing
                         </button>
                       }
@@ -101,7 +101,9 @@ export default function ListingDetailsHeader({ name, status, id }: Props) {
         </div>
       </div>
       <div className="flex flex-col md:flex-row items-center gap-6">
-        <h5 className="text-h6 sm:text-4xl 3xl:text-h2 !font-bold">{name || ""}</h5>
+        <h5 className="text-h6 sm:text-4xl 3xl:text-h2 !font-bold">
+          {name || ""}
+        </h5>
         <ListingBadge status={status ? status : "review"} />
       </div>
     </div>

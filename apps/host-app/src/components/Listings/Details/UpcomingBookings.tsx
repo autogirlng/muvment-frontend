@@ -1,9 +1,8 @@
+import cn from "classnames";
 import DashboardSectionTitle from "@/components/DashboardSectionTitle";
 import EmptyState from "@/components/EmptyState";
+import useVehicleUpcomingBooking from "@/components/Listings/Details/hooks/useVehicleUpcomingBooking";
 import Icons from "@repo/ui/icons";
-import cn from "classnames";
-import React from "react";
-import useVehicleUpcomingBooking from "./hooks/useVehicleUpcomingBooking";
 import { Spinner } from "@repo/ui/spinner";
 
 type Props = { vehicleId: string };

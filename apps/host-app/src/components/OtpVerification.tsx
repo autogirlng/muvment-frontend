@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/utils/types";
 import { Spinner } from "@repo/ui/spinner";
@@ -14,7 +14,7 @@ type Props = {
   setOtp: Dispatch<SetStateAction<string>>;
   otp: string;
   error: AxiosError<ErrorResponse> | null;
-  children?: React.ReactNode;
+  children?: ReactNode;
   numInputs?: number;
 };
 
