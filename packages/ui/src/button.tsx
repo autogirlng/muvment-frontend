@@ -41,29 +41,29 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const btnBorder =
       variant === "outlined"
-        ? "border-2 border-solid border-black"
+        ? "border-2 border-solid border-black hover:bg-black"
         : "border-none";
 
     const btnBgColor =
       color === "primary"
-        ? "bg-primary-500 disabled:bg-grey-300"
+        ? "bg-primary-500  hover:bg-primary-75 disabled:bg-grey-300"
         : color === "white"
-          ? "bg-white"
+          ? "bg-white hover:bg-primary-75"
           : "bg-transparent";
 
     const btnTextColor =
       color === "primary"
-        ? "text-white"
+        ? "text-white disabled:text-white hover:text-primary-500"
         : color === "white"
           ? "text-primary-500"
-          : "text-black";
+          : "text-black hover:text-white";
 
     return (
       <button
         ref={ref}
         {...rest}
         className={cn(
-          "px-9 md:px-11 2xl:px-[52px]",
+          "px-9 md:px-11 2xl:px-[52px] transition-all duration-300 ease-in-out",
           btnWidth,
           btnRadius,
           btnBorder,

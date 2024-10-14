@@ -136,7 +136,7 @@ export interface AdditionalVehicleInformationValues {
 export interface ProfileFormValues {
   firstName: string;
   lastName: string;
-  // phoneNumber: string;
+  phoneNumber: string;
   // email: string;
   country: string;
   countryCode: string;
@@ -263,6 +263,20 @@ export enum TransactionStatus {
 export enum TransactionOrigin {
   WITHDRAWAL = "WITHDRAWAL",
   BOOKING = "BOOKING",
+}
+
+export enum NotificationType {
+  BOOKING_REQUEST = "BOOKING_REQUEST",
+  BOOKING_CONFIRMED = "BOOKING_CONFIRMED",
+  BOOKING_CANCELED = "BOOKING_CANCELED",
+  UPCOMING_BOOKING = "UPCOMING_BOOKING",
+  GUEST_CHECK_IN = "GUEST_CHECK_IN",
+  GUEST_CHECK_OUT = "GUEST_CHECK_OUT",
+  VEHICLE_ACCEPTED = "VEHICLE_ACCEPTED",
+  PAYMENT_RECEIVED = "PAYMENT_RECEIVED",
+  SECURITY_ALERT = "SECURITY_ALERT",
+  NEW_REVIEW = "NEW_REVIEW",
+  SPECIAL_OFFER = " SPECIAL_OFFER",
 }
 
 // <================= USER/LISTING/BOOKING/VEHICLE =================>
@@ -540,6 +554,7 @@ export type Notification = {
   isRead: boolean;
   trxReference: null;
   transaction: null;
+  notificationType: NotificationType;
 };
 
 // ==================== hard coded types - to be changed ====================//

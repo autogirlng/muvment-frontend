@@ -16,11 +16,13 @@ export const AvatarImage = ({ image, initials, size, color }: AvatarProps) => (
       size ? size : ""
     )}
   >
-    <Avatar.Image
-      className="h-full w-full rounded-[inherit] object-cover"
-      src={image}
-      alt=""
-    />
+    {image && (
+      <Avatar.Image
+        className="h-full w-full rounded-[inherit] object-cover"
+        src={image}
+        alt=""
+      />
+    )}
 
     <Avatar.Fallback
       className={cn(

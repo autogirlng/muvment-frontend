@@ -7,6 +7,8 @@ import { getInitialsFromName } from "@/utils/functions";
 import NavPopup from "@/components/Navbar/NavPopup";
 import Notifications from "@/components/Notifications";
 import useNotifications from "@/components/Notifications/useNotifications";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 type Props = {};
 
@@ -26,6 +28,13 @@ export default function TopHeader({}: Props) {
     currentPage: 1,
   });
 
+  const pathname = usePathname();
+  const [popupIsOpen, setPopupIsOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    setPopupIsOpen(false);
+  }, [pathname]);
+
   return (
     <div className="hidden md:flex w-full md:px-6 2xl:px-8 py-5 items-center justify-between bg-white border-b border-grey-300 shadow-[0_4px_100px_0_#00000012]">
       <h6 className="text-base 2xl:text-h6 text-black">
@@ -33,6 +42,9 @@ export default function TopHeader({}: Props) {
       </h6>
       <div className="flex items-center gap-3">
         <Popup
+          open={true}
+          isOpen={popupIsOpen}
+          handleIsOpen={(open: boolean) => setPopupIsOpen(open)}
           className="!w-[400px] 3xl:!w-[480px]"
           trigger={
             <button className="flex items-center gap-1 text-grey-600">
@@ -81,7 +93,7 @@ export default function TopHeader({}: Props) {
           trigger={
             <button className="flex items-center gap-1 text-grey-600">
               <AvatarImage
-                image={user?.profileImage ?? "/images/top_header_avatar.png"}
+                image={user?.profileImage ?? ""}
                 initials={
                   user && getInitialsFromName(user.firstName, user.lastName)
                 }
@@ -91,7 +103,7 @@ export default function TopHeader({}: Props) {
               </span>
             </button>
           }
-          content={<NavPopup />}
+          content={<NavPopup user={user??null} />}
         />
       </div>
     </div>

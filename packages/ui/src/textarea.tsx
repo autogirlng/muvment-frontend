@@ -64,7 +64,7 @@ const TextArea = ({
         id={id}
         placeholder={placeholder}
         className={cn(
-          "w-full rounded-[18px] p-4 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400 min-h-[130px] disabled:bg-grey-100 disabled:text-grey-400 disabled:border-grey-300",
+          "w-full rounded-[18px] resize-none p-4 text-sm h-[56px] gap-[5px] outline-none data-[placeholder]:text-grey-400 min-h-[130px] disabled:bg-grey-100 disabled:text-grey-400 disabled:border-grey-300",
           icon ? "pr-8" : "",
           inputClass,
           error

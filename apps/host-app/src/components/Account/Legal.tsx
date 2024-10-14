@@ -22,7 +22,7 @@ const legalLinks = [
 export default function Legal({}: Props) {
   return (
     <div className="space-y-[60px] text-base md:text-xl 3xl:text-h6">
-      <h6 className="!font-semibold text-grey-700">Bank Account</h6>
+      <h6 className="!font-semibold text-grey-700">Legal</h6>
       <div className="space-y-3 text-black">
         {legalLinks.map((link, index) => (
           <div

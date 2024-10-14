@@ -198,6 +198,13 @@ export const handleErrors = (
     return toast.error("Incorrect OTP");
   }
 
+  if (
+    ERR_CODE === "NO_WITHDRAWAL_ACCOUNT_FOUND" ||
+    ERR_CODE === "RENTAL_AVALIABLITY_NOT_FOUND"
+  ) {
+    return;
+  }
+
   if (ERR_CODE) {
     return toast.error(ERR_CODE);
   }
@@ -205,6 +212,10 @@ export const handleErrors = (
   if (error.response?.data?.message) {
     return toast.error(error.response.data.message);
   }
+
+  // if (error?.response?.message) {
+  //   return toast.error(error.response.message);
+  // }
 
   return {};
 };

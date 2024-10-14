@@ -15,7 +15,10 @@ import useUpdateProfile from "@/hooks/useUpdateProfile";
 import { useAppSelector } from "@/lib/hooks";
 import { ProfileFormValues } from "@/utils/types";
 import { citiesOptions } from "@/utils/data";
-import { replaceCharactersWithString } from "@/utils/functions";
+import {
+  getInitialsFromName,
+  replaceCharactersWithString,
+} from "@/utils/functions";
 import { profileFormValidationSchema } from "@/utils/validationSchema";
 
 export default function ProfilePage() {
@@ -32,7 +35,7 @@ export default function ProfilePage() {
           {
             firstName: user?.firstName || "",
             lastName: user?.lastName || "",
-            // phoneNumber: user?.phoneNumber || "",
+            phoneNumber: user?.phoneNumber || "",
             country: user?.country || "NG",
             countryCode: user?.countryCode || "+234",
             // email: "",
@@ -91,6 +94,7 @@ export default function ProfilePage() {
               <Form className="max-w-[800px] space-y-[60px]">
                 <div className="space-y-7">
                   <ProfilePhotoUpload
+                    title="Profile Picture"
                     id="profileImage"
                     name="profileImage"
                     label=""
@@ -110,6 +114,11 @@ export default function ProfilePage() {
                     }}
                     isLoading={uploadImage.isPending}
                     disabled={!isProfileEditable}
+                    initials={
+                      user
+                        ? getInitialsFromName(user.firstName, user.lastName)
+                        : ""
+                    }
                   />
                   <div className="md:max-w-[370px] space-y-7">
                     <InputField
@@ -152,8 +161,8 @@ export default function ProfilePage() {
                       label="Phone Number"
                       inputPlaceholder="Enter phone number"
                       selectPlaceholder="+234"
-                      inputValue={user?.phoneNumber}
-                      selectValue={user?.country}
+                      inputValue={values.phoneNumber}
+                      selectValue={values.country}
                       inputOnChange={(event) => {
                         const number = replaceCharactersWithString(
                           event.target.value
@@ -169,8 +178,8 @@ export default function ProfilePage() {
                       inputOnBlur={handleBlur}
                       selectOnBlur={handleBlur}
                       selectClassname="!w-[170px]"
-                      inputDisabled
-                      selectDisabled
+                      inputDisabled={!isProfileEditable || user?.phoneVerified}
+                      selectDisabled={!isProfileEditable || user?.phoneVerified}
                     />
 
                     <InputField
@@ -248,6 +257,7 @@ export default function ProfilePage() {
 
                     <div className="md:max-w-[370px] space-y-7">
                       <ProfilePhotoUpload
+                        title="Business Logo"
                         id="businessLogo"
                         name="businessLogo"
                         label=""
@@ -367,14 +377,14 @@ export default function ProfilePage() {
                         variant="filled"
                         color="primary"
                         type="submit"
-                        className="!py-4 !px-6 !text-sm 3xl:!text-base"
+                        className="!py-3 !px-5 !text-sm 3xl:!text-base"
                         loading={
                           isSubmitting || updateProfileMutation.isPending
                         }
                         disabled={
                           isSubmitting ||
                           updateProfileMutation.isPending ||
-                          !isValid
+                          !(isValid && dirty)
                         }
                       >
                         Save Profile
@@ -382,14 +392,14 @@ export default function ProfilePage() {
                       <Button
                         variant="outlined"
                         onClick={() => setIsProfileEditable(false)}
-                        className="!py-4 !px-6 !text-sm 3xl:!text-base"
+                        className="!py-2.5 !px-5 !text-sm 3xl:!text-base"
                       >
                         Cancel
                       </Button>
                     </div>
                   ) : (
                     <Button
-                      className="!py-4 !px-6 !text-sm 3xl:!text-base"
+                      className="!py-3 !px-5 !text-sm 3xl:!text-base"
                       variant="outlined"
                       onClick={() => setIsProfileEditable(true)}
                     >

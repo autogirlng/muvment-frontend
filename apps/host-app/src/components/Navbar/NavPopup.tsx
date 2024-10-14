@@ -6,11 +6,11 @@ import { useAppSelector } from "@/lib/hooks";
 import { HorizontalDivider } from "@repo/ui/divider";
 import { AvatarImage } from "@repo/ui/avatar";
 import MobileNavItem from "@/components/Navbar/MobileNavItem";
+import { User } from "@/utils/types";
 
-type Props = { handleClick?: () => void };
+type Props = { handleClick?: () => void; user: User | null };
 
-export default function NavPopup({ handleClick }: Props) {
-  const { user } = useAppSelector((state) => state.user);
+export default function NavPopup({ handleClick, user }: Props) {
   const pathname = usePathname();
 
   return (
@@ -18,7 +18,7 @@ export default function NavPopup({ handleClick }: Props) {
       {user && (
         <>
           <AvatarImage
-            image={user?.profileImage ?? "/images/top_header_avatar.png"}
+            image={user?.profileImage ?? ""}
             initials={getInitialsFromName(user.firstName, user.lastName)}
             size="!w-11 !h-11"
           />
