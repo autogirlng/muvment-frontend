@@ -68,7 +68,7 @@ export default function BankAccount({}: Props) {
           </div>
         </>
       ) : (
-        <>
+        <div className="flex flex-col items-center justify-center space-y-3 text-center">
           <Image
             src="/icons/empty_trnx_state.png"
             alt=""
@@ -86,12 +86,12 @@ export default function BankAccount({}: Props) {
             </p>
           </div>
 
-          <Link href="/account/add-bank-account" className="block">
+          <Link href="/settings/add-bank-account" className="block">
             <Button color="primary" className="!py-3 !px-4 !text-sm">
-              Add New Bank Account
+              Update withdrawal details
             </Button>
           </Link>
-        </>
+        </div>
       )}
     </div>
   );

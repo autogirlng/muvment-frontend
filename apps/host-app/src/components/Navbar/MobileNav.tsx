@@ -13,12 +13,11 @@ import {
   popupNavItems,
   popupNavItemsforNoUser,
 } from "@/utils/data";
+import { User } from "@/utils/types";
 
-type Props = { userToken?: string };
+type Props = { userToken?: string; user: User | null };
 
-export default function MobileNav({ userToken }: Props) {
-  const { user } = useAppSelector((state) => state.user);
-
+export default function MobileNav({ userToken, user }: Props) {
   const [openNav, setOpenNav] = useState<boolean>(false);
 
   return (
@@ -58,7 +57,7 @@ export default function MobileNav({ userToken }: Props) {
         {userToken || user ? (
           <div className="space-y-6 pb-8">
             <AvatarImage
-              image={user?.profileImage ?? "/images/top_header_avatar.png"}
+              image={user?.profileImage ?? ""}
               initials={
                 user
                   ? getInitialsFromName(user.firstName, user.lastName)

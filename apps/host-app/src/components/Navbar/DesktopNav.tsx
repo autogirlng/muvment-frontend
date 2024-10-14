@@ -2,21 +2,20 @@ import cn from "classnames";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useAppSelector } from "@/lib/hooks";
+import { useQuery } from "@tanstack/react-query";
 import { popupNavItemsforNoUser } from "@/utils/data";
 import { getInitialsFromName } from "@/utils/functions";
+import { User } from "@/utils/types";
+import { useHttp } from "@/hooks/useHttp";
 import { AvatarInitials } from "@repo/ui/avatar";
 import { Popup } from "@repo/ui/popup";
 import Icons from "@repo/ui/icons";
 import NavPopup from "@/components/Navbar/NavPopup";
 import MobileNavItem from "@/components/Navbar/MobileNavItem";
 
+type Props = { user: User | null; userToken: string };
 
-type Props = { userToken: string };
-
-export default function DesktopNav({ userToken }: Props) {
-  const { user } = useAppSelector((state) => state.user);
-
+export default function DesktopNav({ user, userToken }: Props) {
   const [sticky, setSticky] = useState<boolean>(false);
 
   useEffect(() => {
@@ -59,7 +58,7 @@ export default function DesktopNav({ userToken }: Props) {
               <AvatarInitials
                 initials={
                   user
-                    ? getInitialsFromName(user.firstName, user.lastName)
+                    ? getInitialsFromName(user?.firstName, user?.lastName)
                     : Icons.ic_user
                 }
                 size="!w-8 !h-8"
@@ -71,7 +70,7 @@ export default function DesktopNav({ userToken }: Props) {
           content={
             <ul className="list-none">
               {userToken ? (
-                <NavPopup />
+                <NavPopup user={user ?? null} />
               ) : (
                 popupNavItemsforNoUser.map((item, index) => (
                   <MobileNavItem

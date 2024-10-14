@@ -1,10 +1,12 @@
 import { AvatarImage } from "@repo/ui/avatar";
 import Icons from "@repo/ui/icons";
 import { Spinner } from "@repo/ui/spinner";
+import cn from "classnames";
 
 import { ChangeEvent } from "react";
 
 type Props = {
+  title: string;
   label: string;
   name: string;
   id: string;
@@ -14,8 +16,10 @@ type Props = {
   value: string | File | null;
   error?: string;
   isLoading: boolean;
+  initials?: string;
 };
 export default function ProfilePhotoUpload({
+  title,
   label,
   name,
   id,
@@ -25,6 +29,7 @@ export default function ProfilePhotoUpload({
   value,
   error,
   isLoading,
+  initials,
   ...rest
 }: Props) {
   const handleFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -38,27 +43,32 @@ export default function ProfilePhotoUpload({
   };
 
   return (
-    <div className="flex flex-col md:flex-row items-center gap-3">
-      <AvatarImage
-        image={image || "/images/top_header_avatar.png"}
-        initials={Icons.ic_user}
-        size="!w-[130px] !h-[130px]"
-      />
-      <label className="cursor-pointer">
-        <p className="text-grey-800 text-sm 3xl:text-base !font-semibold rounded-2xl border-2 border-grey-800 py-3 px-5">
-          {isLoading ? <Spinner /> : "Upload Photo"}
-        </p>
-        <input
-          type="file"
-          id={id}
-          name={name}
-          accept=".png, .jpg, .jpeg"
-          onChange={handleFileInputChange}
-          style={{ display: "none" }}
-          disabled={disabled || isLoading}
-          {...rest}
+    <div className="space-y-6">
+      <p className="label text-sm block font-medium text-nowrap text-grey-900">
+        {title}
+      </p>
+      <div className="flex flex-col md:flex-row items-center gap-3">
+        <AvatarImage
+          image={image || ""}
+          initials={initials || Icons.ic_user}
+          size="!w-[130px] !h-[130px]"
         />
-      </label>
+        <label className={cn(!disabled && "cursor-pointer")}>
+          <p className="text-grey-800 hover:text-white text-sm 3xl:text-base !font-semibold rounded-2xl border-2 border-grey-800 hover:bg-grey-800 py-2 px-5">
+            {isLoading ? <Spinner /> : "Upload Photo"}
+          </p>
+          <input
+            type="file"
+            id={id}
+            name={name}
+            accept=".png, .jpg, .jpeg"
+            onChange={handleFileInputChange}
+            style={{ display: "none" }}
+            disabled={disabled || isLoading}
+            {...rest}
+          />
+        </label>
+      </div>
     </div>
   );
 }

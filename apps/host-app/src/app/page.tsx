@@ -12,8 +12,12 @@ import GetStarted from "@/components/LandingPageComponents/GetStarted";
 import MobileNav from "@/components/Navbar/MobileNav";
 import { useEffect, useState } from "react";
 import DesktopNav from "@/components/Navbar/DesktopNav";
+import { useQuery } from "@tanstack/react-query";
+import { User } from "@/utils/types";
+import { useHttp } from "@/hooks/useHttp";
 
 export default function HomePage() {
+  const http = useHttp();
   const [userToken, setUserToken] = useState<string>("");
 
   useEffect(() => {
@@ -21,10 +25,16 @@ export default function HomePage() {
     setUserToken(user_token || "");
   }, []);
 
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ["getUser"],
+    queryFn: () => http.get<User>(`/api/user`),
+    enabled: !!userToken,
+  });
+
   return (
     <main className="overflow-x-hidden">
-      <DesktopNav userToken={userToken} />
-      <MobileNav userToken={userToken} />
+      <DesktopNav user={data ?? null} userToken={userToken} />
+      <MobileNav user={data ?? null} userToken={userToken} />
       <Hero />
       <Benefits />
       <JoinUs />

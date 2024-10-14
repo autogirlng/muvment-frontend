@@ -24,6 +24,22 @@ export default function Notifications({
   if (isError) {
     return <p>Something went wrong</p>;
   }
+
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case "success":
+        return Icons.ic_activity;
+      case "error":
+        return Icons.ic_activity;
+      case "warning":
+        return Icons.ic_activity;
+      case "info":
+        return Icons.ic_info;
+      default:
+        return Icons.ic_info;
+    }
+  };
+  
   return (
     <div className="space-y-7">
       {notifications.map((item, index) => (
@@ -37,7 +53,6 @@ export default function Notifications({
                 {item.title}
               </p>
               <p className="text-xs 3xl:text-sm text-grey-600">
-                {" "}
                 {item.message}
               </p>
               <p className="text-xs 3xl:text-sm text-grey-400">

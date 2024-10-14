@@ -46,7 +46,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         children
       ) : (
         <>
-          <MobileNav />
+          <MobileNav user={user ?? null} />
           <SideNav />
           <div className="w-full md:w-[calc(100%-250px)] 2xl:w-[calc(100%-272px)] ml-0 md:ml-[250px] 2xl:ml-[272px]">
             <TopHeader />

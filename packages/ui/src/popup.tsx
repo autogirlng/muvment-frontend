@@ -38,12 +38,18 @@ export const Popup = ({
   content,
   trigger,
   className,
+  open,
+  isOpen,
+  handleIsOpen,
 }: {
   content: ReactNode;
   trigger: ReactNode;
   className?: string;
+  open?: boolean;
+  isOpen?: boolean;
+  handleIsOpen?: (open: boolean) => void;
 }) => (
-  <Popover.Root>
+  <Popover.Root {...(open ? { open: isOpen, onOpenChange: handleIsOpen } : {})}>
     <Popover.Trigger asChild>{trigger}</Popover.Trigger>
     <Popover.Portal>
       <Popover.Content

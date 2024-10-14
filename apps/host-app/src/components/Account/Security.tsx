@@ -10,7 +10,7 @@ export default function Security({}: Props) {
       <h6 className="!font-bold text-grey-700">LOGIN & SECURITY</h6>
       <div className="flex items-center justify-between gap-3">
         <h6 className="!font-semibold text-black">Password</h6>
-        <Link href="/account/change-password">
+        <Link href="/settings/change-password">
           <Button className="!text-grey-600 !bg-grey-90 !py-3 !px-5">
             Change Password
           </Button>

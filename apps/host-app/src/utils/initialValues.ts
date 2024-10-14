@@ -138,24 +138,7 @@ export const availabilityAndPricingValues: AvailabilityAndPricingValues = {
   outskirtsPrice: "",
 };
 
-export const profileFormInitialValues: ProfileFormValues = {
-  firstName: "",
-  lastName: "",
-  // phoneNumber: "",
-  country: "",
-  countryCode: "",
-  // email: "",
-  bio: "",
-  // dob: "",
-  profileImage: "",
-  city: "",
-  isBusiness: true,
-  businessAddress: "",
-  businessEmail: "",
-  businessLogo: "",
-  businessName: "",
-  businessPhoneNumber: "",
-};
+
 
 export const withdrawalValues: WithdrawalValues = {
   amount: "",
