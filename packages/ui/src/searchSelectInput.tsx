@@ -114,28 +114,30 @@ const SearchSelectInput = ({
             <ComboboxOptions
               anchor="bottom"
               className={cn(
-                "!overflow-auto rounded-3xl z-[999] max-h-[300px] min-w-[300px] p-4",
+                "!overflow-hidden rounded-3xl z-[999] min-w-[250px] sm:min-w-[300px] !max-w-[270px] sm:!max-w-auto sm:!max-w-[375px] p-4 ml-4 sm:ml-5 md:ml-[75px] mt-5",
                 variant === "filled"
                   ? "bg-grey-800 text-grey-400 border-none"
                   : "bg-white border border-grey-300 shadow-[0px_4px_6px_-2px_#10192808,0px_16px_24px_-4px_#10192814]"
               )}
             >
-              {isLoading ? (
-                <Spinner />
-              ) : (
-                filteredBanks.map((bank) => (
-                  <ComboboxOption
-                    key={bank.code}
-                    value={bank}
-                    className={cn(
-                      "text-xs 3xl:text-sm flex items-center py-4 h-4 relative select-none data-[disabled]:text-grey-400 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:text-primary-500",
-                      className
-                    )}
-                  >
-                    {bank.name}
-                  </ComboboxOption>
-                ))
-              )}
+              <div className="max-h-[300px] overflow-auto">
+                {isLoading ? (
+                  <Spinner />
+                ) : (
+                  filteredBanks.map((bank) => (
+                    <ComboboxOption
+                      key={bank.code}
+                      value={bank}
+                      className={cn(
+                        "text-xs 3xl:text-sm flex items-center mb-2 px-2 py-4 h-4 rounded-xl transition relative select-none cursor-pointer hover:bg-primary-75 data-[disabled]:text-grey-400 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:text-primary-500",
+                        className
+                      )}
+                    >
+                      {bank.name}
+                    </ComboboxOption>
+                  ))
+                )}
+              </div>
             </ComboboxOptions>
           </div>
         </Combobox>

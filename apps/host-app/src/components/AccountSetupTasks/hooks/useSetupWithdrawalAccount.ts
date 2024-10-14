@@ -34,7 +34,12 @@ export default function useSetupWithdrawalAccount() {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const { data, isError, error, isLoading } = useQuery({
+  const resetAccountDetails = () =>
+    dispatch(
+      setAccountDetails({ accountNumber: "", bankCode: "", accountName: "" })
+    );
+
+  const { data, isLoading } = useQuery({
     queryKey: ["getAllBankCodes"],
     queryFn: () => http.get<BankCodes[]>("/api/withdrawal-account/bankCodes"),
   });
@@ -48,7 +53,7 @@ export default function useSetupWithdrawalAccount() {
     onSuccess: (data) => {
       console.log("Bank Account Verified Successfully", data);
       dispatch(setAccountDetails(data));
-      sendBankAccountOtp.mutate();
+      setLoading(false);
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -62,9 +67,9 @@ export default function useSetupWithdrawalAccount() {
     mutationFn: () => http.get("/api/withdrawal-account/send-otp"),
 
     onSuccess: (data) => {
+      router.push(`/account-setup/withdrawal-account/otp`);
       setLoading(false);
       console.log("Bank Account Otp Sent Successfully", data);
-      router.push(`/account-setup/withdrawal-account/otp`);
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -139,5 +144,6 @@ export default function useSetupWithdrawalAccount() {
     loading,
     setLoading,
     user,
+    resetAccountDetails,
   };
 }

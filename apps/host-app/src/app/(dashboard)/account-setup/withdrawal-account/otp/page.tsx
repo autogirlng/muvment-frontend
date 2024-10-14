@@ -5,19 +5,19 @@ import { useRouter } from "next/navigation";
 import OtpVerification from "@/components/OtpVerification";
 import DashboardInnerPage from "@/components/DashboardInnerPage";
 import useSetupWithdrawalAccount from "@/components/AccountSetupTasks/hooks/useSetupWithdrawalAccount";
+import { useAppSelector } from "@/lib/hooks";
 
 export default function WithdrawalAccountSetupOtpPage() {
   const router = useRouter();
 
-  const {
-    accountDetails,
-    verifyBankAccountOtp,
-    sendBankAccountOtp,
-    loading,
-    setLoading,
-  } = useSetupWithdrawalAccount();
+  const { accountDetails } = useAppSelector((state) => state.accountSetup);
+
+  const { verifyBankAccountOtp, sendBankAccountOtp, loading, setLoading } =
+    useSetupWithdrawalAccount();
 
   useEffect(() => {
+    console.log("accountDetails", accountDetails);
+
     if (!accountDetails.accountName) {
       router.push("/account-setup/withdrawal-account");
     }

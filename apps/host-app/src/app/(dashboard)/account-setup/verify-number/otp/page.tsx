@@ -16,20 +16,17 @@ export default function VerifyNumberOtpPage() {
 
   const router = useRouter();
 
-  const [slicedPhoneNumber, setSlicedPhoneNumber] = useState<string>("");
-  const [hiddenNumber, setHiddenNumber] = useState<string>("");
+  const [formattedPhoneNumber, setFormattedPhoneNumber] = useState<string>("");
 
   useEffect(() => {
     if (!phoneNumberToVerify) {
       router.push("/account-setup/verify-number");
     }
     if (user && phoneNumberToVerify) {
-      const phoneNumberToShow = phoneNumberToVerify.slice(
-        0,
-        user?.countryCode.length + 3
-      );
-      setSlicedPhoneNumber(phoneNumberToShow);
-      setHiddenNumber("*".repeat(phoneNumberToShow.length));
+      const firstPart = phoneNumberToVerify.slice(0, 3);
+      const lastPart = phoneNumberToVerify.slice(-3);
+      const middlePart = "*".repeat(phoneNumberToVerify.length - 6);
+      setFormattedPhoneNumber(`${firstPart}${middlePart}${lastPart}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, phoneNumberToVerify]);
@@ -38,8 +35,7 @@ export default function VerifyNumberOtpPage() {
     <DashboardInnerPage
       isInnerPage
       title="Verify Phone Number"
-      // add **** depending on lengthOfHiddenNumber after ${slicedPhoneNumber.slice()} below
-      description={`We’ve sent an OTP code via SMS to ${slicedPhoneNumber.slice()}${hiddenNumber} to verify it’s you.`}
+      description={`We’ve sent an OTP code via SMS to ${formattedPhoneNumber} to verify it’s you.`}
       backLink="/account-setup/verify-number"
     >
       <OtpVerification
