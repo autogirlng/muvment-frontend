@@ -88,12 +88,14 @@ export default function useAuth() {
 
   const verifyEmailOnSignup = useMutation({
     mutationFn: (values: verifyEmailValues) =>
-      http.post("/api/auth/email/verify", values),
+      http.post<string>("/api/auth/email/verify", values),
 
     onSuccess: (data) => {
       console.log("Email verified successfully", data);
       toast.success("Account created successfully");
-      router.push("/login");
+      dispatch(setToken(data || ""));
+      router.push("/dashboard");
+      queryClient.clear();
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>

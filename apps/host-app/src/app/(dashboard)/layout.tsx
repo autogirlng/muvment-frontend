@@ -34,7 +34,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, pathname]);
 
   if (isLoading || getUser.isLoading) {
     return <FullPageSpinner />;

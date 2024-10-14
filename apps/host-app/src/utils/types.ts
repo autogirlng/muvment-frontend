@@ -109,7 +109,7 @@ export interface WithdrawalAccountValues {
   bank?: BankProp | null;
   bankCode: string;
   accountNumber: string;
-  accountName?: "";
+  accountName?: string;
 }
 
 export interface BasicVehicleInformationValues {

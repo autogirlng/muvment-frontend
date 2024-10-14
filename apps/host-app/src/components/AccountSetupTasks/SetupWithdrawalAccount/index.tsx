@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Form, Formik } from "formik";
 import { withdrawalAccountValues } from "@/utils/initialValues";
 import { withdrawalAccountSchema } from "@/utils/validationSchema";
@@ -18,6 +17,8 @@ export default function SetupWithdrawalAccount({}: Props) {
     bankCodes,
     isLoading,
     validateBankAccount,
+    sendBankAccountOtp,
+    resetAccountDetails,
     setCredentialsError,
     loading,
     setLoading,
@@ -30,8 +31,20 @@ export default function SetupWithdrawalAccount({}: Props) {
         console.log(values);
         setLoading(true);
         setCredentialsError(false);
-        validateBankAccount.mutate(values);
-        setSubmitting(false);
+
+        if (!accountDetails.accountNumber || !accountDetails.bankCode) {
+          resetAccountDetails();
+          validateBankAccount.mutate(values);
+          console.log(loading);
+          setSubmitting(false);
+
+          return;
+        } else {
+          sendBankAccountOtp.mutate();
+          setSubmitting(false);
+
+          return;
+        }
       }}
       validationSchema={withdrawalAccountSchema}
       enableReinitialize={true}
@@ -92,9 +105,11 @@ export default function SetupWithdrawalAccount({}: Props) {
                 </p>
               )}
               {accountDetails.accountName && (
-                <p className="flex items-center gap-2 text-base md:text-lg 2xl:text-h6 text-success-600">
+                <p className="flex items-center gap-2 text-sm md:text-base 3xl:text-h6 text-success-600 capitalize">
                   {Icons.ic_check_circle}{" "}
-                  <span>{accountDetails.accountName}</span>
+                  <span className="capitalize">
+                    {accountDetails.accountName.toLowerCase()}
+                  </span>
                 </p>
               )}
             </div>
@@ -106,7 +121,9 @@ export default function SetupWithdrawalAccount({}: Props) {
               loading={isSubmitting || loading}
               disabled={isSubmitting || loading || !isValid}
             >
-              Add Bank
+              {!accountDetails.accountNumber || !accountDetails.bankCode
+                ? "Validate Account"
+                : "Add Bank"}
             </Button>
           </Form>
         );
