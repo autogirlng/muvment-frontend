@@ -39,7 +39,6 @@ export default function ActivityCard({
       <div className="flex justify-between gap-2 text-xs 2xl:text-sm">
         <p>{title}</p>
         {modalTitle && (
-          // move this to the earnings modal component
           <FullPageDialog
             title="Earnings"
             trigger={
@@ -58,11 +57,7 @@ export default function ActivityCard({
         <h2
           className={cn(
             "text-h3 2xl:text-4xl",
-            primary && value === "-"
-              ? "text-primary-500"
-              : primary && value !== "-"
-                ? "text-white"
-                : "text-black"
+            primary && value !== "-" ? "text-white" : "text-black"
           )}
         >
           {value}

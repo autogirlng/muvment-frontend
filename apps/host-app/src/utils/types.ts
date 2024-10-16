@@ -35,6 +35,12 @@ export type MappedInformation = {
   [key: string]: string | number;
 };
 
+type CalendarValuePiece = Date | null;
+
+export type CalendarValue =
+  | CalendarValuePiece
+  | [CalendarValuePiece, CalendarValuePiece];
+
 // <================= FORM VALUES BEGINS =================>
 export interface SignupFormValues {
   firstName: string;

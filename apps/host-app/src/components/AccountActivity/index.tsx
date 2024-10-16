@@ -10,11 +10,7 @@ import useDashboardStats from "@/hooks/useHostStats";
 type Props = {};
 
 export default function AccountActivity({}: Props) {
-  const {
-    isError,
-    isLoading,
-    dashboardStats,
-  } = useDashboardStats();
+  const { isError, isLoading, dashboardStats } = useDashboardStats();
 
   return (
     <div className="space-y-6 2xl:space-y-8">
@@ -28,7 +24,7 @@ export default function AccountActivity({}: Props) {
             primary
             title="Total Earnings"
             value={`${dashboardStats?.totalEarnings || "-"}`}
-            modalTitle={dashboardStats?.totalEarnings ? "Show Graph" : ""}
+            modalTitle={"Show Graph"}
             modalName="graph"
             modalIcon={Icons.ic_chart}
             isLoading={isLoading}

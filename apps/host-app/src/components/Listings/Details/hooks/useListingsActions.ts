@@ -1,6 +1,7 @@
 import { useHttp } from "@/hooks/useHttp";
 import { handleErrors } from "@/utils/functions";
 import {
+  CalendarValue,
   ErrorResponse,
   VehicleInformation,
   VehicleStatus,
@@ -8,6 +9,7 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function useListingsActions(
   handleModal?: (open: boolean) => void,
@@ -17,6 +19,7 @@ export default function useListingsActions(
   const queryClient = useQueryClient();
   const router = useRouter();
   const listingsByIdQueryKey = ["getListingById", id];
+  const [unavailabilityValue, onChangeUnavailability] = useState<CalendarValue>(null);
 
   const deactivateListing = useMutation({
     mutationFn: () =>
@@ -163,5 +166,7 @@ export default function useListingsActions(
     updateListingStatusToAvaliable,
     updateListingStatusToMaintenance,
     updateListingStatusToUnavaliable,
+    unavailabilityValue,
+    onChangeUnavailability,
   };
 }

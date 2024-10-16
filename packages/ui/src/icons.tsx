@@ -15,6 +15,172 @@ const Icons = {
       />
     </svg>
   ),
+  ic_payment_received: (
+    <svg
+      width="16"
+      height="24"
+      viewBox="0 0 16 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M7.99219 1.33301L7.99219 22.6664"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M14.6615 7.99962C14.6615 7.99962 9.75153 1.33302 7.99474 1.33301C6.23795 1.33299 1.32812 7.99968 1.32812 7.99968"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  ),
+  ic_booking_canceled: (
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M21.7875 1.00049V3.60049M6.1875 1.00049V3.60049"
+        stroke="currentColor"
+        stroke-width="1.95"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M2.28906 8.80029H25.6891"
+        stroke="currentColor"
+        stroke-width="1.95"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M1.64062 14.3165C1.64062 8.65201 1.64062 5.81976 3.26838 4.06003C4.89613 2.30029 7.51596 2.30029 12.7556 2.30029H15.2256C20.4653 2.30029 23.0851 2.30029 24.7129 4.06003C26.3406 5.81976 26.3406 8.65201 26.3406 14.3165V14.9841C26.3406 20.6486 26.3406 23.4808 24.7129 25.2406C23.0851 27.0003 20.4653 27.0003 15.2256 27.0003H12.7556C7.51596 27.0003 4.89613 27.0003 3.26838 25.2406C1.64062 23.4808 1.64062 20.6486 1.64062 14.9841V14.3165Z"
+        stroke="currentColor"
+        stroke-width="1.95"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M10.7422 14.6504L13.9922 17.9004M13.9922 17.9004L17.2422 21.1504M13.9922 17.9004L17.2422 14.6504M13.9922 17.9004L10.7422 21.1504"
+        stroke="currentColor"
+        stroke-width="1.95"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  ),
+  ic_booking_confirmed: (
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M21.7875 1V3.6M6.1875 1V3.6"
+        stroke="currentColor"
+        stroke-width="1.95"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M2.28906 8.7998H25.6891"
+        stroke="currentColor"
+        stroke-width="1.95"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M1.64062 14.316C1.64062 8.65152 1.64062 5.81927 3.26838 4.05954C4.89613 2.2998 7.51596 2.2998 12.7556 2.2998H15.2256C20.4653 2.2998 23.0851 2.2998 24.7129 4.05954C26.3406 5.81927 26.3406 8.65152 26.3406 14.316V14.9836C26.3406 20.6481 26.3406 23.4803 24.7129 25.2401C23.0851 26.9998 20.4653 26.9998 15.2256 26.9998H12.7556C7.51596 26.9998 4.89613 26.9998 3.26838 25.2401C1.64062 23.4803 1.64062 20.6481 1.64062 14.9836V14.316Z"
+        stroke="currentColor"
+        stroke-width="1.95"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M10.592 14.4308C11.8122 13.718 12.8771 14.0052 13.5169 14.4628C13.7792 14.6504 13.9103 14.7442 13.9875 14.7442C14.0647 14.7442 14.1958 14.6504 14.4581 14.4628C15.0979 14.0052 16.1628 13.718 17.383 14.4308C18.9843 15.3663 19.3466 18.4524 15.653 21.0561C14.9495 21.552 14.5977 21.8 13.9875 21.8C13.3773 21.8 13.0255 21.552 12.322 21.0561C8.62838 18.4524 8.99072 15.3663 10.592 14.4308Z"
+        stroke="currentColor"
+        stroke-width="1.95"
+        stroke-linecap="round"
+      />
+    </svg>
+  ),
+  ic_booking_request: (
+    <svg
+      width="26"
+      height="27"
+      viewBox="0 0 26 27"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M19.8909 1.58398V4.03194M5.20312 1.58398V4.03194"
+        stroke="currentColor"
+        stroke-width="1.83597"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M1.53125 8.92773H23.5629"
+        stroke="currentColor"
+        stroke-width="1.83597"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M0.921875 14.1212C0.921875 8.7879 0.921875 6.12128 2.45444 4.46445C3.98701 2.80762 6.45364 2.80762 11.3869 2.80762H13.7125C18.6457 2.80762 21.1124 2.80762 22.6449 4.46445C24.1775 6.12128 24.1775 8.7879 24.1775 14.1212V14.7497C24.1775 20.0829 24.1775 22.7496 22.6449 24.4064C21.1124 26.0632 18.6457 26.0632 13.7125 26.0632H11.3869C6.45364 26.0632 3.98701 26.0632 2.45444 24.4064C0.921875 22.7496 0.921875 20.0829 0.921875 14.7497V14.1212Z"
+        stroke="currentColor"
+        stroke-width="1.83597"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M8.875 17.4962H16.2189M12.5469 13.8242L12.5469 21.1681"
+        stroke="currentColor"
+        stroke-width="1.83597"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  ),
+  ic_upcoming_booking: (
+    <svg
+      width="30"
+      height="30"
+      viewBox="0 0 30 30"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M10.1729 3.00049C9.88764 3.10707 9.60715 3.22331 9.33177 3.34884M26.6288 20.7353C26.7651 20.4404 26.8907 20.1395 27.0052 19.8332M23.6702 24.82C23.8992 24.6064 24.1205 24.3846 24.3336 24.1552M19.3638 27.4969C19.6225 27.3993 19.8774 27.2938 20.128 27.1806M15.2132 28.3257C14.9053 28.3363 14.5953 28.3363 14.2874 28.3257M9.38829 27.1877C9.62936 27.2961 9.87431 27.3976 10.1229 27.4916M5.23528 24.2282C5.41753 24.4214 5.6056 24.609 5.7992 24.7908M2.51548 19.8865C2.61532 20.1501 2.72343 20.4097 2.83951 20.6649M1.6785 15.6743C1.66984 15.3968 1.66987 15.1176 1.6785 14.8397M2.5058 10.65C2.60389 10.3894 2.71006 10.1327 2.82401 9.88022M5.21324 6.30613C5.40611 6.10068 5.60554 5.90146 5.81121 5.7088"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M17.0078 15.0005C17.0078 16.1051 16.1124 17.0005 15.0078 17.0005C13.9032 17.0005 13.0078 16.1051 13.0078 15.0005C13.0078 13.8959 13.9032 13.0005 15.0078 13.0005M17.0078 15.0005C17.0078 13.8959 16.1124 13.0005 15.0078 13.0005M17.0078 15.0005H20.3411M15.0078 13.0005V7.00049"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      />
+      <path
+        d="M28.3411 15.0003C28.3411 7.63653 22.3716 1.66699 15.0078 1.66699"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      />
+    </svg>
+  ),
   ic_country_ghana: (
     <svg
       width="24"
