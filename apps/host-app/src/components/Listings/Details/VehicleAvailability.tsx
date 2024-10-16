@@ -1,11 +1,12 @@
 import cn from "classnames";
-import { VehicleStatus } from "@/utils/types";
+import { CalendarValue, VehicleStatus } from "@/utils/types";
 import { VehicleListingBadge } from "@repo/ui/badge";
 import { Popup } from "@repo/ui/popup";
 import { Spinner } from "@repo/ui/spinner";
 import Icons from "@repo/ui/icons";
 import Button from "@repo/ui/button";
 import useListingsActions from "@/components/Listings/Details/hooks/useListingsActions";
+import DateRangeCalendar from "@repo/ui/calendar";
 
 type Props = { vehicleStatus?: VehicleStatus; isActive?: boolean; id?: string };
 
@@ -19,6 +20,8 @@ export default function ListingDetailsVehicleAvailability({
     updateListingStatusToAvaliable,
     updateListingStatusToMaintenance,
     updateListingStatusToUnavaliable,
+    unavailabilityValue,
+    onChangeUnavailability,
   } = useListingsActions(() => {}, id);
 
   return (
@@ -77,6 +80,8 @@ export default function ListingDetailsVehicleAvailability({
                 onClick={() => updateListingStatusToUnavaliable.mutate()}
                 loading={updateListingStatusToUnavaliable.isPending}
                 setUnavailableTime={vehicleStatus === VehicleStatus.UNAVAILABLE}
+                unavailabilityValue={unavailabilityValue}
+                onChangeUnavailability={onChangeUnavailability}
               />
             </ul>
           </>
@@ -93,6 +98,8 @@ const StatusButton = ({
   active,
   // disabled,
   setUnavailableTime,
+  unavailabilityValue,
+  onChangeUnavailability,
 }: {
   status: string;
   onClick: () => void;
@@ -100,6 +107,8 @@ const StatusButton = ({
   active: boolean;
   // disabled: boolean;
   setUnavailableTime?: boolean;
+  unavailabilityValue?: CalendarValue;
+  onChangeUnavailability?: (value: CalendarValue) => void;
 }) => {
   const buttonClass = cn(
     "py-3 px-2 font-normal text-left w-full text-sm rounded-xl ",
@@ -120,7 +129,12 @@ const StatusButton = ({
             {active && Icons.ic_done_circle}
             {loading ? <Spinner /> : <span>{status}</span>}
           </button>
-          {Icons.ic_calendar}
+          <DateRangeCalendar
+            title="Set unavailability period"
+            selectRange={true}
+            value={unavailabilityValue || null}
+            onChange={onChangeUnavailability || (() => {})}
+          />
         </div>
       ) : (
         <button

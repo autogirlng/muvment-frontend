@@ -4,6 +4,8 @@ import { useState } from "react";
 import useNotifications from "@/components/Notifications/useNotifications";
 import Notifications from "@/components/Notifications";
 import Pagination from "@repo/ui/pagination";
+import DateRangeCalendar from "@repo/ui/calendar";
+import { CalendarValue } from "@/utils/types";
 
 export default function NotificationsPage() {
   const pageLimit = 20;
@@ -17,12 +19,21 @@ export default function NotificationsPage() {
     totalCount,
     // unreadCount,
   } = useNotifications({ pageLimit, currentPage });
+  const [value, onChange] = useState<CalendarValue>(null);
 
   return (
     <main className="py-[56px] space-y-10">
-      <h2 className="text-h3 3xl:text-4xl text-grey-700 !font-bold">
-        Notifications
-      </h2>
+      <div className="flex justify-between items-center gap-3">
+        <h2 className="text-h3 3xl:text-4xl text-grey-700 !font-bold">
+          Notifications
+        </h2>
+        <DateRangeCalendar
+          title="Select Date Range"
+          selectRange={true}
+          value={value}
+          onChange={onChange}
+        />
+      </div>
       <Notifications
         notifications={notifications}
         isError={isError}

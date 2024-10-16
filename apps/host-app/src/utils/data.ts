@@ -220,7 +220,14 @@ export const vehicleAvailabilityOptions = [
   { value: "1 day", option: "1 day" },
   { value: "2 days", option: "2 days" },
   { value: "3 days", option: "3 days" },
+  { value: "4 days", option: "4 days" },
+  { value: "5 days", option: "5 days" },
+  { value: "6 days", option: "6 days" },
+
   { value: "1 week", option: "1 week" },
+  { value: "2 weeks", option: "2 weeks" },
+  { value: "3 weeks", option: "3 weeks" },
+  { value: "4 weeks", option: "4 weeks" },
 ];
 
 // add type

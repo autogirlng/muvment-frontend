@@ -83,7 +83,7 @@ export const FullPageDialog = ({
   <Dialog.Root modal>
     <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
     <Dialog.Portal>
-      <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-0 left-0 min-h-screen h-full w-[calc(100%-272px)] ml-[272px] bg-white py-[45px] px-[35px] focus:outline-none">
+      <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-0 left-0 min-h-screen h-full w-full md:w-[calc(100%-250px)] 2xl:w-[calc(100%-272px)] md:ml-[250px] 2xl:ml-[272px] border-l border-grey-300 bg-white py-[45px] px-[35px] focus:outline-none">
         <Dialog.Title className="text-grey-700 text-4xl font-bold">
           {title}
         </Dialog.Title>

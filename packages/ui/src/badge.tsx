@@ -31,7 +31,7 @@ export const BookingBadge = ({ status }: BookingBadgeProps) => {
     status === "APPROVED"
       ? "bg-success-100 text-success-600"
       : status === "CANCELLED"
-        ? "bg-error-100 text-error-600"
+        ? "bg-error-100 text-error-900"
         : status === "PENDING"
           ? "bg-warning-75 text-warning-500"
           : "bg-grey-90 text-grey-500";
@@ -67,7 +67,7 @@ export const VehicleListingBadge = ({ status }: VehicleListingBadgeProps) => {
       : status === "pending" || status === "maintenance"
         ? "bg-warning-75 text-warning-500"
         : status === "unavailable" || status === "inactive"
-          ? "bg-error-100 text-error-600"
+          ? "bg-error-100 text-error-900"
           : "bg-grey-300 text-grey-500";
 
   return (
@@ -99,7 +99,7 @@ export const ListingBadge = ({ status }: ListingBadgeProps) => {
       : status === "review"
         ? "bg-warning-75 text-warning-500"
         : status === "rejected" || status === "feedback"
-          ? "bg-error-100 text-error-600"
+          ? "bg-error-100 text-error-900"
           : "bg-grey-300 text-grey-500";
 
   return (

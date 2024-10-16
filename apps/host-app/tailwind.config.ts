@@ -61,12 +61,12 @@ const config: Config = {
         75: "#FFC7C7",
         100: "#FFE0E0",
         500: "#F83B3B",
-        600: "#E61C1C",
         800: "#F93A3A",
         900: "#E61C1C",
       },
       success: {
         50: "#EFFEF1",
+        75: "#D9FFDE",
         100: "#B6FCBF",
         500: "#0AAF24",
         600: "#0C8921",
