@@ -14,6 +14,7 @@ export default function useBookingStats() {
     queryFn: async () =>
       http.get<BookingStatistics>("/api/statistics/hostBookings"),
     enabled: !!user?.id,
+    retry: false,
   });
 
   return {

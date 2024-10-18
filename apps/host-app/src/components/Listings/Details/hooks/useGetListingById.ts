@@ -19,6 +19,7 @@ export default function useGetListingById({ id }: { id: string }) {
     queryFn: async () =>
       http.get<ListingDataType>(`/api/listings/details/${id}`),
     enabled: !!user?.id && !!id,
+    retry: false,
   });
 
   const vehicleDetails = useMemo(() => {

@@ -32,6 +32,7 @@ export default function useUpdateRentalAvailability() {
     queryFn: () =>
       http.get<RentalAvailability>(`api/account-setup/rental/${user?.id}`),
     enabled: !!user?.id,
+    retry: false,
   });
 
   useEffect(() => {

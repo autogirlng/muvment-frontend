@@ -28,6 +28,7 @@ type Props = {
   values: any;
   error: string;
   children?: ReactNode;
+  showChecks?: boolean;
 };
 
 export default function PasswordChecks({
@@ -39,6 +40,7 @@ export default function PasswordChecks({
   setFieldValue,
   values,
   error,
+  showChecks = true,
   children,
 }: Props) {
   const { isPasswordHidden, toggleHiddenPassword } = usePasswordValidation();
@@ -85,7 +87,7 @@ export default function PasswordChecks({
         error={error}
       />
       {children}
-      {values.password && (
+      {showChecks && values.password && (
         <div className="space-y-3 text-sm">
           <p className="text-black">Password must include at least:</p>
 

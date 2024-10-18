@@ -24,6 +24,7 @@ export default function useListingDrivers(id: string) {
 
     queryFn: () => http.get<AssignNewDriver[]>(`/api/drivers/vehicle/${id}`),
     enabled: !!user?.id && !!id,
+    retry: false,
   });
 
   const assignNewDriver = useMutation({

@@ -29,12 +29,13 @@ export default function useUser() {
     queryKey: ["getUser"],
     queryFn: () => http.get<User>("/api/user"),
     enabled: !!userToken,
+    retry: 1,
   });
 
   // const { data, isError, isLoading } = useQuery({
   //   queryKey: ["getUser"],
   //   queryFn: () => http.get<User>(`/api/user`),
-  //   enabled: !!userToken,
+  //   enabled: !!userToken,retry: 1,
   // });
 
   useEffect(() => {

@@ -22,6 +22,7 @@ export default function useVehicleOnboarding() {
     queryFn: () =>
       http.get<VehicleInformation>(`/api/vehicle-onboarding/${vehicleId}`),
     enabled: !!user?.id && !!vehicleId,
+    retry: false,
   });
   useEffect(() => {
     if (isSuccess) {

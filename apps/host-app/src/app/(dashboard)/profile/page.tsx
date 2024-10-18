@@ -35,7 +35,9 @@ export default function ProfilePage() {
           {
             firstName: user?.firstName || "",
             lastName: user?.lastName || "",
-            phoneNumber: user?.phoneNumber || "",
+            ...(user?.phoneVerified
+              ? {}
+              : { phoneNumber: user?.phoneNumber || "" }),
             country: user?.country || "NG",
             countryCode: user?.countryCode || "+234",
             // email: "",
@@ -83,6 +85,7 @@ export default function ProfilePage() {
             setFieldValue,
             setFieldTouched,
             isSubmitting,
+            resetForm,
           } = props;
 
           return (
@@ -161,8 +164,14 @@ export default function ProfilePage() {
                       label="Phone Number"
                       inputPlaceholder="Enter phone number"
                       selectPlaceholder="+234"
-                      inputValue={values.phoneNumber}
-                      selectValue={values.country}
+                      inputValue={
+                        user?.phoneVerified
+                          ? user?.phoneNumber
+                          : values.phoneNumber
+                      }
+                      selectValue={
+                        user?.phoneVerified ? user?.country : values.country
+                      }
                       inputOnChange={(event) => {
                         const number = replaceCharactersWithString(
                           event.target.value
@@ -224,7 +233,7 @@ export default function ProfilePage() {
                     <div className="space-y-[6px]">
                       <Label label="Host rating" />
                       <h3 className="text-h4 3xl:text-h3 text-success-500">
-                        4.7
+                        {user?.averageRating}
                       </h3>
                     </div>
 
@@ -391,7 +400,10 @@ export default function ProfilePage() {
                       </Button>
                       <Button
                         variant="outlined"
-                        onClick={() => setIsProfileEditable(false)}
+                        onClick={() => {
+                          setIsProfileEditable(false);
+                          resetForm();
+                        }}
                         className="!py-2.5 !px-5 !text-sm 3xl:!text-base"
                       >
                         Cancel

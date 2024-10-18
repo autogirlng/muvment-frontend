@@ -41,7 +41,7 @@ export default function BankAccount({}: Props) {
                 open={openDeleteModal}
                 onOpenChange={handleOpenDeleteModal}
                 trigger={
-                  <button className="*:!w-7 *:!h-7 text-grey-900">
+                  <button className="*:!w-7 *:!h-7 text-grey-900 hover:text-error-500">
                     {Icons.ic_delete}
                   </button>
                 }

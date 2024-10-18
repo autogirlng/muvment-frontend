@@ -12,16 +12,20 @@ import TransactionTable from "@/components/Wallet/TransactionTable";
 
 export default function WalletPage() {
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [filters, setFilters] = useState<Record<string, string[]>>({});
   const pageLimit = 10;
 
   const { transactions, totalCount, isError, isLoading } = useTransactions({
     currentPage,
     pageLimit,
+    filters,
   });
 
   const handleFilterChange = (selectedFilters: Record<string, string[]>) => {
-    console.log("Selected filters:", selectedFilters);
+    setFilters(selectedFilters);
+    setCurrentPage(1);
   };
+
   return (
     <main className="py-11 space-y-11">
       <WalletBalance />

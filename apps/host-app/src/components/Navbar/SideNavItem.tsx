@@ -11,12 +11,15 @@ export default function SideNavItem({ link, name, icon }: Props) {
     <li>
       <Link
         href={link}
-        className="flex items-center gap-3 p-4 rounded-[18px] group"
+        className={cn(
+          "flex items-center gap-3 p-4 rounded-[18px] group hover:bg-primary-50",
+          cn(pathname.includes(link) && "bg-primary-50")
+        )}
       >
         <span
           className={cn(
             pathname.includes(link)
-              ? "text-primary-500 bg-primary-50"
+              ? "text-primary-900"
               : "text-black group-hover:text-primary-500"
           )}
         >
@@ -26,7 +29,7 @@ export default function SideNavItem({ link, name, icon }: Props) {
           className={cn(
             "text-sm 2xl:text-base",
             pathname.includes(link)
-              ? "text-primary-500"
+              ? "text-primary-900 !font-medium"
               : "text-grey-700 group-hover:text-primary-500"
           )}
         >

@@ -29,6 +29,7 @@ export default function HomePage() {
     queryKey: ["getUser"],
     queryFn: () => http.get<User>(`/api/user`),
     enabled: !!userToken,
+    retry: false,
   });
 
   return (

@@ -23,6 +23,7 @@ export default function usePhoneNumberVerification() {
 
   const [credentialsError, setCredentialsError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [pushToAccountSetup, setPushToAccountSetup] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -66,7 +67,7 @@ export default function usePhoneNumberVerification() {
       console.log("Phone Number Verified Successfully", data);
       toast.success("Phone Number Verified Successfully");
       dispatch(updateUserData({ phoneVerified: true }));
-      router.push("/dashboard");
+      setPushToAccountSetup(true);
       dispatch(setPhoneNumberToVerify(""));
     },
 
@@ -83,5 +84,6 @@ export default function usePhoneNumberVerification() {
     loading,
     setLoading,
     user,
+    pushToAccountSetup,
   };
 }

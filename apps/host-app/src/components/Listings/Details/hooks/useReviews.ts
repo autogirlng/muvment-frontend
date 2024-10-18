@@ -29,6 +29,7 @@ export default function useReviews({
     queryFn: () =>
       http.get<ReviewsDataType>(`/api/reviews/${id}?page=1&limit=10`),
     enabled: !!user?.id && !!id,
+    retry: false,
   });
 
   return {

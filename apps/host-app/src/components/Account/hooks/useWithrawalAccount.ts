@@ -38,6 +38,7 @@ export default function useWithrawalAccount() {
 
     queryFn: () => http.get<WithdrawalAccount>(`/api/withdrawal-account`),
     enabled: !!user?.id,
+    retry: 1,
   });
 
   const deleteBankAccount = useMutation({
@@ -49,10 +50,9 @@ export default function useWithrawalAccount() {
       queryClient.invalidateQueries({
         queryKey: ["getAccountDetails"],
       });
-      // queryClient.invalidateQueries({
-      //   queryKey: ["getUser"],
-      // });
+
       toast.success("Account deleted successfully ");
+      handleOpenDeleteModal();
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -61,7 +61,7 @@ export default function useWithrawalAccount() {
   });
 
   return {
-    withdrawalAccountDetails: data,
+    withdrawalAccountDetails: isError ? null : data,
     isError,
     error,
     isLoading,

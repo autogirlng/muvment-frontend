@@ -1,17 +1,17 @@
 import Link from "next/link";
 import { format } from "date-fns";
+import { ReactNode } from "react";
 import {
   BookingBadgeStatus,
   BookingInformation,
   TransactionStatus,
 } from "@/utils/types";
 import { Popup } from "@repo/ui/popup";
+import { BookingTableBadge, TransactionBadge } from "@repo/ui/badge";
 import MoreButton from "@repo/ui/moreButton";
 import DeclineTrip from "@/components/BookingsAnalytics/Details/modals/DeclineTrip";
 import AcceptTrip from "@/components/BookingsAnalytics/Details/modals/AcceptTrip";
 import useBookingActions from "@/components/BookingsAnalytics/hooks/useBookingActions";
-import { ReactNode } from "react";
-import { BookingTableBadge, TransactionBadge } from "@repo/ui/badge";
 
 const TableCell = ({
   title,
@@ -24,7 +24,7 @@ const TableCell = ({
   isBadge?: boolean;
   type?: "transaction" | "booking";
 }) => (
-  <p className="text-sm w-full flex gap-5 items-center justify-between">
+  <div className="text-sm w-full flex gap-5 items-center justify-between">
     <span className="text-grey-700 w-1/2">{title}</span>
     <span className="font-semibold text-grey-700 w-1/2 break-all">
       {isBadge ? (
@@ -37,7 +37,7 @@ const TableCell = ({
         content
       )}
     </span>
-  </p>
+  </div>
 );
 
 const BookingMobileRow = ({ items }: { items: BookingInformation }) => {

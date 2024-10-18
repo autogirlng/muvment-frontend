@@ -1,10 +1,10 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useHttp } from "@/hooks//useHttp";
 import { useAppSelector } from "@/lib/hooks";
 import { VehicleInformation } from "@/utils/types";
-import { useHttp } from "./useHttp";
+import { handleFilterQuery } from "@/utils/functions";
 
 type ListingDataType = {
   data: VehicleInformation[];
@@ -14,27 +14,27 @@ type ListingDataType = {
 export default function useListings({
   currentPage = 1,
   pageLimit = 10,
+  filters = {},
+  search = "",
 }: {
   currentPage: number;
   pageLimit: number;
+  filters?: Record<string, string[]>;
+  search?: string;
 }) {
   const http = useHttp();
-
   const { user } = useAppSelector((state) => state.user);
 
   const { data, isError, isLoading } = useQuery({
-    queryKey: ["getListings", user?.id, currentPage],
+    queryKey: ["getListings", user?.id, currentPage, filters, search],
 
     queryFn: () =>
       http.get<ListingDataType>(
-        `/api/listings/host/${user?.id}?page=${currentPage}&limit=${pageLimit}`
+        `/api/listings/host/${user?.id}?page=${currentPage}&limit=${pageLimit}&${handleFilterQuery({ filters, search })}`
       ),
     enabled: !!user?.id,
+    retry: false,
   });
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   return {
     listings: data?.data || [],

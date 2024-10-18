@@ -13,6 +13,7 @@ export default function useGetCustomerView({ id }: { id: string }) {
     queryFn: async () =>
       http.get<VehicleInformation | null>(`/api/vehicle-onboarding/${id}`),
     enabled: !!user?.id && !!id,
+    retry: false,
   });
 
   return {

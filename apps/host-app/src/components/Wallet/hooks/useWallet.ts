@@ -15,6 +15,7 @@ export default function useWallet() {
 
     queryFn: () => http.get<WalletBalance>(`/api/wallet`),
     enabled: !!user?.id,
+    retry: 1,
   });
 
   return {
