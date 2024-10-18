@@ -10,6 +10,7 @@ import InputField from "@repo/ui/inputField";
 import usePasswordValidation from "@/hooks/usePasswordValidation";
 import { Eye, EyeSlash } from "@phosphor-icons/react";
 import useChangePassword from "@/components/Account/hooks/useChangePassword";
+import { useState } from "react";
 
 export default function ChangePassword() {
   const {
@@ -20,6 +21,7 @@ export default function ChangePassword() {
   } = usePasswordValidation();
 
   const { changePassword } = useChangePassword();
+  const [showChecks, setShowChecks] = useState(true);
 
   return (
     <Formik
@@ -30,6 +32,7 @@ export default function ChangePassword() {
         const { password_checks, ...submissionValues } = values;
         changePassword.mutate(submissionValues);
         setSubmitting(false);
+        setShowChecks(false);
       }}
       validationSchema={changePasswordValidationSchema}
       enableReinitialize={true}
@@ -84,6 +87,7 @@ export default function ChangePassword() {
               setFieldValue={setFieldValue}
               values={values}
               error={errors.password && touched.password ? errors.password : ""}
+              showChecks={showChecks}
             >
               <InputField
                 name="confirmPassword"
@@ -99,7 +103,10 @@ export default function ChangePassword() {
                     <EyeSlash size={20} fill="inherit" />
                   )
                 }
-                onChange={handleChange}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  handleChange(e);
+                  setShowChecks(true);
+                }}
                 onBlur={handleBlur}
                 toggleShowPassword={toggleHiddenPassword}
                 error={

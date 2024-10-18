@@ -13,6 +13,7 @@ export default function useDashboardStats() {
     queryKey: ["getDashboardStats", user?.id],
     queryFn: () => http.get<DashboardStatistics>("/api/statistics/hostAccount"),
     enabled: !!user?.id,
+    retry: false,
   });
 
   return {

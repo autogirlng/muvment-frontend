@@ -1,6 +1,12 @@
 "use client";
 
-import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/utils/types";
 import { Spinner } from "@repo/ui/spinner";
@@ -31,20 +37,20 @@ const OtpVerification = ({
 }: Props) => {
   const handleChange = (otp: string) => setOtp(otp);
 
-  const [minutes, setMinutes] = useState<number>(4);
-  const [seconds, setSeconds] = useState<number>(59);
+  // const [minutes, setMinutes] = useState<number>(4);
+  const [seconds, setSeconds] = useState<number>(30);
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (seconds > 0) setSeconds(seconds - 1);
 
       if (seconds === 0) {
-        if (minutes === 0) {
-          clearInterval(interval);
-        } else {
-          setSeconds(59);
-          setMinutes(minutes - 1);
-        }
+        // if (minutes === 0) {
+        clearInterval(interval);
+        // } else {
+        //   setSeconds(59);
+        //   setMinutes(minutes - 1);
+        // }
       }
     }, 1000);
 
@@ -54,8 +60,6 @@ const OtpVerification = ({
 
   useEffect(() => {
     if (otp.length === numInputs) {
-      console.log('verify');
-      
       verifyOtp();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -84,22 +88,26 @@ const OtpVerification = ({
       />
       {isVerifyOtpLoading || isResendOtpLoading ? (
         <Spinner />
-      ) : minutes > 0 || seconds > 0 ? (
+      ) : // ) : minutes > 0 || seconds > 0 ? (
+      //   <p className="text-grey-500 text-sm 3xl:text-base">
+      //     Resend Code in{" "}
+      //     {minutes > 1
+      //       ? `${minutes}mins ${seconds}s`
+      //       : minutes > 0
+      //         ? `${minutes}min ${seconds}s`
+      //         : `${seconds}s`}
+      //   </p>
+      seconds > 0 ? (
         <p className="text-grey-500 text-sm 3xl:text-base">
-          Resend Code in{" "}
-          {minutes > 1
-            ? `${minutes}mins ${seconds}s`
-            : minutes > 0
-              ? `${minutes}min ${seconds}s`
-              : `${seconds}s`}
+          Resend Code in {`${seconds}s`}
         </p>
       ) : (
         <button
           className="text-sm 3xl:text-base text-primary-500"
           onClick={() => {
             resendOtp();
-            setMinutes(4);
-            setSeconds(59);
+            // setMinutes(4);
+            setSeconds(30);
           }}
         >
           Resend Code

@@ -30,6 +30,7 @@ export default function useSetupWithdrawalAccount() {
 
   const [credentialsError, setCredentialsError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [pushToDashboard, setPushToDashboard] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -42,6 +43,7 @@ export default function useSetupWithdrawalAccount() {
   const { data, isLoading } = useQuery({
     queryKey: ["getAllBankCodes"],
     queryFn: () => http.get<BankCodes[]>("/api/withdrawal-account/bankCodes"),
+    retry: 2,
   });
 
   const validateBankAccount = useMutation({
@@ -106,7 +108,13 @@ export default function useSetupWithdrawalAccount() {
       }),
 
     onSuccess: (data) => {
-      console.log(accountDetails, withdrawalAccountSetupOtp);
+      console.log("Withdrawal Account Added Successfully", data);
+      toast.success("Withdrawal Account Added Successfully");
+      dispatch(updateUserData({ withdrawalAccountVerified: true }));
+      dispatch(setWithdrawalAccountSetupOtp(""));
+
+      setLoading(false);
+      setPushToDashboard(true);
 
       dispatch(
         setAccountDetails({
@@ -115,12 +123,6 @@ export default function useSetupWithdrawalAccount() {
           accountName: "",
         })
       );
-      dispatch(setWithdrawalAccountSetupOtp(""));
-      setLoading(false);
-      console.log("Withdrawal Account Added Successfully", data);
-      toast.success("Withdrawal Account Added Successfully");
-      dispatch(updateUserData({ withdrawalAccountVerified: true }));
-      router.push(`/account-setup`);
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -145,5 +147,6 @@ export default function useSetupWithdrawalAccount() {
     setLoading,
     user,
     resetAccountDetails,
+    pushToDashboard,
   };
 }

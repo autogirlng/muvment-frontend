@@ -30,6 +30,7 @@ export default function useNotifications({
         `/api/notifications?page=${currentPage}&limit=${pageLimit}`
       ),
     enabled: !!user?.id,
+    retry: false,
   });
 
   return {

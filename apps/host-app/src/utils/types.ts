@@ -322,6 +322,7 @@ export type User = {
   createdAt: string;
   updatedAt: string;
   Verification: UserVerification;
+  averageRating: number;
 };
 
 export interface TripSettings {

@@ -23,6 +23,7 @@ export default function useVehicleUpcomingBooking(id: string) {
         `/api/bookings/upcoming/${id}?page=1&limit=10`
       ),
     enabled: !!user?.id && !!id,
+    retry: false,
   });
 
   return {

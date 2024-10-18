@@ -14,6 +14,7 @@ export default function useGetBookingById({ id }: { id?: string }) {
 
     queryFn: async () => http.get<BookingInformation>(`/api/bookings/${id}`),
     enabled: !!user?.id && !!id,
+    retry: false,
   });
 
   const vehicleDetails = useMemo(() => {

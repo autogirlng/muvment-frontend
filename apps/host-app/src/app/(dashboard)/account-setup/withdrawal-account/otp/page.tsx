@@ -12,17 +12,23 @@ export default function WithdrawalAccountSetupOtpPage() {
 
   const { accountDetails } = useAppSelector((state) => state.accountSetup);
 
-  const { verifyBankAccountOtp, sendBankAccountOtp, loading, setLoading } =
-    useSetupWithdrawalAccount();
+  const {
+    verifyBankAccountOtp,
+    sendBankAccountOtp,
+    loading,
+    setLoading,
+    pushToDashboard,
+  } = useSetupWithdrawalAccount();
 
   useEffect(() => {
-    console.log("accountDetails", accountDetails);
-
+    if (pushToDashboard) {
+      return router.push("/dashboard");
+    }
     if (!accountDetails.accountName) {
       router.push("/account-setup/withdrawal-account");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accountDetails]);
+  }, [accountDetails, pushToDashboard]);
 
   const [otp, setOtp] = useState<string>("");
 
@@ -34,7 +40,7 @@ export default function WithdrawalAccountSetupOtpPage() {
       backLink="/account-setup/withdrawal-account"
     >
       <OtpVerification
-        verifyOtp={() => {
+        verifyOtp={async () => {
           setLoading(true);
           verifyBankAccountOtp.mutate({
             token: otp,

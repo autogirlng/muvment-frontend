@@ -42,15 +42,8 @@ const initialExtras: Extras[] = [
   // },
 ];
 
-const initialtabs = [
-  { name: "Vehicle information", value: "tab1", content: <></> },
-  { name: "Reviews", value: "tab2", content: <></> },
-  { name: "Driver details", value: "tab3", content: <></> },
-];
-
 export default function ListingsPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const [tabs, setTabs] = useState(initialtabs);
   const [extras, setExtras] = useState<Extras[]>(initialExtras);
   const {
     listingDetail,
@@ -88,32 +81,26 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
         return extra;
       });
       setExtras(updatedExtras);
-
-      // update tabs
-      const updatedTabs = tabs.map((tab) => {
-        if (tab.value === "tab1") {
-          return {
-            ...tab,
-            content: <VehicleInformation listingDetails={listingDetail} />,
-          };
-        }
-        if (tab.value === "tab2") {
-          return {
-            ...tab,
-            content: <VehicleReviews id={params.id} />,
-          };
-        }
-        if (tab.value === "tab3") {
-          return {
-            ...tab,
-            content: <DriversDetails id={params.id} />,
-          };
-        }
-        return tab;
-      });
-      setTabs(updatedTabs);
     }
   }, [isSuccess]);
+
+  const tabs = [
+    {
+      name: "Vehicle information",
+      value: "tab1",
+      content: <VehicleInformation listingDetails={listingDetail} />,
+    },
+    {
+      name: "Reviews",
+      value: "tab2",
+      content: <VehicleReviews id={params.id} />,
+    },
+    {
+      name: "Driver details",
+      value: "tab3",
+      content: <DriversDetails id={params.id} />,
+    },
+  ];
 
   if (isLoading) {
     return <FullPageSpinner />;

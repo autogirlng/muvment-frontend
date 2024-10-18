@@ -29,9 +29,12 @@ export default function TopHeader({}: Props) {
   });
 
   const pathname = usePathname();
+  const [notificationPopupIsOpen, setNotificationPopupIsOpen] =
+    useState<boolean>(false);
   const [popupIsOpen, setPopupIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
+    setNotificationPopupIsOpen(false);
     setPopupIsOpen(false);
   }, [pathname]);
 
@@ -43,8 +46,8 @@ export default function TopHeader({}: Props) {
       <div className="flex items-center gap-3">
         <Popup
           open={true}
-          isOpen={popupIsOpen}
-          handleIsOpen={(open: boolean) => setPopupIsOpen(open)}
+          isOpen={notificationPopupIsOpen}
+          handleIsOpen={(open: boolean) => setNotificationPopupIsOpen(open)}
           className="!w-[400px] 3xl:!w-[480px]"
           trigger={
             <button className="flex items-center gap-1 text-grey-600">
@@ -90,6 +93,9 @@ export default function TopHeader({}: Props) {
         </Link>
 
         <Popup
+          open={true}
+          isOpen={popupIsOpen}
+          handleIsOpen={(open: boolean) => setPopupIsOpen(open)}
           trigger={
             <button className="flex items-center gap-1 text-grey-600">
               <AvatarImage
@@ -103,7 +109,7 @@ export default function TopHeader({}: Props) {
               </span>
             </button>
           }
-          content={<NavPopup user={user??null} />}
+          content={<NavPopup user={user ?? null} />}
         />
       </div>
     </div>

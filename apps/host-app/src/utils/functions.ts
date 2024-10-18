@@ -107,6 +107,14 @@ export const formatNumberWithCommas = (number: string | number): string => {
   return number?.toLocaleString();
 };
 
+export const formatPhoneNumber = (phoneNumber: string): string => {
+  const firstPart = phoneNumber.slice(0, 3);
+  const lastPart = phoneNumber.slice(-3);
+  const middlePart = "*".repeat(phoneNumber.length - 6);
+
+  return `${firstPart}${middlePart}${lastPart}`;
+};
+
 export const calculateServiceFee = (
   price: number,
   standardFee: number
@@ -133,6 +141,33 @@ export const debounce = <T extends (...args: any[]) => any>(
       func.apply(null, args);
     }, delay);
   };
+};
+
+export const handleFilterQuery = ({
+  filters,
+  month,
+  year,
+  search,
+}: {
+  filters: Record<string, string[]>;
+  month?: number;
+  year?: string;
+  search?: string;
+}) => {
+  const filterQuery = new URLSearchParams();
+  Object.entries(filters).forEach(([key, values]) => {
+    values.forEach((value) => {
+      if (key === "vehicle")
+        return filterQuery.append("vehicleId", value.toString());
+      else return filterQuery.append(key, value);
+    });
+  });
+
+  if (month) filterQuery.append("month", month.toString());
+  if (year) filterQuery.append("year", year.toString());
+  if (search) filterQuery.append("search", search.toString());
+
+  return filterQuery.toString();
 };
 
 export const handleErrors = (
@@ -200,7 +235,8 @@ export const handleErrors = (
 
   if (
     ERR_CODE === "NO_WITHDRAWAL_ACCOUNT_FOUND" ||
-    ERR_CODE === "RENTAL_AVALIABLITY_NOT_FOUND"
+    ERR_CODE === "RENTAL_AVALIABLITY_NOT_FOUND" ||
+    ERR_CODE === "WALLET_NOT_FOUND "
   ) {
     return;
   }
@@ -212,10 +248,6 @@ export const handleErrors = (
   if (error.response?.data?.message) {
     return toast.error(error.response.data.message);
   }
-
-  // if (error?.response?.message) {
-  //   return toast.error(error.response.message);
-  // }
 
   return {};
 };

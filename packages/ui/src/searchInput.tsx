@@ -42,6 +42,14 @@ const SearchInput = ({
       disabled={disabled}
       {...rest}
     />
+    {value && (
+      <button
+        className="absolute right-3 bottom-[15px] text-[#141B34] *:!w-4 *:!h-4"
+        onClick={() => rest.onChange({ target: { value: "" } })}
+      >
+        {Icons.ic_cancel_circle}
+      </button>
+    )}
   </div>
 );
 

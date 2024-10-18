@@ -181,9 +181,9 @@ export const profileFormValidationSchema = object().shape({
   firstName: string().required("Please enter your first name"),
   lastName: string().required("Please enter your last name"),
 
-  country: string().required("Please enter your country code"),
-  bio: string().required("Please enter your bio"),
-  city: string().required("Please select your city"),
+  // country: string().required("Please enter your country code"),
+  // bio: string().required("Please enter your bio"),
+  // city: string().required("Please select your city"),
 });
 
 export const changePasswordValidationSchema = object().shape({

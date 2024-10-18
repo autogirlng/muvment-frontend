@@ -29,6 +29,7 @@ export default function useUpcomingBookings({
         `/api/bookings/host/upcoming/${user?.id}?page=${currentPage}&limit=${pageLimit}`
       ),
     enabled: !!user?.id,
+    retry: false,
   });
 
   // useEffect(() => {
