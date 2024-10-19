@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useNotifications from "@/components/Notifications/useNotifications";
 import Notifications from "@/components/Notifications";
 import Pagination from "@repo/ui/pagination";
@@ -10,6 +10,10 @@ import { CalendarValue } from "@/utils/types";
 export default function NotificationsPage() {
   const pageLimit = 20;
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [filters, setFilters] = useState<CalendarValue>(null);
+  const [value, onChange] = useState<CalendarValue>(null);
+  const [calendarValues, setCalendarValues] = useState<CalendarValue>(null);
+  const [calendarIsOpen, setCalendarIsOpen] = useState<boolean>(false);
 
   const {
     notifications,
@@ -18,8 +22,13 @@ export default function NotificationsPage() {
 
     totalCount,
     // unreadCount,
-  } = useNotifications({ pageLimit, currentPage });
-  const [value, onChange] = useState<CalendarValue>(null);
+  } = useNotifications({ pageLimit, currentPage, filters });
+
+  useEffect(() => {
+    setFilters(calendarValues);
+    setCurrentPage(1);
+    setCalendarIsOpen(false);
+  }, [calendarValues]);
 
   return (
     <main className="py-[56px] space-y-10">
@@ -32,6 +41,15 @@ export default function NotificationsPage() {
           selectRange={true}
           value={value}
           onChange={onChange}
+          setCalendarValues={setCalendarValues}
+          isOpen={calendarIsOpen}
+          handleIsOpen={(open: boolean) => setCalendarIsOpen(open)}
+          handleClose={() => setCalendarIsOpen(false)}
+          clearAll={() => {
+            onChange(null);
+            setCalendarValues(null);
+          }}
+          buttonClass="bg-grey-90 h-12 w-12 flex items-center justify-center rounded-full"
         />
       </div>
       <Notifications

@@ -1,6 +1,6 @@
-import { AxiosError, AxiosResponse } from "axios";
+import { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import { ErrorResponse } from "@/utils/types";
+import { ErrorResponse, NotificationType } from "@/utils/types";
 
 import {
   lowercaseRegex,
@@ -10,7 +10,7 @@ import {
   uppercaseRegex,
 } from "@/utils/constants";
 import { daysOfTheWeek } from "./data";
-import { useRouter } from "next/navigation";
+import Icons from "@repo/ui/icons";
 
 export const isLengthValid = (password: string): boolean => {
   const isLengthValid = password.length >= 8;
@@ -129,6 +129,96 @@ export const calculateRateGuestsWillSee = (
   return price + serviceFee;
 };
 
+// ============================= Notification Icons, Color and Bg Color starts ============================= //
+export const getNotificationIcon = (type: string) => {
+  switch (type) {
+    case NotificationType.BOOKING_REQUEST:
+      return Icons.ic_booking_request;
+    case NotificationType.BOOKING_CONFIRMED:
+      return Icons.ic_booking_confirmed;
+    case NotificationType.BOOKING_CANCELED:
+      return Icons.ic_booking_canceled;
+    case NotificationType.UPCOMING_BOOKING:
+      return Icons.ic_upcoming_booking;
+    case NotificationType.GUEST_CHECK_IN:
+      return Icons.ic_check_in;
+    case NotificationType.GUEST_CHECK_OUT:
+      return Icons.ic_check_out;
+    case NotificationType.VEHICLE_ACCEPTED:
+      return Icons.ic_car;
+    case NotificationType.PAYMENT_RECEIVED:
+      return Icons.ic_payment_received;
+    case NotificationType.SECURITY_ALERT:
+      return Icons.ic_lock;
+    case NotificationType.NEW_REVIEW:
+      return Icons.ic_star_square;
+    case NotificationType.SPECIAL_OFFER:
+      return Icons.ic_upcoming_booking;
+    default:
+      return Icons.ic_lock;
+  }
+};
+
+export const getNotificationIconColor = (type: string) => {
+  switch (type) {
+    case NotificationType.BOOKING_REQUEST:
+      return "text-primary-600";
+    case NotificationType.BOOKING_CONFIRMED:
+      return "text-success-600";
+    case NotificationType.BOOKING_CANCELED:
+      return "text-error-900";
+    case NotificationType.UPCOMING_BOOKING:
+      return "text-warning-400";
+    case NotificationType.GUEST_CHECK_IN:
+      return "text-grey-700";
+    case NotificationType.GUEST_CHECK_OUT:
+      return "text-grey-700";
+    case NotificationType.VEHICLE_ACCEPTED:
+      return "text-success-600";
+    case NotificationType.PAYMENT_RECEIVED:
+      return "text-success-600";
+    case NotificationType.SECURITY_ALERT:
+      return "text-error-900";
+    case NotificationType.NEW_REVIEW:
+      return "text-warning-400";
+    case NotificationType.SPECIAL_OFFER:
+      return "text-warning-400";
+    default:
+      return "text-grey-700";
+  }
+};
+
+export const getNotificationBgColor = (type: string) => {
+  switch (type) {
+    case NotificationType.BOOKING_REQUEST:
+      return "bg-primary-75";
+    case NotificationType.BOOKING_CONFIRMED:
+      return "bg-success-75";
+    case NotificationType.BOOKING_CANCELED:
+      return "bg-error-100";
+    case NotificationType.UPCOMING_BOOKING:
+      return "bg-warning-75";
+    case NotificationType.GUEST_CHECK_IN:
+      return "bg-grey-90";
+    case NotificationType.GUEST_CHECK_OUT:
+      return "bg-grey-90";
+    case NotificationType.VEHICLE_ACCEPTED:
+      return "bg-success-75";
+    case NotificationType.PAYMENT_RECEIVED:
+      return "bg-success-75";
+    case NotificationType.SECURITY_ALERT:
+      return "bg-error-100";
+    case NotificationType.NEW_REVIEW:
+      return "bg-warning-75";
+    case NotificationType.SPECIAL_OFFER:
+      return "bg-warning-75";
+    default:
+      return "bg-grey-90";
+  }
+};
+// ============================= Notification Icons, Color and Bg Color ends ============================= //
+
+// Debounce function
 export const debounce = <T extends (...args: any[]) => any>(
   func: T,
   delay: number
@@ -148,11 +238,15 @@ export const handleFilterQuery = ({
   month,
   year,
   search,
+  startDate,
+  endDate,
 }: {
   filters: Record<string, string[]>;
   month?: number;
   year?: string;
   search?: string;
+  startDate?: string;
+  endDate?: string;
 }) => {
   const filterQuery = new URLSearchParams();
   Object.entries(filters).forEach(([key, values]) => {
@@ -166,6 +260,8 @@ export const handleFilterQuery = ({
   if (month) filterQuery.append("month", month.toString());
   if (year) filterQuery.append("year", year.toString());
   if (search) filterQuery.append("search", search.toString());
+  if (startDate) filterQuery.append("startDate", startDate.toString());
+  if (endDate) filterQuery.append("endDate", endDate.toString());
 
   return filterQuery.toString();
 };

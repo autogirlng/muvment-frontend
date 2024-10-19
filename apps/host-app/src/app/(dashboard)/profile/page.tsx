@@ -361,9 +361,9 @@ export default function ProfilePage() {
                       />
 
                       <InputField
-                        name="email"
-                        id="email"
-                        type="email"
+                        name="businessEmail"
+                        id="businessEmail"
+                        type="businessEmail"
                         label="Business Email Address"
                         placeholder="Enter email address"
                         value={user?.businessEmail}

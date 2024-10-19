@@ -7,6 +7,7 @@ import Icons from "@repo/ui/icons";
 import Button from "@repo/ui/button";
 import useListingsActions from "@/components/Listings/Details/hooks/useListingsActions";
 import DateRangeCalendar from "@repo/ui/calendar";
+import { useState } from "react";
 
 type Props = { vehicleStatus?: VehicleStatus; isActive?: boolean; id?: string };
 
@@ -110,6 +111,8 @@ const StatusButton = ({
   unavailabilityValue?: CalendarValue;
   onChangeUnavailability?: (value: CalendarValue) => void;
 }) => {
+  const [calendarValues, setCalendarValues] = useState<CalendarValue>(null);
+  const [calendarIsOpen, setCalendarIsOpen] = useState<boolean>(false);
   const buttonClass = cn(
     "py-3 px-2 font-normal text-left w-full text-sm rounded-xl ",
     active
@@ -134,6 +137,11 @@ const StatusButton = ({
             selectRange={true}
             value={unavailabilityValue || null}
             onChange={onChangeUnavailability || (() => {})}
+            setCalendarValues={setCalendarValues}
+            isOpen={calendarIsOpen}
+            handleIsOpen={(open: boolean) => setCalendarIsOpen(open)}
+            handleClose={() => {}}
+            clearAll={() => {}}
           />
         </div>
       ) : (
