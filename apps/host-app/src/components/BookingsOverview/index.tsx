@@ -49,7 +49,7 @@ export default function BookingsOverview({}: Props) {
                 {monthsFilter.map((month, index) => (
                   <button
                     className={cn(
-                      "py-1.5 3xl:py-2 px-3 3xl:px-7 text-grey-600 text-xs 3xl:text-sm",
+                      "py-1.5 3xl:py-2 px-3 3xl:px-7 text-grey-600 text-xs 3xl:text-sm hover:bg-primary-75",
                       index === (selectedMonth || 0) - 1 &&
                         "bg-primary-500 text-white"
                     )}

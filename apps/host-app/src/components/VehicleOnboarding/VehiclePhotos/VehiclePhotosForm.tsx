@@ -10,11 +10,16 @@ import useVehiclePhotosForm from "@/components/VehicleOnboarding/VehiclePhotos/u
 type Props = {
   steps: string[];
   setPhotoTipIndex: Dispatch<SetStateAction<number>>;
-    currentStep: number;
+  currentStep: number;
   setCurrentStep: (step: number) => void;
 };
 
-const VehiclePhotosForm = ({ steps, setPhotoTipIndex ,currentStep,setCurrentStep}: Props) => {
+const VehiclePhotosForm = ({
+  steps,
+  setPhotoTipIndex,
+  currentStep,
+  setCurrentStep,
+}: Props) => {
   const {
     initialValues,
     photoViews,
@@ -23,13 +28,15 @@ const VehiclePhotosForm = ({ steps, setPhotoTipIndex ,currentStep,setCurrentStep
     saveStep3,
     appendFormData,
     photoViewOptions,
-  } = useVehiclePhotosForm({setPhotoTipIndex,currentStep,setCurrentStep});
+  } = useVehiclePhotosForm({ setPhotoTipIndex, currentStep, setCurrentStep });
 
   // Set the initial photoTipIndex when the component mounts
   useEffect(() => {
     const filledFields = photoViewOptions.filter(
       (view) => initialValues[view.name as keyof VehiclePhotos]
     );
+    console.log(filledFields);
+
     if (filledFields.length > 0) {
       setPhotoTipIndex(filledFields.length - 1);
     } else {
@@ -61,7 +68,7 @@ const VehiclePhotosForm = ({ steps, setPhotoTipIndex ,currentStep,setCurrentStep
         isSubmitting,
       }) => (
         <Form className="w-full grid grid-cols-1 sm:grid-cols-2 gap-10">
-          {photoViews.map((item) => {
+          {photoViews.map((item, index) => {
             const fieldName = item.name as keyof VehiclePhotos;
 
             return (
@@ -88,10 +95,10 @@ const VehiclePhotosForm = ({ steps, setPhotoTipIndex ,currentStep,setCurrentStep
                     (view) => view.name === fieldName
                   );
 
-                  const updatedViews = photoViews.map((view, index) => {
-                    if (index === currentIndex + 1) {
-                      setPhotoTipIndex(currentIndex);
+                  setPhotoTipIndex(currentIndex + 1);
 
+                  const updatedViews = photoViews.map((view, idx) => {
+                    if (idx === currentIndex + 1) {
                       return { ...view, disabled: file === null };
                     }
                     return view;

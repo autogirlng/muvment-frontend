@@ -93,7 +93,7 @@ const FilterBy: React.FC<FilterByProps> = ({
     <Popover.Root open={isOpen} onOpenChange={setIsOpen}>
       <Popover.Trigger asChild>
         <button
-          className="cursor-pointer outline-none text-grey-600 flex items-center gap-2 border border-grey-300 rounded-xl p-3"
+          className="cursor-pointer outline-none text-grey-600 flex items-center gap-2 border border-grey-300 rounded-xl p-3 hover:border-primary-500"
           aria-label="Filter"
         >
           {Icons.ic_filter}

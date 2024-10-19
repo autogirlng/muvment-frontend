@@ -25,7 +25,7 @@ export default function VehiclePhotosTips({ photoTipIndex }: Props) {
           </p>
           <p className="font-normal">
             {photoUploadTips[photoTipIndex || 0]?.description}{" "}
-            <button className="text-primary-400">View example</button>
+            {/* <button className="text-primary-400">View example</button> */}
           </p>
         </div>
       </div>
