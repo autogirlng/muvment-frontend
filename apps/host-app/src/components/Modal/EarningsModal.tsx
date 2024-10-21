@@ -1,6 +1,6 @@
 import DashboardSectionTitle from "../DashboardSectionTitle";
 import Icons from "@repo/ui/icons";
-import Chart from "react-apexcharts";
+// import Chart from "react-apexcharts";
 
 type Props = {};
 
@@ -53,13 +53,13 @@ export default function EarningsModal({}: Props) {
         />
         {/* filter here */}
       </div>
-      <Chart
+      {/* <Chart
         options={state.options}
         series={state.series}
         type="bar"
         // width="500"
         height="350"
-      />
+      /> */}
     </div>
   );
 }
