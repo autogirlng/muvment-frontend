@@ -132,17 +132,37 @@ const StatusButton = ({
             {active && Icons.ic_done_circle}
             {loading ? <Spinner /> : <span>{status}</span>}
           </button>
-          <DateRangeCalendar
-            title="Set unavailability period"
-            selectRange={true}
-            value={unavailabilityValue || null}
-            onChange={onChangeUnavailability || (() => {})}
-            setCalendarValues={setCalendarValues}
-            isOpen={calendarIsOpen}
-            handleIsOpen={(open: boolean) => setCalendarIsOpen(open)}
-            handleClose={() => {}}
-            clearAll={() => {}}
-          />
+          <div>
+            <DateRangeCalendar
+              title="Set unavailability period"
+              selectRange={true}
+              value={unavailabilityValue || null}
+              onChange={onChangeUnavailability || (() => {})}
+              setCalendarValues={setCalendarValues}
+              isOpen={calendarIsOpen}
+              handleIsOpen={(open: boolean) => setCalendarIsOpen(open)}
+            />
+            {/* <div className="flex justify-between gap-4 mt-8">
+              <Button
+                fullWidth
+                onClick={() => {
+                  // clearAll();
+                  setCalendarIsOpen(false);
+                }}
+                className="!bg-grey-90 hover:!bg-primary-75 !text-grey-700"
+              >
+                back
+              </Button>
+              <Button
+                color="primary"
+                varian="filled"
+                fullWidth
+                // onClick={handleDone}
+              >
+                done
+              </Button>
+            </div> */}
+          </div>
         </div>
       ) : (
         <button

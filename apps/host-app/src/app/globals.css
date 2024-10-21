@@ -80,6 +80,10 @@ div[data-radix-popper-content-wrapper] {
   z-index: 999 !important;
 }
 
+div[role="dialog"] {
+  overflow: auto;
+}
+
 .PhoneInputCountry {
   border-radius: 18px;
   padding: 16px;

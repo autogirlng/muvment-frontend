@@ -7,6 +7,7 @@ type Props = {
   message?: string | ReactNode;
   image: string;
   imageSize?: string;
+  noBg?: boolean;
 };
 
 export default function EmptyState({
@@ -14,9 +15,15 @@ export default function EmptyState({
   message,
   image,
   imageSize,
+  noBg,
 }: Props) {
   return (
-    <div className="bg-grey-75 rounded-[40px] py-[88px] px-5 space-y-6 2xl:space-y-10 flex flex-col items-center justify-center">
+    <div
+      className={cn(
+        " px-5 space-y-6 2xl:space-y-10 flex flex-col items-center justify-center",
+        noBg ? "py-16" : "py-[88px] bg-grey-75 rounded-[40px]"
+      )}
+    >
       <Image
         src={image}
         alt=""

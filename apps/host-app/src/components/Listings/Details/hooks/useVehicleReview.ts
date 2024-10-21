@@ -10,10 +10,10 @@ type ReviewsDataType = {
   totalCount: number;
 };
 
-export default function useReviews({
+export default function useVehicleReview({
   id,
-  currentPage,
-  pageLimit,
+  currentPage = 1,
+  pageLimit = 10,
 }: {
   id: string;
   currentPage: number;
@@ -27,7 +27,9 @@ export default function useReviews({
     queryKey: ["getVehicleReviews", user?.id, id],
 
     queryFn: () =>
-      http.get<ReviewsDataType>(`/api/reviews/${id}?page=1&limit=10`),
+      http.get<ReviewsDataType>(
+        `/api/reviews/findonebooking/${id}?page=${currentPage}&limit=${pageLimit}`
+      ),
     enabled: !!user?.id && !!id,
     retry: false,
   });
