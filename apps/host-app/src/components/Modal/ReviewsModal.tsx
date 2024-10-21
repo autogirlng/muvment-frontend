@@ -36,9 +36,7 @@ export default function ReviewsModal({}: Props) {
       <div
         className={cn(
           "transition",
-          reviewDetailData
-            ? "md:col-span-2 w-[calc(100%-310px)]"
-            : "md:col-span-3"
+          reviewDetailData ? "md:col-span-2" : "md:col-span-3"
         )}
       >
         <DashboardSectionTitle title="Review Manager" />

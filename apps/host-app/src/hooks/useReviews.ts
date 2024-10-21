@@ -3,7 +3,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAppSelector } from "@/lib/hooks";
 import { useHttp } from "@/hooks/useHttp";
-import { ErrorResponse, Review } from "@/utils/types";
+import { ErrorResponse, Review, ReviewReply, User } from "@/utils/types";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
@@ -46,13 +46,14 @@ export default function useReviews({
 
   const replyAReview = useMutation({
     mutationFn: (values: { message: string }) =>
-      http.post("/api/reviews/reply", {
+      http.post<ReviewReply>("/api/reviews/reply", {
         ...values,
         reviewId: reviewDetailData?.id,
       }),
 
     onSuccess: (data) => {
       console.log("You have replied to a review", data);
+      reviewDetailData?.Reply?.push({ ...data, user: user as User });
       toast.success("Reply Sent");
     },
 
