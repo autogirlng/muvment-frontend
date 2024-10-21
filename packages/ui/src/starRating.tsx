@@ -1,7 +1,15 @@
 import Icons from "@repo/ui/icons";
-import { Fragment } from "react";
+import cn from "classnames";
 
-export default function StarRating({ n }: { n: number }) {
+export default function StarRating({
+  n,
+  size,
+  gap,
+}: {
+  n: number;
+  size?: string;
+  gap?: string;
+}) {
   const maxStars = 5;
 
   const numFilledStars = Math.min(n, maxStars);
@@ -13,9 +21,11 @@ export default function StarRating({ n }: { n: number }) {
   ];
 
   return (
-    <div className="flex items-center gap-2">
+    <div className={cn("flex items-center gap-2", gap)}>
       {stars.map((star, index) => (
-        <Fragment key={index}>{star}</Fragment>
+        <span key={index} className={cn(size ?? "")}>
+          {star}
+        </span>
       ))}
     </div>
   );

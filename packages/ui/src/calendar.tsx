@@ -3,8 +3,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "./calendar.css";
 import Button from "@repo/ui/button";
-import { Popup } from "@repo/ui/popup";
-import { useState } from "react";
+import * as Popover from "@radix-ui/react-popover";
 
 type ValuePiece = Date | null;
 
@@ -19,7 +18,6 @@ const DateRangeCalendar = ({
   setCalendarValues,
   isOpen,
   handleIsOpen,
-  clearAll,
 }: {
   title: string;
   buttonClass?: string;
@@ -29,29 +27,34 @@ const DateRangeCalendar = ({
   setCalendarValues: (value: Value) => void;
   isOpen: boolean;
   handleIsOpen: (open: boolean) => void;
-  handleClose: (open: boolean) => void;
-  clearAll: () => void;
 }) => {
   const handleDone = () => {
     setCalendarValues(value);
+    handleIsOpen(false);
+  };
+
+  const handleClearAll = () => {
+    onChange(null);
+    setCalendarValues(null);
   };
 
   return (
-    <Popup
-      isOpen={isOpen}
-      handleIsOpen={handleIsOpen}
-      className="w-[280px] sm:w-[380px]"
-      trigger={
+    <Popover.Root open={isOpen} onOpenChange={handleIsOpen}>
+      <Popover.Trigger asChild>
         <button className={buttonClass ?? ""}>{Icons.ic_calendar}</button>
-      }
-      content={
-        <>
+      </Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Content
+          align="end"
+          className="rounded-xl p-4 w-[280px] sm:w-[380px] bg-white border border-grey-200 will-change-[transform,opacity] data-[state=open]:data-[side=top]:animate-slideDownAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade"
+          sideOffset={5}
+        >
           <div className="flex justify-between items-center mb-3">
             <p className="text-sm 3xl:text-base font-semibold text-grey-700">
               {title}
             </p>
             <button
-              onClick={clearAll}
+              onClick={handleClearAll}
               className="text-xs 3xl:text-sm text-primary-500 flex items-center gap-1 *:w-4 *:h-4 *:ml-1"
             >
               Clear all {Icons.ic_cancel_circle}
@@ -71,12 +74,12 @@ const DateRangeCalendar = ({
             <Button
               fullWidth
               onClick={() => {
-                clearAll();
+                handleClearAll();
                 handleIsOpen(false);
               }}
               className="!bg-grey-90 hover:!bg-primary-75 !text-grey-700"
             >
-              back
+              Back
             </Button>
             <Button
               color="primary"
@@ -84,12 +87,12 @@ const DateRangeCalendar = ({
               fullWidth
               onClick={handleDone}
             >
-              done
+              Done
             </Button>
           </div>
-        </>
-      }
-    />
+        </Popover.Content>
+      </Popover.Portal>
+    </Popover.Root>
   );
 };
 

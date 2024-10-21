@@ -204,3 +204,7 @@ export const withdrawalSchema = object().shape({
 export const reportBookingSchema = object().shape({
   message: string().required("Please type a message"),
 });
+
+export const replyReviewSchema = object().shape({
+  message: string().required("Please type a message"),
+});

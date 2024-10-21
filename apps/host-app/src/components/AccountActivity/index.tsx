@@ -18,8 +18,8 @@ export default function AccountActivity({}: Props) {
         icon={Icons.ic_activity}
         title="Account Activity"
       />
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-[18px]">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-[18px]">
           <ActivityCard
             primary
             title="Total Earnings"
@@ -37,9 +37,10 @@ export default function AccountActivity({}: Props) {
           <ActivityCard
             title="Total Completed Rides"
             value={`${dashboardStats?.totalOnboardedVehicles || "-"}`}
-            modalTitle={
-              dashboardStats?.totalCompletedRides ? "Show Reviews" : ""
-            }
+            // modalTitle={
+            //   dashboardStats?.totalCompletedRides ? "Show Reviews" : ""
+            // }
+            modalTitle={"Show Reviews"}
             modalName="review"
             modalIcon={Icons.ic_star_square}
             isLoading={isLoading}

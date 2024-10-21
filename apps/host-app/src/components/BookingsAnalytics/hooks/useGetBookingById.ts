@@ -12,7 +12,8 @@ export default function useGetBookingById({ id }: { id?: string }) {
   const { data, isError, isLoading } = useQuery({
     queryKey: ["getBookingById", id],
 
-    queryFn: async () => http.get<BookingInformation>(`/api/bookings/${id}`),
+    queryFn: async () =>
+      http.get<BookingInformation>(`/api/bookings/getSingle/${id}`),
     enabled: !!user?.id && !!id,
     retry: false,
   });

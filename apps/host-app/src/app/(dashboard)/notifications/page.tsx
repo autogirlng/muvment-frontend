@@ -6,6 +6,7 @@ import Notifications from "@/components/Notifications";
 import Pagination from "@repo/ui/pagination";
 import DateRangeCalendar from "@repo/ui/calendar";
 import { CalendarValue } from "@/utils/types";
+import classNames from "classnames";
 
 export default function NotificationsPage() {
   const pageLimit = 20;
@@ -44,12 +45,10 @@ export default function NotificationsPage() {
           setCalendarValues={setCalendarValues}
           isOpen={calendarIsOpen}
           handleIsOpen={(open: boolean) => setCalendarIsOpen(open)}
-          handleClose={() => setCalendarIsOpen(false)}
-          clearAll={() => {
-            onChange(null);
-            setCalendarValues(null);
-          }}
-          buttonClass="bg-grey-90 h-12 w-12 flex items-center justify-center rounded-full"
+          buttonClass={classNames(
+            "h-12 w-12 flex items-center justify-center rounded-full",
+            calendarValues ? "bg-primary-500 text-white" : "bg-grey-90 "
+          )}
         />
       </div>
       <Notifications

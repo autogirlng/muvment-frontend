@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { Spinner } from "@repo/ui/spinner";
 import { FullPageDialog } from "@repo/ui/dialog";
 import EarningsModal from "@/components/Modal/EarningsModal";
+import ReviewsModal from "./Modal/ReviewsModal";
 
 type Props = {
   primary?: boolean;
@@ -28,7 +29,7 @@ export default function ActivityCard({
   return (
     <div
       className={cn(
-        "rounded-xl px-4 py-6 space-y-4",
+        "rounded-xl px-3 py-5 space-y-4",
 
         primary && value !== "-"
           ? "bg-primary-500 border border-grey-200 text-white"
@@ -36,18 +37,20 @@ export default function ActivityCard({
         className
       )}
     >
-      <div className="flex justify-between gap-2 text-xs 2xl:text-sm">
+      <div className="flex justify-between gap-1 text-xs 3xl:text-sm">
         <p>{title}</p>
         {modalTitle && (
           <FullPageDialog
-            title="Earnings"
+            title={modalName === "graph" ? "Earnings" : "Reviews"}
             trigger={
-              <button className="flex items-center gap-2 ">
+              <button className="flex items-center gap-1 min-w-[103px]">
                 {modalIcon}
                 <span>{modalTitle}</span>
               </button>
             }
-            content={<EarningsModal />}
+            content={
+              modalName === "graph" ? <EarningsModal /> : <ReviewsModal />
+            }
           />
         )}
       </div>

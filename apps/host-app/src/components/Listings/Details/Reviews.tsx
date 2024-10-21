@@ -1,10 +1,10 @@
-import Image from "next/image";
 import { useState } from "react";
-import useReviews from "@/components/Listings/Details/hooks/useReviews";
-import StarRating from "@repo/ui/starRating";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import { Review } from "@/utils/types";
 import Pagination from "@repo/ui/pagination";
+import ReviewCard from "@/components/ReviewCard";
+import useVehicleReview from "@/components/Listings/Details/hooks/useVehicleReview";
+import EmptyState from "@/components/EmptyState";
 
 type Props = { id: string };
 
@@ -17,7 +17,7 @@ export default function VehicleReviews({ id }: Props) {
     isLoading,
 
     totalCount,
-  } = useReviews({ id, currentPage, pageLimit });
+  } = useVehicleReview({ id, currentPage, pageLimit });
 
   if (isLoading) {
     return <FullPageSpinner />;
@@ -34,7 +34,13 @@ export default function VehicleReviews({ id }: Props) {
             <ReviewCard key={index} review={review} />
           ))
         ) : (
-          <p>No reviews found</p>
+          <EmptyState
+            title="No Reviews Yet"
+            message="Your Customers Reviews Will Appear Here"
+            image="/icons/empty_review_state.png"
+            imageSize="w-[182px] 3xl:w-[265px]"
+            noBg
+          />
         )}
       </div>
       <Pagination
@@ -47,31 +53,3 @@ export default function VehicleReviews({ id }: Props) {
     </div>
   );
 }
-
-const ReviewCard = ({ review }: { review: Review }) => {
-  return (
-    <div className="space-y-6 p-6 bg-grey-90 rounded-[32px]">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex gap-3 items-center">
-          {review.user.profileImage && (
-            <Image
-              src={review.user.profileImage}
-              alt=""
-              height={40}
-              width={40}
-              className="w-10 h-10 rounded-full"
-            />
-          )}
-          <div className="space-y-[2px]">
-            <p className="text-grey-700 text-sm 3xl:text-base">{`${review.user.firstName} ${review.user.lastName}`}</p>
-            <p className="text-grey-500 text-xs 3xl:text-sm">
-              {review.updatedAt}
-            </p>
-          </div>
-        </div>
-        <StarRating n={review.rating} />
-      </div>
-      <div className="text-black text-sm 3xl:text-base">{review.message}</div>
-    </div>
-  );
-};

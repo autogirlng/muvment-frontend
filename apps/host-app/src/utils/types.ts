@@ -549,6 +549,17 @@ export type Review = {
   createdAt: string;
   updatedAt: string;
   user: User;
+  Reply?: ReviewReply[];
+};
+
+export type ReviewReply = {
+  id: string;
+  message: string;
+  userId: string;
+  reviewId: string;
+  createdAt: string;
+  updatedAt: string;
+  user: User;
 };
 
 export type Notification = {
