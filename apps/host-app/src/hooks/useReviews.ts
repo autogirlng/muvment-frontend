@@ -30,7 +30,7 @@ export default function useReviews({
 
     queryFn: () =>
       http.get<ReviewsDataType>(
-        `/api/reviews/findoneuser/${"66e08242e11152f08a5569c9"}?page=${currentPage}&limit=${pageLimit}`
+        `/api/reviews/findoneuser/${user?.id}?page=${currentPage}&limit=${pageLimit}`
       ),
     enabled: !!user?.id,
     retry: false,
