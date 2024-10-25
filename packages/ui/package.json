@@ -18,6 +18,7 @@
     "./filter": "./src/filter.tsx",
     "./dialog": "./src/dialog.tsx",
     "./divider": "./src/divider.tsx",
+    "./howItWorks": "./src/howItWorks.tsx",
     "./icons": "./src/icons.tsx",
     "./inputField": "./src/inputField.tsx",
     "./moreButton": "./src/moreButton.tsx",
@@ -37,7 +38,9 @@
     "./switch": "./src/switch.tsx",
     "./tabs": "./src/tabs.tsx",
     "./textarea": "./src/textarea.tsx",
-    "./tooltip": "./src/tooltip.tsx"
+    "./tooltip": "./src/tooltip.tsx",
+    "./whatWeOffer": "./src/whatWeOffer.tsx"
+
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

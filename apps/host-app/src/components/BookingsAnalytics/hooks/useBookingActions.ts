@@ -75,7 +75,7 @@ export default function useBookingActions({ id }: { id?: string }) {
   // =============== accept a booking =============== //
   const [openAcceptModal, setOpenAcceptModal] = useState<boolean>(false);
   const handleAcceptModal = () => {
-    setOpenAcceptModal(!openReportModal);
+    setOpenAcceptModal(!openAcceptModal);
   };
   const acceptBooking = useMutation({
     mutationFn: () =>

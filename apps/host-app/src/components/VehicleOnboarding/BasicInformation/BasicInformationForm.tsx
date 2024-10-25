@@ -136,7 +136,7 @@ const BasicVehicleInformationForm = ({
                 ) : (
                   googlePlaces.map((address, index) => (
                     <li
-                      key={index}
+                      key={`address-${index}`}
                       onClick={() => {
                         setShowAddressList(false);
                         setFieldValue(

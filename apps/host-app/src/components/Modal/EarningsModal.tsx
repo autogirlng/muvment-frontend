@@ -57,7 +57,6 @@ export default function EarningsModal({}: Props) {
         options={state.options}
         series={state.series}
         type="bar"
-        // width="500"
         height="350"
       /> */}
     </div>
