@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
@@ -44,15 +44,20 @@ export default function useVehiclePhotosForm({
   };
 
   const [photoViews, setPhotoViews] = useState(
-    photoViewOptions.map((view) => ({
+    photoViewOptions.map((view, index) => ({
       ...view,
       disabled:
-        view.name === "frontView"
+        index === 0
           ? false
-          : !initialValues[view.name as keyof VehiclePhotos] ||
-            initialValues[view.name as keyof VehiclePhotos] === "",
+          : !initialValues[
+              photoViewOptions[index - 1].name as keyof VehiclePhotos
+            ],
     }))
   );
+
+  useEffect(() => {
+    console.log(photoViews);
+  }, [photoViews]);
 
   const saveStep3 = useMutation({
     mutationFn: (values: FormData) =>
