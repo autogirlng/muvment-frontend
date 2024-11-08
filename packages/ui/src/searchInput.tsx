@@ -9,6 +9,7 @@ type SearchInputProps = {
   className?: string;
   value?: string | any;
   placeholder?: string;
+  icon?: boolean;
   [key: string]: any;
 };
 
@@ -20,12 +21,15 @@ const SearchInput = ({
   inputClass,
   className,
   placeholder,
+  icon,
   ...rest
 }: SearchInputProps) => (
   <div className={cn("relative max-w-[375px]", className)}>
-    <div className="absolute left-3 bottom-[14px] text-grey-500 cursor-pointer">
-      {Icons.ic_search}
-    </div>
+    {icon && (
+      <div className="absolute left-3 bottom-[14px] text-grey-500 cursor-pointer">
+        {Icons.ic_search}
+      </div>
+    )}
     <input
       value={value}
       name={name}

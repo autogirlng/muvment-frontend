@@ -4,6 +4,7 @@ import "react-calendar/dist/Calendar.css";
 import "./calendar.css";
 import Button from "@repo/ui/button";
 import * as Popover from "@radix-ui/react-popover";
+import { ReactNode } from "react";
 
 type ValuePiece = Date | null;
 
@@ -90,6 +91,48 @@ const DateRangeCalendar = ({
               Done
             </Button>
           </div>
+        </Popover.Content>
+      </Popover.Portal>
+    </Popover.Root>
+  );
+};
+
+export const DatePicker = ({
+  buttonClass,
+  value,
+  onChange,
+  isOpen,
+  handleIsOpen,
+  children,
+}: {
+  buttonClass?: string;
+  value: Value;
+  onChange: (value: Value) => void;
+  isOpen: boolean;
+  handleIsOpen: (open: boolean) => void;
+  children: ReactNode;
+}) => {
+  return (
+    <Popover.Root open={isOpen} onOpenChange={handleIsOpen}>
+      <Popover.Trigger asChild>
+        <button className={buttonClass ?? ""}>{children}</button>
+      </Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Content
+          align="end"
+          className="rounded-xl p-4 w-[280px] sm:w-[380px] bg-white border border-grey-200 will-change-[transform,opacity] data-[state=open]:data-[side=top]:animate-slideDownAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade"
+          sideOffset={5}
+        >
+          <Calendar
+            onChange={onChange}
+            value={value}
+            selectRange={false}
+            next2Label={null}
+            prev2Label={null}
+            className="!border-none !w-full !text-black !text-xs"
+            nextLabel={Icons.ic_chevron_right}
+            prevLabel={Icons.ic_chevron_left}
+          />
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>

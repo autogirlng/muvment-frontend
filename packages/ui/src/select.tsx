@@ -1,6 +1,7 @@
 import React, { LegacyRef, ReactNode } from "react";
 
 import * as Select from "@radix-ui/react-select";
+
 import cn from "classnames";
 import Tooltip from "@repo/ui/tooltip";
 
@@ -142,24 +143,17 @@ type SelectItemProps = {
   value: string;
 };
 
-const SelectItem = React.forwardRef(
-  (
-    { children, className, ...props }: SelectItemProps,
-    forwardedRef: LegacyRef<HTMLDivElement>
-  ) => {
-    return (
-      <Select.Item
-        className={cn(
-          "text-xs 3xl:text-sm flex items-center py-4 h-4 relative select-none data-[disabled]:text-grey-400 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:text-primary-500",
-          className
-        )}
-        {...props}
-        ref={forwardedRef}
-      >
-        <Select.ItemText>{children}</Select.ItemText>
-      </Select.Item>
-    );
-  }
-);
-
+const SelectItem = ({ children, className, ...props }: SelectItemProps) => {
+  return (
+    <Select.Item
+      className={cn(
+        "text-xs 3xl:text-sm flex items-center py-4 h-4 relative select-none data-[disabled]:text-grey-400 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:text-primary-500",
+        className
+      )}
+      {...props}
+    >
+      <Select.ItemText>{children}</Select.ItemText>
+    </Select.Item>
+  );
+};
 export default SelectInput;

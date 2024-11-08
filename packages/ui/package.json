@@ -8,6 +8,8 @@
       "import": "./dist/index.js",
       "require": "./dist/index.js"
     },
+    "./accordion": "./src/accordion.tsx",
+    "./activityCard": "./src/activityCard.tsx",
     "./avatar": "./src/avatar.tsx",
     "./badge": "./src/badge.tsx",
     "./button": "./src/button.tsx",
@@ -36,11 +38,12 @@
     "./starRating": "./src/starRating.tsx",
     "./stepper": "./src/stepper.tsx",
     "./switch": "./src/switch.tsx",
+    "./tableCell": "./src/tableCell.tsx",
+    "./tableHead": "./src/tableHead.tsx",
     "./tabs": "./src/tabs.tsx",
     "./textarea": "./src/textarea.tsx",
     "./tooltip": "./src/tooltip.tsx",
     "./whatWeOffer": "./src/whatWeOffer.tsx"
-
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

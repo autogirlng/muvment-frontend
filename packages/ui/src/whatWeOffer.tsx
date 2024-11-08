@@ -1,8 +1,10 @@
+import cn from "classnames";
 import { ReactNode } from "react";
 
 type Props = {
   title: string;
   list: WhatWeOfferProps[];
+  className?: string;
 };
 
 type WhatWeOfferProps = {
@@ -11,9 +13,14 @@ type WhatWeOfferProps = {
   icon: ReactNode;
 };
 
-function WhatWeOffer({ title, list }: Props) {
+function WhatWeOffer({ title, list, className }: Props) {
   return (
-    <section className="px-5 sm:px-9 3xl:px-[61px] py-[120px] md:py-[92px] md:pb-[200px]">
+    <section
+      className={cn(
+        "px-5 sm:px-9 3xl:px-[61px] py-[120px] md:py-[92px] md:pb-[200px]",
+        className
+      )}
+    >
       <div className="space-y-8 sm:space-y-[60px] text-black max-w-[1345px] mx-auto">
         <h1 className="text-h4 sm:text-h3 3xl:text-4xl text-center">{title}</h1>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 3xl:gap-10 w-fit mx-auto">

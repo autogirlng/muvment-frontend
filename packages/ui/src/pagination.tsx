@@ -121,7 +121,11 @@ const Pagination = ({
       <div className="flex items-center gap-[2px]">
         {paginationRange.map((pageNumber: number | string, index: number) => {
           if (pageNumber === DOTS) {
-            return <li className="pagination-item dots" key={index}>...</li>;
+            return (
+              <li className="pagination-item dots" key={index}>
+                ...
+              </li>
+            );
           }
 
           return (
