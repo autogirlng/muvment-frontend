@@ -241,7 +241,7 @@ export const handleFilterQuery = ({
   startDate,
   endDate,
 }: {
-  filters: Record<string, string[]>;
+  filters: Record<string, string[] | number[]>;
   month?: number;
   year?: string;
   search?: string;
@@ -250,11 +250,20 @@ export const handleFilterQuery = ({
 }) => {
   const filterQuery = new URLSearchParams();
   Object.entries(filters).forEach(([key, values]) => {
-    values.forEach((value) => {
-      if (key === "vehicle")
-        return filterQuery.append("vehicleId", value.toString());
-      else return filterQuery.append(key, value);
-    });
+    if (key === "price") {
+      {
+        console.log(values);
+
+        filterQuery.append("minPrice", values[0].toString());
+        filterQuery.append("maxPrice", values[1].toString());
+      }
+    } else {
+      values.forEach((value) => {
+        if (key === "vehicle")
+          return filterQuery.append("vehicleId", value.toString());
+        else return filterQuery.append(key, value.toString());
+      });
+    }
   });
 
   if (month) filterQuery.append("month", month.toString());

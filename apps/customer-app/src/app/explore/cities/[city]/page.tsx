@@ -3,12 +3,16 @@
 import ExplorePageLayout from "@/components/Explore/ExplorePageLayout";
 import Icons from "@repo/ui/icons";
 
-export default function ExploreCitiesPage() {
+export default function ExploreCitiesPage({
+  params,
+}: {
+  params: { city: string };
+}) {
   return (
     <ExplorePageLayout
-      title="Vehicles In Lagos"
+      title={`Vehicles In ${params.city}`}
       icon={Icons.ic_location}
-      total={50}
+      type="all"
     />
   );
 }

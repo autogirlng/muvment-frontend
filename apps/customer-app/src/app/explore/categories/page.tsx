@@ -8,7 +8,7 @@ export default function ExploreCategoriesPage() {
     <ExplorePageLayout
       title="Explore Sedans"
       icon={Icons.ic_car}
-      total={50}
+      type="all"
     />
   );
 }

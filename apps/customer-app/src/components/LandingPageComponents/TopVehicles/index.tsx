@@ -44,8 +44,8 @@ function TopVehicles({}: Props) {
           </p>
         </div>
         <Link
-          href="/"
-          className="hidden md:flex items-center gap-2 text-grey-500 text-xl md:text-h5 3xl:text-h6 !font-bold"
+          href="/explore/top-rated-vehicles"
+          className="hidden md:flex items-center gap-2 text-grey-500 text-xl md:text-h6 3xl:text-5 !font-bold"
         >
           <span>See All</span>
           {Icons.ic_chevron_right}

@@ -1,23 +1,52 @@
-import { debounce } from "@/utils/functions";
+import { addSpaceBeforeUppercase, debounce } from "@/utils/functions";
 import { HorizontalDivider } from "@repo/ui/divider";
 import Icons from "@repo/ui/icons";
 import { Popup } from "@repo/ui/popup";
 import SearchInput from "@repo/ui/searchInput";
 import React, {
   ChangeEvent,
-  ReactNode,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
 
-type Props = { name: string; list: string[] };
+type Props = {
+  name: string;
+  list?: string[];
+  filterName: string;
+  onChange: (filterName: string, value: string | number[]) => void;
+  selectedItems: string[] | number[];
+};
 
-export function ChipFilter({ name, list }: Props) {
+const filterTitleStyle =
+  "text-grey-800 text-base md:text-xl 3xl:text-h6 !font-semibold";
+
+const filterTitleStyleWithoutPopup =
+  "text-grey-800 text-sm md:text-base 3xl:text-xl !font-semibold";
+
+export function ChipFilter({
+  name,
+  list,
+  filterName,
+  onChange,
+  selectedItems,
+}: Props) {
   const [popupIsOpen, setPopupIsOpen] = useState<boolean>(false);
   const contentRef = useRef<HTMLDivElement>(null);
-  updateBodyHeight({ isOpen: popupIsOpen, contentRef });
+  useUpdateBodyHeight({ isOpen: popupIsOpen, contentRef });
+
+  const isItemSelected = (item: string) => {
+    if (filterName === "numberOfSeats") {
+      return (selectedItems as string[]).includes(
+        item.split(" ")[0].replace("+", "")
+      );
+    }
+    return selectedItems.includes(item as never);
+  };
 
   return (
     <Popup
@@ -34,17 +63,20 @@ export function ChipFilter({ name, list }: Props) {
       className="w-[255px] sm:w-[380px]"
       content={
         <div className="space-y-5" ref={contentRef}>
-          <p className="text-grey-800 text-base md:text-xl 3xl:text-h6 !font-semibold">
-            {name}
-          </p>
+          <p className={filterTitleStyle}>{name}</p>
           <HorizontalDivider variant="light" />
           <ul className="list-none flex items-center gap-3 flex-wrap">
-            {list.map((item, index) => (
+            {list?.map((item: string, index) => (
               <li
+                onClick={() => onChange(filterName, item)}
                 key={index}
-                className="px-2 py-3 text-sm md:text-base 3xl:text-xl w-fit rounded-xl border border-grey-300 bg-grey-90 text-grey-900"
+                className={`px-1.5 py-2 text-sm 3xl:text-xl w-fit rounded-xl border cursor-pointer capitalize ${
+                  isItemSelected(item)
+                    ? "border-primary-500 bg-primary-50"
+                    : "border-grey-300 bg-grey-90 text-grey-900"
+                }`}
               >
-                {item}
+                {addSpaceBeforeUppercase(item)}
               </li>
             ))}
           </ul>
@@ -54,7 +86,51 @@ export function ChipFilter({ name, list }: Props) {
   );
 }
 
-export function SearchFilter({ name, list }: Props) {
+export function ChipFilterWithoutPopup({
+  name,
+  list,
+  filterName,
+  onChange,
+  selectedItems,
+}: Props) {
+  const isItemSelected = (item: string) => {
+    if (filterName === "numberOfSeats") {
+      return (selectedItems as string[]).includes(
+        item.split(" ")[0].replace("+", "")
+      );
+    }
+    return selectedItems.includes(item as never);
+  };
+
+  return (
+    <div className="space-y-5">
+      <p className={filterTitleStyleWithoutPopup}>{name}</p>
+      <ul className="list-none flex items-center gap-3 flex-wrap">
+        {list?.map((item: string, index) => (
+          <li
+            onClick={() => onChange(filterName, item)}
+            key={index}
+            className={`px-1.5 py-2 text-sm 3xl:text-xl w-fit rounded-xl border cursor-pointer capitalize ${
+              isItemSelected(item)
+                ? "border-primary-500 bg-primary-50"
+                : "border-grey-300 bg-grey-90 text-grey-900"
+            }`}
+          >
+            {addSpaceBeforeUppercase(item)}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export function SearchFilter({
+  name,
+  list,
+  filterName,
+  onChange,
+  selectedItems,
+}: Props) {
   const [popupIsOpen, setPopupIsOpen] = useState<boolean>(false);
 
   const [search, setSearch] = useState<string>("");
@@ -71,12 +147,20 @@ export function SearchFilter({ name, list }: Props) {
     []
   );
 
+  const filteredList = useMemo(() => {
+    if (!debouncedSearch) return list;
+
+    return list?.filter((item) =>
+      item.toLowerCase().includes(debouncedSearch.toLowerCase())
+    );
+  }, [list, debouncedSearch]);
+
   useEffect(() => {
     debouncedListingSearch(search);
   }, [search, debouncedListingSearch]);
 
   const contentRef = useRef<HTMLDivElement>(null);
-  updateBodyHeight({ isOpen: popupIsOpen, contentRef });
+  useUpdateBodyHeight({ isOpen: popupIsOpen, contentRef });
 
   return (
     <Popup
@@ -93,9 +177,7 @@ export function SearchFilter({ name, list }: Props) {
       className="w-[255px] sm:w-[300px]"
       content={
         <div className="space-y-5" ref={contentRef}>
-          <p className="text-grey-800 text-base md:text-xl 3xl:text-h6 !font-semibold">
-            {name}
-          </p>
+          <p className={filterTitleStyle}>{name}</p>
           <SearchInput
             icon
             placeholder={`Search ${name}`}
@@ -105,13 +187,19 @@ export function SearchFilter({ name, list }: Props) {
               handleSearch(event.target.value)
             }
           />
-          <ul className="list-none space-y-2">
-            {list.map((item, index) => (
+          <ul className="list-none space-y-2 max-h-[450px] overflow-y-auto">
+            {filteredList?.map((item, index) => (
               <li
+                onClick={() => onChange(filterName, item)}
                 key={index}
-                className="px-2 py-1.5 text-xs 3xl:text-sm w-full text-grey-900"
+                className={`px-2 py-1.5 text-xs 3xl:text-sm w-full cursor-pointer capitalize
+                  ${
+                    selectedItems?.includes(item as never)
+                      ? "text-primary-500 bg-primary-50"
+                      : "text-grey-900"
+                  }`}
               >
-                {item}
+                {addSpaceBeforeUppercase(item)}
               </li>
             ))}
           </ul>
@@ -120,48 +208,95 @@ export function SearchFilter({ name, list }: Props) {
     />
   );
 }
-export function RangeFilter({ name, list }: Props) {
+
+export function SearchFilterWithoutPopup({
+  name,
+  list,
+  filterName,
+  onChange,
+  selectedItems,
+}: Props) {
   const [popupIsOpen, setPopupIsOpen] = useState<boolean>(false);
 
+  const [search, setSearch] = useState<string>("");
+  const [debouncedSearch, setDebouncedSearch] = useState<string>("");
+
+  const handleSearch = (value: string) => {
+    setSearch(value);
+  };
+
+  const debouncedListingSearch = useCallback(
+    debounce((query) => {
+      setDebouncedSearch(query);
+    }, 500),
+    []
+  );
+
+  const filteredList = useMemo(() => {
+    if (!debouncedSearch) return list;
+
+    return list?.filter((item) =>
+      item.toLowerCase().includes(debouncedSearch.toLowerCase())
+    );
+  }, [list, debouncedSearch]);
+
+  useEffect(() => {
+    debouncedListingSearch(search);
+  }, [search, debouncedListingSearch]);
+
   const contentRef = useRef<HTMLDivElement>(null);
-  updateBodyHeight({ isOpen: popupIsOpen, contentRef });
+  useUpdateBodyHeight({ isOpen: popupIsOpen, contentRef });
 
   return (
-    <Popup
-      open={true}
-      isOpen={popupIsOpen}
-      handleIsOpen={(open: boolean) => setPopupIsOpen(open)}
-      trigger={
-        <button className="bg-white border border-grey-300 rounded-lg px-3 py-1 flex items-center gap-2 text-grey-600 text-xs 3xl:text-sm !font-semibold">
-          {name}
-          {Icons.ic_chevron_down}
-        </button>
-      }
-      align="start"
-      className="w-[255px] sm:w-[380px]"
-      content={
-        <div className="space-y-5" ref={contentRef}>
-          <p className="text-grey-800 text-base md:text-xl 3xl:text-h6 !font-semibold">
+    <div className="space-y-5">
+      <p className={filterTitleStyleWithoutPopup}>{name}</p>
+      <Popup
+        open={true}
+        isOpen={popupIsOpen}
+        handleIsOpen={(open: boolean) => setPopupIsOpen(open)}
+        trigger={
+          <button className="w-full bg-white border border-grey-300 rounded-2xl p-3 flex items-center justify-between gap-2 text-grey-700 text-sm 3xl:text-base">
             {name}
-          </p>
-          <HorizontalDivider variant="light" />
-          <ul className="list-none flex items-center gap-3 flex-wrap">
-            {list.map((item, index) => (
-              <li
-                key={index}
-                className="px-2 py-3 text-sm md:text-base 3xl:text-xl w-fit rounded-xl border border-grey-300 bg-grey-90 text-grey-900"
-              >
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      }
-    />
+            {Icons.ic_chevron_down}
+          </button>
+        }
+        align="start"
+        className="w-[255px] sm:w-[220px] 3xl:w-[340px]"
+        content={
+          <div className="space-y-5" ref={contentRef}>
+            <SearchInput
+              icon
+              placeholder={`Search ${name}`}
+              name="vehicleMakeSearch"
+              value={search}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                handleSearch(event.target.value)
+              }
+            />
+            <ul className="list-none space-y-2 max-h-[450px] overflow-y-auto">
+              {filteredList?.map((item, index) => (
+                <li
+                  onClick={() => onChange(filterName, item)}
+                  key={index}
+                  className={`px-2 py-1.5 text-xs 3xl:text-sm w-full cursor-pointer capitalize
+                  ${
+                    selectedItems?.includes(item as never)
+                      ? "text-primary-500 bg-primary-50"
+                      : "text-grey-900"
+                  }`}
+                >
+                  {addSpaceBeforeUppercase(item)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        }
+      />
+    </div>
   );
 }
 
-const updateBodyHeight = ({
+const useUpdateBodyHeight = ({
   isOpen,
   contentRef,
 }: {
@@ -192,4 +327,166 @@ const updateBodyHeight = ({
       document.body.style.overflow = "";
     };
   }, [isOpen]);
+
+  return {};
 };
+
+export function RangeFilter({
+  name,
+  onChange,
+  filterName,
+  selectedItems,
+}: Props) {
+  const [popupIsOpen, setPopupIsOpen] = useState<boolean>(false);
+
+  const debouncedRangeChange = useCallback(
+    debounce((value: number[]) => {
+      onChange(filterName, value);
+    }, 500),
+    []
+  );
+
+  const handleRangeChange = (value: number | number[]) => {
+    if (Array.isArray(value)) {
+      debouncedRangeChange(value);
+    }
+  };
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  useUpdateBodyHeight({ isOpen: popupIsOpen, contentRef });
+
+  const formatPrice = (value: number) => `${value / 1000}K/day`;
+
+  return (
+    <Popup
+      open={true}
+      isOpen={popupIsOpen}
+      handleIsOpen={(open: boolean) => setPopupIsOpen(open)}
+      trigger={
+        <button className="bg-white border border-grey-300 rounded-lg px-3 py-1 flex items-center gap-2 text-grey-600 text-xs 3xl:text-sm !font-semibold">
+          {name}
+          {Icons.ic_chevron_down}
+        </button>
+      }
+      align="start"
+      className="w-[255px] sm:w-[380px]"
+      content={
+        <div className="space-y-5" ref={contentRef}>
+          <p className={filterTitleStyle}>{name}</p>
+          <HorizontalDivider variant="light" />
+          <div className="flex gap-4 justify-center">
+            <p className="text-sm text-grey-800 w-fit">
+              {formatPrice(selectedItems[0] as number)}
+            </p>
+            <Slider
+              range
+              min={0}
+              max={100000}
+              step={1000}
+              // defaultValue={selectedItems[0] as number}
+              value={selectedItems as [number, number]}
+              onChange={handleRangeChange}
+              className="!w-[55%]"
+              trackStyle={[{ backgroundColor: "#0673FF", height: 4 }]}
+              handleStyle={[
+                {
+                  backgroundColor: "white",
+                  border: "2px solid white",
+                  height: "20px",
+                  width: "20px",
+                  boxShadow:
+                    "0px 4.29px 9.29px 0px #0000001F, 0px 0.36px 2.86px 0px #0000001F",
+                  marginTop: "-8px",
+                  opacity: 1,
+                },
+                {
+                  backgroundColor: "white",
+                  border: "2px solid white",
+                  height: "20px",
+                  width: "20px",
+                  boxShadow:
+                    "0px 4.29px 9.29px 0px #0000001F, 0px 0.36px 2.86px 0px #0000001F",
+                  marginTop: "-8px",
+                  opacity: 1,
+                },
+              ]}
+              railStyle={{ backgroundColor: "#0673FF", height: 4 }}
+            />
+            <p className="text-sm text-grey-800 w-fit">
+              {formatPrice(selectedItems[1] as number)}
+            </p>
+          </div>
+        </div>
+      }
+    />
+  );
+}
+
+export function RangeFilterWithoutPopup({
+  name,
+  onChange,
+  filterName,
+  selectedItems,
+}: Props) {
+  const debouncedRangeChange = useCallback(
+    debounce((value: number[]) => {
+      onChange(filterName, value);
+    }, 500),
+    []
+  );
+
+  const handleRangeChange = (value: number | number[]) => {
+    if (Array.isArray(value)) {
+      debouncedRangeChange(value);
+    }
+  };
+  const formatPrice = (value: number) => `${value / 1000}K/day`;
+
+  return (
+    <div className="space-y-5">
+      <p className={filterTitleStyleWithoutPopup}>{name}</p>
+      <div className="flex gap-4 justify-center">
+        <p className="text-sm text-grey-800 w-fit">
+          {formatPrice(selectedItems[0] as number)}
+        </p>
+        <Slider
+          range
+          min={0}
+          max={100000}
+          step={1000}
+          // defaultValue={selectedItems[0] as number}
+          value={selectedItems as [number, number]}
+          onChange={handleRangeChange}
+          className="!w-[55%]"
+          trackStyle={[{ backgroundColor: "#0673FF", height: 4 }]}
+          handleStyle={[
+            {
+              backgroundColor: "white",
+              border: "2px solid white",
+              height: "20px",
+              width: "20px",
+              boxShadow:
+                "0px 4.29px 9.29px 0px #0000001F, 0px 0.36px 2.86px 0px #0000001F",
+              marginTop: "-8px",
+              opacity: 1,
+            },
+            {
+              backgroundColor: "white",
+              border: "2px solid white",
+              height: "20px",
+              width: "20px",
+              boxShadow:
+                "0px 4.29px 9.29px 0px #0000001F, 0px 0.36px 2.86px 0px #0000001F",
+              marginTop: "-8px",
+              opacity: 1,
+            },
+          ]}
+          railStyle={{ backgroundColor: "#0673FF", height: 4 }}
+        />
+        <p className="text-sm text-grey-800 w-fit">
+          {formatPrice(selectedItems[1] as number)}
+        </p>
+      </div>
+    </div>
+  );
+}

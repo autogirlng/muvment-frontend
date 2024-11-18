@@ -16,41 +16,41 @@ const cities = [
     name: "Lagos",
     description:
       "Experience the dynamic energy of Lagos with our top-rated vehicles",
-    link: "/",
+    link: "/explore/cities/lagos",
     image: "/images/landing/1.jpg",
   },
   {
     name: "Accra",
     description:
       "Discover the vibrant pulse of Accra with Muvment’s premium rentals",
-    link: "/",
+    link: "/explore/cities/accra",
     image: "/images/landing/2.jpg",
   },
   {
     name: "Port-Harcourt",
     description:
       "Enjoy the scenic beauty of Port Harcourt with our well-maintained vehicles",
-    link: "/",
+    link: "/explore/cities/port-harcourt",
     image: "/images/landing/3.jpg",
   },
   {
     name: "Abuja",
     description: "Explore the capital city of Abuja with our reliable rentals",
-    link: "/",
+    link: "/explore/cities/abuja",
     image: "/images/landing/4.jpg",
   },
   {
     name: "Benin",
     description:
       "Enjoy a great travel experience in the culturally rich city of Benin",
-    link: "/",
+    link: "/explore/cities/benin",
     image: "/images/landing/5.jpg",
   },
   {
     name: "Enugu",
     description:
       "Experience the charm of Enugu with Muvment’s top-notch rental cars",
-    link: "/",
+    link: "/explore/cities/enugu",
     image: "/images/landing/6.jpg",
   },
 ];

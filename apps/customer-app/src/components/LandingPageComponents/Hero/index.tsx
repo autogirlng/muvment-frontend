@@ -8,6 +8,7 @@ import SearchInput from "@repo/ui/searchInput";
 type Props = {};
 
 function Hero({}: Props) {
+  // from time and until time
   const [fromDateValue, setFromDateValue] = useState<CalendarValue>(null);
   const [fromCalendarIsOpen, setFromCalendarIsOpen] = useState<boolean>(false);
   const [untilDateValue, setUntilDateValue] = useState<CalendarValue>(null);

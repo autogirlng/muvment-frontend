@@ -8,7 +8,7 @@ export default function ExploreNewListingsPage() {
     <ExplorePageLayout
       title="New Listings"
       icon={Icons.ic_top_rated_vehicle}
-      total={50}
+      type="all"
     />
   );
 }

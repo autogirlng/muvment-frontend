@@ -13,7 +13,7 @@ function NewListings({}: Props) {
         <div className="flex flex-col items-center lg:items-start space-y-5 text-white text-center lg:text-left">
           {Icons.ic_star_double}
           <h1 className="text-h5 md:text-h2 3xl:text-h1 max-w-[860px]">
-            Find New Listings
+            Find New Listings 
           </h1>
           <p className="hidden lg:block text-base md:text-xl 3xl:text-h6 !font-normal max-w-[480px]">
             Whether you’re an individual looking to earn extra income or a

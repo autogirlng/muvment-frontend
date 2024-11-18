@@ -29,10 +29,10 @@ const FilterBy: React.FC<FilterByProps> = ({
   const contentRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [contentHeight, setContentHeight] = useState<number>(0);
-
+  
   const [selectedFilters, setSelectedFilters] = useState<
     Record<string, string[]>
-  >({});
+    >({});
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(
     categories.reduce(
       (acc, category, index) => ({ ...acc, [category.title]: index === 0 }),

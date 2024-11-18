@@ -9,19 +9,57 @@ import Icons from "@repo/ui/icons";
 import { VerticalDivider } from "@repo/ui/divider";
 import Chip from "@repo/ui/chip";
 import { keyAndValueInAChip } from "@/utils/functions";
+import cn from "classnames";
 
 type Props = {
+  showAllFilters: boolean;
+  isDisplayList: boolean;
   vehicleImages: string[];
-  vehicleDetails: {  [key: string]: string | JSX.Element }[];
+  vehicleDetails: { [key: string]: string | JSX.Element }[];
+  name: string;
+  type: string;
+  location: string;
+  dailyPrice: number;
+  extraHoursFee: number;
+  currency: string;
 };
 
-const ExploreVehicleCard = ({ vehicleImages, vehicleDetails }: Props) => (
-  <div className="flex flex-col md:flex-row w-full border border-grey-200 rounded-[42px] pr-4">
-    <div className="w-full w-full md:w-[350px] relative">
+const ExploreVehicleCard = ({
+  showAllFilters,
+  isDisplayList,
+  vehicleImages,
+  name,
+  type,
+  location,
+  dailyPrice,
+  extraHoursFee,
+  currency,
+  vehicleDetails,
+}: Props) => (
+  <div
+    className={cn(
+      "w-full border border-grey-200 rounded-[42px]",
+      isDisplayList && showAllFilters
+        ? "flex flex-col xl:flex-row xl:pr-4 xl:h-[230px]"
+        : isDisplayList
+          ? "flex flex-col md:flex-row pr-4 md:h-[230px]"
+          : ""
+    )}
+  >
+    <div
+      className={cn(
+        "w-full relative",
+        isDisplayList && showAllFilters
+          ? "xl:w-[350px]"
+          : isDisplayList
+            ? "md:w-[350px]"
+            : ""
+      )}
+    >
       <div className="absolute top-3 left-3 z-10 text-grey-800 bg-white py-1 px-3 rounded-3xl flex items-center gap-0.5">
         <span className="*:!w-3 *:!h-3">{Icons.ic_location_filled}</span>
         <span className="uppercase text-xs 3xl:text-sm !font-semibold tracking-wider">
-          LAGOS
+          {location}
         </span>
       </div>
       <Swiper
@@ -35,61 +73,111 @@ const ExploreVehicleCard = ({ vehicleImages, vehicleDetails }: Props) => (
         {vehicleImages.map((image, index) => (
           <SwiperSlide key={index}>
             <Image
-              src={image}
+              src={image ?? "/images/vehices/sedan.png"}
               alt=""
-              width={348}
+              width={328}
               height={233}
-              className="w-full h-[182px] md:h-[230px] rounded-t-3xl md:rounded-tr-none md:rounded-s-3xl object-cover"
+              className={cn(
+                "w-full h-[182px] md:h-[230px] object-cover",
+                isDisplayList && showAllFilters
+                  ? "rounded-t-3xl xl:rounded-tr-none xl:rounded-s-3xl"
+                  : isDisplayList
+                    ? "rounded-t-3xl md:rounded-tr-none md:rounded-s-3xl"
+                    : "rounded-t-3xl"
+              )}
             />
           </SwiperSlide>
         ))}
       </Swiper>
     </div>
-    <div className="w-full md:w-[calc(100%-350px)] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-      <div className="px-5 3xl:px-10 py-8 text-grey-600 space-y-4 text-base md:text-xl 3xl:text-h6">
+    <div
+      className={cn(
+        "w-full",
+        isDisplayList && showAllFilters
+          ? "py-6 xl:py-0 px-4 xl:px-0 space-y-3 xl:space-y-0 xl:w-[calc(100%-350px)] flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4"
+          : isDisplayList
+            ? "md:w-[calc(100%-350px)] flex flex-col md:flex-row md:items-center md:justify-between gap-4 py-6 md:py-0 px-4 md:px-0"
+            : "py-6 px-4 3xl:px-8 space-y-3"
+      )}
+    >
+      <div
+        className={cn(
+          "text-grey-600 text-base md:text-xl 3xl:text-h6",
+          isDisplayList && showAllFilters
+            ? "xl:px-5 xl:min-w-[230px] 2xl:min-w-fit space-y-4"
+            : isDisplayList
+              ? "md:px-5 3xl:px-10 md:py-8 space-y-4"
+              : "space-y-3"
+        )}
+      >
         <h5 className="text-grey-800 text-xl md:text-h6 3xl:text-h5 !font-semibold">
-          Toyota Corolla 2015
+          {name}
         </h5>
-        <div className="flex items-center divide-x divide-grey-200 space-x-3">
+        <div
+          className={cn(
+            isDisplayList
+              ? "flex items-center divide-x divide-grey-200 space-x-3"
+              : "space-y-3",
+            showAllFilters && "2xl:divide-x 2xl:divide-grey-200 "
+          )}
+        >
           <div>
-            <p className="text-sm 3xl:text-base">Daily</p>
+            {isDisplayList && <p className="text-sm 3xl:text-base">Daily</p>}
             <p className="text-sm md:text-base 3xl:text-xl !font-semibold">
-              NGN 420,000
+              {currency} {dailyPrice} {!isDisplayList && "/day"}
             </p>
           </div>
           <div className="pl-3">
-            <p className="text-sm 3xl:text-base">Extra Hours</p>
+            {isDisplayList && (
+              <p className="text-sm 3xl:text-base">Extra Hours</p>
+            )}
             <p className="text-sm md:text-base 3xl:text-xl !font-semibold">
-              NGN 420,000
+              {currency} {extraHoursFee} {!isDisplayList && "/extra hour"}
             </p>
           </div>
         </div>
-        <p>Sedan</p>
-      </div>
-      <VerticalDivider className="hidden md:block" />
-
-      <div className="flex flex-wrap gap-3 md:max-w-[365px] 3xl:max-w-[400px]">
-        {vehicleDetails?.map((detail, index) => {
-          const [key, value] = Object.entries(detail)[0];
-          if (key !== "icon") {
-            return (
-              <Chip
-                icon={detail.icon}
-                key={index}
-                text={keyAndValueInAChip(key, value as string)}
-                variant="filled"
-                radius="sm"
-                color="lighter"
-                className="!px-2 !text-grey-900 !bg-grey-75 border border-grey-200"
-              />
-            );
-          }
-        })}
+        <p>{type}</p>
       </div>
 
-      <VerticalDivider className="hidden md:block" />
+      {isDisplayList && (
+        <VerticalDivider
+          className={showAllFilters ? "hidden xl:block" : "hidden md:block"}
+        />
+      )}
 
-      <div className="bg-grey-90 text-grey-600 h-10 w-10 rounded-full flex items-center justify-center">
+      {isDisplayList && (
+        <div
+          className={cn(
+            "flex flex-wrap gap-3 3xl:max-w-[400px]",
+            showAllFilters ? "xl:max-w-[365px]" : "xl:max-w-[365px]"
+          )}
+        >
+          {vehicleDetails?.map((detail, index) => {
+            const [key, value] = Object.entries(detail)[0];
+            if (key !== "icon") {
+              return (
+                <Chip
+                  icon={detail.icon}
+                  key={index}
+                  text={keyAndValueInAChip(key, value as string)}
+                  variant="filled"
+                  radius="sm"
+                  color="lighter"
+                  className="!px-2 !text-grey-900 !bg-grey-75 border border-grey-200"
+                />
+              );
+            }
+          })}
+        </div>
+      )}
+
+      {isDisplayList && (
+        <VerticalDivider
+          className={showAllFilters ? "hidden xl:block" : "hidden md:block"}
+        />
+      )}
+
+      <div className="bg-grey-90 text-grey-600 h-10 w-10 min-w-[2.5rem] rounded-full flex items-center justify-center">
         {Icons.ic_whishlist}
       </div>
     </div>

@@ -1,5 +1,7 @@
 import LandingPageSectionHeader from "@/components/Header/LandingPageSectionHeader";
+import Icons from "@repo/ui/icons";
 import Image from "next/image";
+import Link from "next/link";
 
 type Props = {};
 
@@ -31,10 +33,19 @@ function VehicleCategories({}: Props) {
   return (
     <section className="py-[98px] md:pt-0 md:pb-[200px]">
       <div className="container space-y-[70px] md:space-y-[110px]">
-        <LandingPageSectionHeader
-          className="text-primary-900"
-          title="Vehicle Categories"
-        />
+        <div className="container !flex items-center justify-between">
+          <LandingPageSectionHeader
+            className="text-primary-900"
+            title="Vehicle Categories"
+          />
+          <Link
+            href="/explore/categories"
+            className="hidden md:flex items-center gap-2 text-grey-500 text-xl md:text-h6 3xl:text-5 !font-bold"
+          >
+            <span>See All</span>
+            {Icons.ic_chevron_right}
+          </Link>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-11">
           {vehicles.map((option, index) => (
