@@ -41,6 +41,7 @@ export const Popup = ({
   open,
   isOpen,
   handleIsOpen,
+  align,
 }: {
   content: ReactNode;
   trigger: ReactNode;
@@ -48,12 +49,13 @@ export const Popup = ({
   open?: boolean;
   isOpen?: boolean;
   handleIsOpen?: (open: boolean) => void;
+  align?: "center" | "end" | "start";
 }) => (
   <Popover.Root {...(open ? { open: isOpen, onOpenChange: handleIsOpen } : {})}>
     <Popover.Trigger asChild>{trigger}</Popover.Trigger>
     <Popover.Portal>
       <Popover.Content
-        align="end"
+        align={align ?? "end"}
         className={cn(
           "rounded-xl p-4 w-[225px] sm:w-[255px] bg-white border border-grey-200 will-change-[transform,opacity] data-[state=open]:data-[side=top]:animate-slideDownAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade",
           className

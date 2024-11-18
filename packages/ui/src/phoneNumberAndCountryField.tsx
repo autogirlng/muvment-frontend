@@ -1,9 +1,9 @@
 import cn from "classnames";
 import "react-phone-number-input/style.css";
-import PhoneInput from "react-phone-number-input/input";
 import en from "react-phone-number-input/locale/en";
 import SelectCountry from "@repo/ui/selectCountry";
 import InputField from "@repo/ui/inputField";
+import Tooltip from "@repo/ui/tooltip";
 
 type PhoneNumberAndCountryFieldProps = {
   inputName: string;
@@ -36,6 +36,9 @@ type PhoneNumberAndCountryFieldProps = {
   selectDisabled?: boolean;
 
   variant?: "outlined" | "filled";
+  info?: boolean;
+  tooltipTitle?: string;
+  tooltipDescription?: string;
 };
 
 const PhoneNumberAndCountryField = ({
@@ -58,17 +61,26 @@ const PhoneNumberAndCountryField = ({
   selectError,
   inputDisabled = false,
   selectDisabled = false,
-
+  info,
+  tooltipTitle,
+  tooltipDescription,
   variant,
 }: PhoneNumberAndCountryFieldProps) => (
   <div className="w-full space-y-1">
     <label
       className={cn(
         "label text-sm block font-medium text-nowrap",
-        variant === "filled" ? "text-white" : "text-grey-900"
+        variant === "filled" ? "text-white" : "text-grey-900",
+        info && "flex items-center gap-3"
       )}
     >
       <span> {label}</span>
+      {info && (
+        <Tooltip
+          title={tooltipTitle || ""}
+          description={tooltipDescription || ""}
+        />
+      )}
     </label>
     <div
       className={cn(

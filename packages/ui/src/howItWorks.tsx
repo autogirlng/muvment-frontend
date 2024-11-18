@@ -1,16 +1,17 @@
 import cn from "classnames";
-import React from "react";
+import Button from "@repo/ui/button";
 
 type Props = { title: string; steps: HowItWorksProps[] };
 
 type HowItWorksProps = {
   title: string;
   description: string;
+  button?: string;
 };
 
 function HowItWorks({ title, steps }: Props) {
   return (
-    <section className="py-[120px] md:py-[200px]">
+    <section className="py-[120px] md:pt-0 md:pb-[200px]">
       <div className="space-y-8 md:space-y-[141px] max-w-[914px] mx-auto px-5 md:px-0">
         <h1
           className={
@@ -46,6 +47,7 @@ function HowItWorks({ title, steps }: Props) {
                   </p>
                   <h4 className="text-h5 3xl:text-h4">{step.title}</h4>
                   <p className="text-xs md:text-sm">{step.description}</p>
+                  {step.button && <Button variant="filled" color="primary">{step.button}</Button>}
                 </div>
               </div>
             </div>
