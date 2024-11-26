@@ -13,6 +13,7 @@ export default function ExploreCitiesPage({
       title={`Vehicles In ${params.city}`}
       icon={Icons.ic_location}
       type="all"
+      location={params.city}
     />
   );
 }

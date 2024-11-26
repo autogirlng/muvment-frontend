@@ -8,10 +8,12 @@ import Image from "next/image";
 import Icons from "@repo/ui/icons";
 import { VerticalDivider } from "@repo/ui/divider";
 import Chip from "@repo/ui/chip";
-import { keyAndValueInAChip } from "@/utils/functions";
+import { formatNumberWithCommas, keyAndValueInAChip } from "@/utils/functions";
 import cn from "classnames";
+import Link from "next/link";
 
 type Props = {
+  vehicleId: string;
   showAllFilters: boolean;
   isDisplayList: boolean;
   vehicleImages: string[];
@@ -22,9 +24,14 @@ type Props = {
   dailyPrice: number;
   extraHoursFee: number;
   currency: string;
+  fromDate?: string;
+  untilDate?: string;
+  fromTime?: string;
+  untilTime?: string;
 };
 
 const ExploreVehicleCard = ({
+  vehicleId,
   showAllFilters,
   isDisplayList,
   vehicleImages,
@@ -35,6 +42,10 @@ const ExploreVehicleCard = ({
   extraHoursFee,
   currency,
   vehicleDetails,
+  fromDate,
+  untilDate,
+  fromTime,
+  untilTime,
 }: Props) => (
   <div
     className={cn(
@@ -110,9 +121,26 @@ const ExploreVehicleCard = ({
               : "space-y-3"
         )}
       >
-        <h5 className="text-grey-800 text-xl md:text-h6 3xl:text-h5 !font-semibold">
-          {name}
-        </h5>
+        <Link
+          href={`/vehicle/details/${vehicleId}${
+            fromDate || fromTime || untilDate || untilTime
+              ? // || bookingType
+                `?${[
+                  fromDate && `startDate=${fromDate}`,
+                  fromTime && `startTime=${fromTime}`,
+                  untilDate && `endDate=${untilDate}`,
+                  untilTime && `endTime=${untilTime}`,
+                  // bookingType && `bookingType=${bookingType}`,
+                ]
+                  .filter(Boolean)
+                  .join("&")}`
+              : ""
+          }`}
+        >
+          <h5 className="text-grey-800 text-xl md:text-h6 3xl:text-h5 !font-semibold">
+            {name}
+          </h5>
+        </Link>
         <div
           className={cn(
             isDisplayList
@@ -124,7 +152,8 @@ const ExploreVehicleCard = ({
           <div>
             {isDisplayList && <p className="text-sm 3xl:text-base">Daily</p>}
             <p className="text-sm md:text-base 3xl:text-xl !font-semibold">
-              {currency} {dailyPrice} {!isDisplayList && "/day"}
+              {currency} {formatNumberWithCommas(dailyPrice)}{" "}
+              {!isDisplayList && "/day"}
             </p>
           </div>
           <div className="pl-3">

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Review } from "@/utils/types";
 import Pagination from "@repo/ui/pagination";
-import ReviewCard from "@repo/ui/reviewCard";
-import EmptyState from "@repo/ui/emptyState";
+import ReviewCard from "@/components/ReviewCard";
+import EmptyState from "@/components/EmptyState";
 
 type Props = { id: string };
 

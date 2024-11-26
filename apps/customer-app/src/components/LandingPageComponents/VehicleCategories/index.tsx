@@ -49,7 +49,7 @@ function VehicleCategories({}: Props) {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-11">
           {vehicles.map((option, index) => (
-            <div key={index} className="flex flex-col items-center gap-[6px]">
+            <div key={index} className="flex flex-col items-center gap-1.5">
               <Image
                 src={option.image}
                 alt=""

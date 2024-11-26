@@ -28,7 +28,7 @@ export default function MainFilters({
   filters,
 }: Props) {
   return (
-    <div className={cn("flex items-center gap-[14px]")}>
+    <div className="hidden md:flex items-center gap-[14px]">
       <RangeFilter
         name="Daily price"
         filterName="price"
@@ -75,7 +75,8 @@ export default function MainFilters({
         onClick={() => setShowAllFilters(true)}
         className="bg-white border border-grey-900 rounded-lg px-3 py-1 flex items-center gap-2 text-grey-900 text-xs 3xl:text-sm !font-semibold"
       >
-        {Icons.ic_filter} <span>View all filters</span>
+        {Icons.ic_filter}
+        <span className="hidden md:block">View all filters</span>
       </button>
     </div>
   );

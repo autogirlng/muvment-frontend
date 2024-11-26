@@ -1,30 +1,36 @@
 import { Formik, Form } from "formik";
 import { StepperNavigation } from "@repo/ui/stepper";
 import InputField from "@repo/ui/inputField";
-import { personalInformationSchema } from "@/utils/validationSchema";
+import { personalInformationOthersSchema } from "@/utils/validationSchema";
 import { PersonalInformationOthersValues } from "@/utils/types";
 import PhoneNumberAndCountryField from "@repo/ui/phoneNumberAndCountryField";
-import { replaceCharactersWithString } from "@/utils/functions";
+import {
+  getExistingBookingInformation,
+  replaceCharactersWithString,
+  saveAndUpdateBookingInformation,
+} from "@/utils/functions";
 import { getCountryCallingCode } from "react-phone-number-input";
-import { useState } from "react";
 import FormRow from "../FormRow";
 import TextArea from "@repo/ui/textarea";
 import SelectInput from "@repo/ui/select";
+import { tripPurposeOptions } from "@/utils/data";
 
 type Props = {
   steps: string[];
   currentStep: number;
   setCurrentStep: (step: number) => void;
+  vehicleId: string;
 };
 
 const initialValues: PersonalInformationOthersValues = {
-  recipientsFullName: "",
-  recipientsEmail: "",
-  recipientsPhoneNumber: "",
-  recipientsCountry: "NG",
-  recipientsCountryCode: "+234",
+  guestName: "",
+  guestEmail: "",
+  guestPhoneNumber: "",
+  country: "NG",
+  countryCode: "+234",
   specialInstructions: "",
   tripPurpose: "",
+
   userEmail: "",
   userPhoneNumber: "",
   userCountry: "NG",
@@ -35,13 +41,22 @@ const PersonalInformationFormOthers = ({
   steps,
   currentStep,
   setCurrentStep,
+  vehicleId,
 }: Props) => {
   return (
     <Formik
-      initialValues={initialValues}
-      //       validationSchema={personalInformationSchema}
+      initialValues={getExistingBookingInformation(
+        initialValues,
+        vehicleId,
+        "personalInformation"
+      )}
+      validationSchema={personalInformationOthersSchema}
       onSubmit={(values, { setSubmitting }) => {
-        console.log("Form values:", values);
+        saveAndUpdateBookingInformation(
+          values,
+          vehicleId,
+          "personalInformation"
+        );
         setCurrentStep(currentStep + 1);
 
         setSubmitting(false);
@@ -65,68 +80,68 @@ const PersonalInformationFormOthers = ({
         <Form className="max-w-[800px] w-full space-y-8">
           <FormRow>
             <InputField
-              name="recipientsFullName"
-              id="recipientsFullName"
+              name="guestName"
+              id="guestName"
               type="text"
               label="Recipient’s full name"
               placeholder="Enter recipient’s full name"
-              value={values.recipientsFullName}
+              value={values.guestName}
               onChange={handleChange}
               onBlur={handleBlur}
               error={
-                errors.recipientsFullName && touched.recipientsFullName
-                  ? errors.recipientsFullName
+                errors.guestName && touched.guestName
+                  ? String(errors.guestName)
                   : ""
               }
             />
             <PhoneNumberAndCountryField
-              inputName="recipientsPhoneNumber"
-              selectName="recipientsCountry"
-              inputId="recipientsPhoneNumber"
-              selectId="recipientsCountry"
+              inputName="guestPhoneNumber"
+              selectName="country"
+              inputId="guestPhoneNumber"
+              selectId="country"
               label="Recipient’s phone number"
               inputPlaceholder="Enter recipient’s phone number"
               selectPlaceholder="+234"
-              inputValue={values.recipientsPhoneNumber}
-              selectValue={values.recipientsCountry}
+              inputValue={values.guestPhoneNumber}
+              selectValue={values.country}
               inputOnChange={(event) => {
                 const number = replaceCharactersWithString(event.target.value);
-                setFieldTouched("recipientsPhoneNumber", true);
-                setFieldValue("recipientsPhoneNumber", number);
+                setFieldTouched("guestPhoneNumber", true);
+                setFieldValue("guestPhoneNumber", number);
               }}
               selectOnChange={(value: string) => {
                 const countryCode = `+${getCountryCallingCode(value as any)}`;
-                setFieldValue("recipientsCountry", value);
-                setFieldValue("recipientsCountryCode", countryCode);
+                setFieldValue("country", value);
+                setFieldValue("countryCode", countryCode);
+                setFieldValue("userCountry", value);
+                setFieldValue("userCountryCode", countryCode);
               }}
               inputOnBlur={handleBlur}
               selectOnBlur={handleBlur}
               // inputClassname
               selectClassname="!w-[130px]"
               inputError={
-                errors.recipientsPhoneNumber && touched.recipientsPhoneNumber
-                  ? errors.recipientsPhoneNumber
+                errors.guestPhoneNumber && touched.guestPhoneNumber
+                  ? String(errors.guestPhoneNumber)
                   : ""
               }
               selectError={
-                errors.recipientsCountry && touched.recipientsCountry
-                  ? errors.recipientsCountry
-                  : ""
+                errors.country && touched.country ? String(errors.country) : ""
               }
             />
           </FormRow>
           <InputField
-            name="recipientsEmail"
-            id="recipientsEmail"
+            name="guestEmail"
+            id="guestEmail"
             type="text"
             label="Recipient’s email"
             placeholder="Enter recipient’s email"
-            value={values.recipientsEmail}
+            value={values.guestEmail}
             onChange={handleChange}
             onBlur={handleBlur}
             error={
-              errors.recipientsEmail && touched.recipientsEmail
-                ? errors.recipientsEmail
+              errors.guestEmail && touched.guestEmail
+                ? String(errors.guestEmail)
                 : ""
             }
             info
@@ -146,7 +161,7 @@ thank you.`}
             onBlur={handleBlur}
             error={
               errors.specialInstructions && touched.specialInstructions
-                ? errors.specialInstructions
+                ? String(errors.specialInstructions)
                 : ""
             }
             info
@@ -156,10 +171,10 @@ thank you.`}
 
           <SelectInput
             id="tripPurpose"
-            label="Trip Purpose(optional)"
+            label="Trip Purpose"
             placeholder="Select a purpose for this trip"
             variant="outlined"
-            options={[{ option: "Black", value: "Black" }]}
+            options={tripPurposeOptions}
             value={values.tripPurpose}
             onChange={(value: string) => {
               setFieldTouched("tripPurpose", true);
@@ -167,7 +182,7 @@ thank you.`}
             }}
             error={
               errors.tripPurpose && touched.tripPurpose
-                ? errors.tripPurpose
+                ? String(errors.tripPurpose)
                 : ""
             }
             info
@@ -186,7 +201,9 @@ thank you.`}
               onChange={handleChange}
               onBlur={handleBlur}
               error={
-                errors.userEmail && touched.userEmail ? errors.userEmail : ""
+                errors.userEmail && touched.userEmail
+                  ? String(errors.userEmail)
+                  : ""
               }
               info
               tooltipTitle=""
@@ -200,6 +217,7 @@ thank you.`}
               label="Your phone number"
               inputPlaceholder="Enter your phone number"
               selectPlaceholder="+234"
+              selectDisabled
               inputValue={values.userPhoneNumber}
               selectValue={values.userCountry}
               inputOnChange={(event) => {
@@ -218,12 +236,12 @@ thank you.`}
               selectClassname="!w-[130px]"
               inputError={
                 errors.userPhoneNumber && touched.userPhoneNumber
-                  ? errors.userPhoneNumber
+                  ? String(errors.userPhoneNumber)
                   : ""
               }
               selectError={
                 errors.userCountry && touched.userCountry
-                  ? errors.userCountry
+                  ? String(errors.userCountry)
                   : ""
               }
               info

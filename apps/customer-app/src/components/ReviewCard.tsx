@@ -11,6 +11,7 @@ const ReviewCard = ({
   isSelected,
   size,
   gap,
+  bgColor,
 }: {
   review: Review | ReviewReply;
   onClick?: () => void;
@@ -19,6 +20,7 @@ const ReviewCard = ({
 
   size?: string;
   gap?: string;
+  bgColor?: string;
 }) => {
   const isReview = "rating" in review;
 
@@ -27,7 +29,8 @@ const ReviewCard = ({
       className={cn(
         "space-y-6",
         onClick && "cursor-pointer",
-        isReviewDetail ? "" : "p-6 bg-grey-90 rounded-[32px]",
+        isReviewDetail ? "" : `p-6 ${bgColor ?? "bg-grey-90"} rounded-[32px]`,
+
         isSelected && "border border-primary-500"
       )}
       onClick={onClick}

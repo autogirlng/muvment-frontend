@@ -7,10 +7,13 @@ import {
   numberRegex,
   spacesRegex,
   specialCharRegex,
+  standardServiceFeeInPercentage,
   uppercaseRegex,
 } from "@/utils/constants";
 import { daysOfTheWeek } from "./data";
 import Icons from "@repo/ui/icons";
+import { useSearchParams } from "next/navigation";
+import { formatDistanceStrict } from "date-fns";
 
 export const isLengthValid = (password: string): boolean => {
   const isLengthValid = password.length >= 8;
@@ -129,6 +132,176 @@ export const calculateRateGuestsWillSee = (
   return price + serviceFee;
 };
 
+export const calculateNumberOfDays = (
+  pickupDate: Date | string,
+  dropoffDate: Date | string
+): string => {
+  return formatDistanceStrict(new Date(dropoffDate), new Date(pickupDate), {
+    unit: "day",
+  });
+};
+
+export const getNumberOfDays = (
+  pickupDate: Date,
+  dropoffDate: Date
+): number => {
+  const distance = calculateNumberOfDays(pickupDate, dropoffDate);
+  const [number] = distance.split(" ");
+  return parseInt(number, 10);
+};
+
+export const calculateTotalCostWithoutServiceFee = (
+  dropoffDate: Date,
+  pickupDate: Date,
+  dailyPrice: number
+) => {
+  const numberOfDays = getNumberOfDays(dropoffDate, pickupDate);
+
+  const totalCost = numberOfDays * dailyPrice;
+
+  return totalCost;
+};
+
+export const calculateTotalCostWithServiceFee = (
+  dropoffDate: Date,
+  pickupDate: Date,
+  dailyPrice: number
+) => {
+  const numberOfDays = getNumberOfDays(dropoffDate, pickupDate);
+
+  const totalCost = numberOfDays * dailyPrice;
+
+  const serviceFee = calculateServiceFee(
+    totalCost,
+    standardServiceFeeInPercentage
+  );
+
+  return calculateRateGuestsWillSee(totalCost, serviceFee);
+};
+
+export const calculateSubTotal = (
+  amount: number,
+  hostDiscount: { durationInDays: number; percentage: number }[],
+  dropoffDate: Date,
+  pickupDate: Date
+): string => {
+  const numberOfDays = getNumberOfDays(dropoffDate, pickupDate);
+  const totalCostWithServiceFee = calculateTotalCostWithServiceFee(
+    dropoffDate,
+    pickupDate,
+    amount
+  );
+  const totalCostWithoutServiceFee = calculateTotalCostWithoutServiceFee(
+    dropoffDate,
+    pickupDate,
+    amount
+  );
+
+  const discount = calculateDiscount(
+    totalCostWithoutServiceFee,
+    hostDiscount,
+    numberOfDays
+  );
+
+  const subTotal = totalCostWithServiceFee - discount;
+
+  return formatNumberWithCommas(subTotal);
+};
+
+export const calculateDiscount = (
+  amount: number,
+  hostDiscounts: { durationInDays: number; percentage: number }[],
+  numberOfDays: number
+): number => {
+  const sortedDiscounts = hostDiscounts.sort(
+    (a, b) => a.durationInDays - b.durationInDays
+  );
+
+  const applicableDiscount = sortedDiscounts.find(
+    (discount) => numberOfDays <= discount.durationInDays
+  );
+
+  if (applicableDiscount) {
+    const discountPercentage = applicableDiscount.percentage;
+    return amount * (discountPercentage / 100);
+  }
+
+  return 0;
+};
+
+export const useFetchUrlParams = () => {
+  const searchParams = useSearchParams();
+
+  const bookingType = searchParams.get("bookingType") ?? "";
+  const startDate = searchParams.get("startDate") ?? null;
+  const startTime = searchParams.get("startTime") ?? null;
+  const endDate = searchParams.get("endDate") ?? null;
+  const endTime = searchParams.get("endTime") ?? null;
+
+  const search = searchParams.get("search") ?? "";
+  const fromDate = searchParams.get("fromDate") ?? null;
+  const fromTime = searchParams.get("fromTime") ?? null;
+  const untilDate = searchParams.get("untilDate") ?? null;
+  const untilTime = searchParams.get("untilTime") ?? null;
+
+  return {
+    bookingType,
+    startDate,
+    startTime,
+    endDate,
+    endTime,
+    search,
+    fromDate,
+    fromTime,
+    untilDate,
+    untilTime,
+  };
+};
+
+export const getExistingBookingInformation = (
+  values: any,
+  vehicleId: string,
+  formType: string
+) => {
+  const bookingInformation = localStorage.getItem("bookingInformation");
+
+  if (bookingInformation) {
+    const bookingInformationObject = JSON.parse(bookingInformation);
+    return bookingInformationObject[vehicleId]?.[formType] || values;
+  }
+
+  return values;
+};
+
+export const saveAndUpdateBookingInformation = (
+  values: any,
+  id: string,
+  formType: string
+) => {
+  const bookingInformation = localStorage.getItem("bookingInformation");
+
+  if (bookingInformation) {
+    const bookingInformationObject = JSON.parse(bookingInformation);
+    const updatedBookingInformation = {
+      ...bookingInformationObject,
+      [id]: {
+        ...bookingInformationObject[id],
+        [formType]: values,
+      },
+    };
+
+    localStorage.setItem(
+      "bookingInformation",
+      JSON.stringify(updatedBookingInformation)
+    );
+  } else {
+    localStorage.setItem(
+      "bookingInformation",
+      JSON.stringify({ [id]: { [formType]: values } })
+    );
+  }
+};
+
 // ============================= Notification Icons, Color and Bg Color starts ============================= //
 export const getNotificationIcon = (type: string) => {
   switch (type) {
@@ -240,6 +413,11 @@ export const handleFilterQuery = ({
   search,
   startDate,
   endDate,
+  fromDate,
+  untilDate,
+  fromTime,
+  untilTime,
+  location,
 }: {
   filters: Record<string, string[] | number[]>;
   month?: number;
@@ -247,21 +425,24 @@ export const handleFilterQuery = ({
   search?: string;
   startDate?: string;
   endDate?: string;
+  fromDate?: string;
+  untilDate?: string;
+  fromTime?: string;
+  untilTime?: string;
+  location?: string;
 }) => {
   const filterQuery = new URLSearchParams();
   Object.entries(filters).forEach(([key, values]) => {
     if (key === "price") {
       {
-        console.log(values);
-
         filterQuery.append("minPrice", values[0].toString());
         filterQuery.append("maxPrice", values[1].toString());
       }
     } else {
       values.forEach((value) => {
         if (key === "vehicle")
-          return filterQuery.append("vehicleId", value.toString());
-        else return filterQuery.append(key, value.toString());
+          filterQuery.append("vehicleId", value.toString());
+        else filterQuery.append(key, value.toString());
       });
     }
   });
@@ -271,6 +452,12 @@ export const handleFilterQuery = ({
   if (search) filterQuery.append("search", search.toString());
   if (startDate) filterQuery.append("startDate", startDate.toString());
   if (endDate) filterQuery.append("endDate", endDate.toString());
+  if (fromDate) filterQuery.append("fromDate", fromDate.toString());
+  if (untilDate) filterQuery.append("untilDate", untilDate.toString());
+  if (location) filterQuery.append("location", location.toString());
+
+  // if (fromTime) filterQuery.append("startDate", fromTime.toString());
+  // if (untilTime) filterQuery.append("endDate", untilTime.toString());
 
   return filterQuery.toString();
 };

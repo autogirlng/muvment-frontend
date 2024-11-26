@@ -246,7 +246,6 @@ export const vehicleMakeArray = [
   "zagato",
 ];
 
-
 // vehicle booking
 export const yearOfReleaseOptions = Array.from(
   { length: currentYear - 2010 + 1 },
@@ -686,6 +685,33 @@ export const vehicleAvailabilityOptions: OptionType[] = [
   { value: "2 weeks", option: "2 weeks" },
   { value: "3 weeks", option: "3 weeks" },
   { value: "4 weeks", option: "4 weeks" },
+];
+
+export const tripPurposeOptions: OptionType[] = [
+  { option: "Business Trip", value: "Business Trip" },
+  { option: "Leisure", value: "Leisure" },
+  { option: "Event", value: "Event" },
+  { option: "Airport Transfer", value: "Airport Transfer" },
+  { option: "Vacation", value: "Vacation" },
+  { option: "School Pickup", value: "School Pickup" },
+  { option: "City Tour", value: "City Tour" },
+  { option: "Relocation", value: "Relocation" },
+  { option: "Corporate Use", value: "Corporate Use" },
+  { option: "Emergency", value: "Emergency" },
+  { option: "Charity", value: "Charity" },
+  { option: "Film/Photography Shoot", value: "Film/Photography Shoot" },
+  { option: "Test Drive", value: "Test Drive" },
+  { option: "Daily Commute", value: "Daily Commute" },
+  { option: "Special Delivery", value: "Special Delivery" },
+  { option: "Shopping", value: "Shopping" },
+  { option: "Errands", value: "Errands" },
+  { option: "Adventure", value: "Adventure" },
+  { option: "VIP/High-Class Transport", value: "VIP/High-Class Transport" },
+  {
+    option: "Fleet Addition for Business",
+    value: "Fleet Addition for Business",
+  },
+  { option: "Family Trip", value: "Family Trip" },
 ];
 
 export const outskirtsLocationOptions: string[] = [

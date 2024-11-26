@@ -34,8 +34,8 @@ export default function HomePage() {
 
   return (
     <main className="overflow-x-hidden">
-      <DesktopNav user={data ?? null} userToken={userToken} />
-      <MobileNav user={data ?? null} userToken={userToken} />
+      <DesktopNav user={data ?? null} />
+      <MobileNav user={data ?? null} />
       <Hero />
       <Benefits />
       <TopVehicles />

@@ -1,7 +1,7 @@
 import cn from "classnames";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { getInitialsFromName } from "@/utils/functions";
 import { AvatarImage, AvatarInitials } from "@repo/ui/avatar";
 import { HorizontalDivider } from "@repo/ui/divider";
@@ -10,10 +10,16 @@ import MobileNavItem from "@/components/Navbar/MobileNavItem";
 import { popupNavItems, popupNavItemsforNoUser } from "@/utils/data";
 import { User } from "@/utils/types";
 
-type Props = { userToken?: string; user: User | null };
+type Props = { user: User | null; children?: ReactNode };
 
-export default function MobileNav({ userToken, user }: Props) {
+export default function MobileNav({ user, children }: Props) {
+  const [userToken, setUserToken] = useState<string>("");
   const [openNav, setOpenNav] = useState<boolean>(false);
+
+  useEffect(() => {
+    const user_token = window.localStorage.getItem("user_token");
+    setUserToken(user_token || "");
+  }, []);
 
   return (
     <header className="block md:hidden px-8 py-3 bg-grey-50">
@@ -41,6 +47,7 @@ export default function MobileNav({ userToken, user }: Props) {
           {Icons.ic_menu}
         </button>
       </div>
+      {children}
       <nav
         className={cn(
           "fixed top-[60px] transition-transform overflow-auto",
@@ -81,7 +88,7 @@ export default function MobileNav({ userToken, user }: Props) {
                   icon={item.icon}
                   name={item.name}
                   link={item.link}
-                  className="!py-[6px]"
+                  className="!py-1.5"
                 />
               ))}
             </ul>
@@ -95,7 +102,7 @@ export default function MobileNav({ userToken, user }: Props) {
                 icon={item.icon}
                 name={item.name}
                 link={item.link}
-                className="!py-[6px]"
+                className="!py-1.5"
               />
             ))}
           </ul>

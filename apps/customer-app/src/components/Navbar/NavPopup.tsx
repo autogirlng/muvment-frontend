@@ -38,7 +38,7 @@ export default function NavPopup({ handleClick, user }: Props) {
             icon={item.icon}
             name={item.name}
             link={item.link}
-            className="!py-[6px]"
+            className="!py-1.5"
           />
         ))}
       </ul>

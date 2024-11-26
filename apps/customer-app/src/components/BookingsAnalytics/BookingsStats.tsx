@@ -11,7 +11,7 @@ const bookingStats = {
 
 export default function BookingsStats({}: Props) {
   return (
-    <div className="flex gap-[6px] overflow-auto">
+    <div className="flex gap-1.5 overflow-auto">
       <ActivityCard
         primary
         title="Total Bookings"

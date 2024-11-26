@@ -8,7 +8,7 @@ import { ReactNode } from "react";
 
 type ValuePiece = Date | null;
 
-type Value = ValuePiece | [ValuePiece, ValuePiece];
+type Value = Date | null | [ValuePiece, ValuePiece];
 
 const DateRangeCalendar = ({
   title,

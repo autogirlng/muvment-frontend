@@ -5,31 +5,41 @@ import Itinerary from "@/components/VehicleBooking/Itinerary";
 import BookingSummary from "@/components/VehicleBooking/BookingSummary";
 import PersonalInformation from "@/components/VehicleBooking/PersonalInformation";
 import PickupsAndDropoffs from "@/components/VehicleBooking/PickupsAndDropoffs";
-import VehicleSummary from "@/components/VehicleBooking/VehicleSummary";
 import { Stepper } from "@repo/ui/stepper";
 import { useState } from "react";
-import VehiclePayment from "@/components/VehicleBooking/Payment";
+import useFetchVehicleById from "@/components/VehicleBooking/hooks/useFetchVehicleById";
+import { FullPageSpinner } from "@repo/ui/spinner";
+import { useFetchUrlParams } from "@/utils/functions";
 
-const steps = [
-  "Personal Information",
-  "Itinerary",
-  "Pick-Up & Drop-offs",
-  "Booking Summary",
-];
+const steps = ["Personal Information", "Itinerary", "Booking Summary"];
 
-export default function VehicleBookingPage() {
+export default function VehicleBookingPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  // TODO: if no id go to home
+  const { vehicle, perks, vehicleDetails, vehicleImages, isError, isLoading } =
+    useFetchVehicleById({
+      id: params?.id,
+    });
+
   const [currentStep, setCurrentStep] = useState<number>(0);
 
   const handleCurrentStep = (step: number) => {
     setCurrentStep(step);
   };
 
+  if (isLoading) {
+    return <FullPageSpinner />;
+  }
+
   return (
     <main className="pb-[188px] pt-[52px] md:pt-16 px-8 lg:px-[52px]">
       <div
         className={cn(
           "mx-auto space-y-8 md:space-y-[52px]",
-          currentStep === 4
+          currentStep === 3
             ? "max-w-[1020px] 3xl:max-w-[1120px]"
             : "max-w-[1492px]"
         )}
@@ -37,7 +47,7 @@ export default function VehicleBookingPage() {
         <div className="space-y-8">
           <BackLink backLink="/" />
           <h2 className="text-h5 md:text-h3 3xl:text-4xl text-black">
-            {currentStep === 4 ? "Summary" : "Book Ride"}
+            {currentStep === 3 ? "Summary" : "Book Ride"}
           </h2>
         </div>
         <Stepper steps={steps} currentStep={currentStep}>
@@ -46,6 +56,8 @@ export default function VehicleBookingPage() {
               steps={steps}
               currentStep={currentStep}
               setCurrentStep={handleCurrentStep}
+              vehicle={vehicle ?? null}
+              vehicleImages={vehicleImages}
             />
           )}
           {currentStep === 1 && (
@@ -53,20 +65,17 @@ export default function VehicleBookingPage() {
               steps={steps}
               currentStep={currentStep}
               setCurrentStep={handleCurrentStep}
+              vehicle={vehicle ?? null}
+              vehicleImages={vehicleImages}
             />
           )}
+
           {currentStep === 2 && (
-            <PickupsAndDropoffs
-              steps={steps}
-              currentStep={currentStep}
-              setCurrentStep={handleCurrentStep}
-            />
-          )}
-          {currentStep === 3 && (
             <BookingSummary
-              steps={steps}
-              currentStep={currentStep}
-              setCurrentStep={handleCurrentStep}
+              vehicle={vehicle ?? null}
+              vehicleImages={vehicleImages}
+              perks={perks}
+              vehicleDetails={vehicleDetails}
             />
           )}
         </Stepper>

@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface ErrorResponse {
   ERR_CODE: string;
   message: string;
@@ -120,11 +122,11 @@ export interface WithdrawalAccountValues {
 }
 
 export interface PersonalInformationOthersValues {
-  recipientsFullName: string;
-  recipientsEmail: string;
-  recipientsPhoneNumber: string;
-  recipientsCountry: string;
-  recipientsCountryCode: string;
+  guestName: string;
+  guestEmail: string;
+  guestPhoneNumber: string;
+  country: string;
+  countryCode: string;
   specialInstructions?: string;
   tripPurpose?: string;
   userEmail: string;
@@ -134,11 +136,11 @@ export interface PersonalInformationOthersValues {
 }
 
 export interface PersonalInformationMyselfValues {
-  fullName: string;
-  email: string;
-  primaryPhoneNumber: string;
-  primaryCountry: string;
-  primaryCountryCode: string;
+  guestName: string;
+  guestEmail: string;
+  guestPhoneNumber: string;
+  country: string;
+  countryCode: string;
   secondaryPhoneNumber: string;
   secondaryCountry: string;
   secondaryCountryCode: string;
@@ -146,7 +148,11 @@ export interface PersonalInformationMyselfValues {
 
 export interface ItineraryInformationValues {
   pickupLocation: string;
+  startDate: Date | null;
+  startTime: Date | null;
   dropoffLocation: string;
+  endDate: Date | null;
+  endTime: Date | null;
   areaOfUse: string;
   outskirtsLocation: string[];
   extraDetails: string;
@@ -235,6 +241,13 @@ export interface AvailabilityAndPricingValues {
   outskirtsLocation: string[];
   outskirtsPrice: string;
 }
+
+export type VehiclePerksProp = {
+  icon: ReactNode;
+  name: string;
+  id: string;
+  status: boolean;
+};
 
 // <================= STATUS =================>
 export enum BookingBadgeStatus {
@@ -362,6 +375,7 @@ export interface TripSettings {
 export interface Rate {
   value: number;
   unit: string;
+  currency: string;
 }
 
 export interface Discount {
@@ -455,10 +469,25 @@ export interface VehicleInformation {
   status: ListingStatus;
   vehicleStatus: VehicleStatus;
   userId: string;
+  user: User;
   createdAt: string;
   updatedAt: string;
+  vehicleCurrency: string;
+  statistics: {
+    bookingsCompleted: number;
+    canceledBookings: number;
+    hostStats: {
+      averageRating: number;
+      topRatedVehicle: number;
+      totalCompletedRides: number;
+      totalEarnings: number;
+      totalOnboardedVehicles: number;
+      walletBalance: number;
+    };
+    numberOfCustomers: number;
+    totalRevenue: number;
+  };
 }
-
 export interface AssignedDriver {
   id: string;
   firstName: string;

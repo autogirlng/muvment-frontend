@@ -2,11 +2,10 @@ import Link from "next/link";
 import { useState } from "react";
 import { ListingStatus } from "@/utils/types";
 import { ListingBadge } from "@repo/ui/badge";
-import { BlurredDialog } from "@repo/ui/dialog";
 import { Popup } from "@repo/ui/popup";
 import MoreButton from "@repo/ui/moreButton";
 import Icons from "@repo/ui/icons";
-import BackLink from "@repo/ui/backLink";
+import BackLink from "@/components/BackLink";
 
 type Props = {
   name?: string;

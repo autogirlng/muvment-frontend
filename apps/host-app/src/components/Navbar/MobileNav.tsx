@@ -100,7 +100,7 @@ export default function MobileNav({ userToken, user }: Props) {
                   icon={item.icon}
                   name={item.name}
                   link={item.link}
-                  className="!py-[6px]"
+                  className="!py-1.5"
                 />
               ))}
             </ul>
@@ -114,7 +114,7 @@ export default function MobileNav({ userToken, user }: Props) {
                 icon={item.icon}
                 name={item.name}
                 link={item.link}
-                className="!py-[6px]"
+                className="!py-1.5"
               />
             ))}
           </ul>
