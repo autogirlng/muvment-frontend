@@ -78,7 +78,7 @@ export default function ProfileInformation({}: Props) {
                   }}
                   isLoading={false}
                   disabled={!isProfileEditable}
-                  initials={getInitialsFromName("Ufuome", "Oghenechovwe")}
+                  initials={getInitialsFromName("Ufuoma", "Oghenechovwe")}
                 />
                 <div className="md:max-w-[370px] space-y-7">
                   <InputField

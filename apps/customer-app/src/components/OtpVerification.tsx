@@ -9,6 +9,8 @@ import {
 } from "react";
 import { Spinner } from "@repo/ui/spinner";
 import OtpField from "@repo/ui/otpField";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/utils/types";
 
 type Props = {
   verifyOtp: () => void;
@@ -17,7 +19,7 @@ type Props = {
   isResendOtpLoading: boolean;
   setOtp: Dispatch<SetStateAction<string>>;
   otp: string;
-  error: null;
+  error: AxiosError<ErrorResponse> | null;
   children?: ReactNode;
   numInputs?: number;
 };
