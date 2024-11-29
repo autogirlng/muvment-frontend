@@ -14,12 +14,14 @@ import FormRow from "../FormRow";
 import TextArea from "@repo/ui/textarea";
 import SelectInput from "@repo/ui/select";
 import { tripPurposeOptions } from "@/utils/data";
+import { useAppSelector } from "@/lib/hooks";
 
 type Props = {
   steps: string[];
   currentStep: number;
   setCurrentStep: (step: number) => void;
   vehicleId: string;
+  type: "user" | "guest";
 };
 
 const initialValues: PersonalInformationOthersValues = {
@@ -35,6 +37,7 @@ const initialValues: PersonalInformationOthersValues = {
   userPhoneNumber: "",
   userCountry: "NG",
   userCountryCode: "+234",
+  isForSelf: false,
 };
 
 const PersonalInformationFormOthers = ({
@@ -42,13 +45,17 @@ const PersonalInformationFormOthers = ({
   currentStep,
   setCurrentStep,
   vehicleId,
+  type,
 }: Props) => {
+  const { user } = useAppSelector((state) => state.user);
+
   return (
     <Formik
       initialValues={getExistingBookingInformation(
         initialValues,
         vehicleId,
-        "personalInformation"
+        "personalInformation",
+        type === "user" && user ? { ...user } : undefined
       )}
       validationSchema={personalInformationOthersSchema}
       onSubmit={(values, { setSubmitting }) => {

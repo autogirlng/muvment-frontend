@@ -808,15 +808,14 @@ export const bookingOverviewTableHeadItems: string[] = [
 ];
 
 export const bookingAnalyticsTableHeadItems: string[] = [
-  "Guest Name",
   "Booking ID",
+  "Status",
+  "Booking Date",
   "Booking Type",
   "Duration",
-  "Vehicle",
   "Start Date",
   "End Date",
-  "Status",
-  "Price",
+  "Amount",
   "Actions",
 ];
 

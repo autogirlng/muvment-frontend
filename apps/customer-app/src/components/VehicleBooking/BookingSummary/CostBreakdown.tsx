@@ -9,14 +9,15 @@ import {
   calculateTotalCostWithoutServiceFee,
   formatNumberWithCommas,
   getExistingBookingInformation,
+  useFetchUrlParams,
 } from "@/utils/functions";
 import { VehicleInformation } from "@/utils/types";
 import { standardServiceFeeInPercentage } from "@/utils/constants";
-import useSaveBooking from "../hooks/useSaveBooking";
+import useHandleBooking from "../hooks/useHandleBooking";
 
-type Props = { vehicle: VehicleInformation | null };
+type Props = { vehicle: VehicleInformation | null; type: "guest" | "user" };
 
-const CostBreakdown = ({ vehicle }: Props) => {
+const CostBreakdown = ({ vehicle, type }: Props) => {
   const itineraryInformation = getExistingBookingInformation(
     {},
     vehicle?.id ?? "",
@@ -27,6 +28,8 @@ const CostBreakdown = ({ vehicle }: Props) => {
     vehicle?.id ?? "",
     "personalInformation"
   );
+
+  const { bookingType } = useFetchUrlParams();
 
   const currencyCode = vehicle?.vehicleCurrency;
   const dailyRate = vehicle?.pricing?.dailyRate?.value ?? 0;
@@ -51,8 +54,9 @@ const CostBreakdown = ({ vehicle }: Props) => {
     startDate
   );
 
-  const { saveBooking, proceedToPayment } = useSaveBooking({
+  const { saveBooking, proceedToPayment } = useHandleBooking({
     vehicleId: vehicle?.id ?? "",
+    type,
   });
 
   return (
@@ -122,6 +126,8 @@ const CostBreakdown = ({ vehicle }: Props) => {
             endDate: itineraryInformation.endTime,
             amount: parseInt(subTotal),
             currencyCode: currencyCode,
+            bookingType,
+            duration: parseInt(numberOfDays),
           });
         }}
         loading={saveBooking.isPending}

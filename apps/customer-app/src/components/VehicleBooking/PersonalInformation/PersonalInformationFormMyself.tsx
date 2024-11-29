@@ -11,12 +11,14 @@ import {
 } from "@/utils/functions";
 import { getCountryCallingCode } from "react-phone-number-input";
 import { useState } from "react";
+import { useAppSelector } from "@/lib/hooks";
 
 type Props = {
   steps: string[];
   currentStep: number;
   setCurrentStep: (step: number) => void;
   vehicleId: string;
+  type: "user" | "guest";
 };
 
 const initialValues: PersonalInformationMyselfValues = {
@@ -28,6 +30,7 @@ const initialValues: PersonalInformationMyselfValues = {
   secondaryPhoneNumber: "",
   secondaryCountry: "NG",
   secondaryCountryCode: "+234",
+  isForSelf: true,
 };
 
 const PersonalInformationFormMyself = ({
@@ -35,15 +38,18 @@ const PersonalInformationFormMyself = ({
   currentStep,
   setCurrentStep,
   vehicleId,
+  type,
 }: Props) => {
   const [showSecondaryPhoneNumber, setShowSecondaryPhoneNumber] =
     useState<boolean>(false);
+  const { user } = useAppSelector((state) => state.user);
   return (
     <Formik
       initialValues={getExistingBookingInformation(
         initialValues,
         vehicleId,
-        "personalInformation"
+        "personalInformation",
+        type === "user" && user ? user : undefined
       )}
       validationSchema={personalInformationMyselfSchema}
       onSubmit={(values, { setSubmitting }) => {
@@ -153,7 +159,8 @@ const PersonalInformationFormMyself = ({
               selectValue={values.secondaryCountry}
               inputOnChange={(event) => {
                 const number = replaceCharactersWithString(event.target.value);
-                setFieldTouched("secondaryPhoneNumber, true");
+
+                setFieldTouched("secondaryPhoneNumber", true);
                 setFieldValue("secondaryPhoneNumber", number);
               }}
               selectOnChange={(value: string) => {
@@ -206,5 +213,4 @@ const PersonalInformationFormMyself = ({
     </Formik>
   );
 };
-
 export default PersonalInformationFormMyself;

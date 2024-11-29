@@ -83,7 +83,7 @@ const VehicleInformationCard = ({
       {bookingType && (
         <BookingSummaryItems
           title="Booking Type"
-          value={`${bookingType} rental`}
+          value={`${bookingType === "SINGLE_DAY" ? "Daily" : "Monthly"} rental`}
         />
       )}
 

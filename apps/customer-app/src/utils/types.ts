@@ -133,6 +133,7 @@ export interface PersonalInformationOthersValues {
   userPhoneNumber: string;
   userCountry: string;
   userCountryCode: string;
+  isForSelf: boolean;
 }
 
 export interface PersonalInformationMyselfValues {
@@ -144,6 +145,7 @@ export interface PersonalInformationMyselfValues {
   secondaryPhoneNumber: string;
   secondaryCountry: string;
   secondaryCountryCode: string;
+  isForSelf: boolean;
 }
 
 export interface ItineraryInformationValues {

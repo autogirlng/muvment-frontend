@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import { ErrorResponse, NotificationType } from "@/utils/types";
+import { ErrorResponse, NotificationType, User } from "@/utils/types";
 
 import {
   lowercaseRegex,
@@ -261,7 +261,8 @@ export const useFetchUrlParams = () => {
 export const getExistingBookingInformation = (
   values: any,
   vehicleId: string,
-  formType: string
+  formType: string,
+  user?: User | null
 ) => {
   const bookingInformation = localStorage.getItem("bookingInformation");
 
@@ -270,6 +271,20 @@ export const getExistingBookingInformation = (
     return bookingInformationObject[vehicleId]?.[formType] || values;
   }
 
+  return getPrefillUserValuesForBooking(values, user);
+};
+
+const getPrefillUserValuesForBooking = (values: any, user?: any) => {
+  if (user?.firstName && user?.lastName && user?.email) {
+    return {
+      ...values,
+      guestName: `${user.firstName} ${user.lastName}`,
+      guestEmail: user.email,
+      guestPhoneNumber: user.phoneNumber,
+      country: user.country,
+      countryCode: user.countryCode,
+    };
+  }
   return values;
 };
 

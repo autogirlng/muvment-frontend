@@ -14,6 +14,9 @@ import { BlurredDialog } from "@repo/ui/dialog";
 import VehicleDetails from "./VehicleDetails";
 import DateInput from "../DateInput";
 import TimeInput from "../TimeInput";
+import { useAppSelector } from "@/lib/hooks";
+import { useRouter } from "next/navigation";
+import useHandleBooking from "../hooks/useHandleBooking";
 
 type Props = {
   vehicle: VehicleInformation | null;
@@ -23,7 +26,7 @@ type Props = {
 };
 
 type InitialValuesProps = {
-  bookingType: string;
+  bookingType: "SINGLE_DAY" | "MULTI_DAY" | string;
   // pickupLocation: string;
   startDate: Date | null;
   startTime: Date | null;
@@ -37,12 +40,11 @@ export default function VehicleSummary({
   vehicleDetails,
   vehicleImages,
 }: Props) {
+  const router = useRouter();
+  const { user } = useAppSelector((state) => state.user);
   const [openBookRideModal, setBookRideModal] = useState<boolean>(false);
-  const handleOpenBookRideModal = () => setBookRideModal(!openBookRideModal);
-
   const { bookingType, startDate, startTime, endDate, endTime } =
     useFetchUrlParams();
-
   const [values, setValues] = useState<InitialValuesProps>({
     bookingType: bookingType || "",
     startDate: startDate ? new Date(startDate) : null,
@@ -51,12 +53,18 @@ export default function VehicleSummary({
     endTime: endTime ? new Date(endTime) : null,
   });
 
+  const handleOpenBookRideModal = () => setBookRideModal(!openBookRideModal);
   const handleValueChange = (name: string, value: string | Date | null) => {
     setValues((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
+
+  const { checkVehicleAvailability } = useHandleBooking({
+    vehicleId: vehicle?.id || "",
+    isSuccessFunction: handleOpenBookRideModal,
+  });
 
   return (
     <VehicleDetails
@@ -66,7 +74,7 @@ export default function VehicleSummary({
       vehicleImages={vehicleImages}
     >
       {/* pricing */}
-      <div className="w-full md:w-[38%] md:border md:border-grey-200 md:rounded-[42px]">
+      <div className="w-full md:min-w-[350px] md:w-1/2 md:border md:border-grey-200 md:rounded-[42px]">
         <div className="space-y-11 md:py-8 md:px-6 divide-y divide-grey-200 text-grey-800 !font-medium text-base 3xl:text-xl">
           <div className="space-y-11">
             <div className="space-y-6">
@@ -90,8 +98,8 @@ export default function VehicleSummary({
                   placeholder="Select"
                   variant="outlined"
                   options={[
-                    { option: "Daily Rental", value: "daily" },
-                    { option: "Monthly Rental", value: "monthly" },
+                    { option: "Daily Rental", value: "SINGLE_DAY" },
+                    { option: "Monthly Rental", value: "MULTI_DAY" },
                   ]}
                   value={values.bookingType}
                   onChange={(value: string) => {
@@ -101,65 +109,56 @@ export default function VehicleSummary({
               </InputSection>
             </div>
 
-            {startDate && startTime && (
-              <InputSection title="Trip Start">
-                <DateInput
-                  name="startDate"
-                  value={values.startDate}
-                  onChange={(value: CalendarValue) =>
-                    handleValueChange("startDate", value as Date | null)
-                  }
-                />
-                <TimeInput
-                  name="startTime"
-                  value={values.startTime}
-                  onChange={(date: Date) =>
-                    handleValueChange("startTime", date)
-                  }
-                />
-              </InputSection>
-            )}
-            {endDate && endTime && (
-              <InputSection title="Trip End">
-                <DateInput
-                  name="endDate"
-                  value={values.endDate}
-                  onChange={(value: CalendarValue) =>
-                    handleValueChange("endDate", value as Date | null)
-                  }
-                />
-                <TimeInput
-                  name="endTime"
-                  value={values.endTime}
-                  onChange={(date: Date) => handleValueChange("endTime", date)}
-                />
-              </InputSection>
-            )}
-            {/* <InputSection title="Pickup and drop-off Location">
-                    <InputField
-                      name="pickupLocation"
-                      id="pickupLocation"
-                      type="text"
-                      placeholder="Enter your pickup location"
-                      value={values.pickupLocation}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={
-                        errors.pickupLocation && touched.pickupLocation
-                          ? errors.pickupLocation
-                          : ""
-                      }
-                    />
-                  </InputSection> */}
+            {/* {startDate && startTime && ( */}
+            <InputSection title="Trip Start">
+              <DateInput
+                name="startDate"
+                value={values.startDate}
+                onChange={(value: CalendarValue) =>
+                  handleValueChange("startDate", value as Date | null)
+                }
+              />
+              <TimeInput
+                name="startTime"
+                value={values.startTime}
+                onChange={(date: Date) => handleValueChange("startTime", date)}
+              />
+            </InputSection>
+            {/* )} */}
+            {/* {endDate && endTime && ( */}
+            <InputSection title="Trip End">
+              <DateInput
+                name="endDate"
+                value={values.endDate}
+                onChange={(value: CalendarValue) =>
+                  handleValueChange("endDate", value as Date | null)
+                }
+              />
+              <TimeInput
+                name="endTime"
+                value={values.endTime}
+                onChange={(date: Date) => handleValueChange("endTime", date)}
+              />
+            </InputSection>
+            {/* )} */}
 
             <Button
               color="primary"
               fullWidth
-              disabled={!values.bookingType}
+              disabled={
+                !values.bookingType || checkVehicleAvailability.isPending
+              }
+              loading={checkVehicleAvailability.isPending}
               onClick={() => {
-                // add loader
                 console.log("Form values:", values);
-                handleOpenBookRideModal();
+
+                checkVehicleAvailability.mutate({
+                  bookingType: values.bookingType,
+                  startDate: values.startDate?.toISOString() ?? "",
+                  startTime: values.startTime?.toISOString() ?? "",
+                  endDate: values.endDate?.toISOString() ?? "",
+                  endTime: values.endTime?.toISOString() ?? "",
+                });
               }}
             >
               Book Now
@@ -229,23 +228,27 @@ export default function VehicleSummary({
           </div>
         </div>
       </div>
-      <BlurredDialog
-        open={openBookRideModal}
-        onOpenChange={handleOpenBookRideModal}
-        trigger={<button className="hidden" />}
-        title={<p>Book Ride</p>}
-        content={
-          <BookRideModal
-            id={vehicle?.id || ""}
-            bookingType={values.bookingType}
-            startDate={values.startDate?.toISOString() ?? null}
-            startTime={values.startTime?.toISOString() ?? null}
-            endDate={values.endDate?.toISOString() ?? null}
-            endTime={values.endTime?.toISOString() ?? null}
-          />
-        }
-        width="max-w-[556px]"
-      />
+
+      {/* only show if user is not signed in */}
+      {!user && (
+        <BlurredDialog
+          open={openBookRideModal}
+          onOpenChange={handleOpenBookRideModal}
+          trigger={<button className="hidden" />}
+          title={<p>Book Ride</p>}
+          content={
+            <BookRideModal
+              id={vehicle?.id || ""}
+              bookingType={values.bookingType}
+              startDate={values.startDate?.toISOString() ?? null}
+              startTime={values.startTime?.toISOString() ?? null}
+              endDate={values.endDate?.toISOString() ?? null}
+              endTime={values.endTime?.toISOString() ?? null}
+            />
+          }
+          width="max-w-[556px]"
+        />
+      )}
     </VehicleDetails>
   );
 }
@@ -307,7 +310,7 @@ const BookRideModal = ({
   return (
     <div className="space-y-4">
       <Link
-        href={`/vehicle/booking/${id}${
+        href={`/vehicle/booking/guest/${id}${
           bookingType || startDate || startTime || endDate || endTime
             ? `?${[
                 startDate && `startDate=${startDate}`,

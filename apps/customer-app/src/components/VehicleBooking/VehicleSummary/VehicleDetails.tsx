@@ -109,7 +109,7 @@ export default function VehicleDetails({
 
       <div className="flex flex-col md:flex-row items-start gap-10">
         <div className="w-full space-y-10">
-          <div className="w-full md:w-[62%] space-y-10">
+          <div className="w-full space-y-10">
             {/* vehicle details */}
             <div className="space-y-5">
               <SectionTitle text="Vehicle Details" />

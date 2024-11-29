@@ -26,6 +26,7 @@ const DateInput = ({
       isOpen={pickupDateIsOpen}
       handleIsOpen={(open: boolean) => setPickupDateIsOpen(open)}
       buttonClass="w-full"
+      showMinDate
     >
       {label && (
         <label

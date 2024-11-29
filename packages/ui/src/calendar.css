@@ -58,7 +58,8 @@ abbr:where([title]) {
 .react-calendar__month-view__days__day--neighboringMonth,
 .react-calendar__tile:enabled:hover,
 .react-calendar__tile:enabled:focus,
-.react-calendar__tile--now {
+.react-calendar__tile--now,
+.react-calendar__tile:disabled {
   background-color: transparent !important;
 }
 
@@ -93,8 +94,14 @@ abbr:where([title]) {
   border: 1.5px solid #1e93ff !important;
 }
 
-.react-calendar__month-view__days__day--neighboringMonth abbr {
+.react-calendar__month-view__days__day--neighboringMonth abbr,
+.react-calendar__tile:disabled abbr {
   color: #d0d5dd !important;
   background-color: #f7f9fc !important;
   border: none !important;
+}
+
+.react-calendar__year-view__months__month abbr {
+  width: fit-content !important;
+  padding: 0 5px !important;
 }

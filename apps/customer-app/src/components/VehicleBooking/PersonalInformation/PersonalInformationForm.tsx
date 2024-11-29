@@ -1,13 +1,13 @@
 import { useState } from "react";
 import PersonalInformationFormMyself from "./PersonalInformationFormMyself";
 import PersonalInformationFormOthers from "./PersonalInformationFormOthers";
-import { VehicleInformation } from "@/utils/types";
 
 type Props = {
   steps: string[];
   currentStep: number;
   setCurrentStep: (step: number) => void;
-  vehicleId:string
+  vehicleId: string;
+  type: "user" | "guest";
 };
 
 const PersonalInformationForm = ({
@@ -15,6 +15,7 @@ const PersonalInformationForm = ({
   currentStep,
   setCurrentStep,
   vehicleId,
+  type,
 }: Props) => {
   const [whoBookedRide, setWhoBookedRide] = useState<"myself" | "others">(
     "myself"
@@ -46,13 +47,15 @@ const PersonalInformationForm = ({
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
           vehicleId={vehicleId}
+          type={type}
         />
       ) : (
         <PersonalInformationFormOthers
           steps={steps}
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
-          vehicleId={vehicleId}
+            vehicleId={vehicleId}
+            type={type}
         />
       )}
     </div>

@@ -20,6 +20,7 @@ export default function VehicleBookingPage({
   params: { id: string };
 }) {
   const router = useRouter();
+
   const { vehicle, perks, vehicleDetails, vehicleImages, isError, isLoading } =
     useFetchVehicleById({
       id: params?.id,
@@ -66,7 +67,7 @@ export default function VehicleBookingPage({
               setCurrentStep={handleCurrentStep}
               vehicle={vehicle ?? null}
               vehicleImages={vehicleImages}
-              type="user"
+              type="guest"
             />
           )}
           {currentStep === 1 && (
@@ -85,7 +86,7 @@ export default function VehicleBookingPage({
               vehicleImages={vehicleImages}
               perks={perks}
               vehicleDetails={vehicleDetails}
-              type="user"
+              type="guest"
             />
           )}
         </Stepper>

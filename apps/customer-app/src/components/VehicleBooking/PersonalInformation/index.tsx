@@ -8,6 +8,7 @@ type Props = {
   setCurrentStep: (step: number) => void;
   vehicle: VehicleInformation | null;
   vehicleImages: string[];
+  type: "user" | "guest";
 };
 
 const PersonalInformation = ({
@@ -16,6 +17,7 @@ const PersonalInformation = ({
   setCurrentStep,
   vehicle,
   vehicleImages,
+  type,
 }: Props) => {
   return (
     <div className="flex justify-between flex-col md:flex-row items-start gap-8">
@@ -24,6 +26,7 @@ const PersonalInformation = ({
         currentStep={currentStep}
         setCurrentStep={setCurrentStep}
         vehicleId={vehicle?.id ?? ""}
+        type={type}
       />
       <VehicleInformationCard vehicle={vehicle} vehicleImages={vehicleImages} />
     </div>

@@ -1,12 +1,14 @@
 import { ReactNode } from "react";
 
-type Props = { icon?: ReactNode; title: string };
+type Props = { children?: ReactNode; title: string };
 
-export default function DashboardSectionTitle({ icon, title }: Props) {
+export default function DashboardSectionTitle({ children, title }: Props) {
   return (
-    <p className="flex items-center gap-2 text-base 2xl:text-xl text-grey-700">
-      {icon}
-      <span>{title}</span>
-    </p>
+    <div className="flex items-center justify-between gap-2">
+      <h1 className="text-h2 md:text-h3 3xl:text-4xl text-black !font-bold">
+        {title}
+      </h1>
+      {children}
+    </div>
   );
 }

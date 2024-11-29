@@ -14,6 +14,7 @@ type Props = {
   vehicleImages: string[];
   perks: VehiclePerksProp[];
   vehicleDetails: MappedInformation[];
+  type: "guest" | "user";
 };
 
 export default function BookingSummary({
@@ -21,6 +22,7 @@ export default function BookingSummary({
   vehicleImages,
   perks,
   vehicleDetails,
+  type,
 }: Props) {
   return (
     <div className="flex justify-between flex-col-reverse md:flex-row items-start gap-8">
@@ -56,7 +58,7 @@ export default function BookingSummary({
           <Trip vehicle={vehicle} />
         </Collapse>
       </div>
-      <CostBreakdown vehicle={vehicle} />
+      <CostBreakdown vehicle={vehicle} type={type} />
     </div>
   );
 }
