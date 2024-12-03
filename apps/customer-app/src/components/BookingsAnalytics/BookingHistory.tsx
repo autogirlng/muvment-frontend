@@ -21,7 +21,7 @@ export default function BookingHistory({ filters }: Props) {
   });
 
   if (isLoading) {
-    return <FullPageSpinner />;
+    return <FullPageSpinner className="!min-h-[300px]" />;
   }
 
   if (isError) {

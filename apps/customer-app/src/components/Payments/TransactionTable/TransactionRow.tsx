@@ -28,7 +28,7 @@ const TransactionRow = ({ items }: { items: Transaction }) => {
         content={items?.bookingId || "-"}
         className="text-primary-500"
       />
-      <TableCell
+      {/* <TableCell
         content={items?.type.toLocaleLowerCase()}
         icon={
           items.type === TransactionType.CREDIT
@@ -40,13 +40,14 @@ const TransactionRow = ({ items }: { items: Transaction }) => {
                 ""
         }
         className="capitalize"
-      />
+      /> */}
       <TableCell content={"-"} />
+
+      <TableCell content={`${items.currencyCode} ${items?.amount}`} />
       <TableCell
         content={items?.origin.toLocaleLowerCase()}
         className="capitalize"
       />
-      <TableCell content={`${items.currencyCode} ${items?.amount}`} />
       <TableCell
         content={items?.status}
         isBadge
@@ -60,7 +61,7 @@ const TransactionRow = ({ items }: { items: Transaction }) => {
               <p className="!text-xs 3xl:!text-base !font-semibold">Actions</p>
               <ul className="space-y-2 *:py-2">
                 <li className="!text-xs 3xl:!text-base">
-                  Download transaction reciept
+                  View reciept
                 </li>
               </ul>
             </>

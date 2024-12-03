@@ -2,11 +2,19 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { handleErrors, handleFilterQuery } from "@/utils/functions";
+import { handleErrors } from "@/utils/functions";
 import { ErrorResponse } from "@/utils/types";
 import { useHttp } from "@/hooks/useHttp";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/lib/hooks";
+import { useState } from "react";
+
+type VehicleAvailabilityCheck = {
+  vehicleId: string;
+  isAvailable: boolean;
+  startDate: string;
+  endDate: string;
+};
 
 export default function useHandleBooking({
   vehicleId,
@@ -20,6 +28,9 @@ export default function useHandleBooking({
   const http = useHttp();
   const router = useRouter();
   const { user } = useAppSelector((state) => state.user);
+
+  const [vehicleAvailableError, setVehicleAvailableError] =
+    useState<string>("");
 
   const saveBooking = useMutation({
     mutationFn: (values) =>
@@ -67,12 +78,12 @@ export default function useHandleBooking({
       endDate: string;
       endTime: string;
     }) =>
-      http.get(
-        `/api/bookings/check-availability?vehicleId=${vehicleId} ${
+      http.get<VehicleAvailabilityCheck>(
+        `/api/bookings/check-availability?vehicleId=${vehicleId}${
           startDate || endDate
             ? `&${[
-                startDate && `startDate=${startTime}`,
-                endDate && `endDate=${endTime}`,
+                startDate && `startDate=${startDate}`,
+                endDate && `endDate=${endDate}`,
               ]
                 .filter(Boolean)
                 .join("&")}`
@@ -93,28 +104,34 @@ export default function useHandleBooking({
     onSuccess: (data, _values, context) => {
       console.log("Vehicle is available!", data);
 
-      if (user) {
-        router.push(
-          `/vehicle/booking/${vehicleId || ""}${
-            context.bookingType ||
-            context.startDate ||
-            context.startTime ||
-            context.endDate ||
-            context.endTime
-              ? `?${[
-                  context.startDate && `startDate=${context.startDate}`,
-                  context.startTime && `startTime=${context.startTime}`,
-                  context.endDate && `endDate=${context.endDate}`,
-                  context.endTime && `endTime=${context.endTime}`,
-                  context.bookingType && `bookingType=${context.bookingType}`,
-                ]
-                  .filter(Boolean)
-                  .join("&")}`
-              : ""
-          }`
-        );
+      if (data?.isAvailable) {
+        if (user) {
+          router.push(
+            `/vehicle/booking/${vehicleId || ""}${
+              context.bookingType ||
+              context.startDate ||
+              context.startTime ||
+              context.endDate ||
+              context.endTime
+                ? `?${[
+                    context.startDate && `startDate=${context.startDate}`,
+                    context.startTime && `startTime=${context.startTime}`,
+                    context.endDate && `endDate=${context.endDate}`,
+                    context.endTime && `endTime=${context.endTime}`,
+                    context.bookingType && `bookingType=${context.bookingType}`,
+                  ]
+                    .filter(Boolean)
+                    .join("&")}`
+                : ""
+            }`
+          );
+        } else {
+          isSuccessFunction && isSuccessFunction();
+        }
       } else {
-        isSuccessFunction && isSuccessFunction();
+        setVehicleAvailableError(
+          "This vehicle is not available for the time and date you selected. "
+        );
       }
     },
 
@@ -126,5 +143,6 @@ export default function useHandleBooking({
     saveBooking,
     proceedToPayment,
     checkVehicleAvailability,
+    vehicleAvailableError,
   };
 }

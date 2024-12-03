@@ -10,7 +10,7 @@ import {
   saveAndUpdateBookingInformation,
 } from "@/utils/functions";
 import { getCountryCallingCode } from "react-phone-number-input";
-import FormRow from "../FormRow";
+import FormRow from "../../FormRow";
 import TextArea from "@repo/ui/textarea";
 import SelectInput from "@repo/ui/select";
 import { tripPurposeOptions } from "@/utils/data";

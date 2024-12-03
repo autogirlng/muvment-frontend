@@ -823,12 +823,18 @@ export const transactionTableHeadItems: string[] = [
   "Transaction ID",
   "Date",
   "Booking ID",
-  "Type",
   "Vehicle",
-  "Purpose",
   "Amount",
+  "Payment Method",
   "Status",
   "Actions",
+];
+
+export const referralTableHeadItems: string[] = [
+  "Name",
+  "Email",
+  "Date",
+  "Status",
 ];
 
 // ======================== Page Filters ======================== //

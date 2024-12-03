@@ -1,11 +1,11 @@
 "use client";
 
 import ProfileInformation from "@/components/Account/ProfileInformation";
-import Legal from "@/components/Account/Legal";
 import Referrals from "@/components/Account/Referrals";
 import Security from "@/components/Account/Security";
 import AppTabs from "@repo/ui/tabs";
 import NotificationSettings from "@/components/Account/NotificationSettings";
+import AboutUs from "@/components/Account/AboutUs";
 
 const tabs = [
   {
@@ -14,7 +14,7 @@ const tabs = [
     content: <ProfileInformation />,
   },
   {
-    name: "Security",
+    name: "Account Security",
     value: "tab2",
     content: <Security />,
   },
@@ -22,7 +22,7 @@ const tabs = [
   {
     name: "About Us",
     value: "tab3",
-    content: <Legal />,
+    content: <AboutUs />,
   },
   {
     name: "Notifications",
@@ -30,7 +30,7 @@ const tabs = [
     content: <NotificationSettings />,
   },
   {
-    name: "Rental Availability",
+    name: "Referrals",
     value: "tab5",
     content: <Referrals />,
   },
@@ -44,7 +44,3 @@ export default function AccountPage() {
     </main>
   );
 }
-
-const Label = ({ label }: { label: string }) => (
-  <p className="text-sm block font-medium text-nowrap text-grey-900">{label}</p>
-);

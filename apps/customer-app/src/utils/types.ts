@@ -181,18 +181,7 @@ export interface ProfileFormValues {
   // email: string;
   country: string;
   countryCode: string;
-  bio: string;
-
   profileImage?: string;
-  city: string;
-  isBusiness: boolean;
-  businessAddress: string;
-  businessEmail: string;
-  businessLogo?: string;
-  businessName: string;
-  businessPhoneNumber: string;
-  businessCountry?: string;
-  businessCountryCode?: string;
 }
 
 export interface WithdrawalValues {
@@ -339,6 +328,48 @@ type UserVerification = {
   updatedAt: string;
 };
 
+type HostStats = {
+  bookingsCompleted: number;
+  canceledBookings: number;
+  hostStats: {
+    averageRating: number;
+    topRatedVehicle: {
+      make: string;
+      model: string;
+      color: string;
+      totalEarnings: number;
+      totalRides: number;
+    };
+    totalCompletedRides: number;
+    totalEarnings: number;
+    totalOnboardedVehicles: number;
+    walletBalance: number;
+  };
+  numberOfCustomers: number;
+  totalRevenue: number;
+};
+
+type UserStats = {
+  averageRating: number;
+  referralStats: {
+    completedReferrals: number;
+    pendingReferrals: number;
+    referralBalance: number;
+    totalReferrals: number;
+  };
+  topRatedVehicle: {
+    make: string;
+    model: string;
+    color: string;
+    totalEarnings: number;
+    totalRides: number;
+  };
+  totalCompletedRides: 0;
+  totalEarnings: 0;
+  totalOnboardedVehicles: 0;
+  walletBalance: 0;
+};
+
 export type User = {
   id: string;
   email: string;
@@ -364,7 +395,10 @@ export type User = {
   createdAt: string;
   updatedAt: string;
   Verification: UserVerification;
-  averageRating: number;
+  statistics?: HostStats;
+  stats?: UserStats;
+  referralBalance: number;
+  referralCode: string;
 };
 
 export interface TripSettings {
@@ -419,6 +453,15 @@ export interface BookingStatistics {
   pendingApprovals: number;
   rejectedBookings: number;
   approvedRequests: number;
+  activeBookings: number;
+  upcomingBookings: number;
+}
+
+export interface UserReferrals {
+  name: string;
+  email: string;
+  date: string;
+  status: "PENDING" | "JOINED";
 }
 
 export interface BookingInformation {

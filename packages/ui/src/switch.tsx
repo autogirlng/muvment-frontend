@@ -25,7 +25,7 @@ const AppSwitch = ({
     name={name}
     onCheckedChange={onChange}
   >
-    <Switch.Thumb className="block w-[31px] h-[31px] bg-white rounded-full transition-transform duration-100 translate-x-1 will-change-transform data-[state=checked]:translate-x-[27px]" />
+    <Switch.Thumb className="block w-[31px] h-[31px] bg-white rounded-full transition-transform duration-100 translate-x-1 will-change-transform data-[state=checked]:translate-x-[27px] cursor-pointer" />
   </Switch.Root>
 );
 

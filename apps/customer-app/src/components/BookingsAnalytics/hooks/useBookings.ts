@@ -31,7 +31,7 @@ export default function useBookings({
 
     queryFn: async () =>
       http.get<BookingsDataType>(
-        `/api/bookings/user/${user?.id}?page=${currentPage}&limit=${pageLimit}`
+        `/api/bookings/user?page=${currentPage}&limit=${pageLimit}`
       ),
 
     enabled: !!user?.id,

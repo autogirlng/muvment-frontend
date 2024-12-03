@@ -12,7 +12,7 @@ export default function useBookingStats() {
   const { data, isError, error, isLoading, isSuccess } = useQuery({
     queryKey: ["getBookingStats", user?.id],
     queryFn: async () =>
-      http.get<BookingStatistics>("/api/statistics/hostBookings"),
+      http.get<BookingStatistics>("/api/statistics/customerBookings"),
     enabled: !!user?.id,
     retry: false,
   });

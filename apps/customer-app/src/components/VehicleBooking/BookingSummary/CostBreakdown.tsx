@@ -112,8 +112,8 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
           } = personalInformation;
 
           const {
-            startDate,
-            endDate,
+            // startDate,
+            // endDate,
             startTime,
             endTime,
             ...itineraryInformationValues
@@ -122,8 +122,8 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
           saveBooking.mutate({
             ...personalInformationValues,
             ...itineraryInformationValues,
-            startDate: itineraryInformation.startTime,
-            endDate: itineraryInformation.endTime,
+            // startDate: itineraryInformation.startDate,
+            // endDate: itineraryInformation.endDate,
             amount: parseInt(subTotal),
             currencyCode: currencyCode,
             bookingType,

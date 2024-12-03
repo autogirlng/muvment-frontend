@@ -11,7 +11,7 @@ import {
 import InputField from "@repo/ui/inputField";
 import TextArea from "@repo/ui/textarea";
 import SelectInput from "@repo/ui/select";
-import FormRow from "../FormRow";
+import FormRow from "../../FormRow";
 import { PickupsAndDropoffsValues } from "@/utils/types";
 
 const initialValues: PickupsAndDropoffsValues = {

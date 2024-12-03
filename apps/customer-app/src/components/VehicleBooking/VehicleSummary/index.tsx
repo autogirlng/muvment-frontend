@@ -61,7 +61,7 @@ export default function VehicleSummary({
     }));
   };
 
-  const { checkVehicleAvailability } = useHandleBooking({
+  const { checkVehicleAvailability, vehicleAvailableError } = useHandleBooking({
     vehicleId: vehicle?.id || "",
     isSuccessFunction: handleOpenBookRideModal,
   });
@@ -110,7 +110,11 @@ export default function VehicleSummary({
             </div>
 
             {/* {startDate && startTime && ( */}
-            <InputSection title="Trip Start">
+            <InputSection
+              title="Trip Start"
+              textColor="blue"
+              error={vehicleAvailableError}
+            >
               <DateInput
                 name="startDate"
                 value={values.startDate}
@@ -124,9 +128,10 @@ export default function VehicleSummary({
                 onChange={(date: Date) => handleValueChange("startTime", date)}
               />
             </InputSection>
+
             {/* )} */}
             {/* {endDate && endTime && ( */}
-            <InputSection title="Trip End">
+            <InputSection title="Trip End" textColor="blue">
               <DateInput
                 name="endDate"
                 value={values.endDate}
@@ -146,7 +151,12 @@ export default function VehicleSummary({
               color="primary"
               fullWidth
               disabled={
-                !values.bookingType || checkVehicleAvailability.isPending
+                !values.bookingType ||
+                !values.startDate ||
+                !values.startTime ||
+                !values.endDate ||
+                !values.endTime||
+                checkVehicleAvailability.isPending
               }
               loading={checkVehicleAvailability.isPending}
               onClick={() => {
@@ -280,14 +290,26 @@ const PricingDescription = ({
 const InputSection = ({
   title,
   children,
+  textColor = "black",
+  error,
 }: {
   title: string;
   children: ReactNode;
+  textColor?: "black" | "blue";
+  error?: string;
 }) => {
   return (
     <div className="space-y-3">
-      <p className="">{title}</p>
+      <p
+        className={cn(
+          "text-sm 3xl:text-base",
+          textColor === "blue" ? "text-primary-500" : "text-black"
+        )}
+      >
+        {title}
+      </p>
       <div className="flex items-center gap-3">{children}</div>
+      {error && <p className="text-error-500 ">{error}</p>}
     </div>
   );
 };
