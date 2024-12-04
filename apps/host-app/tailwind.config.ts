@@ -9,7 +9,7 @@ const config: Config = {
   ],
   theme: {
     screens: {
-      xs:'410px',
+      xs: "410px",
       sm: "640px",
       md: "768px",
       lg: "1024px",
@@ -26,12 +26,19 @@ const config: Config = {
       transparent: "transparent",
       primary: {
         50: "#EDF8FF",
+        75: "#D6EDFF",
+        100: "#B5E2FF",
         500: "#0673FF",
+        400: "#1E93FF",
+        600: "#005EFF",
+        700: "#0848C5",
+        800: "#0D419B",
         900: "#0E285D",
       },
       grey: {
         50: "#F9FAFB",
         75: "#F7F9FC",
+        90: "#F0F2F5",
         100: "#EBEBEB",
         200: "#E4E7EC",
         300: "#D0D5DD",
@@ -43,15 +50,24 @@ const config: Config = {
         900: "#101928",
       },
       warning: {
+        75: "#FBE2B7",
         300: "#F5B546",
         400: "#F3A218",
+        500: "#DD900D",
         700: "#865503",
       },
       error: {
+        50: "#FFF1F1",
+        75: "#FFC7C7",
+        100: "#FFE0E0",
         500: "#F83B3B",
+        800: "#F93A3A",
         900: "#E61C1C",
       },
       success: {
+        50: "#EFFEF1",
+        75: "#D9FFDE",
+        100: "#B6FCBF",
         500: "#0AAF24",
         600: "#0C8921",
       },

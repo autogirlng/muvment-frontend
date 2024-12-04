@@ -2,15 +2,20 @@
 
 import Link from "next/link";
 import { Form, Formik } from "formik";
+import { getCountryCallingCode } from "react-phone-number-input";
 import { signUpFormInitialValues } from "@/utils/initialValues";
 import { signupFormValidationSchema } from "@/utils/validationSchema";
+import useAuth from "@/hooks/useAuth";
 import Button from "@repo/ui/button";
 import InputField from "@repo/ui/inputField";
-import PhoneNumberField from "@repo/ui/phoneNumberField";
 import PasswordChecks from "@/components/PasswordChecks";
 import AuthPageHeader from "@/components/Header/AuthPageHeader";
+import PhoneNumberAndCountryField from "@repo/ui/phoneNumberAndCountryField";
+import { replaceCharactersWithString } from "@/utils/functions";
 
 export default function SignupPage() {
+  const { signupMutation } = useAuth();
+
   return (
     <div className="space-y-10">
       <AuthPageHeader
@@ -22,6 +27,10 @@ export default function SignupPage() {
         initialValues={signUpFormInitialValues}
         onSubmit={async (values, { setSubmitting }) => {
           console.log(values);
+
+          const { password_checks, ...submissionValues } = values;
+          signupMutation.mutate(submissionValues);
+          setSubmitting(false);
         }}
         validationSchema={signupFormValidationSchema}
         enableReinitialize={true}
@@ -43,57 +52,73 @@ export default function SignupPage() {
           } = props;
 
           return (
-            <Form className="space-y-6">
+            <Form className="space-y-6" autoComplete="off">
               <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-6">
                 <InputField
-                  name="first_name"
-                  id="first_name"
-                  type="first_name"
+                  name="firstName"
+                  id="firstName"
+                  type="text"
                   label="First name"
                   placeholder="Enter first name"
-                  value={values.email}
+                  value={values.firstName}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   error={
-                    errors.first_name && touched.first_name
-                      ? errors.first_name
+                    errors.firstName && touched.firstName
+                      ? errors.firstName
                       : ""
                   }
                 />
                 <InputField
-                  name="last_name"
-                  id="last_name"
-                  type="last_name"
+                  name="lastName"
+                  id="lastName"
+                  type="text"
                   label="Last name"
                   placeholder="Enter last name"
-                  value={values.last_name}
+                  value={values.lastName}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   error={
-                    errors.last_name && touched.last_name
-                      ? errors.last_name
-                      : ""
+                    errors.lastName && touched.lastName ? errors.lastName : ""
                   }
                 />
               </div>
-              <PhoneNumberField
-                name="phoneNumber"
-                id="phoneNumber"
-                type="phoneNumber"
+              <PhoneNumberAndCountryField
+                inputName="phoneNumber"
+                selectName="country"
+                inputId="phoneNumber"
+                selectId="country"
                 label="Phone Number"
-                placeholder="Enter phone number"
-                value={values.phoneNumber}
-                onChange={(number: any) => {
+                inputPlaceholder="Enter phone number"
+                selectPlaceholder="+234"
+                inputValue={values.phoneNumber}
+                selectValue={values.country}
+                inputOnChange={(event) => {
+                  const number = replaceCharactersWithString(
+                    event.target.value
+                  );
                   setFieldTouched("phoneNumber", true);
                   setFieldValue("phoneNumber", number);
                 }}
-                onBlur={handleBlur}
-                errors={
+                selectOnChange={(value: string) => {
+                  const countryCode = `+${getCountryCallingCode(value as any)}`;
+                  setFieldValue("country", value);
+                  setFieldValue("countryCode", countryCode);
+                }}
+                inputOnBlur={handleBlur}
+                selectOnBlur={handleBlur}
+                // inputClassname
+                selectClassname="!w-[130px]"
+                inputError={
                   errors.phoneNumber && touched.phoneNumber
                     ? errors.phoneNumber
                     : ""
                 }
+                selectError={
+                  errors.country && touched.country ? errors.country : ""
+                }
               />
+
               <InputField
                 name="email"
                 id="email"
@@ -122,7 +147,24 @@ export default function SignupPage() {
                 </Link>
               </p>
 
-              <Button fullWidth variant="filled" color="primary" type="submit">
+              <Button
+                fullWidth
+                variant="filled"
+                color="primary"
+                type="submit"
+                loading={isSubmitting || signupMutation.isPending}
+                disabled={
+                  isSubmitting ||
+                  signupMutation.isPending ||
+                  !isValid ||
+                  !values.password_checks?.digit ||
+                  !values.password_checks?.length ||
+                  !values.password_checks?.lowercase_letters ||
+                  !values.password_checks?.no_space ||
+                  !values.password_checks?.special_character ||
+                  !values.password_checks?.uppercase_letters
+                }
+              >
                 Sign Up
               </Button>
             </Form>

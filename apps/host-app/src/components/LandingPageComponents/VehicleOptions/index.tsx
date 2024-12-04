@@ -1,6 +1,7 @@
 import LandingPageSectionHeader from "@/components/Header/LandingPageSectionHeader";
 import Button from "@repo/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 type Props = {};
@@ -31,8 +32,8 @@ const vehicles: optionProps[] = [
 
 function VehicleOptions({}: Props) {
   return (
-    <div className="px-5 pb-5 sm:pb-10 3xl:pb-[53px]">
-      <div className="pt-[97px] pb-[155px] bg-grey-75 rounded-[75px] md:rounded-[97px] px-5">
+    <section className="px-5 pb-5 sm:pb-10 3xl:pb-[53px]">
+      <div className="pt-[97px] pb-[155px] md:bg-grey-75 rounded-[75px] md:rounded-[97px] px-5">
         <div className="space-y-[114px]">
           <LandingPageSectionHeader
             className="max-w-[860px] mx-auto text-primary-900 text-center "
@@ -42,14 +43,16 @@ function VehicleOptions({}: Props) {
               there's a demand for your vehicle."
           >
             <br />
-            <Button variant="filled" color="primary" radius="md">
-              Get Started
-            </Button>
+            <Link href="/signup">
+              <Button variant="filled" color="primary" radius="md">
+                Get Started
+              </Button>
+            </Link>
           </LandingPageSectionHeader>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-[165px] gap-y-[93px] max-w-[746px] mx-auto px-5 sm:px-0">
             {vehicles.map((option, index) => (
-              <div key={index} className="flex flex-col items-center gap-[6px]">
+              <div key={index} className="flex flex-col items-center gap-1.5">
                 <Image
                   src={option.image}
                   alt=""
@@ -65,7 +68,7 @@ function VehicleOptions({}: Props) {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

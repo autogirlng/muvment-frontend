@@ -1,8 +1,4 @@
-import LandingPageSectionHeader from "@/components/Header/LandingPageSectionHeader";
-import cn from "classnames";
-import React from "react";
-
-type Props = {};
+import HowItWorks from "@repo/ui/howItWorks";
 
 type stepProps = {
   title: string;
@@ -27,49 +23,8 @@ const steps: stepProps[] = [
   },
 ];
 
-function Steps({}: Props) {
-  return (
-    <section className="pt-[150px] 3xl:pt-[210px] pb-[131px] md:pb-[191px]">
-      <div className="space-y-[141px] max-w-[870px] mx-auto px-5 sm:px-0">
-        <LandingPageSectionHeader
-          className="text-primary-900 text-center"
-          title=" Start earning in a few minutes"
-          description="Whether you’re an individual looking to earn extra income or a business wanting to manage and expand your fleet, our platform caters to all. Join 100+ hosts who are maximizing their vehicle’s potential."
-        />
-        <div className="flex flex-col items-center">
-          {steps.map((step, index) => (
-            <div
-              key={index}
-              className=" h-[400px] 3xl:h-[600px] last:h-0 relative"
-            >
-              <div className="h-full w-[5px] bg-grey-400 mx-auto" />
-              <div
-                className={cn(
-                  "absolute -top-[80px]",
-                  (index + 1) % 2 === 0 ? "right-10" : "left-10"
-                )}
-              >
-                <div
-                  className={cn(
-                    "py-[35px] px-[43px] bg-grey-50 rounded-3xl w-[419px] text-primary-900 relative after:absolute after:top-[70px] after:content-[''] after:h-[30px] after:w-[30px] after:bg-grey-400 after:rounded-full",
-                    (index + 1) % 2 === 0
-                      ? "after:-right-[52px]"
-                      : "after:-left-[52px]"
-                  )}
-                >
-                  <p className="text-sm 3xl:text-base text-grey-400 uppercase">
-                    Step {index + 1}
-                  </p>
-                  <h4 className="text-h5 3xl:text-h4">{step.title}</h4>
-                  <p className="text-xs md:text-sm">{step.description}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+function Steps() {
+  return <HowItWorks title="Start earning in a few minutes" steps={steps} />;
 }
 
 export default Steps;

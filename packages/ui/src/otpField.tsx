@@ -11,8 +11,8 @@ type OtpFieldProps = {
   required?: boolean;
   disabled?: boolean;
   error?: string;
-  // onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  onChange: any;
+  onChange: (otp: string) => void;
+  numInputs: number;
   [key: string]: any;
 };
 
@@ -24,11 +24,11 @@ const OtpField = ({
   error,
   onChange,
   value,
+  disabled,
+  numInputs,
 
   ...rest
 }: OtpFieldProps) => {
-  console.log(value);
-
   return (
     <div className="w-full space-y-3">
       {label && (
@@ -45,7 +45,7 @@ const OtpField = ({
       <OtpInput
         {...rest}
         onChange={onChange}
-        numInputs={5}
+        numInputs={numInputs}
         containerStyle="flex items-center gap-3"
         inputStyle={cn(
           "w-full rounded-[12px] text-sm h-[42px] !w-[42px] outline-none data-[placeholder]:text-grey-400",
@@ -55,6 +55,7 @@ const OtpField = ({
         )}
         errorStyle="!border !border-error-500 focus:!border-error-500 !shadow-none"
         hasErrored={!!error}
+        isDisabled={disabled}
       />
 
       {error && <p className="text-error-500 text-sm mt-2">{error}</p>}

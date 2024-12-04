@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 
-type Props = { icon: ReactNode; title: string };
+type Props = { icon?: ReactNode; title: string };
 
 export default function DashboardSectionTitle({ icon, title }: Props) {
   return (

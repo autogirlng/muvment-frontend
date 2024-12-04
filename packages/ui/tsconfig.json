@@ -1,8 +1,15 @@
 {
   "extends": "@repo/typescript-config/react-library.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "baseUrl": ".",
+    "moduleResolution": "NodeNext",
+    "outDir": "dist",
+    "rootDir": "src",
+    "paths": {
+      "next/*": ["node_modules/next/*"]
+    }
   },
+  
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

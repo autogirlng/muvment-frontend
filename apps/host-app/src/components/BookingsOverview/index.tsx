@@ -1,56 +1,101 @@
+import React, { useEffect, useState } from "react";
 import Icons from "@repo/ui/icons";
-import { bookingOverviewTableItems, monthsFilter } from "@/utils/data";
 import SelectInput from "@repo/ui/select";
-import React from "react";
-import Table from "../Table";
-import DashboardSectionTitle from "../DashboardSectionTitle";
+import FilterBy from "@repo/ui/filter";
+import Table from "@/components/BookingsOverview/BookingTable";
+import DashboardSectionTitle from "@/components/DashboardSectionTitle";
+import { monthsFilter } from "@/utils/data";
+import { FullPageSpinner } from "@repo/ui/spinner";
+import useBookingsOverview from "./hooks/useBookingsOverview";
+import cn from "classnames";
+import { useAppSelector } from "@/lib/hooks";
 
 type Props = {};
 
 export default function BookingsOverview({}: Props) {
+  const { user } = useAppSelector((state) => state.user);
+
+  const [filters, setFilters] = useState<Record<string, string[]>>({});
+  const [selectedMonth, setSelectedMonth] = React.useState<number>();
+  const [selectedYear, setSelectedYear] = React.useState<string>();
+
+  const { bookings, isError, isLoading, bookingOverviewFilters } =
+    useBookingsOverview({
+      month: selectedMonth,
+      year: selectedYear,
+      filters,
+    });
+
+  const handleFilterChange = (selectedFilters: Record<string, string[]>) => {
+    setFilters(selectedFilters);
+  };
+
   return (
     <div className="space-y-8">
-      <DashboardSectionTitle icon={Icons.ic_ticket} title="Bookings" />
-      {[].length > 0 && (
+      <div className="flex items-center justify-between gap-3">
+        <DashboardSectionTitle icon={Icons.ic_ticket} title="Bookings" />
+        <div className="block md:hidden">
+          <FilterBy
+            categories={bookingOverviewFilters}
+            onChange={handleFilterChange}
+          />
+        </div>
+      </div>
+      {user?.withdrawalAccountVerified && user?.phoneVerified && (
         <div className="flex justify-between gap-2">
-          <div className="flex gap-2">
-            <div className="divide-x divide-grey-300 border border-grey-300 rounded-lg w-fit h-fit">
-              {monthsFilter.map((month) => (
-                <button
-                  className="py-1.5 2xl:py-2.5 px-4 2xl:px-[30px] text-grey-600 text-base 2xl:text-h6"
-                  key={month}
-                >
-                  {month}
-                </button>
-              ))}
+          <div className="flex gap-2 flex-wrap justify-between items-center w-full">
+            <div className="hidden md:flex flex-wrap gap-2">
+              <div className="divide-x divide-grey-300 border border-grey-300 rounded-lg w-fit h-fit flex">
+                {monthsFilter.map((month, index) => (
+                  <button
+                    className={cn(
+                      "py-1.5 3xl:py-2 px-3 3xl:px-7 text-grey-600 text-xs 3xl:text-sm hover:bg-primary-75",
+                      index === (selectedMonth || 0) - 1 &&
+                        "bg-primary-500 text-white"
+                    )}
+                    key={index}
+                    onClick={() => setSelectedMonth(index + 1)}
+                  >
+                    {month}
+                  </button>
+                ))}
+              </div>
+              <div className="w-[82px]">
+                <SelectInput
+                  defaultValue={"2024"}
+                  variant="outlined"
+                  id="year"
+                  className="border border-grey-300 rounded-lg !text-xs 3xl:!text-sm font-medium !text-grey-600 !py-2 !px-3 !h-8 3xl:!h-[2.3rem]"
+                  options={[
+                    { value: "2024", option: "2024" },
+                    { value: "2023", option: "2023" },
+                    { value: "2022", option: "2022" },
+                    { value: "2021", option: "2021" },
+                  ]}
+                  onChange={(value) => setSelectedYear(value)}
+                />
+              </div>
             </div>
-            <div className="w-[82px]">
-              <SelectInput
-                defaultValue={"2024"}
-                variant="outlined"
-                id="year"
-                className="border border-grey-300 rounded-lg text-sm font-medium !text-grey-600 h-5 2xl:h-11"
-                options={[
-                  { value: "2024", option: "2024" },
-                  { value: "2023", option: "2024" },
-                  { value: "2022", option: "2024" },
-                  { value: "2021", option: "2024" },
-                ]}
+
+            <div className="hidden md:block">
+              <FilterBy
+                categories={bookingOverviewFilters}
+                onChange={handleFilterChange}
               />
             </div>
           </div>
-          {/* <div className="w-[106px]">
-          <SelectInput
-            variant="outlined"
-            id="filter"
-            options={[
-             
-            ]}
-          />
-        </div> */}
         </div>
       )}
-      <Table items={[]} emptyStateMessage="Your Bookings Will Appear Here" />
+      {isLoading ? (
+        <FullPageSpinner className="!min-h-[200px]" />
+      ) : isError ? (
+        <p>something went wrong</p>
+      ) : (
+        <Table
+          items={bookings}
+          emptyStateMessage="Your Bookings Will Appear Here"
+        />
+      )}
     </div>
   );
 }
