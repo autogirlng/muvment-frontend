@@ -3,43 +3,39 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAppSelector } from "@/lib/hooks";
 import { useHttp } from "../../../hooks/useHttp";
-import { BookingInformation } from "@/utils/types";
+import { UserReferrals } from "@/utils/types";
 import { handleFilterQuery } from "@/utils/functions";
 
-type BookingsDataType = {
-  data: BookingInformation[];
-  totalCount: number;
+type ReferralsDataType = {
+  data: UserReferrals[];
+  meta: { total: number };
 };
 
-export default function useBookings({
+export default function useFetchReferrals({
   currentPage = 1,
   pageLimit = 10,
-  // search = "",
   filters = {},
 }: {
   currentPage: number;
   pageLimit: number;
-  // search?: string;
   filters?: Record<string, string[]>;
 }) {
   const http = useHttp();
   const { user } = useAppSelector((state) => state.user);
 
   const { data, isError, error, isLoading, isSuccess } = useQuery({
-    queryKey: ["getBookings", user?.id, currentPage, filters],
-
+    queryKey: ["getReferrals", user?.id, currentPage, filters],
     queryFn: async () =>
-      http.get<BookingsDataType>(
-        `/api/bookings/user?page=${currentPage}&limit=${pageLimit}&${handleFilterQuery({ filters })}`
+      http.get<ReferralsDataType>(
+        `/api/referrals?page=${currentPage}&limit=${pageLimit}&${handleFilterQuery({ filters })}`
       ),
-
     enabled: !!user?.id,
     retry: false,
   });
 
   return {
-    bookings: data?.data || [],
-    totalCount: data?.totalCount || 0,
+    referrals: data?.data || [],
+    totalCount: data?.meta.total || 0,
     isError,
     error,
     isLoading,

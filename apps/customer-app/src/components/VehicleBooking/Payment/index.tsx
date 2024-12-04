@@ -6,8 +6,8 @@ import "swiper/css/navigation";
 
 import Button from "@repo/ui/button";
 import Image from "next/image";
-import BackLink from "@repo/ui/backLink";
 import Link from "next/link";
+import BackLink from "@/components/BackLink";
 
 const vehicleImages = [
   "/images/vehicles/3.png",

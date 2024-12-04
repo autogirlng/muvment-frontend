@@ -4,22 +4,11 @@ import { BookingBadgeStatus, BookingInformation } from "@/utils/types";
 import { Popup } from "@repo/ui/popup";
 import MoreButton from "@repo/ui/moreButton";
 import TableCell from "@repo/ui/tableCell";
-import DeclineTrip from "@/components/BookingsAnalytics/Details/modals/DeclineTrip";
-import AcceptTrip from "@/components/BookingsAnalytics/Details/modals/AcceptTrip";
 import { BookingTableBadge } from "@repo/ui/badge";
 import { useState } from "react";
+import Icons from "@repo/ui/icons";
 
 const BookingDesktopRow = ({ items }: { items: BookingInformation }) => {
-  const [openDeclineModal, setOpenDeclineModal] = useState<boolean>(false);
-  const handleDeclineModal = () => {
-    setOpenDeclineModal(!openDeclineModal);
-  };
-
-  const [openAcceptModal, setOpenAcceptModal] = useState<boolean>(false);
-  const handleAcceptModal = () => {
-    setOpenAcceptModal(!openAcceptModal);
-  };
-
   return (
     <tr>
       <TableCell content={items?.id} />
@@ -53,42 +42,19 @@ const BookingDesktopRow = ({ items }: { items: BookingInformation }) => {
       <TableCell content={`${items?.currencyCode} ${items?.amount}`} />
       <td>
         <Popup
-          trigger={<MoreButton />}
+          trigger={
+            <button
+              className={
+                "block border border-grey-200 bg-white text-black rounded-lg p-2 w-fit mx-auto"
+              }
+            >
+              {Icons.ic_more}
+            </button>
+          }
           content={
             <>
               <p className="!text-xs 3xl:!text-base !font-semibold">Actions</p>
               <ul className="space-y-2 *:py-2">
-                {items.bookingStatus !== BookingBadgeStatus.APPROVED &&
-                  items.bookingStatus !== BookingBadgeStatus.ACCEPTED && (
-                    <>
-                      <li>
-                        <DeclineTrip
-                          openModal={openDeclineModal}
-                          handleModal={() => handleDeclineModal()}
-                          isLoading={false}
-                          handleAction={() => {}}
-                          trigger={
-                            <button className="!text-xs 3xl:!text-base ">
-                              Decline Trip
-                            </button>
-                          }
-                        />
-                      </li>
-                      <li>
-                        <AcceptTrip
-                          openModal={openAcceptModal}
-                          handleModal={() => handleAcceptModal()}
-                          isLoading={false}
-                          handleAction={() => {}}
-                          trigger={
-                            <button className="!text-xs 3xl:!text-base ">
-                              Accept Trip
-                            </button>
-                          }
-                        />
-                      </li>
-                    </>
-                  )}
                 <li>
                   <Link
                     href={`/bookings/${items?.id}`}

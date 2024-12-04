@@ -904,13 +904,13 @@ export const bookingFilters = [
 
 // add type
 export const transactionFilters = [
-  {
-    title: "type",
-    options: [
-      { option: "Credit", value: TransactionType.CREDIT },
-      { option: "Debit", value: TransactionType.DEBIT },
-    ],
-  },
+  // {
+  //   title: "type",
+  //   options: [
+  //     { option: "Credit", value: TransactionType.CREDIT },
+  //     { option: "Debit", value: TransactionType.DEBIT },
+  //   ],
+  // },
   {
     title: "status",
     options: [
@@ -919,13 +919,13 @@ export const transactionFilters = [
       { option: "Failed", value: TransactionStatus.FAILED },
     ],
   },
-  {
-    title: "purpose",
-    options: [
-      { option: "Booking", value: TransactionOrigin.BOOKING },
-      { option: "Withdrawal", value: TransactionOrigin.WITHDRAWAL },
-    ],
-  },
+  // {
+  //   title: "purpose",
+  //   options: [
+  //     { option: "Booking", value: TransactionOrigin.BOOKING },
+  //     { option: "Withdrawal", value: TransactionOrigin.WITHDRAWAL },
+  //   ],
+  // },
 ];
 
 // =================== mock data ===================//
@@ -972,47 +972,5 @@ export const transactionData: TransactionTableRow[] = [
     amount: "NGN 100,000",
     status: "Failed",
     actions: "",
-  },
-];
-
-export const bookingOverviewTableItems: BookingInformation[] = [
-  {
-    guestName: "Chioma Nwosu",
-    id: "BKG-1234-AB56",
-    bookingType: BookingType.SINGLE_DAY,
-    duration: 3,
-    startDate: "Apr 12, 2023",
-    endDate: "Apr 12, 2023",
-    amount: 100,
-    paymentStatus: PaymentBadgeStatus.PENDING,
-    paymentMethod: "BANK_TRANSFER",
-    rentalAgreement: null,
-    bookingStatus: BookingBadgeStatus.ACCEPTED,
-    guestEmail: "",
-    guestPhoneNumber: "",
-    pickupLocation: "",
-    dropoffLocation: "",
-    emergencyContact: "",
-    vehicleId: "",
-    userId: "",
-    createdAt: "",
-    updatedAt: "",
-    currencyCode: "",
-    vehicle: "Toyota Camry 2021",
-  },
-];
-
-const notifications: Notification[] = [
-  {
-    id: "6705095b809255ea5252730c",
-    title: "Payment Recieved",
-    message: "432.125 has been processed for your recent rental from Daniel",
-    isRead: false,
-    userId: "66ddb4b8e45560fe9d34df42",
-    trxReference: null,
-    notificationType: NotificationType.SECURITY_ALERT,
-    createdAt: "2024-10-08T10:28:43.597Z",
-    updatedAt: "2024-10-08T10:28:43.597Z",
-    transaction: null,
   },
 ];
