@@ -1,10 +1,10 @@
 import { format } from "date-fns";
-import { Transaction, TransactionType } from "@/utils/types";
+import { Transaction, TransactionStatus } from "@/utils/types";
 import { Popup } from "@repo/ui/popup";
 import MoreButton from "@repo/ui/moreButton";
-import Icons from "@repo/ui/icons";
 import TableCell from "@repo/ui/tableCell";
 import { TransactionBadge } from "@repo/ui/badge";
+import Icons from "@repo/ui/icons";
 
 const TransactionRow = ({ items }: { items: Transaction }) => {
   return (
@@ -55,14 +55,25 @@ const TransactionRow = ({ items }: { items: Transaction }) => {
       />
       <td>
         <Popup
-          trigger={<MoreButton />}
+          trigger={
+            <button
+              className={
+                "block border border-grey-200 bg-white text-black rounded-lg p-2 w-fit mx-auto"
+              }
+            >
+              {Icons.ic_more}
+            </button>
+          }
           content={
             <>
               <p className="!text-xs 3xl:!text-base !font-semibold">Actions</p>
               <ul className="space-y-2 *:py-2">
-                <li className="!text-xs 3xl:!text-base">
-                  View reciept
-                </li>
+                <li className="!text-xs 3xl:!text-base">View reciept</li>
+                {items?.status === TransactionStatus.PENDING && (
+                  <li className="!text-xs 3xl:!text-base">
+                    Proceed to payment
+                  </li>
+                )}
               </ul>
             </>
           }

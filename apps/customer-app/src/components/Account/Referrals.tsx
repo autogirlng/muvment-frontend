@@ -6,16 +6,20 @@ import TableHead from "@repo/ui/tableHead";
 import EmptyState from "../EmptyState";
 import { format } from "date-fns";
 import { ReferralBadge } from "@repo/ui/badge";
-import { UserReferrals } from "@/utils/types";
 import { useState } from "react";
+import useFetchReferrals from "./hooks/useFetchReferrals";
+import Pagination from "@repo/ui/pagination";
+import { FullPageSpinner } from "@repo/ui/spinner";
 
 type Props = {};
 
 export default function Referrals({}: Props) {
   const { user } = useAppSelector((state) => state.user);
-  const [referals, setReferrals] = useState<UserReferrals[]>([
-    { name: "", email: "", date: "", status: "PENDING" },
-  ]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageLimit = 10;
+
+  const { referrals, totalCount, isError, error, isLoading, isSuccess } =
+    useFetchReferrals({ currentPage, pageLimit });
 
   return (
     <div className="space-y-8 text-xs md:text-sm 3xl:text-base text-grey-500">
@@ -43,26 +47,30 @@ export default function Referrals({}: Props) {
         </button>
       </div>
 
-      {referals.length > 0 ? (
+      {isLoading ? (
+        <FullPageSpinner className="!min-h-[300px]" />
+      ) : isError ? (
+        <p>Something went wrong</p>
+      ) : referrals.length > 0 ? (
         <div className="overflow-auto">
           <table className="w-full min-w-full divide-y divide-grey-200 border-t border-grey-200 bg-white md:mt-7">
             <TableHead tableHeadItems={referralTableHeadItems} />
             <tbody className="divide-y divide-grey-200 ">
-              {referals?.map((item, index) => (
+              {referrals?.map((item, index) => (
                 <tr key={index}>
                   <TableCell
-                    content={item?.name}
+                    content={item?.referredUserName}
                     className="text-grey-900 !font-semibold w-fit"
                   />
                   <TableCell
-                    content={item?.email}
+                    content={item?.referredUserEmail}
                     className="text-primary-500"
                   />
                   <TableCell
                     content={
-                      item?.date
-                        ? `${format(new Date(item?.date), "MMM d, yyyy")} | ${format(
-                            new Date(item?.date),
+                      item?.createdAt
+                        ? `${format(new Date(item?.createdAt), "MMM d, yyyy")} | ${format(
+                            new Date(item?.createdAt),
                             "hh:mma"
                           )}`
                         : "-"
@@ -87,6 +95,13 @@ export default function Referrals({}: Props) {
           imageSize="w-[182px] 3xl:w-[265px]"
         />
       )}
+
+      <Pagination
+        currentPage={currentPage}
+        totalCount={totalCount}
+        pageLimit={pageLimit}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
     </div>
   );
 }

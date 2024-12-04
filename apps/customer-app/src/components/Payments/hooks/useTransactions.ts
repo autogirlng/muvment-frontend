@@ -5,6 +5,7 @@ import { Transaction } from "@/utils/types";
 import { useAppSelector } from "@/lib/hooks";
 import { useHttp } from "@/hooks/useHttp";
 import { handleFilterQuery } from "@/utils/functions";
+import { useEffect } from "react";
 
 type TransactionDataType = {
   data: Transaction[];
@@ -12,8 +13,8 @@ type TransactionDataType = {
 };
 
 export default function useTransactions({
-  currentPage = 1,
-  pageLimit = 10,
+  currentPage,
+  pageLimit,
   filters = {},
 }: {
   currentPage: number;
@@ -28,11 +29,15 @@ export default function useTransactions({
 
     queryFn: () =>
       http.get<TransactionDataType>(
-        `/api/transactions?page=${currentPage}&limit=${pageLimit}&${handleFilterQuery({filters})}`
+        `/api/transactions?page=${currentPage}&limit=${pageLimit}&${handleFilterQuery({ filters })}`
       ),
     enabled: !!user?.id,
     retry: false,
   });
+
+  useEffect(() => {
+    console.log(data?.data);
+  }, [data]);
 
   return {
     transactions: data?.data ?? [],
