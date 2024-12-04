@@ -25,6 +25,11 @@ type Props = {
   icon?: JSX.Element;
   type: "top-rated" | "all" | "search";
   location?: string;
+  search?: string;
+  fromDate?: string;
+  fromTime?: string;
+  untilDate?: string;
+  untilTime?: string;
 };
 
 export default function ExplorePageLayout({
@@ -32,6 +37,11 @@ export default function ExplorePageLayout({
   icon,
   type,
   location,
+  search,
+  fromDate,
+  fromTime,
+  untilDate,
+  untilTime,
 }: Props) {
   const { user } = useAppSelector((state) => state.user);
   const pageLimit = 10;
@@ -56,8 +66,8 @@ export default function ExplorePageLayout({
   });
 
   // get url paramas
-  const { search, fromDate, fromTime, untilDate, untilTime } =
-    useFetchUrlParams();
+  // const { search, fromDate, fromTime, untilDate, untilTime } =
+  //   useFetchUrlParams();
 
   // search states
   const [searchValue, setSearchValue] = useState<string>(search || "");
@@ -80,7 +90,7 @@ export default function ExplorePageLayout({
     pageLimit,
     filters,
     type,
-    search,
+    search: searchValue,
     fromDate: fromDateValue?.toISOString(),
     untilDate: untilDateValue?.toISOString(),
     fromTime: fromTimeValue?.toISOString(),
