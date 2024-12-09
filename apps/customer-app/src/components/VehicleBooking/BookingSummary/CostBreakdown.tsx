@@ -59,6 +59,63 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
     type,
   });
 
+  const saveBookingHandler = () => {
+    const {
+      secondaryCountryCode,
+      secondaryCountry,
+      userCountry,
+      userCountryCode,
+      ...personalInformationValues
+    } = personalInformation;
+
+    const {
+      // startDate,
+      // endDate,
+      startTime,
+      endTime,
+      ...itineraryInformationValues
+    } = itineraryInformation;
+
+    saveBooking.mutate({
+      ...personalInformationValues,
+      ...itineraryInformationValues,
+      // startDate: itineraryInformation.startDate,
+      // endDate: itineraryInformation.endDate,
+      amount: parseInt(subTotal),
+      currencyCode: currencyCode,
+      bookingType,
+      duration: parseInt(numberOfDays),
+    });
+  };
+  const proceedToPaymentHandler = () => {
+    const {
+      secondaryCountryCode,
+      secondaryCountry,
+      userCountry,
+      userCountryCode,
+      ...personalInformationValues
+    } = personalInformation;
+
+    const {
+      // startDate,
+      // endDate,
+      startTime,
+      endTime,
+      ...itineraryInformationValues
+    } = itineraryInformation;
+
+    proceedToPayment.mutate({
+      ...personalInformationValues,
+      ...itineraryInformationValues,
+      // startDate: itineraryInformation.startDate,
+      // endDate: itineraryInformation.endDate,
+      amount: parseInt(subTotal),
+      currencyCode: currencyCode,
+      bookingType,
+      duration: parseInt(numberOfDays),
+    });
+  };
+
   return (
     <div className="space-y-7 border border-grey-200 rounded-3xl md:max-w-[400px] px-6 py-8">
       <h6 className="text-base md:text-xl 3xl:text-h6">Cost Breakdown</h6>
@@ -102,34 +159,7 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
         variant="outlined"
         rounded="full"
         fullWidth
-        onClick={() => {
-          const {
-            secondaryCountryCode,
-            secondaryCountry,
-            userCountry,
-            userCountryCode,
-            ...personalInformationValues
-          } = personalInformation;
-
-          const {
-            // startDate,
-            // endDate,
-            startTime,
-            endTime,
-            ...itineraryInformationValues
-          } = itineraryInformation;
-
-          saveBooking.mutate({
-            ...personalInformationValues,
-            ...itineraryInformationValues,
-            // startDate: itineraryInformation.startDate,
-            // endDate: itineraryInformation.endDate,
-            amount: parseInt(subTotal),
-            currencyCode: currencyCode,
-            bookingType,
-            duration: parseInt(numberOfDays),
-          });
-        }}
+        onClick={saveBookingHandler}
         loading={saveBooking.isPending}
         disabled={saveBooking.isPending}
       >
@@ -139,32 +169,9 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
         color="primary"
         rounded="full"
         fullWidth
-        onClick={() => {
-          const {
-            secondaryCountryCode,
-            secondaryCountry,
-            userCountry,
-            userCountryCode,
-            ...personalInformationValues
-          } = personalInformation;
-
-          const {
-            startDate,
-            endDate,
-            startTime,
-            endTime,
-            ...itineraryInformationValues
-          } = itineraryInformation;
-
-          proceedToPayment.mutate({
-            ...personalInformationValues,
-            ...itineraryInformationValues,
-            startDate: itineraryInformation.startTime,
-            endDate: itineraryInformation.endTime,
-            amount: parseInt(subTotal),
-            currencyCode: currencyCode,
-          });
-        }}
+        onClick={proceedToPaymentHandler}
+        loading={proceedToPayment.isPending}
+        disabled={proceedToPayment.isPending}
       >
         Book Now
       </Button>
