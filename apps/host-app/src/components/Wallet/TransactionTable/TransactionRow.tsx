@@ -1,7 +1,6 @@
 import { format } from "date-fns";
 import { Transaction, TransactionType } from "@/utils/types";
 import { Popup } from "@repo/ui/popup";
-import MoreButton from "@repo/ui/moreButton";
 import Icons from "@repo/ui/icons";
 import TableCell from "@/components/TableCell";
 
@@ -46,7 +45,15 @@ const TransactionRow = ({ items }: { items: Transaction }) => {
       <TableCell content={items?.status} isBadge type="transaction" />
       <td>
         <Popup
-          trigger={<MoreButton />}
+          trigger={
+            <button
+              className={
+                "block border border-grey-200 bg-white text-black rounded-lg p-2 w-fit mx-auto"
+              }
+            >
+              {Icons.ic_more}
+            </button>
+          }
           content={
             <>
               <p className="!text-xs 3xl:!text-base !font-semibold">Actions</p>

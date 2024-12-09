@@ -4,11 +4,6 @@ import { EarningsStatistics, ListingInformation } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
-type ListingDataType = {
-  vehicle: ListingInformation;
-  statistics: EarningsStatistics;
-};
-
 export default function useGetListingById({ id }: { id: string }) {
   const http = useHttp();
   const { user } = useAppSelector((state) => state.user);
@@ -17,7 +12,7 @@ export default function useGetListingById({ id }: { id: string }) {
     queryKey: ["getListingById", id],
 
     queryFn: async () =>
-      http.get<ListingDataType>(`/api/listings/details/${id}`),
+      http.get<ListingInformation>(`/api/listings/details/${id}`),
     enabled: !!user?.id && !!id,
     retry: false,
   });
@@ -25,13 +20,13 @@ export default function useGetListingById({ id }: { id: string }) {
   const vehicleDetails = useMemo(() => {
     if (data) {
       return [
-        { make: data.vehicle?.make || "N/A" },
-        { model: data.vehicle?.model || "N/A" },
-        { year: data.vehicle?.yearOfRelease || "N/A" },
-        { colour: data.vehicle?.vehicleColor || "N/A" },
-        { city: data.vehicle?.location || "N/A" },
-        { vehicleType: data.vehicle?.vehicleType || "N/A" },
-        { seatingCapacity: data.vehicle?.numberOfSeats || "N/A" },
+        { make: data?.make || "N/A" },
+        { model: data?.model || "N/A" },
+        { year: data?.yearOfRelease || "N/A" },
+        { colour: data?.vehicleColor || "N/A" },
+        { city: data?.location || "N/A" },
+        { vehicleType: data?.vehicleType || "N/A" },
+        { seatingCapacity: data?.numberOfSeats || "N/A" },
       ];
     }
     return [{}];
@@ -40,19 +35,22 @@ export default function useGetListingById({ id }: { id: string }) {
   const vehicleImages = useMemo(() => {
     if (data) {
       return [
-        data.vehicle?.VehicleImage?.frontView,
-        data.vehicle?.VehicleImage?.backView,
-        data.vehicle?.VehicleImage?.sideView1,
-        data.vehicle?.VehicleImage?.sideView2,
-        data.vehicle?.VehicleImage?.interior,
-        data.vehicle?.VehicleImage?.other,
+        data?.VehicleImage?.frontView,
+        data?.VehicleImage?.backView,
+        data?.VehicleImage?.sideView1,
+        data?.VehicleImage?.sideView2,
+        data?.VehicleImage?.interior,
+        data?.VehicleImage?.other,
       ];
     }
     return [{}];
   }, [data]);
 
   return {
-    listingDetail: { ...data?.vehicle, statistics: data?.statistics } as ListingInformation,
+    listingDetail: {
+      ...data,
+      statistics: data?.user?.statistics as EarningsStatistics,
+    } as ListingInformation,
     isError,
     isLoading,
     isSuccess,

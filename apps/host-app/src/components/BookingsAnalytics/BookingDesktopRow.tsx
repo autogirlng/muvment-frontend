@@ -2,11 +2,11 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { BookingBadgeStatus, BookingInformation } from "@/utils/types";
 import { Popup } from "@repo/ui/popup";
-import MoreButton from "@repo/ui/moreButton";
 import TableCell from "@/components/TableCell";
 import DeclineTrip from "@/components/BookingsAnalytics/Details/modals/DeclineTrip";
 import AcceptTrip from "@/components/BookingsAnalytics/Details/modals/AcceptTrip";
 import useBookingActions from "@/components/BookingsAnalytics/hooks/useBookingActions";
+import Icons from "@repo/ui/icons";
 
 const BookingDesktopRow = ({ items }: { items: BookingInformation }) => {
   const {
@@ -45,7 +45,15 @@ const BookingDesktopRow = ({ items }: { items: BookingInformation }) => {
       <TableCell content={`${items?.currencyCode} ${items?.amount}`} />
       <td>
         <Popup
-          trigger={<MoreButton />}
+          trigger={
+            <button
+              className={
+                "block border border-grey-200 bg-white text-black rounded-lg p-2 w-fit mx-auto"
+              }
+            >
+              {Icons.ic_more}
+            </button>
+          }
           content={
             <>
               <p className="!text-xs 3xl:!text-base !font-semibold">Actions</p>

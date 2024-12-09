@@ -16,6 +16,7 @@ import {
   PaymentBadgeStatus,
 } from "@/utils/types";
 import useGetBookingById from "@/components/BookingsAnalytics/hooks/useGetBookingById";
+import Icons from "@repo/ui/icons";
 
 export default function BookingDetailPage({
   params,
@@ -103,7 +104,15 @@ export default function BookingDetailPage({
           <div className="block lg:hidden">
             <Popup
               className="!w-[150px]"
-              trigger={<MoreButton />}
+              trigger={
+                <button
+                  className={
+                    "block border border-grey-200 bg-white text-black rounded-lg p-2 w-fit mx-auto"
+                  }
+                >
+                  {Icons.ic_more}
+                </button>
+              }
               content={
                 <BookingActions
                   bookingStatus={
