@@ -57,12 +57,14 @@ export default function ExplorePageLayout({
     make: string[];
     yearOfRelease: string[];
     numberOfSeats: string[];
+    features: string[];
   }>({
     price: [0, 100000],
     type: [],
     make: [],
     yearOfRelease: [],
     numberOfSeats: [],
+    features: [],
   });
 
   // get url paramas
@@ -152,14 +154,14 @@ export default function ExplorePageLayout({
           className={cn(
             "space-y-8 mx-auto",
             showAllFilters
-              ? "lg:w-[104%] 2xl:w-[103%] max-w-[1650px] 2xl:max-w-[1700px]"
+              ? "lg:w-[102%] 3xl:w-[103%] max-w-[1650px] 3xl:max-w-[1700px]"
               : "w-full max-w-[1400px]"
           )}
         >
           <div
             className={cn(
               "space-y-4 md:space-y-8",
-              showAllFilters && "md:ml-[260px] 2xl:ml-[480px] mr-2"
+              showAllFilters && "md:ml-[290px] 2xl:ml-[480px] mr-2"
             )}
           >
             <BackLink backLink="/" />
@@ -228,7 +230,7 @@ export default function ExplorePageLayout({
           <div
             className={cn(
               "space-y-8",
-              showAllFilters && "md:ml-[260px] 2xl:ml-[480px] mr-2"
+              showAllFilters && "md:ml-[290px] 2xl:ml-[480px] mr-2"
             )}
           >
             {isLoading ? (
@@ -257,7 +259,7 @@ export default function ExplorePageLayout({
                     type={vehicle?.vehicleType}
                     location={vehicle.location ?? ""}
                     dailyPrice={vehicle?.pricing?.dailyRate?.value}
-                    currency={vehicle?.pricing?.dailyRate?.unit}
+                    currency={vehicle?.pricing?.dailyRate?.currency}
                     extraHoursFee={vehicle?.pricing?.extraHoursFee}
                     vehicleImages={[
                       vehicle?.VehicleImage?.frontView,

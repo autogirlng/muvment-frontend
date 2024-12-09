@@ -472,8 +472,8 @@ export interface BookingInformation {
   duration: number;
   bookingType: BookingType;
   amount: number;
-  paymentStatus: PaymentBadgeStatus;
-
+  paymentStatus: TransactionStatus;
+  paymentLink: string;
   paymentMethod: "BANK_TRANSFER" | "CARD" | "CASH";
   rentalAgreement: string | null;
   bookingStatus: BookingBadgeStatus;
@@ -490,6 +490,10 @@ export interface BookingInformation {
   createdAt: string;
   updatedAt: string;
   currencyCode: string;
+  areaOfUse: string;
+  isForSelf: boolean;
+  outskirtsLocation: string[];
+  purposeOfRide: string;
 }
 export interface VehicleInformation {
   id?: string;

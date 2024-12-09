@@ -30,7 +30,7 @@ const Trip = ({ vehicle }: Props) => {
           <div>
             {<p className="text-sm 3xl:text-base">Daily</p>}
             <p className="text-sm md:text-base 3xl:text-xl !font-semibold">
-              {vehicle?.pricing?.dailyRate?.unit}{" "}
+              {vehicle?.pricing?.dailyRate?.currency}{" "}
               {formatNumberWithCommas(vehicle?.pricing?.dailyRate?.value || 0)}
               /day
             </p>
@@ -39,7 +39,7 @@ const Trip = ({ vehicle }: Props) => {
             <p className="text-sm 3xl:text-base">Extra Hours</p>
 
             <p className="text-sm md:text-base 3xl:text-xl !font-semibold">
-              {vehicle?.pricing?.dailyRate?.unit}{" "}
+              {vehicle?.pricing?.dailyRate?.currency}{" "}
               {vehicle?.pricing?.extraHoursFee}/hr
             </p>
           </div>
