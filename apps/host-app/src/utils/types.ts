@@ -323,6 +323,7 @@ export type User = {
   updatedAt: string;
   Verification: UserVerification;
   averageRating: number;
+  statistics?: EarningsStatistics;
 };
 
 export interface TripSettings {
@@ -485,7 +486,6 @@ export interface ListingInformation {
   user: User;
   AssignedDriver: AssignedDriver[];
   Booking: BookingInformation[];
-  statistics: EarningsStatistics;
 }
 
 export interface BookingDetailsInformation {

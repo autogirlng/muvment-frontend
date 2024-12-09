@@ -1,7 +1,6 @@
 import { format } from "date-fns";
 import { Transaction, TransactionStatus } from "@/utils/types";
 import { Popup } from "@repo/ui/popup";
-import MoreButton from "@repo/ui/moreButton";
 import TableCell from "@repo/ui/tableCell";
 import { TransactionBadge } from "@repo/ui/badge";
 import Icons from "@repo/ui/icons";

@@ -7,7 +7,6 @@ import { MappedInformation, VehicleInformation } from "@/utils/types";
 import { VehicleListingBadge } from "@repo/ui/badge";
 import { Popup } from "@repo/ui/popup";
 import { VerticalDivider } from "@repo/ui/divider";
-import MoreButton from "@repo/ui/moreButton";
 import Chip from "@repo/ui/chip";
 import Icons from "@repo/ui/icons";
 
@@ -152,7 +151,13 @@ export default function ListingCard({ listing }: Props) {
             <VerticalDivider className="hidden md:block" />
             <Popup
               trigger={
-                <MoreButton className="!mx-0 absolute right-6 top-7 md:relative md:top-0 md:right-0" />
+                <button
+                  className={
+                    "block border border-grey-200 bg-white text-black rounded-lg p-2 w-fit absolute right-6 top-7 md:relative md:top-0 md:right-0"
+                  }
+                >
+                  {Icons.ic_more}
+                </button>
               }
               content={
                 <>

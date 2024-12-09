@@ -2,7 +2,6 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { BookingBadgeStatus, BookingInformation } from "@/utils/types";
 import { Popup } from "@repo/ui/popup";
-import MoreButton from "@repo/ui/moreButton";
 import TableCell from "@repo/ui/tableCell";
 import { BookingTableBadge } from "@repo/ui/badge";
 import { useState } from "react";
