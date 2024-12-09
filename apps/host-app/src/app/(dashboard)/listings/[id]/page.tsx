@@ -135,7 +135,7 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
             vehicleDetails={vehicleDetails as MappedInformation[]}
           />
 
-          <ListingDetailsEarnings statistics={listingDetail?.statistics} />
+          <ListingDetailsEarnings statistics={listingDetail?.user.statistics} />
 
           <AppTabs label="listing details tabs" tabs={tabs} />
         </div>
