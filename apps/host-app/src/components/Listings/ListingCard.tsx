@@ -9,6 +9,7 @@ import { Popup } from "@repo/ui/popup";
 import { VerticalDivider } from "@repo/ui/divider";
 import Chip from "@repo/ui/chip";
 import Icons from "@repo/ui/icons";
+import { sedan } from "@repo/assets";
 
 type Props = { listing: VehicleInformation };
 
@@ -71,7 +72,7 @@ export default function ListingCard({ listing }: Props) {
     <div className="flex flex-col md:flex-row items-center gap-5 px-3 md:px-0 py-5 rounded-3xl bg-grey-75 md:bg-transparent md:border-b md:border-grey-200 last:border-none relative">
       <div className="h-[200px] w-full md:w-[200px]">
         <Image
-          src={listing?.VehicleImage?.frontView || "/images/vehicles/sedan.png"}
+          src={listing?.VehicleImage?.frontView || sedan}
           alt=""
           width={200}
           height={200}

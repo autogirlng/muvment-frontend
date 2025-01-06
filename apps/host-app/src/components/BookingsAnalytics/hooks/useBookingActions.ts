@@ -20,7 +20,6 @@ export default function useBookingActions({ id }: { id?: string }) {
       http.put<BookingInformation>(`/api/bookings/updateStatus/${id}`, {
         status: "CANCELLED",
       }),
-
     onSuccess: (data) => {
       console.log("Decline Bookings successful", data);
       queryClient.setQueryData(["getBookingById", id], () => data);
@@ -31,11 +30,9 @@ export default function useBookingActions({ id }: { id?: string }) {
       queryClient.invalidateQueries({
         queryKey: ["getUpcomingBookings"],
       });
-
       toast.error("Trip Declined Successfully");
       setOpenDeclineModal(false);
     },
-
     onError: (error: AxiosError<ErrorResponse>) =>
       handleErrors(error, "Decline Listing"),
   });

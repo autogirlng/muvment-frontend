@@ -2,16 +2,16 @@ import cn from "classnames";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { User } from "@/utils/types";
 import { popupNavItemsforNoUser } from "@/utils/data";
 import { getInitialsFromName } from "@/utils/functions";
-import { User } from "@/utils/types";
-import { useHttp } from "@/hooks/useHttp";
+import { nav_logo } from "@repo/assets";
 import { AvatarInitials } from "@repo/ui/avatar";
 import { Popup } from "@repo/ui/popup";
 import Icons from "@repo/ui/icons";
 import NavPopup from "@/components/Navbar/NavPopup";
 import MobileNavItem from "@/components/Navbar/MobileNavItem";
+
 
 type Props = { user: User | null; userToken: string };
 
@@ -33,20 +33,14 @@ export default function DesktopNav({ user, userToken }: Props) {
           : "bg-[#F9FAFB59] backdrop-blur-xl"
       )}
     >
-      <Image
-        className=""
-        src="/images/logo/nav_logo.png"
-        alt=""
-        width={114}
-        height={40}
-      />
+      <Image className="" src={nav_logo} alt="" width={114} height={40} />
       <nav className="flex items-center gap-4">
         <Link
           className={cn(
             "text-base 3xl:text-xl",
             sticky ? "text-grey-700" : "text-white"
           )}
-          href="/"
+          href="https://muvment-customer-app.vercel.app/"
         >
           Book a ride
         </Link>

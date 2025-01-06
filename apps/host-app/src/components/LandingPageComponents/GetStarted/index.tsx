@@ -10,7 +10,7 @@ function GetStarted({}: Props) {
       <div className="bg-footer-overlay bg-no-repeat bg-cover bg-primary-500 h-[460px] md:h-[800px] 3xl:h-[965px] rounded-[63px] md:rounded-[177px] px-8">
         <div className="h-full w-full flex flex-col gap-3 md:gap-9 items-center justify-center text-white text-center">
           <h1 className="text-h5 md:text-h2 3xl:text-h1 max-w-[900px]">
-            If you travel frequently, why let your car sit{" "}
+            If you travel frequently, <br/> why let your car sit{" "}
             <span className="text-warning-300">idle?</span>
           </h1>
           <p className="text-sm md:text-h3 3xl:text-4xl">
