@@ -18,24 +18,65 @@ import {
 type OptionType = { option: string; value: string };
 
 export const popupNavItems = [
-  // {
-  //   icon: Icons.ic_user_account,
-  //   name: "My account",
-  //   link: "/account",
-  // },
   {
-    icon: Icons.ic_ticket,
-    name: "Bookings",
-    link: "/bookings",
+    icon: Icons.ic_globe_search,
+    name: "Explore",
+    link: "/explore",
+    border: true,
   },
   {
-    icon: Icons.ic_wallet,
+    icon: Icons.ic_card_payment_confirmed,
     name: "Payments",
     link: "/transactions",
+    border: false,
   },
+  {
+    icon: Icons.ic_booking_checked,
+    name: "My Bookings",
+    link: "/bookings",
+    border: false,
+  },
+  {
+    icon: Icons.ic_whishlist,
+    name: "Favorites",
+    link: "/",
+    border: true,
+  },
+  {
+    icon: Icons.ic_user_account,
+    name: "Accounts",
+    link: "/account",
+    border: false,
+  },
+  {
+    icon: Icons.ic_notification,
+    name: "Notifications",
+    link: "/notifications",
+    border: false,
+  },
+  {
+    icon: Icons.ic_gift,
+    name: "Refer A Friend",
+    link: "/account ",
+    border: true,
+  },
+  {
+    icon: Icons.ic_help_circle,
+    name: "How Muvment works",
+    link: "/",
+    border: false,
+  },
+  {
+    icon: Icons.ic_support,
+    name: "Get Help",
+    link: "/",
+    border: false,
+  },
+
   {
     icon: Icons.ic_logout,
     name: "Log out",
+    border: false,
   },
 ];
 

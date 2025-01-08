@@ -6,6 +6,8 @@ import { useAppSelector } from "@/lib/hooks";
 import { getInitialsFromName } from "@/utils/functions";
 import NavPopup from "@/components/Navbar/NavPopup";
 import Image from "next/image";
+import { nav_logo } from "@repo/assets";
+
 
 type Props = {};
 

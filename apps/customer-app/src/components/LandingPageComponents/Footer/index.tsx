@@ -4,6 +4,7 @@ import Image from "next/image";
 import Icons from "@repo/ui/icons";
 import InputField from "@repo/ui/inputField";
 import Button from "@repo/ui/button";
+import { footer_logo } from "@repo/assets";
 
 type FooterNavProps = {
   title: string;
