@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { ReactNode } from "react";
+import { nav_logo } from "@repo/assets";
 
 export default function VehicleBookingLayout({
   children,

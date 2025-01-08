@@ -14,6 +14,7 @@ import {
   popupNavItemsforNoUser,
 } from "@/utils/data";
 import { User } from "@/utils/types";
+import { mobile_nav_logo } from "@repo/assets";
 
 type Props = { userToken?: string; user: User | null };
 
@@ -25,7 +26,7 @@ export default function MobileNav({ userToken, user }: Props) {
       <div className="flex items-center justify-between">
         <Image
           className=""
-          src="/images/logo/mobile_nav_logo.png"
+          src={mobile_nav_logo}
           alt=""
           width={100}
           height={15}

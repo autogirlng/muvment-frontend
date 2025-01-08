@@ -9,6 +9,8 @@ import Icons from "@repo/ui/icons";
 import MobileNavItem from "@/components/Navbar/MobileNavItem";
 import { popupNavItems, popupNavItemsforNoUser } from "@/utils/data";
 import { User } from "@/utils/types";
+import { mobile_nav_logo } from "@repo/assets";
+
 
 type Props = { user: User | null; children?: ReactNode };
 
