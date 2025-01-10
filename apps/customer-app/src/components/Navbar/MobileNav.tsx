@@ -11,7 +11,6 @@ import { popupNavItems, popupNavItemsforNoUser } from "@/utils/data";
 import { User } from "@/utils/types";
 import { mobile_nav_logo } from "@repo/assets";
 
-
 type Props = { user: User | null; children?: ReactNode };
 
 export default function MobileNav({ user, children }: Props) {
@@ -28,7 +27,7 @@ export default function MobileNav({ user, children }: Props) {
       <div className="flex items-center justify-between">
         <Image
           className=""
-          src="/images/logo/mobile_nav_logo.png"
+          src={mobile_nav_logo}
           alt=""
           width={100}
           height={15}
@@ -54,7 +53,7 @@ export default function MobileNav({ user, children }: Props) {
         className={cn(
           "fixed top-[60px] transition-transform overflow-auto",
           openNav
-            ? "right-0 z-10 w-full min-h-screen h-full bg-white px-8 py-14 translate-x-0 visible"
+            ? "right-0 z-[999] w-full min-h-screen h-full bg-white px-8 py-14 translate-x-0 visible"
             : "h-0 w-0 translate-x-[100%] invisible"
         )}
       >

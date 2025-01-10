@@ -12,13 +12,7 @@ export default function VehicleBookingLayout({
   return (
     <main className="">
       <div className="flex justify-center items-center py-6 3xl:py-8 border-b border-grey-200">
-        <Image
-          className=""
-          src="/images/logo/nav_logo.png"
-          alt=""
-          width={114}
-          height={40}
-        />
+        <Image className="" src={nav_logo} alt="" width={114} height={40} />
       </div>
       <div className="w-full min-h-screen">{children}</div>
     </main>
