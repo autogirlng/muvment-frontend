@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { User } from "@/utils/types";
-import { popupNavItemsforNoUser } from "@/utils/data";
+import { customerAppUrl, popupNavItemsforNoUser } from "@/utils/data";
 import { getInitialsFromName } from "@/utils/functions";
 import { nav_logo } from "@repo/assets";
 import { AvatarInitials } from "@repo/ui/avatar";
@@ -11,7 +11,6 @@ import { Popup } from "@repo/ui/popup";
 import Icons from "@repo/ui/icons";
 import NavPopup from "@/components/Navbar/NavPopup";
 import MobileNavItem from "@/components/Navbar/MobileNavItem";
-
 
 type Props = { user: User | null; userToken: string };
 
@@ -40,7 +39,7 @@ export default function DesktopNav({ user, userToken }: Props) {
             "text-base 3xl:text-xl",
             sticky ? "text-grey-700" : "text-white"
           )}
-          href="https://muvment-customer-app.vercel.app/"
+          href={customerAppUrl}
         >
           Book a ride
         </Link>

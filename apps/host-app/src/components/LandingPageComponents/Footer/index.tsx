@@ -5,6 +5,10 @@ import Icons from "@repo/ui/icons";
 import InputField from "@repo/ui/inputField";
 import Button from "@repo/ui/button";
 import { footer_logo } from "@repo/assets";
+import { customerAppUrl } from "@/utils/data";
+import { Formik, Form } from "formik";
+import { newLetterValidationSchema } from "@/utils/validationSchema";
+import useNewsletter from "./useNewsletter";
 
 type FooterNavProps = {
   title: string;
@@ -25,12 +29,15 @@ const footerNav: FooterNavProps[] = [
   {
     title: "Locations",
     links: [
-      { name: "Lagos" },
-      { name: "Abuja" },
-      { name: "Benin City" },
-      { name: "Enugu" },
-      { name: "Port Harcourt" },
-      { name: "Accra" },
+      { name: "Lagos", link: `${customerAppUrl}/explore/cities/lagos` },
+      { name: "Abuja", link: `${customerAppUrl}/explore/cities/abuja` },
+      { name: "Benin City", link: `${customerAppUrl}/explore/cities/benin` },
+      { name: "Enugu", link: `${customerAppUrl}/explore/cities/enugu` },
+      {
+        name: "Port Harcourt",
+        link: `${customerAppUrl}/explore/cities/port-harcourt`,
+      },
+      { name: "Accra", link: `${customerAppUrl}/explore/cities/accra` },
     ],
   },
   {
@@ -39,7 +46,7 @@ const footerNav: FooterNavProps[] = [
       { name: "Get paid", link: "/signup" },
       {
         name: "Book a vehicle",
-        link: "https://muvment-customer-app.vercel.app/",
+        link: customerAppUrl,
       },
       { name: "Vehicle types", link: "/" },
       // { name: "Find your location", link: "/" },
@@ -50,6 +57,8 @@ const footerNav: FooterNavProps[] = [
 type Props = {};
 
 function Footer({}: Props) {
+  const { addSubscriber } = useNewsletter();
+
   return (
     <footer className="px-2 md:px-10 md:pb-[220px]">
       <div className="py-8 md:py-20 px-6 md:px-[60px] lg:px-[100px] 3xl:px-[143px] bg-grey-75 md:rounded-[74px]">
@@ -61,7 +70,53 @@ function Footer({}: Props) {
                 Be the first to receive all the recent updates, articles, and
                 valuable materials.
               </p>
-              <div className="flex flex-col md:flex-row gap-[10px]">
+              <Formik
+                initialValues={{ email: "" }}
+                validationSchema={newLetterValidationSchema}
+                onSubmit={async (values, { setSubmitting }) => {
+                  console.log("Form values:", values);
+                  await addSubscriber({ email: values.email });
+                  setSubmitting(false);
+                }}
+                enableReinitialize={true}
+                validateOnChange={true}
+                validateOnBlur={true}
+              >
+                {({
+                  values,
+                  touched,
+                  errors,
+                  isValid,
+                  dirty,
+                  handleBlur,
+                  handleChange,
+                  isSubmitting,
+                }) => (
+                  <Form className="flex flex-col md:flex-row gap-[10px]">
+                    <InputField
+                      name="email"
+                      id="email"
+                      placeholder="Email Address"
+                      type="email"
+                      value={values.email}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={errors.email && touched.email ? errors.email : ""}
+                    />
+                    <Button
+                      type="submit"
+                      color="primary"
+                      variant="filled"
+                      className="!rounded-[18px] !py-4 !px-[28px] h-fit"
+                      loading={isSubmitting}
+                      disabled={isSubmitting || !isValid}
+                    >
+                      Subscribe
+                    </Button>
+                  </Form>
+                )}
+              </Formik>
+              {/* <div className="flex flex-col md:flex-row gap-[10px]">
                 <InputField
                   name="email"
                   id="email"
@@ -71,10 +126,11 @@ function Footer({}: Props) {
                   color="primary"
                   variant="filled"
                   className="!rounded-[25.56px] !py-4 !px-[28px]"
+                  onClick={newsLetter}
                 >
                   Subscribe
                 </Button>
-              </div>
+              </div> */}
             </div>
             {footerNav.map((nav) => (
               <div
