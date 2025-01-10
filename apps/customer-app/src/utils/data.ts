@@ -17,6 +17,9 @@ import {
 
 type OptionType = { option: string; value: string };
 
+export const hostAppUrl = "http://host.muvment.ng";
+
+
 export const popupNavItems = [
   {
     icon: Icons.ic_globe_search,

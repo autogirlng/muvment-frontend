@@ -36,11 +36,11 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           <div className="fixed top-0 left-0 w-1/2 h-full">
             <Link href="/" className="block absolute top-10 left-14 z-10">
               <Image
-                className="w-[200px]"
+                className="w-16"
                 src={logo_icon_white}
                 alt="logo"
-                width={337}
-                height={44}
+                width={83}
+                height={83}
               />
             </Link>
             <Image
