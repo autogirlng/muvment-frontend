@@ -51,7 +51,7 @@ export default function MobileNav({ userToken, user }: Props) {
         className={cn(
           "fixed top-[60px] transition-transform overflow-auto",
           openNav
-            ? "right-0 z-10 w-full min-h-screen h-full bg-white px-8 py-14 translate-x-0 visible"
+            ? "right-0 z-[999] w-full min-h-screen h-full bg-white px-8 py-14 translate-x-0 visible"
             : "h-0 w-0 translate-x-[100%] invisible"
         )}
       >

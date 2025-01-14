@@ -10,6 +10,12 @@ import {
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { validatePhoneNumber } from "./functions";
 
+export const newLetterValidationSchema = object().shape({
+  email: string()
+    .email("Please enter a valid email")
+    .required("Please enter your email"),
+});
+
 export const signupFormValidationSchema = object().shape({
   firstName: string().required("Please enter your first name"),
   lastName: string().required("Please enter your last name"),

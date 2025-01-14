@@ -13,6 +13,8 @@ import {
 
 type OptionType = { option: string; value: string };
 
+export const customerAppUrl = "http://muvment.ng";
+
 export const dashboardNavItems = [
   {
     icon: Icons.ic_dashboard,
