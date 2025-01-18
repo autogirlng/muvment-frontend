@@ -36,11 +36,11 @@ export default function HomePage() {
     <main className="overflow-x-hidden">
       <DesktopNav user={data ?? null} />
       <MobileNav user={data ?? null} />
-      {/* <Hero />
+      <Hero />
       <Benefits />
       <TopVehicles />
       <PopularCities />
-      <VehicleCategories /> */}
+      <VehicleCategories />
       <NewListings />
       <SaveBig />
       <Steps />
