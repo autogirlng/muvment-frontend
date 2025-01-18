@@ -34,7 +34,7 @@ function groupNotificationsByDay(notifications: Notification[]) {
 }
 
 function formatNotificationDate(dateStr: string) {
-  const date = parseISO(dateStr); // Parse the date string
+  const date = parseISO(dateStr);
 
   if (isToday(date)) {
     return "Today";
@@ -44,7 +44,7 @@ function formatNotificationDate(dateStr: string) {
     return "Yesterday";
   }
 
-  return format(date, "do MMM"); // 'do' adds ordinal suffix (e.g., 1st, 2nd, 3rd)
+  return format(date, "do MMM");
 }
 
 export default function Notifications({
