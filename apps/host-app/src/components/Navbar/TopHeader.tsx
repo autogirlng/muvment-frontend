@@ -99,7 +99,13 @@ export default function TopHeader({}: Props) {
           trigger={
             <button className="flex items-center gap-1 text-grey-600">
               <AvatarImage
-                image={user?.businessLogo ?? user?.profileImage ?? ""}
+                image={
+                  user?.isBusiness && user?.businessLogo
+                    ? user?.businessLogo
+                    : user?.profileImage
+                      ? user?.profileImage
+                      : ""
+                }
                 initials={
                   user && getInitialsFromName(user.firstName, user.lastName)
                 }

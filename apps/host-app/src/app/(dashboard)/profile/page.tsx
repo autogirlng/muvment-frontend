@@ -44,7 +44,7 @@ export default function ProfilePage() {
             bio: user?.bio || "",
             profileImage: user?.profileImage || "",
             city: user?.city || "",
-            isBusiness: user?.businessName ? true : false,
+            isBusiness: user?.isBusiness,
             businessAddress: user?.businessAddress || null,
             businessEmail: user?.businessEmail || null,
             businessLogo: user?.businessLogo || "",
@@ -69,7 +69,7 @@ export default function ProfilePage() {
           setSubmitting(false);
         }}
         validationSchema={profileFormValidationSchema}
-        enableReinitialize={true}
+        // enableReinitialize={true}
         validateOnChange={true}
         validateOnBlur={true}
       >
@@ -116,6 +116,7 @@ export default function ProfilePage() {
                       }
                     }}
                     isLoading={uploadImage.isPending}
+                    showButton={isProfileEditable}
                     disabled={!isProfileEditable}
                     initials={
                       user
@@ -230,12 +231,14 @@ export default function ProfilePage() {
                       disabled={!isProfileEditable}
                     />
 
-                    <div className="space-y-1.5">
-                      <Label label="Host rating" />
-                      <h3 className="text-h4 3xl:text-h3 text-success-500">
-                        {user?.averageRating}
-                      </h3>
-                    </div>
+                    {user?.averageRating && (
+                      <div className="space-y-1.5">
+                        <Label label="Host rating" />
+                        <h3 className="text-h4 3xl:text-h3 text-success-500">
+                          {user?.averageRating}
+                        </h3>
+                      </div>
+                    )}
 
                     <div className="flex items-center gap-7">
                       <Label label="Are You Operating As A Business?" />
@@ -245,7 +248,6 @@ export default function ProfilePage() {
                         value={values.isBusiness}
                         className=""
                         onChange={(checked: boolean) => {
-                          console.log(checked);
                           setFieldTouched("isBusiness", true);
                           setFieldValue("isBusiness", checked);
                         }}
@@ -286,6 +288,7 @@ export default function ProfilePage() {
                         }}
                         isLoading={uploadImage.isPending}
                         disabled={!isProfileEditable}
+                        showButton={isProfileEditable}
                       />
                       <InputField
                         name="businessName"

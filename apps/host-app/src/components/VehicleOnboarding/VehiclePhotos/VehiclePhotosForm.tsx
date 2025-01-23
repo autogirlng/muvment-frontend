@@ -129,6 +129,7 @@ const VehiclePhotosForm = ({
             disableNextButton={
               !isValid || isSubmitting || submitStep3.isPending
             }
+            showSaveDraftButton
           />
         </Form>
       )}

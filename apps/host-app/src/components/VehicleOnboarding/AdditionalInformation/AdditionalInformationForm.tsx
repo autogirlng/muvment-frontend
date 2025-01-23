@@ -195,6 +195,7 @@ Bluetooth connectivity, and a sunroof.`}
             disableNextButton={
               !isValid || isSubmitting || submitStep2.isPending
             }
+            showSaveDraftButton
           />
         </Form>
       )}

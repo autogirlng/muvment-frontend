@@ -22,9 +22,13 @@ export default function useUpdateProfile(
     mutationFn: (values: ProfileFormValues) =>
       http.put<User>("/api/user", { ...values }),
 
-    onSuccess: (data) => {
+    onMutate: (values) => {
+      return { ...values };
+    },
+
+    onSuccess: (data, _values, context) => {
       console.log("Update Profile successful", data);
-      dispatch(updateUserData({ ...user, ...data }));
+      dispatch(updateUserData({ ...user, ...context }));
       setIsProfileEditable(false);
       toast.success("Profile Updated");
     },

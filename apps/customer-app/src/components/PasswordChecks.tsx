@@ -91,7 +91,8 @@ export default function PasswordChecks({
         <div className="space-y-3 text-sm">
           <p className="text-black">Password must include at least:</p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-9 max-w-[430px]">
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-[430px]">
             {passwordChecks.map(({ label, check }) => (
               <p
                 key={check}

@@ -11,7 +11,7 @@ export default function Security({}: Props) {
       <div className="flex items-center justify-between gap-3">
         <h6 className="!font-semibold text-black">Password</h6>
         <Link href="/settings/change-password">
-          <Button className="!text-grey-600 !bg-grey-90 !py-3 !px-5">
+          <Button className="!text-grey-600 !bg-grey-90 hover:!bg-primary-75 !py-3 !px-5">
             Change Password
           </Button>
         </Link>

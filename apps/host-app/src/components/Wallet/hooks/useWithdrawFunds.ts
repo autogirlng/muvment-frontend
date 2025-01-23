@@ -12,7 +12,7 @@ export default function useWithdrawFunds() {
   const queryClient = useQueryClient();
 
   const [otp, setOtp] = useState<string>("");
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<string>("");
 
   const [openWithdrawModal, setOpenWithdrawalModal] = useState<boolean>(false);
   const [openVerifyOtpModal, setOpenVerifyOtp] = useState<boolean>(false);
@@ -57,8 +57,10 @@ export default function useWithdrawFunds() {
   });
 
   const withdrawFunds = useMutation({
-    mutationFn: (token: string) =>
-      http.post("/api/payment/disburse", { token, amount }),
+    mutationFn: (token: string) => {
+      const amountWithoutComma = parseFloat(amount.replace(/,/g, ""));
+      return http.post("/api/payment/disburse", { token, amount:amountWithoutComma });
+    },
 
     onSuccess: (data) => {
       console.log("withdrawal Successfully", data);

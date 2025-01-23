@@ -58,7 +58,13 @@ export default function MobileNav({ userToken, user }: Props) {
         {userToken || user ? (
           <div className="space-y-6 pb-8">
             <AvatarImage
-              image={user?.businessLogo ?? user?.profileImage ?? ""}
+              image={
+                user?.isBusiness && user?.businessLogo
+                  ? user?.businessLogo
+                  : user?.profileImage
+                    ? user?.profileImage
+                    : ""
+              }
               initials={
                 user
                   ? getInitialsFromName(user.firstName, user.lastName)
