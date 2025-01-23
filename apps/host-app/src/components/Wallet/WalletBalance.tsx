@@ -21,7 +21,7 @@ export default function WalletBalance({}: Props) {
               NGN {`${wallteBalance?.walletBalance ?? "-"}`}
             </h1>
           </div>
-          <WithDrawFunds />
+          <WithDrawFunds wallteBalance={wallteBalance?.walletBalance??0} />
         </>
       )}
     </div>

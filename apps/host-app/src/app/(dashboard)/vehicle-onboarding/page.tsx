@@ -12,8 +12,8 @@ import { FullPageSpinner } from "@repo/ui/spinner";
 import { useState } from "react";
 
 const steps = [
-  "Basic Vehicle Information",
-  "Additional Vehicle Information",
+  "Basic Details",
+  "Additional Info",
   "Photos",
   "Availability and Pricing",
 ];

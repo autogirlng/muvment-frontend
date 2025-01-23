@@ -53,6 +53,8 @@ export default function Bookings({}: Props) {
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             handleSearch(event.target.value)
           }
+          className="w-full max-w-[310px]"
+          icon
         />
         <FilterBy categories={bookingFilters} onChange={handleFilterChange} />
       </div>

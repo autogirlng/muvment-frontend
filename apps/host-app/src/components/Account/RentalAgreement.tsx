@@ -22,7 +22,7 @@ export default function RentalAgreement({}: Props) {
     <div className="space-y-8 text-base md:text-xl 3xl:text-h6 text-grey-700">
       <h6 className="!font-semibold">Rental Availability</h6>
       <p className="!font-medium">
-        You are going to provide rides on the following days
+        Choose when {"you're"} available to host and manage rentals
       </p>
       <div className="space-y-3 text-black">
         {isLoading ? (

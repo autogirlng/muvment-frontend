@@ -39,7 +39,7 @@ export default function ReviewsModal({}: Props) {
           reviewDetailData ? "md:col-span-2" : "md:col-span-3"
         )}
       >
-        <DashboardSectionTitle title="Review Manager" />
+        {reviews.length > 0 && <DashboardSectionTitle title="Review Manager" />}
 
         {isLoading ? (
           <FullPageSpinner />

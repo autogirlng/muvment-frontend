@@ -75,7 +75,7 @@ const BasicVehicleInformationForm = ({
               id="listingName"
               type="text"
               label="Vehicle Listing Name"
-              placeholder="Enter vehicle listing name"
+              placeholder="E.g. Black Lux Tesla"
               value={values.listingName}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -294,6 +294,7 @@ const BasicVehicleInformationForm = ({
               !isValid || isSubmitting || submitStep1.isPending
               // ||disableNextButton
             }
+            showSaveDraftButton
           />
         </Form>
       )}

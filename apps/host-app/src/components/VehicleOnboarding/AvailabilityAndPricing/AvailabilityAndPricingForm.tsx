@@ -402,6 +402,7 @@ const AvailabilityAndPricingForm = ({
               !isValid || isSubmitting || submitStep4.isPending
               // ||disableNextButton
             }
+            showSaveDraftButton
           />
         </Form>
       )}

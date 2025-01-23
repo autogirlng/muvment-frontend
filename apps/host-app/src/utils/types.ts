@@ -161,7 +161,7 @@ export interface ProfileFormValues {
 }
 
 export interface WithdrawalValues {
-  amount: string | number;
+  amount: string;
 }
 
 // <================= FORM VALUES ENDS =================>
@@ -324,6 +324,7 @@ export type User = {
   Verification: UserVerification;
   averageRating: number;
   statistics?: EarningsStatistics;
+  isBusiness: boolean;
 };
 
 export interface TripSettings {
