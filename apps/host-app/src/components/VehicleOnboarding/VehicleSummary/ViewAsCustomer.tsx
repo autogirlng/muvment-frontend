@@ -1,5 +1,5 @@
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Navigation } from "swiper/modules";
+import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
@@ -33,7 +33,12 @@ export default function ViewAsCustomer({ vehicle }: Props) {
             type: "fraction",
           }}
           navigation={true}
-          modules={[Pagination, Navigation]}
+          modules={[Pagination, Navigation, Autoplay]}
+          autoplay={{
+            delay: 5000,
+            pauseOnMouseEnter: true,
+          }}
+          loop={true}
           className="vehicle-summary-swiper"
         >
           {vehicleImages.map((image, index) => (

@@ -5,6 +5,7 @@ import {
   calculateRateGuestsWillSee,
   calculateServiceFee,
 } from "@/utils/functions";
+import Tooltip from "@repo/ui/tooltip";
 
 type PricingRowProps = {
   optional?: boolean;
@@ -20,6 +21,9 @@ type PricingRowProps = {
   touched: any;
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
+  info?: boolean;
+  tooltipTitle?: string;
+  tooltipDescription?: string;
 };
 
 const PricingRow = ({
@@ -36,6 +40,9 @@ const PricingRow = ({
   touched,
   handleChange,
   handleBlur,
+  info,
+  tooltipTitle,
+  tooltipDescription,
 }: PricingRowProps) => {
   const [serviceFee, setServiceFee] = useState<number>(0);
   const [guestWillSee, setGuestWillSee] = useState<number>(0);
@@ -58,12 +65,20 @@ const PricingRow = ({
 
   return (
     <div className="flex flex-col md:flex-row flex-wrap lg:flex-nowrap gap-6 md:items-center justify-between w-full pb-10 sm:pb-5 md:pb-0">
-      <p className="text-sm font-semibold text-nowrap min-w-[200px] text-grey-600">
-        {title}
-        {optional && (
-          <>
-            <br /> (optional)
-          </>
+      <p className="min-w-[200px] pricing-row display flex items-center gap-1">
+        <span className="text-sm font-semibold text-nowrap text-grey-600">
+          {title}
+          {optional && (
+            <>
+              <br /> (optional)
+            </>
+          )}
+        </span>
+        {info && (
+          <Tooltip
+            title={tooltipTitle || ""}
+            description={tooltipDescription || ""}
+          />
         )}
       </p>
       <div className="flex flex-col sm:flex-row sm:items-center flex-wrap lg:flex-nowrap gap-8">

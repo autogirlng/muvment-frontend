@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 
@@ -11,8 +11,13 @@ export default function ListingDetailsVehicleImages({ vehicleImages }: Props) {
     <div className="flex flex-col lg:flex-row-reverse gap-6 lg:gap-3">
       <Swiper
         navigation={true}
-        modules={[Navigation]}
-        className="vehicle-summary-swiper w-full !z-[-1]"
+        modules={[Navigation, Autoplay]}
+        autoplay={{
+          delay: 5000,
+          pauseOnMouseEnter: true,
+        }}
+        loop={true}
+        className="vehicle-summary-swiper w-full z-[-1]"
       >
         {vehicleImages.map((image, index) => (
           <SwiperSlide key={index}>
@@ -21,7 +26,7 @@ export default function ListingDetailsVehicleImages({ vehicleImages }: Props) {
               alt=""
               width={793}
               height={472}
-              className="w-full h-[218px] lg:h-[472px] rounded-3xl object-cover"
+              className="w-full h-[218px] lg:h-[400px] xl:h-[472px] rounded-3xl object-cover"
             />
           </SwiperSlide>
         ))}
@@ -36,7 +41,7 @@ export default function ListingDetailsVehicleImages({ vehicleImages }: Props) {
                 alt=""
                 width={75}
                 height={90}
-                className="w-full h-[50px] lg:h-[90px] rounded-lg object-cover"
+                className="w-full h-[50px] lg:h-[77px] xl:h-[90px] rounded-lg object-cover"
               />
             )
         )}

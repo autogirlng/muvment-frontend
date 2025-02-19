@@ -92,8 +92,8 @@ export default function ListingsPage() {
               Showing results for “{debouncedSearch}”
             </h5>
           )}
-          {listings.length > 0 ? (
-            listings.map((listing, index) => (
+          {listings?.length > 0 ? (
+            listings?.map((listing, index) => (
               <ListingCard key={index} listing={listing} />
             ))
           ) : (

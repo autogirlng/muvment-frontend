@@ -34,12 +34,16 @@ export default function useListingDrivers(id: string) {
     onSuccess: (data) => {
       console.log("Assign New Driver successful", data);
 
-      const newDrivers = drivers;
-      newDrivers ? newDrivers.push(data) : data;
-      queryClient.setQueryData(
-        ["getAssignedDrivers", user?.id, id],
-        () => newDrivers
-      );
+     queryClient.setQueryData(
+       ["getAssignedDrivers", user?.id, id],
+       (oldData: AssignNewDriver[] | undefined) => {
+         // If there's no existing data, return array with new driver
+         if (!oldData) return [data];
+
+         // Return new array with existing drivers plus new driver
+         return [...oldData, data];
+       }
+     );
 
       handleModal(false);
     },
