@@ -7,6 +7,7 @@ import { getInitialsFromName } from "@/utils/functions";
 import NavPopup from "@/components/Navbar/NavPopup";
 import Image from "next/image";
 import { nav_logo } from "@repo/assets";
+import { hostAppUrl } from "@/utils/data";
 
 type Props = {};
 
@@ -19,7 +20,11 @@ export default function TopHeader({}: Props) {
         <Image className="" src={nav_logo} alt="" width={114} height={40} />
       </Link>
       <nav className="flex items-center gap-4">
-        <Link className="text-base 3xl:text-xl text-grey-700" href="/">
+        <Link
+          className="text-base 3xl:text-xl text-grey-700"
+          target="_blank"
+          href={hostAppUrl}
+        >
           Become a host
         </Link>
         <div className="h-6 w-px bg-white" />

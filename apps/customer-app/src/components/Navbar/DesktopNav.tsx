@@ -2,7 +2,7 @@ import cn from "classnames";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, ReactNode } from "react";
-import { popupNavItemsforNoUser } from "@/utils/data";
+import { hostAppUrl, popupNavItemsforNoUser } from "@/utils/data";
 import { getInitialsFromName } from "@/utils/functions";
 import { User } from "@/utils/types";
 import { AvatarInitials } from "@repo/ui/avatar";
@@ -55,7 +55,8 @@ export default function DesktopNav({ user, children, explorePage }: Props) {
             "text-base 3xl:text-xl",
             explorePage || sticky ? "text-grey-700" : "text-white"
           )}
-          href="/"
+          target="_blank"
+          href={hostAppUrl}
         >
           Become a host
         </Link>

@@ -37,7 +37,7 @@ export default function ListingDetailsHeader({ name, status, id }: Props) {
             trigger={<MoreButton className="!mx-0" />}
             content={
               <>
-                <p className="!text-xs 3xl:!text-base !font-semibold">
+                <p className="!text-xs 3xl:!text-base text-grey-700 !font-bold">
                   Actions
                 </p>
                 <ul className="space-y-2 *:py-2">

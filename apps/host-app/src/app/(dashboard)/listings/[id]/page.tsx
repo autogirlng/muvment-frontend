@@ -124,11 +124,11 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
             vehicleImages={vehicleImages as string[]}
           />
 
-          <ListingDetailsVehicleAvailability
+          {/* <ListingDetailsVehicleAvailability
             vehicleStatus={listingDetail?.vehicleStatus}
             // isActive={listingDetail?.isActive}
             id={listingDetail?.id}
-          />
+          /> */}
 
           <ListingDetailsVehicleDetails
             extras={extras}

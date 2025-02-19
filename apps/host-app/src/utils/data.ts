@@ -663,19 +663,27 @@ export const photoViewOptions = [
 ];
 
 export const outskirtsLocationOptions: string[] = [
-  "Ikorodu",
+  "Sangotedo",
   "Badagry",
-  "Epe",
-  "Ibeju-Lekki",
-  "Ojo",
-  "Alimosho",
-  "Agege",
-  "Ajah",
+  "Amuwo Odofin",
+  "Festac Town",
+  "Alaba",
+  "Ikorodu Town",
   "Agbara",
-  "Sango",
-  "Ijede",
-  "Ikotun",
-  "Egbeda",
+  "Agege",
+  "Epe",
+  "Free Trade Zone",
+  "Igando",
+  "Akowonjo",
+  "Dopemu",
+  "Ajah",
+  "Agbado",
+  "Ojodu Berger",
+  "Ajegunle",
+  "Ibese",
+  "Iyana Ipaja",
+  "Alimosho",
+  "Ibeju Lekki",
 ];
 
 export const daysOfTheWeek: string[] = [

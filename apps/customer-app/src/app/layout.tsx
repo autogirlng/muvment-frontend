@@ -11,8 +11,8 @@ import { ReactNode } from "react";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Muvment - Start a business with Muvment",
-  description: "Start a business with Muvment",
+  title: "Explore new cities - Muvment",
+  description: "Explore new cities",
 };
 
 export default function RootLayout({

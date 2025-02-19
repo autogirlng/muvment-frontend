@@ -82,8 +82,8 @@ const AvailabilityAndPricingForm = ({
                     : ""
                 }
                 info
-                tooltipTitle=""
-                tooltipDescription=""
+                tooltipTitle="Advance notice:"
+                tooltipDescription="Set the amount of time in advance that rental requests should be made to ensure availability."
               />
             </FormRow>
             <FormRow
@@ -100,8 +100,8 @@ const AvailabilityAndPricingForm = ({
                   value={values.minTripDurationInDays}
                   disabled
                   info
-                  tooltipTitle=""
-                  tooltipDescription=""
+                  tooltipTitle="Minimum trip duration:"
+                  tooltipDescription="This is the shortest distance you can provide for this vehicle and the standard is 1 day, which equals 12 hours - non-editable."
                 />
                 <SelectInput
                   id="maxTripDurationInDays"
@@ -126,8 +126,8 @@ const AvailabilityAndPricingForm = ({
                       : ""
                   }
                   info
-                  tooltipTitle=""
-                  tooltipDescription=""
+                  tooltipTitle="Maximum trip duration:"
+                  tooltipDescription="Define the longest duration you are comfortable providing rental services."
                 />
               </div>
             </FormRow>
@@ -178,8 +178,8 @@ const AvailabilityAndPricingForm = ({
                       : ""
                   }
                   info
-                  tooltipTitle=""
-                  tooltipDescription=""
+                  tooltipTitle="Will you provide a driver?:"
+                  tooltipDescription="Indicate if you are offering a driver along with your rental services for a complete experience. Accommodation should be provided for drivers for journey or 24 hours bookings."
                 />
                 <SelectInput
                   id="fuelProvided"
@@ -201,8 +201,8 @@ const AvailabilityAndPricingForm = ({
                       : ""
                   }
                   info
-                  tooltipTitle=""
-                  tooltipDescription=""
+                  tooltipTitle="Will you provide at least 20 litres of fuel?:"
+                  tooltipDescription="We will provide 15 litres of fuel for your ride, in the event the fuel finishes during trips, you will be responsible for fueling an amount that can complete your ride."
                 />
               </div>
             </FormRow>
@@ -226,6 +226,9 @@ const AvailabilityAndPricingForm = ({
                 touched={touched}
                 handleChange={handleChange}
                 handleBlur={handleBlur}
+                info
+                tooltipTitle="What is your daily rate?:"
+                tooltipDescription="Specify your standard rate for providing rental services per day."
               />
               <PricingRow
                 title="What is your extra hourly rate?"
@@ -240,6 +243,9 @@ const AvailabilityAndPricingForm = ({
                 touched={touched}
                 handleChange={handleChange}
                 handleBlur={handleBlur}
+                info
+                tooltipTitle="What is your extra hourly rate?:"
+                tooltipDescription="Indicate the additional charge for any extra hours beyond the daily booking duration."
               />
               <PricingRow
                 title="Airport pickups & dropoffs"
@@ -255,6 +261,9 @@ const AvailabilityAndPricingForm = ({
                 handleChange={handleChange}
                 handleBlur={handleBlur}
                 optional
+                info
+                tooltipTitle="Airport pickup and drop offs:"
+                tooltipDescription="Select if you are available for airport pick-ups and drop-offs to cater to travelers."
               />
             </div>
           </div>
@@ -279,11 +288,11 @@ const AvailabilityAndPricingForm = ({
             >
               <div className="space-y-8 3xl:space-y-[50px] pt-8">
                 <DiscountRow
-                  title="3+ days discount"
+                  title="3 days discount"
                   percentageLabel="Percentage discount"
                   percentageName="threeDaysDiscount"
                   percentagePlaceholder="10%"
-                  rateUnit="for 3+ days trips"
+                  rateUnit="/3 days"
                   serviceFeeName="serviceFeeDaily"
                   rateValue={values.threeDaysDiscount}
                   errors={errors}
@@ -293,11 +302,11 @@ const AvailabilityAndPricingForm = ({
                   dailyRateValue={values.dailyRate}
                 />
                 <DiscountRow
-                  title="7+ days discount"
+                  title="7 days discount"
                   percentageLabel="Percentage discount"
                   percentageName="sevenDaysDiscount"
                   percentagePlaceholder="10%"
-                  rateUnit="for 7+ days trips"
+                  rateUnit="/7 days"
                   serviceFeeName="serviceFeeDaily"
                   rateValue={values.sevenDaysDiscount}
                   errors={errors}
@@ -307,11 +316,11 @@ const AvailabilityAndPricingForm = ({
                   dailyRateValue={values.dailyRate}
                 />
                 <DiscountRow
-                  title="30+ days discount"
+                  title="30 days discount"
                   percentageLabel="Percentage discount"
                   percentageName="thirtyDaysDiscount"
                   percentagePlaceholder="10%"
-                  rateUnit="for 30+ days trips"
+                  rateUnit="/30 days"
                   serviceFeeName="serviceFeeDaily"
                   rateValue={values.thirtyDaysDiscount}
                   errors={errors}
@@ -358,7 +367,8 @@ const AvailabilityAndPricingForm = ({
                     Outskirt Locations
                   </label>
                   <p className="text-sm text-grey-600">
-                    Uncheck locations you do not want to visit with your vehicle
+                    Select the locations where you would like to apply an
+                    additional charge
                   </p>
                   <div className="flex flex-wrap gap-x-4 gap-y-8">
                     {outskirtsLocationOptions.map((feature) => (

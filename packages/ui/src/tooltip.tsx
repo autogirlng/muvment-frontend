@@ -11,7 +11,7 @@ const Tooltip = ({
   <Popover.Root>
     <Popover.Trigger asChild>
       <button
-        className="cursor-pointer outline-none text-grey-500"
+        className="cursor-pointer outline-none text-grey-500 hover:*:text-primary-500"
         aria-label="Update dimensions"
       >
         {Icons.ic_info}
