@@ -11,6 +11,8 @@ type Props = {
   onChange: (name: string, value: File | null) => void;
   value: string | File | null;
   error?: string;
+  fieldName: string;
+  handlePhotoDelete: (fieldName: string) => void;
 };
 
 // file size limit
@@ -24,6 +26,8 @@ export default function PhotoUpload({
   image,
   value,
   error,
+  fieldName,
+  handlePhotoDelete,
   ...rest
 }: Props) {
   const [previewUrl, setPreviewUrl] = useState<string>("");
@@ -40,9 +44,10 @@ export default function PhotoUpload({
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = (fieldName: string) => {
     setPreviewUrl("");
     onChange(name, null);
+    handlePhotoDelete(fieldName);
   };
 
   useEffect(() => {
@@ -71,7 +76,7 @@ export default function PhotoUpload({
               />
               <div className="absolute left-6 bottom-4">
                 <button
-                  onClick={handleDelete}
+                  onClick={() => handleDelete(fieldName)}
                   className="w-10 md:w-12 3xl:w-20 h-10 md:h-12 3xl:h-20 rounded-full flex justify-center items-center bg-error-50 text-error-500 *:w-4 *:md:w-5 *:3xl:w-[30px] *:h-4 *:md:h-5 *:3xl:w-[30px]"
                 >
                   {Icons.ic_delete}

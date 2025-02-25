@@ -34,6 +34,7 @@ export default function useAdditionalInformationForm({
     features: vehicle?.features || [],
     vehicleColor: vehicle?.vehicleColor || "",
     numberOfSeats: `${vehicle?.numberOfSeats || ""}`,
+    // vehicleOwner: vehicle?.vehicleOwner || "",
   };
 
   const saveStep2 = useMutation({

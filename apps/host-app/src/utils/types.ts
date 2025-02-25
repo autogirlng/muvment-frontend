@@ -137,6 +137,7 @@ export interface AdditionalVehicleInformationValues {
   features: string[];
   vehicleColor: string;
   numberOfSeats: string;
+  // vehicleOwner:string
 }
 
 export interface ProfileFormValues {

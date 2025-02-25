@@ -743,11 +743,11 @@ export const photoUploadTips = [
     description:
       "Got a great sound system or custom rims? Make sure to capture these unique features in your photos. They can make your car more appealing to potential renters.View detailed guidelines.",
   },
-  {
-    title: "Highlight Unique Features",
-    description:
-      "Got a great sound system or custom rims? Make sure to capture these unique features in your photos. They can make your car more appealing to potential renters.View detailed guidelines.",
-  },
+  // {
+  //   title: "Highlight Unique Features",
+  //   description:
+  //     "Got a great sound system or custom rims? Make sure to capture these unique features in your photos. They can make your car more appealing to potential renters.View detailed guidelines.",
+  // },
 ];
 
 export const bookingOverviewTableHeadItems: string[] = [

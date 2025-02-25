@@ -1,9 +1,13 @@
 import Button from "@repo/ui/button";
 import useListingsActions from "../hooks/useListingsActions";
 
-type Props = { handleModal: (open: boolean) => void; id?: string };
+type Props = {
+  handleModal: (open: boolean) => void;
+  id?: string;
+  isDraft: boolean;
+};
 
-const DeleteListing = ({ handleModal, id }: Props) => {
+const DeleteListing = ({ handleModal, id, isDraft }: Props) => {
   const { deleteListing, moveListingToDraft } = useListingsActions(
     handleModal,
     id
@@ -29,18 +33,20 @@ const DeleteListing = ({ handleModal, id }: Props) => {
         >
           No, go back
         </Button>
-        <Button
-          fullWidth
-          variant="filled"
-          color="white"
-          type="submit"
-          className="!bg-grey-90 !text-grey-700"
-          loading={moveListingToDraft.isPending}
-          disabled={moveListingToDraft.isPending}
-          onClick={() => moveListingToDraft.mutate()}
-        >
-          Move to draft instead
-        </Button>
+        {!isDraft && (
+          <Button
+            fullWidth
+            variant="filled"
+            color="white"
+            type="submit"
+            className="!bg-grey-90 !text-grey-700"
+            loading={moveListingToDraft.isPending}
+            disabled={moveListingToDraft.isPending}
+            onClick={() => moveListingToDraft.mutate()}
+          >
+            Move to draft instead
+          </Button>
+        )}
         <Button
           fullWidth
           variant="filled"
