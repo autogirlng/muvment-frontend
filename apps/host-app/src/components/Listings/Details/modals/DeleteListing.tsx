@@ -4,7 +4,7 @@ import useListingsActions from "../hooks/useListingsActions";
 type Props = {
   handleModal: (open: boolean) => void;
   id?: string;
-  isDraft: boolean;
+  isDraft?: boolean;
 };
 
 const DeleteListing = ({ handleModal, id, isDraft }: Props) => {
