@@ -10,6 +10,8 @@ import { VerticalDivider } from "@repo/ui/divider";
 import Chip from "@repo/ui/chip";
 import Icons from "@repo/ui/icons";
 import { sedan } from "@repo/assets";
+import DeleteListing from "./Details/modals/DeleteListing";
+import { BlurredDialog } from "@repo/ui/dialog";
 
 type Props = { listing: VehicleInformation };
 
@@ -35,6 +37,11 @@ const initialExtras = [
 export default function ListingCard({ listing }: Props) {
   const [vehicleDetails, setVehicleDetails] = useState<MappedInformation[]>([]);
   const [extras, setExtras] = useState(initialExtras);
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
+
+  const handleDeleteModal = () => {
+    setOpenDeleteModal(!openDeleteModal);
+  };
 
   useEffect(() => {
     if (listing) {
@@ -149,34 +156,54 @@ export default function ListingCard({ listing }: Props) {
                 })}
               </div>
             </div>
-            <VerticalDivider className="hidden md:block" />
-            <Popup
-              trigger={
-                <button
-                  className={
-                    "block border border-grey-200 bg-white text-black rounded-lg p-2 w-fit absolute right-6 top-7 md:relative md:top-0 md:right-0"
-                  }
-                >
-                  {Icons.ic_more}
-                </button>
-              }
-              content={
-                <>
-                  <p className="!text-xs 3xl:!text-base text-grey-700 !font-bold">
-                    Actions
-                  </p>
-                  <ul className="space-y-2 *:py-2">
-                    <li className="!text-xs 3xl:!text-base">
-                      <Link href={`/listings/${listing?.id}`}>
-                        View Vehicle Details
-                      </Link>
-                    </li>
-                  </ul>
-                </>
-              }
-            />
           </>
         )}
+
+        <VerticalDivider className="hidden md:block" />
+        <Popup
+          trigger={
+            <button
+              className={
+                "block border border-grey-200 bg-white text-black rounded-lg p-2 w-fit absolute right-6 top-7 md:relative md:top-0 md:right-0"
+              }
+            >
+              {Icons.ic_more}
+            </button>
+          }
+          content={
+            <>
+              <p className="!text-xs 3xl:!text-base text-grey-700 !font-bold">
+                Actions
+              </p>
+              <ul className="space-y-2 *:py-2">
+                <li className="!text-xs 3xl:!text-base">
+                  {listing?.vehicleStatus === "draft" ? (
+                    <BlurredDialog
+                      open={openDeleteModal}
+                      onOpenChange={handleDeleteModal}
+                      trigger={
+                        <button className="!text-xs 3xl:!text-base hover:text-error-500">
+                          Delete listing
+                        </button>
+                      }
+                      content={
+                        <DeleteListing
+                          handleModal={handleDeleteModal}
+                          id={listing?.id}
+                          isDraft
+                        />
+                      }
+                    />
+                  ) : (
+                    <Link href={`/listings/${listing?.id}`}>
+                      View Vehicle Details
+                    </Link>
+                  )}
+                </li>
+              </ul>
+            </>
+          }
+        />
       </div>
     </div>
   );

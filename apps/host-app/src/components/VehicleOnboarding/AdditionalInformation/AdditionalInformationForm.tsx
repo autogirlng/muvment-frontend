@@ -3,7 +3,7 @@ import { GroupCheckBox } from "@repo/ui/checkbox";
 import { StepperNavigation } from "@repo/ui/stepper";
 import { addSpaceBeforeUppercase } from "@/utils/functions";
 import { addtionalVehicleInformationSchema } from "@/utils/validationSchema";
-import { vehicleColorsOptions, vehicleFeaturesOptions } from "@/utils/data";
+import { vehicleColorsOptions, vehicleFeaturesOptions, yesOrNoOptions } from "@/utils/data";
 import InputField from "@repo/ui/inputField";
 import TextArea from "@repo/ui/textarea";
 import SelectInput from "@repo/ui/select";
@@ -182,6 +182,28 @@ Bluetooth connectivity, and a sunroof.`}
               tooltipDescription="Knowing how many seats your vehicle has allows customers to choose the right vehicle for their needs, especially for group rides."
             />
           </FormRow>
+          {/* <FormRow>
+            <SelectInput
+              id="vehicleOwner"
+              label="Are you the vehicle owner?"
+              placeholder="Select vehicle color"
+              variant="outlined"
+              options={yesOrNoOptions}
+              value={values.vehicleOwner}
+              onChange={(value: string) => {
+                setFieldTouched("vehicleOwner", true);
+                setFieldValue("vehicleOwner", value);
+              }}
+              error={
+                errors.vehicleOwner && touched.vehicleOwner
+                  ? errors.vehicleOwner
+                  : ""
+              }
+              info
+              tooltipTitle="Are you the vehicle owner?"
+              tooltipDescription="This helps us determine if you own the vehicle or are managing it on behalf of someone else. Providing accurate information ensures proper documentation."
+            />
+          </FormRow> */}
 
           <StepperNavigation
             steps={steps}

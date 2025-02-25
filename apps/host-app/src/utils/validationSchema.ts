@@ -145,6 +145,7 @@ export const addtionalVehicleInformationSchema = object().shape({
   vehicleColor: string().required("Vehicle color is required"),
   numberOfSeats: string().required("Number of seats is required"),
   features: array().min(1, "Please select at least one feature"),
+  // vehicleOwner: string().required("This is required"),
 });
 
 export const vehiclePhotosSchema = object().shape({
