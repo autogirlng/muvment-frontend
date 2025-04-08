@@ -1,0 +1,6 @@
+"use client";
+import { ReactNode } from "react";
+
+export default function ExploreLayout({ children }: { children: ReactNode }) {
+  return <main>{children}</main>;
+}

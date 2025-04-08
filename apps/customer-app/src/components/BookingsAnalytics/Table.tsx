@@ -15,10 +15,10 @@ export default function BookingAnalyticsTable({
   emptyStateTitle?: string;
 }) {
   return items.length > 0 ? (
-    <div className="overflow-auto">
-      <table className="hidden md:block w-full min-w-full divide-y divide-grey-200 border-t border-grey-200 bg-white md:mt-7">
+    <div className="overflow-auto w-full">
+      <table className="w-full divide-y divide-grey-200 border-t border-grey-200 bg-white md:mt-7">
         <TableHead tableHeadItems={bookingAnalyticsTableHeadItems} />
-        <tbody className="divide-y divide-grey-200 ">
+        <tbody className="divide-y divide-grey-200">
           {items?.map((item, index) => (
             <BookingDesktopRow key={index} items={item} />
           ))}

@@ -7,6 +7,7 @@ import InputField from "@repo/ui/inputField";
 import usePasswordValidation from "@/hooks/usePasswordValidation";
 import { Eye, EyeSlash } from "@phosphor-icons/react";
 import { useState } from "react";
+import useChangePassword from "./hooks/useChangePassword";
 
 export default function ChangePassword() {
   const {
@@ -16,6 +17,7 @@ export default function ChangePassword() {
     toggleCurrentHiddenPassword,
   } = usePasswordValidation();
 
+  const { changePassword } = useChangePassword();
   const [showChecks, setShowChecks] = useState(true);
 
   return (
@@ -25,6 +27,8 @@ export default function ChangePassword() {
         console.log(values);
 
         const { password_checks, ...submissionValues } = values;
+        changePassword.mutate(submissionValues);
+
         setSubmitting(false);
         setShowChecks(false);
       }}

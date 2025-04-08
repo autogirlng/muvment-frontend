@@ -29,7 +29,11 @@ const Button = ({
     : "w-fit py-4 2xl:py-5 !font-medium text-base md:text-xl 2xl:text-h6";
 
   const btnRadius =
-    radius === "full" ? "" : radius === "lg" ? "rounded-[32px]" : "rounded-2xl";
+    radius === "full"
+      ? "rounded-[98px]"
+      : radius === "lg"
+        ? "rounded-[32px]"
+        : "rounded-2xl";
 
   const btnBorder =
     variant === "outlined"

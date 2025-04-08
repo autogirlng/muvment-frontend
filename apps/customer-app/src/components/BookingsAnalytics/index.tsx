@@ -13,8 +13,11 @@ export default function Bookings({}: Props) {
     setFilters(selectedFilters);
 
   return (
-    <div className="space-y-8 pt-[50px]">
+    <div className="space-y-6 pt-[50px]">
       <div className="flex items-center justify-between gap-3">
+        <p className="text-base 3xl:text-xl text-grey-700 !font-medium">
+          Booking History
+        </p>
         <FilterBy categories={bookingFilters} onChange={handleFilterChange} />
       </div>
       <BookingHistory filters={filters} />

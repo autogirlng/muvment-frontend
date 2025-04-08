@@ -1,16 +1,27 @@
 import { Formik, Form } from "formik";
 import { GroupCheckBox } from "@repo/ui/checkbox";
 import { StepperNavigation } from "@repo/ui/stepper";
-import { addtionalVehicleInformationSchema } from "@/utils/validationSchema";
 import { outskirtsLocationOptions } from "@/utils/data";
+import { CalendarValue, ItineraryInformationValues } from "@/utils/types";
 import InputField from "@repo/ui/inputField";
 import TextArea from "@repo/ui/textarea";
 import SelectInput from "@repo/ui/select";
-import { ItineraryInformationValues } from "@/utils/types";
+import FormRow from "../../FormRow";
+import DateInput from "../DateInput";
+import TimeInput from "../TimeInput";
+import {
+  getExistingBookingInformation,
+  saveAndUpdateBookingInformation,
+} from "@/utils/functions";
+import { itineraryInformationSchema } from "@/utils/validationSchema";
 
 const initialValues: ItineraryInformationValues = {
   pickupLocation: "",
+  startDate: null,
+  startTime: null,
   dropoffLocation: "",
+  endDate: null,
+  endTime: null,
   areaOfUse: "",
   outskirtsLocation: [],
   extraDetails: "",
@@ -21,17 +32,27 @@ const ItineraryForm = ({
   steps,
   currentStep,
   setCurrentStep,
+  vehicleId,
 }: {
   steps: string[];
   currentStep: number;
   setCurrentStep: (step: number) => void;
+  vehicleId: string;
 }) => {
   return (
     <Formik
-      initialValues={initialValues}
-      // validationSchema={addtionalVehicleInformationSchema}
+      initialValues={getExistingBookingInformation(
+        initialValues,
+        vehicleId,
+        "itineraryInformation"
+      )}
+      validationSchema={itineraryInformationSchema}
       onSubmit={(values, { setSubmitting }) => {
-        console.log("Form values:", values);
+        saveAndUpdateBookingInformation(
+          values,
+          vehicleId,
+          "itineraryInformation"
+        );
         setCurrentStep(currentStep + 1);
 
         setSubmitting(false);
@@ -64,10 +85,38 @@ const ItineraryForm = ({
             onBlur={handleBlur}
             error={
               errors.pickupLocation && touched.pickupLocation
-                ? errors.pickupLocation
+                ? String(errors.pickupLocation)
                 : ""
             }
           />
+
+          <FormRow>
+            <DateInput
+              label="Pickup date"
+              name="startDate"
+              value={values.startDate}
+              onChange={(value: CalendarValue) =>
+                setFieldValue("startDate", value as Date | null)
+              }
+              error={
+                errors.startDate && touched.startDate
+                  ? String(errors.startDate)
+                  : ""
+              }
+            />
+            <TimeInput
+              label="Pickup time"
+              name="startTime"
+              value={values.startTime}
+              onChange={(date: Date) => setFieldValue("startTime", date)}
+              onBlur={handleBlur}
+              error={
+                errors.startTime && touched.startTime
+                  ? String(errors.startTime)
+                  : ""
+              }
+            />
+          </FormRow>
 
           <InputField
             name="dropoffLocation"
@@ -80,7 +129,48 @@ const ItineraryForm = ({
             onBlur={handleBlur}
             error={
               errors.dropoffLocation && touched.dropoffLocation
-                ? errors.dropoffLocation
+                ? String(errors.dropoffLocation)
+                : ""
+            }
+          />
+
+          <FormRow>
+            <DateInput
+              label="Drop-off date"
+              name="endDate"
+              value={values.endDate}
+              onChange={(value: CalendarValue) =>
+                setFieldValue("endDate", value as Date | null)
+              }
+              error={
+                errors.endDate && touched.endDate ? String(errors.endDate) : ""
+              }
+            />
+            <TimeInput
+              label="Drop-off time"
+              name="endTime"
+              value={values.endTime}
+              onChange={(date: Date) => setFieldValue("endTime", date)}
+              onBlur={handleBlur}
+              error={
+                errors.endTime && touched.endTime ? String(errors.endTime) : ""
+              }
+            />
+          </FormRow>
+          <SelectInput
+            id="areaOfUse"
+            label="Area of use"
+            placeholder="Select"
+            variant="outlined"
+            options={[{ option: "All Areas", value: "All Areas" }]}
+            value={values.areaOfUse}
+            onChange={(value: string) => {
+              setFieldTouched("areaOfUse", true);
+              setFieldValue("areaOfUse", value);
+            }}
+            error={
+              errors.areaOfUse && touched.areaOfUse
+                ? String(errors.areaOfUse)
                 : ""
             }
           />
@@ -101,14 +191,14 @@ const ItineraryForm = ({
                 <GroupCheckBox
                   key={feature}
                   feature={feature}
-                  checkedValues={values.outskirtsLocation}
+                  checkedValues={values?.outskirtsLocation}
                   onChange={(feature: string, isChecked: boolean) => {
                     if (isChecked) {
                       const newValues = [...values.outskirtsLocation, feature];
                       setFieldValue("outskirtsLocation", newValues);
                     } else {
                       const newValues = values.outskirtsLocation.filter(
-                        (value) => value !== feature
+                        (value: string) => value !== feature
                       );
                       setFieldValue("outskirtsLocation", newValues);
                     }
@@ -117,22 +207,6 @@ const ItineraryForm = ({
               ))}
             </div>
           </div>
-
-          <SelectInput
-            id="areaOfUse"
-            label="Area of use"
-            placeholder="Select"
-            variant="outlined"
-            options={[{ option: "All Areas", value: "All Areas" }]}
-            value={values.areaOfUse}
-            onChange={(value: string) => {
-              setFieldTouched("areaOfUse", true);
-              setFieldValue("areaOfUse", value);
-            }}
-            error={
-              errors.areaOfUse && touched.areaOfUse ? errors.areaOfUse : ""
-            }
-          />
 
           <TextArea
             name="extraDetails"
@@ -145,25 +219,23 @@ const ItineraryForm = ({
             onBlur={handleBlur}
             error={
               errors.extraDetails && touched.extraDetails
-                ? errors.extraDetails
+                ? String(errors.extraDetails)
                 : ""
             }
           />
 
-          <SelectInput
+          <TextArea
+            name="purposeOfRide"
             id="purposeOfRide"
+            type="text"
             label="Purpose of ride(optional)"
-            placeholder="Select"
-            variant="outlined"
-            options={[{ option: "All Areas", value: "All Areas" }]}
+            placeholder={`Add your purpose of ride`}
             value={values.purposeOfRide}
-            onChange={(value: string) => {
-              setFieldTouched("purposeOfRide", true);
-              setFieldValue("purposeOfRide", value);
-            }}
+            onChange={handleChange}
+            onBlur={handleBlur}
             error={
               errors.purposeOfRide && touched.purposeOfRide
-                ? errors.purposeOfRide
+                ? String(errors.purposeOfRide)
                 : ""
             }
           />

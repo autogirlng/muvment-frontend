@@ -21,7 +21,7 @@ export default function VehicleInformation({ listingDetails }: Props) {
           Vehicle Details
         </h5>
         <Link href={`/vehicle-onboarding?id=${listingDetails?.id}`}>
-          <Button className="!text-xs 3xl:!text-base text-primary-500 !bg-primary-75 rounded-[31px] !py-[6px] 3xl:!py-2 !px-3 3xl:!px-4">
+          <Button className="!text-xs 3xl:!text-base text-primary-500 !bg-primary-75 rounded-[31px] !py-1.5 3xl:!py-2 !px-3 3xl:!px-4">
             Edit Vehicle Listing
           </Button>
         </Link>

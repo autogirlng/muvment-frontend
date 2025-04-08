@@ -22,14 +22,21 @@ const BookingDesktopRow = ({ items }: { items: BookingInformation }) => {
 
   return (
     <tr>
-      <TableCell
-        content={items?.guestName}
-        className="!text-grey-900 !font-medium"
-      />
       <TableCell content={items?.id} />
+      <TableCell
+        content={items?.bookingStatus}
+        isBadge
+        badge={<BookingTableBadge status={items?.bookingStatus} />}
+      />
+      <TableCell
+        content={
+          items?.startDate
+            ? format(new Date(items?.startDate), "MMM d ,yyyy")
+            : ""
+        }
+      />
       <TableCell content={items?.bookingType} />
       <TableCell content={`${items?.duration} days`} />
-      <TableCell content={items?.vehicle} />
       <TableCell
         content={
           items?.startDate
@@ -42,11 +49,7 @@ const BookingDesktopRow = ({ items }: { items: BookingInformation }) => {
           items?.endDate ? format(new Date(items?.endDate), "MMM d ,yyyy") : ""
         }
       />
-      <TableCell
-        content={items?.bookingStatus}
-        isBadge
-        badge={<BookingTableBadge status={items?.bookingStatus} />}
-      />
+
       <TableCell content={`${items?.currencyCode} ${items?.amount}`} />
       <td>
         <Popup

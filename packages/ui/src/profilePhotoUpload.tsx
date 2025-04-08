@@ -55,7 +55,7 @@ export default function ProfilePhotoUpload({
         />
         <label className={cn(!disabled && "cursor-pointer")}>
           <p className="text-grey-800 hover:text-white text-sm 3xl:text-base !font-semibold rounded-2xl border-2 border-grey-800 hover:bg-grey-800 py-2 px-5">
-            {isLoading ? <Spinner /> : "Upload Photo"}
+            {isLoading ? <Spinner /> : "Upload Profile Image"}
           </p>
           <input
             type="file"

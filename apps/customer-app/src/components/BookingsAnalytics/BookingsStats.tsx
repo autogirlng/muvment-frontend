@@ -1,40 +1,29 @@
 import ActivityCard from "@repo/ui/activityCard";
+import useBookingStats from "./hooks/useBookingStats";
 
 type Props = {};
 
-const bookingStats = {
-  totalBookings: "200",
-  pendingApprovals: "200",
-  rejectedBookings: "200",
-  approvedRequests: "200",
-};
-
 export default function BookingsStats({}: Props) {
+  const { bookingStats, isLoading } = useBookingStats();
+
   return (
-    <div className="flex gap-[6px] overflow-auto">
+    <div className="flex gap-1.5 overflow-auto">
       <ActivityCard
-        primary
         title="Total Bookings"
         value={`${bookingStats?.totalBookings || `-`}`}
-        isLoading={false}
+        isLoading={isLoading}
         className="min-w-[180px] w-full"
       />
       <ActivityCard
-        title="Pending Approvals"
-        value={`${bookingStats?.pendingApprovals || `-`}`}
-        isLoading={false}
+        title="Active Bookings"
+        value={`${bookingStats?.activeBookings || `-`}`}
+        isLoading={isLoading}
         className="min-w-[180px] w-full"
       />
       <ActivityCard
-        title="Rejected Bookings"
-        value={`${bookingStats?.rejectedBookings || `-`}`}
-        isLoading={false}
-        className="min-w-[180px] w-full"
-      />
-      <ActivityCard
-        title="Approved Requests"
-        value={`${bookingStats?.approvedRequests || `-`}`}
-        isLoading={false}
+        title="Upcoming Bookings"
+        value={`${bookingStats?.upcomingBookings || `-`}`}
+        isLoading={isLoading}
         className="min-w-[180px] w-full"
       />
     </div>

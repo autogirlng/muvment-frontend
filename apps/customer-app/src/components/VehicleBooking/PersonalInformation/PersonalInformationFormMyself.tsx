@@ -1,43 +1,63 @@
 import { Formik, Form } from "formik";
 import { StepperNavigation } from "@repo/ui/stepper";
 import InputField from "@repo/ui/inputField";
-import { personalInformationSchema } from "@/utils/validationSchema";
+import { personalInformationMyselfSchema } from "@/utils/validationSchema";
 import { PersonalInformationMyselfValues } from "@/utils/types";
 import PhoneNumberAndCountryField from "@repo/ui/phoneNumberAndCountryField";
-import { replaceCharactersWithString } from "@/utils/functions";
+import {
+  getExistingBookingInformation,
+  replaceCharactersWithString,
+  saveAndUpdateBookingInformation,
+} from "@/utils/functions";
 import { getCountryCallingCode } from "react-phone-number-input";
 import { useState } from "react";
+import { useAppSelector } from "@/lib/hooks";
 
 type Props = {
   steps: string[];
   currentStep: number;
   setCurrentStep: (step: number) => void;
+  vehicleId: string;
+  type: "user" | "guest";
 };
 
 const initialValues: PersonalInformationMyselfValues = {
-  fullName: "",
-  email: "",
-  primaryPhoneNumber: "",
-  primaryCountry: "NG",
-  primaryCountryCode: "+234",
+  guestName: "",
+  guestEmail: "",
+  guestPhoneNumber: "",
+  country: "NG",
+  countryCode: "+234",
   secondaryPhoneNumber: "",
   secondaryCountry: "NG",
   secondaryCountryCode: "+234",
+  isForSelf: true,
 };
 
 const PersonalInformationFormMyself = ({
   steps,
   currentStep,
   setCurrentStep,
+  vehicleId,
+  type,
 }: Props) => {
   const [showSecondaryPhoneNumber, setShowSecondaryPhoneNumber] =
     useState<boolean>(false);
+  const { user } = useAppSelector((state) => state.user);
   return (
     <Formik
-      initialValues={initialValues}
-      //       validationSchema={personalInformationSchema}
+      initialValues={getExistingBookingInformation(
+        initialValues,
+        vehicleId,
+        "personalInformation",
+        type === "user" && user ? user : undefined
+      )}
+      validationSchema={personalInformationMyselfSchema}
       onSubmit={(values, { setSubmitting }) => {
-        console.log("Form values:", values);
+        saveAndUpdateBookingInformation(
+          values,
+          vehicleId,
+          "personalInformation"
+        );
         setCurrentStep(currentStep + 1);
         setSubmitting(false);
       }}
@@ -59,62 +79,70 @@ const PersonalInformationFormMyself = ({
       }) => (
         <Form className="max-w-[800px] w-full space-y-8">
           <InputField
-            name="fullName"
-            id="fullName"
+            name="guestName"
+            id="guestName"
             type="text"
             label="Full name"
             placeholder="Enter your full name"
-            value={values.fullName}
+            value={values.guestName}
             onChange={handleChange}
             onBlur={handleBlur}
-            error={errors.fullName && touched.fullName ? errors.fullName : ""}
+            error={
+              errors.guestName && touched.guestName
+                ? String(errors.guestName)
+                : ""
+            }
           />
 
           <InputField
-            name="email"
-            id="email"
+            name="guestEmail"
+            id="guestEmail"
             type="text"
             label="Email Address"
             placeholder="Enter your email address"
-            value={values.email}
+            value={values.guestEmail}
             onChange={handleChange}
             onBlur={handleBlur}
-            error={errors.email && touched.email ? errors.email : ""}
+            error={
+              errors.guestEmail && touched.guestEmail
+                ? String(errors.guestEmail)
+                : ""
+            }
           />
 
           <PhoneNumberAndCountryField
-            inputName="primaryPhoneNumber"
-            selectName="primaryCountry"
-            inputId="primaryPhoneNumber"
-            selectId="primaryCountry"
+            inputName="guestPhoneNumber"
+            selectName="country"
+            inputId="guestPhoneNumber"
+            selectId="country"
             label="Phone number- primary"
             inputPlaceholder="Enter phone number"
             selectPlaceholder="+234"
-            inputValue={values.primaryPhoneNumber}
-            selectValue={values.primaryCountry}
+            inputValue={values.guestPhoneNumber}
+            selectValue={values.country}
             inputOnChange={(event) => {
               const number = replaceCharactersWithString(event.target.value);
-              setFieldTouched("primaryPhoneNumber", true);
-              setFieldValue("primaryPhoneNumber", number);
+              setFieldTouched("guestPhoneNumber", true);
+              setFieldValue("guestPhoneNumber", number);
             }}
             selectOnChange={(value: string) => {
               const countryCode = `+${getCountryCallingCode(value as any)}`;
-              setFieldValue("primaryCountry", value);
-              setFieldValue("primaryCountryCode", countryCode);
+              setFieldValue("country", value);
+              setFieldValue("countryCode", countryCode);
+              setFieldValue("secondaryCountry", value);
+              setFieldValue("secondaryCountryCode", countryCode);
             }}
             inputOnBlur={handleBlur}
             selectOnBlur={handleBlur}
             // inputClassname
             selectClassname="!w-[130px]"
             inputError={
-              errors.primaryPhoneNumber && touched.primaryPhoneNumber
-                ? errors.primaryPhoneNumber
+              errors.guestPhoneNumber && touched.guestPhoneNumber
+                ? String(errors.guestPhoneNumber)
                 : ""
             }
             selectError={
-              errors.primaryCountry && touched.primaryCountry
-                ? errors.primaryCountry
-                : ""
+              errors.country && touched.country ? String(errors.country) : ""
             }
           />
           {showSecondaryPhoneNumber && (
@@ -126,11 +154,13 @@ const PersonalInformationFormMyself = ({
               label="Phone number- Secondary (optional)"
               inputPlaceholder="Enter phone number"
               selectPlaceholder="+234"
+              selectDisabled
               inputValue={values.secondaryPhoneNumber}
               selectValue={values.secondaryCountry}
               inputOnChange={(event) => {
                 const number = replaceCharactersWithString(event.target.value);
-                setFieldTouched("secondaryPhoneNumber, true");
+
+                setFieldTouched("secondaryPhoneNumber", true);
                 setFieldValue("secondaryPhoneNumber", number);
               }}
               selectOnChange={(value: string) => {
@@ -144,12 +174,12 @@ const PersonalInformationFormMyself = ({
               selectClassname="!w-[130px]"
               inputError={
                 errors.secondaryPhoneNumber && touched.secondaryPhoneNumber
-                  ? errors.secondaryPhoneNumber
+                  ? String(errors.secondaryPhoneNumber)
                   : ""
               }
               selectError={
                 errors.secondaryCountry && touched.secondaryCountry
-                  ? errors.secondaryCountry
+                  ? String(errors.secondaryCountry)
                   : ""
               }
               info
@@ -158,6 +188,7 @@ const PersonalInformationFormMyself = ({
             />
           )}
           <button
+            type="button"
             className="text-sm md:text-base 3xl:text-xl text-primary-500"
             onClick={() =>
               setShowSecondaryPhoneNumber(!showSecondaryPhoneNumber)
@@ -172,8 +203,8 @@ const PersonalInformationFormMyself = ({
             steps={steps}
             currentStep={currentStep}
             setCurrentStep={setCurrentStep}
-            handleSaveDraft={() => {}}
-            isSaveDraftloading={false}
+            // handleSaveDraft={() => {}}
+            // isSaveDraftloading={false}
             isNextLoading={isSubmitting}
             disableNextButton={!isValid || isSubmitting}
           />
@@ -182,5 +213,4 @@ const PersonalInformationFormMyself = ({
     </Formik>
   );
 };
-
 export default PersonalInformationFormMyself;

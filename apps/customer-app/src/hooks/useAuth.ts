@@ -50,14 +50,17 @@ export default function useAuth() {
         phoneNumber: values.phoneNumber,
         countryCode: values.countryCode,
         country: values.country,
+        email: values.email,
       };
     },
 
     onSuccess: (data, _values, context) => {
-      router.push("/login");
       // router.push(
       //   `/verify-number?phoneNumber=${encodeURIComponent(context?.phoneNumber ?? "")}&countryCode=${encodeURIComponent(context?.countryCode ?? "")}&country=${encodeURIComponent(context?.country ?? "")}`
       // );
+      router.push(
+        `/verify-email?email=${encodeURIComponent(context?.email ?? "")}`
+      );
       console.log("Signup successful", data);
     },
 
@@ -93,7 +96,7 @@ export default function useAuth() {
     },
   });
 
-  // work on this...
+  // TODO: work on this...
   const verifyNumberOnSignup = useMutation({
     mutationFn: (values: VerifyPhoneNumberTokenValues) =>
       http.post<string>("/api/auth/email/verify", values),
@@ -110,7 +113,7 @@ export default function useAuth() {
       handleErrors(error, "Verify Email"),
   });
 
-  // work on this...
+  // TODO: work on this...
   const resendVerifyNumberToken = useMutation({
     mutationFn: (values: SendPhoneNumberTokenValues) =>
       http.post("/api/auth/resend-verify-email", values),
@@ -122,6 +125,22 @@ export default function useAuth() {
 
     onError: (error: AxiosError<ErrorResponse>) =>
       handleErrors(error, "Resend Verify Email Token"),
+  });
+
+  const verifyEmailOnSignup = useMutation({
+    mutationFn: (values: verifyEmailValues) =>
+      http.post<string>("/api/auth/email/verify", values),
+
+    onSuccess: (data) => {
+      console.log("Email verified successfully", data);
+      toast.success("Account created successfully");
+      dispatch(setToken(data || ""));
+      router.push("/onboarding/add-image");
+      queryClient.clear();
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) =>
+      handleErrors(error, "Verify Email"),
   });
 
   const verifyEmailOnForgotPassword = useMutation({
@@ -203,6 +222,7 @@ export default function useAuth() {
     loginMutation,
     verifyNumberOnSignup,
     resendVerifyNumberToken,
+    verifyEmailOnSignup,
     verifyEmailOnForgotPassword,
     resendVerifyEmailToken,
     forgotPassword,

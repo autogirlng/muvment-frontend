@@ -34,7 +34,7 @@ export default function DriversDetails({ id }: Props) {
           onOpenChange={handleModal}
           title="Assign New Driver"
           trigger={
-            <Button className="!text-xs 3xl:!text-base text-primary-500 !bg-primary-75 rounded-[31px] !py-[6px] 3xl:!py-2 !px-3 3xl:!px-4">
+            <Button className="!text-xs 3xl:!text-base text-primary-500 !bg-primary-75 rounded-[31px] !py-1.5 3xl:!py-2 !px-3 3xl:!px-4">
               Assign New Driver
             </Button>
           }

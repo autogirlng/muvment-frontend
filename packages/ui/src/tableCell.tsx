@@ -10,7 +10,7 @@ type Props = {
 
 const TableCell = ({ content, className, isBadge, icon, badge }: Props) => (
   <td
-    className={`px-6 py-[26px] whitespace-nowrap w-fit text-sm text-grey-700 ${
+    className={`w-auto px-6 py-[26px] whitespace-nowrap text-sm text-grey-700 ${
       className ?? ""
     }`}
   >

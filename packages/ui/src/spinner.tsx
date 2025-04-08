@@ -18,9 +18,11 @@ export function FullPageSpinner({ className }: Props) {
   );
 }
 
-export function Spinner({}: Props) {
+export function Spinner({className}: Props) {
   return (
-    <div className="animate-spin w-fit *:w-6 *:h-6 text-grey-500">
+    <div
+      className={cn("animate-spin w-fit *:w-6 *:h-6 text-grey-500", className)}
+    >
       {Icons.ic_spinner}
     </div>
   );

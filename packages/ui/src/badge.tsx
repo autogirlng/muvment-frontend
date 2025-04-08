@@ -161,3 +161,22 @@ export const PaymentBadge = ({ status }: PaymentBadgeProps) => {
     </div>
   );
 };
+
+type ReferralBadgeProps = {
+  status: "JOINED" | "PENDING";
+};
+
+export const ReferralBadge = ({ status }: ReferralBadgeProps) => {
+  const badgeColor = status === "JOINED" ? "bg-success-500" : "bg-warning-500";
+
+  return (
+    <div
+      className={cn(
+        "px-3 py-[2px] text-sm font-medium capitalize text-white rounded-xl w-fit",
+        badgeColor
+      )}
+    >
+      {status.toLocaleLowerCase()}
+    </div>
+  );
+};

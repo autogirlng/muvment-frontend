@@ -8,6 +8,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "@types/react-datepicker": "^7.0.0",
     "prettier": "^3.2.5",
     "turbo": "^2.1.0",
     "typescript": "^5.4.5"
@@ -32,6 +33,7 @@
     "rc-slider": "^11.1.7",
     "react-apexcharts": "^1.4.1",
     "react-calendar": "^5.0.0",
+    "react-datepicker": "^7.5.0",
     "react-redux": "^9.1.2",
     "react-toastify": "^10.0.5",
     "swiper": "^11.1.12"

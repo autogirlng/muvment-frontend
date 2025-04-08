@@ -102,14 +102,14 @@ export const StepperNavigation = ({
           </StepperButton>
         )}
         <div className="flex items-center gap-3 justify-end w-full">
-          <StepperButton
+          {/* <StepperButton
             onClick={handleSaveDraft}
             disabled={isSaveDraftloading || disableSaveDraftButton}
             className="sm:border-2 sm:border-grey-600 text-grey-600 disabled:text-grey-300 disabled:sm:border-grey-300"
             type="button"
           >
             <span>Save Draft</span> {isSaveDraftloading && <Spinner />}
-          </StepperButton>
+          </StepperButton> */}
           {submitText ? (
             <StepperButton
               onClick={handleSubmit}

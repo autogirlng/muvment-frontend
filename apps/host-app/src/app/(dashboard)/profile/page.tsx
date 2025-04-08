@@ -230,7 +230,7 @@ export default function ProfilePage() {
                       disabled={!isProfileEditable}
                     />
 
-                    <div className="space-y-[6px]">
+                    <div className="space-y-1.5">
                       <Label label="Host rating" />
                       <h3 className="text-h4 3xl:text-h3 text-success-500">
                         {user?.averageRating}

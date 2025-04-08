@@ -1,7 +1,7 @@
 import cn from "classnames";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import { popupNavItemsforNoUser } from "@/utils/data";
 import { getInitialsFromName } from "@/utils/functions";
 import { User } from "@/utils/types";
@@ -11,44 +11,60 @@ import Icons from "@repo/ui/icons";
 import NavPopup from "@/components/Navbar/NavPopup";
 import MobileNavItem from "@/components/Navbar/MobileNavItem";
 
-type Props = { user: User | null; userToken: string };
+type Props = {
+  user: User | null;
+  children?: ReactNode;
+  explorePage?: boolean;
+};
 
-export default function DesktopNav({ user, userToken }: Props) {
+export default function DesktopNav({ user, children, explorePage }: Props) {
+  const [userToken, setUserToken] = useState<string>("");
   const [sticky, setSticky] = useState<boolean>(false);
 
   useEffect(() => {
     window.addEventListener("scroll", () => {
-      setSticky(window.scrollY > 600);
+      if (!explorePage) setSticky(window.scrollY > 600);
     });
+  }, [explorePage]);
+
+  useEffect(() => {
+    const user_token = window.localStorage.getItem("user_token");
+    setUserToken(user_token || "");
   }, []);
 
   return (
     <header
       className={cn(
         "hidden md:flex justify-between items-center fixed top-0 left-0 z-[999] w-full px-20 py-5",
-        sticky
+        explorePage || sticky
           ? "bg-white border-b border-grey-200"
           : "bg-[#F9FAFB59] backdrop-blur-xl"
       )}
     >
       <Image
         className=""
-        src="/images/logo/nav_logo.png"
+        src={`/images/logo/${explorePage || sticky ? "nav_logo" : "logo_white"}.png`}
         alt=""
         width={114}
         height={40}
       />
+      {children}
       <nav className="flex items-center gap-4">
         <Link
           className={cn(
             "text-base 3xl:text-xl",
-            sticky ? "text-grey-700" : "text-white"
+            explorePage || sticky ? "text-grey-700" : "text-white"
           )}
           href="/"
         >
           Become a host
         </Link>
-        <div className="h-6 w-px bg-white" />
+        <div
+          className={cn(
+            "h-6 w-px",
+            explorePage || sticky ? "bg-grey-700" : "bg-white"
+          )}
+        />
 
         <Popup
           trigger={
@@ -76,7 +92,7 @@ export default function DesktopNav({ user, userToken }: Props) {
                     icon={item.icon}
                     name={item.name}
                     link={item.link}
-                    className="!py-[6px]"
+                    className="!py-1.5"
                   />
                 ))
               )}

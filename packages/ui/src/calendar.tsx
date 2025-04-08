@@ -8,7 +8,7 @@ import { ReactNode } from "react";
 
 type ValuePiece = Date | null;
 
-type Value = ValuePiece | [ValuePiece, ValuePiece];
+type Value = Date | null | [ValuePiece, ValuePiece];
 
 const DateRangeCalendar = ({
   title,
@@ -104,6 +104,7 @@ export const DatePicker = ({
   isOpen,
   handleIsOpen,
   children,
+  showMinDate
 }: {
   buttonClass?: string;
   value: Value;
@@ -111,6 +112,7 @@ export const DatePicker = ({
   isOpen: boolean;
   handleIsOpen: (open: boolean) => void;
   children: ReactNode;
+  showMinDate?: boolean;
 }) => {
   return (
     <Popover.Root open={isOpen} onOpenChange={handleIsOpen}>
@@ -132,11 +134,11 @@ export const DatePicker = ({
             className="!border-none !w-full !text-black !text-xs"
             nextLabel={Icons.ic_chevron_right}
             prevLabel={Icons.ic_chevron_left}
+            minDate={showMinDate ? new Date() : undefined}
           />
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>
   );
 };
-
 export default DateRangeCalendar;

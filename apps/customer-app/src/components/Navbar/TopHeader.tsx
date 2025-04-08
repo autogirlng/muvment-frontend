@@ -14,15 +14,15 @@ export default function TopHeader({}: Props) {
 
   return (
     <div className="hidden md:flex w-full md:px-6 2xl:px-8 py-5 items-center justify-between bg-white border-b border-grey-300 shadow-[0_4px_100px_0_#00000012]">
-      <div className="">
+      <Link href="/" className="block">
         <Image
           className=""
-          src="/images/logo/logo.png"
+          src="/images/logo/nav_logo.png"
           alt=""
           width={114}
           height={40}
         />
-      </div>
+      </Link>
       <nav className="flex items-center gap-4">
         <Link className="text-base 3xl:text-xl text-grey-700" href="/">
           Become a host

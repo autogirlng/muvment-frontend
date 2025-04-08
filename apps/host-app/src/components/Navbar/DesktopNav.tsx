@@ -78,7 +78,7 @@ export default function DesktopNav({ user, userToken }: Props) {
                     icon={item.icon}
                     name={item.name}
                     link={item.link}
-                    className="!py-[6px]"
+                    className="!py-1.5"
                   />
                 ))
               )}
