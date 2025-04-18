@@ -120,7 +120,7 @@ function PrivacyPolicy() {
       <MobileNav user={null} />
 
       <PolicyHeader
-        title="Terms & Conditions"
+        title="Privacy Policy"
         imageSrc="/images/logo/logo_icon_blue.png"
         date={currentDate}
         bgColor="bg-[#0673FF]"
