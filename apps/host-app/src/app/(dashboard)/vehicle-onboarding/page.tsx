@@ -12,8 +12,9 @@ import { FullPageSpinner } from "@repo/ui/spinner";
 import { useState } from "react";
 
 const steps = [
-  "Basic Vehicle Information",
-  "Additional Vehicle Information",
+  "Basic Details",
+  "Additional Details",
+  "Upload documents",
   "Photos",
   "Availability and Pricing",
 ];
@@ -61,21 +62,29 @@ export default function VehicleOnboardingPage() {
               setCurrentStep={handleCurrentStep}
             />
           )}
+          {/* upload docs */}
           {currentStep === 2 && (
-            <VehiclePhotos
+            <AdditionalInformation
               steps={steps}
               currentStep={currentStep}
               setCurrentStep={handleCurrentStep}
             />
           )}
           {currentStep === 3 && (
-            <AvailabilityAndPricing
+            <VehiclePhotos
               steps={steps}
               currentStep={currentStep}
               setCurrentStep={handleCurrentStep}
             />
           )}
           {currentStep === 4 && (
+            <AvailabilityAndPricing
+              steps={steps}
+              currentStep={currentStep}
+              setCurrentStep={handleCurrentStep}
+            />
+          )}
+          {currentStep === 5 && (
             <VehicleSummary
               steps={steps}
               currentStep={currentStep}

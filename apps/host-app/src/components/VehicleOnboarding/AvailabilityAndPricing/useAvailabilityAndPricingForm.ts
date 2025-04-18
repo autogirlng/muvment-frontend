@@ -25,9 +25,16 @@ export default function useAvailabilityAndPricingForm({
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const [showOuskirts, setShowOuskirts] = useState<boolean>(false);
-
   const { vehicle } = useAppSelector((state) => state.vehicleOnboarding);
+  const [showOuskirts, setShowOuskirts] = useState<boolean>(
+    Array.isArray(vehicle?.outskirtsLocation) &&
+      vehicle.outskirtsLocation.length > 0
+  );
+
+  const [showDiscounts, setShowDiscounts] = useState<boolean>(
+    Array.isArray(vehicle?.outskirtsLocation) &&
+      vehicle.outskirtsLocation.length > 0
+  );
 
   const initialValues: AvailabilityAndPricingValues = {
     advanceNoticeInDays: vehicle?.tripSettings?.advanceNotice || "",
@@ -105,7 +112,9 @@ export default function useAvailabilityAndPricingForm({
 
     onSuccess: (data) => {
       console.log("Vehicle Onboarding Step 4 Saved", data);
-      dispatch(updateVehicleInformation({ ...vehicle, ...data }));
+      dispatch(
+        updateVehicleInformation({ ...vehicle, ...data } as VehicleInformation)
+      );
       router.push("/listings");
     },
 
@@ -121,7 +130,9 @@ export default function useAvailabilityAndPricingForm({
 
     onSuccess: (data) => {
       console.log("Vehicle Onboarding Step 4 Submitted", data);
-      dispatch(updateVehicleInformation({ ...vehicle, ...data }));
+      dispatch(
+        updateVehicleInformation({ ...vehicle, ...data } as VehicleInformation)
+      );
       setCurrentStep(currentStep + 1);
     },
 
@@ -137,5 +148,7 @@ export default function useAvailabilityAndPricingForm({
     initialValues,
     showOuskirts,
     setShowOuskirts,
+    showDiscounts,
+    setShowDiscounts,
   };
 }

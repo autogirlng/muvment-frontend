@@ -2173,6 +2173,30 @@ const Icons = {
       />
     </svg>
   ),
+  ic_edit: (
+    <svg
+      width="36"
+      height="36"
+      viewBox="0 0 36 36"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle
+        cx="17.9987"
+        cy="18.0007"
+        r="16.6667"
+        stroke="#344054"
+        stroke-width="2.5"
+      />
+      <path
+        d="M13.9987 10.5L12.4731 12.4503C11.5963 13.5713 11.7576 13.9091 13.1699 13.9091L21.9987 13.9091C24.4346 13.9091 24.6654 15.1876 24.6654 17.3182M21.9987 25.5L23.5243 23.5497C24.4011 22.4287 24.2398 22.0909 22.8275 22.0909H13.9987C11.5628 22.0909 11.332 20.8124 11.332 18.6818"
+        stroke="#344054"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  ),
 };
 
 export default Icons;

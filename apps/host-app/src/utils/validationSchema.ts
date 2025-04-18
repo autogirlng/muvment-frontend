@@ -159,7 +159,7 @@ export const availabilityAndPricingSchema = object().shape({
   extraHourRate: string().required("Please enter the amount"),
   // airportPickup: string().required("Please enter the amount"),
 
-  // these should be activated if discount is on
+  // // these should be activated if discount is on
   // threeDaysDiscount: string().required("Please enter the amount"),
   // sevenDaysDiscount: string().required("Please enter the amount"),
   // thirtyDaysDiscount: string().required("Please enter the amount"),
