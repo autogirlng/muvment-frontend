@@ -113,7 +113,10 @@ export default function useBasicInformationForm({
 
     onSuccess: (data) => {
       console.log("Vehicle Onboarding Step 1 Saved", data);
-      dispatch(updateVehicleInformation({ ...vehicle, ...data }));
+      dispatch(
+        // @ts-ignore
+        updateVehicleInformation({ ...vehicle, ...data })
+      );
       router.push("/listings");
     },
 
@@ -132,7 +135,10 @@ export default function useBasicInformationForm({
 
     onSuccess: (data) => {
       console.log("Vehicle Onboarding Step 1 Submitted", data);
-      dispatch(updateVehicleInformation({ ...vehicle, ...data }));
+      dispatch(
+        // @ts-ignore
+        updateVehicleInformation({ ...vehicle, ...data })
+      );
       setCurrentStep(currentStep + 1);
     },
 

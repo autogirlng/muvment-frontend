@@ -10,11 +10,12 @@ import { Stepper } from "@repo/ui/stepper";
 import useVehicleOnboarding from "../../../hooks/useVehicleOnboarding";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import { useState } from "react";
+import DocumentInformation from "@/components/VehicleOnboarding/DocumentInformation";
 
 const steps = [
   "Basic Details",
   "Additional Details",
-  "Upload documents",
+  "Documents",
   "Photos",
   "Availability and Pricing",
 ];
@@ -36,7 +37,7 @@ export default function VehicleOnboardingPage() {
       <div
         className={cn(
           "mx-auto space-y-8 md:space-y-[52px]",
-          currentStep === 4
+          currentStep === 5
             ? "max-w-[1020px] 3xl:max-w-[1120px]"
             : "max-w-[1492px]"
         )}
@@ -44,7 +45,7 @@ export default function VehicleOnboardingPage() {
         <div className="space-y-8">
           <BackLink backLink="/dashboard" />
           <h2 className="text-h5 md:text-h3 3xl:text-4xl text-black">
-            {currentStep === 4 ? "Summary" : "Vehicle Onboarding"}
+            {currentStep === 5 ? "Summary" : "Vehicle Onboarding"}
           </h2>
         </div>
         <Stepper steps={steps} currentStep={currentStep}>
@@ -64,7 +65,7 @@ export default function VehicleOnboardingPage() {
           )}
           {/* upload docs */}
           {currentStep === 2 && (
-            <AdditionalInformation
+            <DocumentInformation
               steps={steps}
               currentStep={currentStep}
               setCurrentStep={handleCurrentStep}

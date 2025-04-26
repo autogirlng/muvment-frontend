@@ -1,4 +1,4 @@
-import { array, object, ref, string } from "yup";
+import { array, object, ref, string, mixed } from "yup";
 import {
   emailRegEx,
   lowercaseRegex,
@@ -141,6 +141,18 @@ export const addtionalVehicleInformationSchema = object().shape({
   features: array().min(1, "Please select at least one feature"),
 });
 
+export const documentVehicleInformationSchema = object().shape({
+  proofOfOwnership: mixed().required("Proof of ownership is required."),
+  vehicleRegistration: mixed().required(
+    "Vehicle registration document is required."
+  ),
+  insuranceCertificate: mixed().required("Insurance certificate is required."),
+  vehicleInspectionReport: mixed().required(
+    "Vehicle inspection report is required."
+  ),
+  maintenanceHistory: mixed().optional(),
+  authorizationLetter: mixed().required("Authorization letter is required."),
+});
 export const vehiclePhotosSchema = object().shape({
   frontView: string().required("Please upload Front view image"),
   backView: string().required("Please upload Back view image"),

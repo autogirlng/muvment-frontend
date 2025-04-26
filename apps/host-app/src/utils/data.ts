@@ -661,7 +661,7 @@ export const photoUploadTips = [
   {
     title: "Take Photos From Different Angles",
     description:
-      "Show all sides of your car - front, back, sides, and at an angle. Try to take photos during the day when there’s plenty of light, but avoid direct sunlight that can cause harsh shadows.",
+      "Show all sides of your car - front, back, sides, and at an angle. Try to take photos during the day when there's plenty of light, but avoid direct sunlight that can cause harsh shadows.",
   },
   {
     title: "Capture the Car's Condition",
@@ -672,7 +672,7 @@ export const photoUploadTips = [
   {
     title: "Mind the Weather",
     description:
-      "Avoid taking photos on rainy or gloomy days. Sunshine makes everything look better. If the weather isn’t cooperating, wait for a better day to take your pictures.",
+      "Avoid taking photos on rainy or gloomy days. Sunshine makes everything look better. If the weather isn't cooperating, wait for a better day to take your pictures.",
   },
   {
     title: "Clean Your Car Before the Photoshoot",
@@ -821,6 +821,26 @@ export const transactionFilters = [
     options: [
       { option: "Booking", value: TransactionOrigin.BOOKING },
       { option: "Withdrawal", value: TransactionOrigin.WITHDRAWAL },
+    ],
+  },
+];
+
+export const earningFilters: {
+  title: string;
+  options: OptionType[];
+}[] = [
+  {
+    title: "vehicle",
+    options: [
+      { option: "Hyundai Tuscon 2018", value: "hyundai_tuscon_2018" },
+      { option: "Toyota Camry 2017", value: "toyota_camry_2017" },
+    ],
+  },
+  {
+    title: "location",
+    options: [
+      { option: "Region 1", value: "region_1" },
+      { option: "Region 2", value: "region_2" },
     ],
   },
 ];
