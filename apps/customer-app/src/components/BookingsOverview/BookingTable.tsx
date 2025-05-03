@@ -1,7 +1,7 @@
 import { bookingOverviewTableHeadItems } from "@/utils/data";
 import { BookingInformation } from "@/utils/types";
 import TableHead from "@repo/ui/tableHead";
-import EmptyState from "@repo/ui/emptyState";
+import EmptyState from "../EmptyState";
 import BookingRow from "@/components/BookingsOverview/BookingRow";
 
 export default function BookingTable({

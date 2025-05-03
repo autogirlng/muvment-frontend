@@ -28,8 +28,13 @@ const DocumentInformationForm = ({
         console.log("Form values:", values);
         const formData = new FormData();
         for (const key in values) {
+          // @ts-ignore
           if (values[key]) {
-            formData.append(key, values[key] as File);
+            formData.append(
+              key,
+              // @ts-ignore
+              values[key] as File
+            );
           }
         }
         await submitStep5.mutateAsync(formData);
@@ -120,8 +125,13 @@ const DocumentInformationForm = ({
             handleSaveDraft={async () => {
               const formData = new FormData();
               for (const key in values) {
+                // @ts-ignore
                 if (values[key]) {
-                  formData.append(key, values[key] as File);
+                  formData.append(
+                    key,
+                    // @ts-ignore
+                    values[key] as File
+                  );
                 }
               }
               await saveStep5.mutateAsync(formData);

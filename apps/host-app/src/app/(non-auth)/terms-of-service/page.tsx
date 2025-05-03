@@ -18,12 +18,6 @@ function TermsOfService() {
     day: "numeric",
   });
 
-  const sections = [
-    { id: "general-terms", label: "General Terms" },
-    { id: "general-rental", label: "General Rentals" },
-    { id: "cancellation-refunds", label: "Cancellation and Refunds" },
-  ];
-
   const generalTerms = [
     " By making a payment for any of Muvment services after receiving an invoice, you agree to abide by these Terms and Conditions. It is assumed that you have read, understood, and accepted all terms herein.",
   ];
@@ -115,6 +109,175 @@ function TermsOfService() {
     },
   ];
 
+  const complimentaryRide = [
+    {
+      title:
+        "Local Area Restriction: All complimentary rides are restricted to within Lagos. Rides requested outside these geographical boundaries will incur standard charges.",
+    },
+    {
+      title:
+        "Additional Stops: Clients will incur charges for any stops not initially included in the agreed-upon itinerary.",
+    },
+    {
+      title:
+        "Extra Time Usage: If the complimentary ride exceeds the agreed timeline, additional charges for the extra time used will apply.",
+    },
+    {
+      title:
+        "Muvment’s Discretion: Muvment reserves the right to accept or reject any proposed itinerary for complimentary rides. This decision is based on factors like route feasibility, scheduling constraints, and operational capacity.",
+    },
+  ];
+  const extraCharge = [
+    {
+      title:
+        "Late Night and Early Morning Bookings: Bookings that commence between 10:00 PM and 6:00 AM are subject to an additional fee to cover operational costs and the inconvenience associated with late-night or early-morning service. This fee will be specified at the time of booking.",
+    },
+
+    {
+      title:
+        "Extra Time Charges: Extra time charges vary by vehicle type. Higher rates apply for newer models (2021 onwards), bulletproof vehicles, buses, vintage cars, and luxury cars compared to standard vehicle models.",
+    },
+    {
+      title:
+        "Late-Night Trips: Trips that extend into the night or start during late-night hours will incur additional charges.",
+    },
+    {
+      title:
+        "Geographical Travel Charges: Itineraries involving more than two crossings between central Lagos Island and the Mainland in a single trip will result in extra charges.",
+    },
+    {
+      title:
+        "Daily Rental Closing Time: Daily rentals end at 10 PM. Services used beyond this time are considered extra hours and will be charged accordingly.",
+    },
+  ];
+
+  const vehicleSale = [
+    {
+      title:
+        "If a customer’s mechanic has inspected and certified this car as okay which is mandatory before payment and therefore payment for this car is non-refundable.",
+    },
+  ];
+  const airportPickup = [
+    {
+      title:
+        "Cancellation Policy: Cancellations are not permitted within one hour of the scheduled pick-up time. If you do not use the vehicle, no refund will be provided.",
+    },
+    {
+      title:
+        "Service Coverage: Each booking covers a single pick-up and drop-off. If the vehicle is used for additional airport trips within the same day, each trip will be considered a separate booking and will incur additional charges.",
+    },
+    {
+      title:
+        "Booking Duration: Airport pick-ups include a four-hour service window. If there are changes to your flight that require extending this window, an additional fee will be charged for each hour beyond the initial four hours. This service does not accommodate multiple pick-ups or unscheduled stops; additional requests will result in extra charges.",
+    },
+    {
+      title:
+        "Additional Fees: All airport tolls and parking fees incurred during the service are the responsibility of the client.",
+    },
+    {
+      title:
+        "Overtime Charges: Services extending beyond the included four-hour duration will incur overtime charges.",
+    },
+    {
+      title:
+        "Non-Stop Travel Requirement: The airport pick-up and drop-off service is designed for direct travel from the pick-up point to the destination without unscheduled stops. Requests for stops during the journey are treated as separate bookings and will incur additional charges.",
+    },
+  ];
+
+  const selfDrive = [
+    {
+      title:
+        "Eligibility and Documentation: Self-drive options are available for select vehicles. Before accepting a self-drive request, we require the submission of specific documents to verify eligibility.",
+    },
+    {
+      title: "Repairs and Maintenance: ",
+      subItems: [
+        "Minor Repairs: Renters are responsible for all minor repairs during the rental period, such as issues related to the battery or flat tyres. ",
+        "Major Repairs: Any major repairs required, especially those involving engine work, must be reported to Muvment immediately for appropriate handling.",
+      ],
+    },
+    {
+      title:
+        "Payment and Agreement: Upon completing payment for a self-drive rental, renters are obligated to adhere to all terms and conditions as outlined in the service level agreement.",
+    },
+    {
+      title:
+        "Identity Verification: A mandatory identity verification must be completed before any self-drive rental can commence. This verification process is completed 48 hours after payment is received.",
+    },
+    {
+      title:
+        "Geographical Limitations: Renters agree to operate the vehicle only within the geographical boundaries specified in the rental agreement and invoice. Violations, such as driving the vehicle beyond the designated area, will result in automatic forfeiture of any caution fee or remaining balance associated with the booking. This is crucial for ensuring the safety and proper usage of our vehicles.",
+    },
+  ];
+
+  const monthlyBooking = [
+    {
+      title:
+        "Booking Duration and Usage: When you reserve a vehicle for a monthly period, the booking is strictly valid for the dates specified in the invoice. Unused days within this period cannot be carried over or extended beyond the specified end date. If you require the vehicle beyond the contracted period, additional days are subject to availability and will be charged at our standard daily rate.",
+    },
+    {
+      title:
+        "Driver Assignment: A primary driver will be assigned to you at the start of the booking. Our drivers typically work six days a week; therefore, your assigned driver will have one day off each week. During the monthly booking, driver changes might occur due to scheduling or operational needs.",
+    },
+    {
+      title:
+        "Driver Changes: Muvment reserves the right to change the assigned driver as necessary. Reasons for changes include but are not limited to operational requirements or driver availability. You will be notified at least 4 hours before your scheduled pickup time, and we will provide the new driver’s information and details.",
+    },
+  ];
+  const boatCruise = [
+    {
+      subItems: [
+        "Please be punctual ",
+        "Time slots will be forfeited if the client misses it.",
+        "Ensure you have your life jacket and face masks on while on the cruise ",
+        "50% of your booking fee is forfeited on late cancellations ",
+        "If it’s raining during your time slot, you have the option of waiting for the rain to stop or choosing a date from the available dates which will be given to you by us",
+      ],
+    },
+  ];
+
+  const acceptTerms = [
+    {
+      content:
+        "By making any partial or full payment for an invoice issued by Muvment, the customer is automatically deemed to agree to and accept all the Terms and Conditions set forth by Muvment. This agreement takes effect upon the successful processing of either a partial or full payment. Such payment constitutes the customer’s explicit acknowledgment and acceptance of all terms, including specific liabilities or service terms detailed in our agreement. Customers are presumed to have read, understood, and consented to all these terms. We encourage customers to contact Muvment for any clarifications or inquiries regarding these terms prior to making any payment. Records of all payments, partial or full, will be maintained as evidence of the customer’s acceptance of these terms.",
+    },
+  ];
+
+  const conclusion = [
+    {
+      content:
+        "Thank you for choosing Muvment. We value your trust and strive to provide exceptional service and convenience. By agreeing to these Terms and Conditions, you help ensure a smooth and enjoyable experience with our services. Should you have any questions or need further clarification on any aspect of these terms, please do not hesitate to contact our customer support team. We are here to assist you and ensure your satisfaction with our services.Muvment reserves the right to update and modify these Terms and Conditions at any time to reflect changes in our services or response to customer feedback or legal requirements. Such modifications will be effective immediately upon posting on our website or direct communication to you.We look forward to serving you and providing a reliable and enjoyable experience.",
+    },
+  ];
+
+  const contact = [
+    {
+      content:
+        "Should you have any questions or need further clarification on any aspect of these terms, please do not hesitate to contact our customer support team at the following:",
+      subItems: [
+        "Email: info@autogirl.ng",
+        "Website: https://autogirl.ng",
+        "Phone Number: +234816747416  and +2347002255288",
+      ],
+    },
+  ];
+
+  const sections = [
+    { id: "general-terms", label: "General Terms" },
+    { id: "general-rental", label: "General Rentals" },
+    { id: "cancellation-refunds", label: "Cancellation and Refunds" },
+    { id: "complimentary-ride", label: "Complimentary Ride " },
+    { id: "extra-charge", label: "Extra Charge" },
+    { id: "vehicle-sale", label: "Vehicle Sale" },
+    { id: "airport-drop-pickup", label: "Airport Pick-Up and Drop-Off" },
+    { id: "self-drive", label: "Self Drive" },
+    { id: "monthly-booking", label: "Monthly Booking" },
+    { id: "boat-cruise", label: "Boat Cruise" },
+    { id: "acceptance-of-terms", label: "Acceptance of Terms through Payment" },
+    { id: "conclusion", label: "Conclusion" },
+    { id: "contact", label: "Contact Information" },
+  ];
+
   return (
     <main className="min-h-screen flex flex-col bg-gray-50">
       {/* Navbars with higher z-index */}
@@ -143,7 +306,7 @@ function TermsOfService() {
               <ParagraphText>{generalTerms}</ParagraphText>
             </TermsSection>
 
-            <TermsSection title="General Rental" id="general-refund">
+            <TermsSection title="General Rental" id="general-rental">
               <NumberedList items={generalRentalItems} className="space-y-4" />
             </TermsSection>
 
@@ -155,6 +318,44 @@ function TermsOfService() {
                 items={cancellationNoticeItems}
                 className="space-y-4"
               />
+            </TermsSection>
+
+            <TermsSection title="Complimentary Ride" id="complimentary-ride">
+              <NumberedList items={complimentaryRide} className="space-y-4" />
+            </TermsSection>
+            <TermsSection title="Extra Charges" id="extra-charge">
+              <NumberedList items={extraCharge} className="space-y-4" />
+            </TermsSection>
+            <TermsSection title="Vehicle Sale" id="vehicle-sale">
+              <NumberedList items={vehicleSale} className="space-y-4" />
+            </TermsSection>
+            <TermsSection
+              title="Airport Pickup And Drop Off"
+              id="airport-drop-pickup"
+            >
+              <NumberedList items={airportPickup} className="space-y-4" />
+            </TermsSection>
+            <TermsSection title="Self Drive" id="self-drive">
+              <NumberedList items={selfDrive} className="space-y-4" />
+            </TermsSection>
+            <TermsSection title="Monthly Booking" id="monthly-booking">
+              <NumberedList items={monthlyBooking} className="space-y-4" />
+            </TermsSection>
+            <TermsSection title="Boat Cruise" id="boat-cruise">
+              <NumberedList items={boatCruise} className="space-y-4" />
+            </TermsSection>
+            <TermsSection
+              title="Acceptance of Terms through Payment
+"
+              id="acceptance-of-terms"
+            >
+              <NumberedList items={acceptTerms} className="space-y-4" />
+            </TermsSection>
+            <TermsSection title="Conclusion" id="conclusion">
+              <NumberedList items={conclusion} className="space-y-4" />
+            </TermsSection>
+            <TermsSection title="Contact Information" id="contact">
+              <NumberedList items={contact} className="space-y-4" />
             </TermsSection>
           </TermsContentContainer>
         </div>

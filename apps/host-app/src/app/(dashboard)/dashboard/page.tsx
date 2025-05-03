@@ -1,10 +1,8 @@
 "use client";
-
 import AccountActivity from "@/components/AccountActivity";
 import BookingsOverview from "@/components/BookingsOverview";
 import { useAppSelector } from "@/lib/hooks";
 import Link from "next/link";
-
 export default function DashboardPage() {
   const { user } = useAppSelector((state) => state.user);
 

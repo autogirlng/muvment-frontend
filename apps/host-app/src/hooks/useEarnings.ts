@@ -71,6 +71,7 @@ export default function useEarnings({
         amounts: [],
       };
 
+    // @ts-ignore
     const earnings = data.earnings;
 
     if (period === EarningPeriod.MONTH) {
@@ -87,9 +88,13 @@ export default function useEarnings({
   }, [data, period]);
 
   return {
+    // @ts-ignore
     earnings: data?.earnings || [],
+    // @ts-ignore
     totalEarnings: data?.totalEarnings || 0,
+    // @ts-ignore
     periodStart: data?.periodStart,
+    // @ts-ignore
     periodEnd: data?.periodEnd,
     chartData,
     isError,

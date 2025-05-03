@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
 interface SectionNavProps {
@@ -9,6 +9,7 @@ interface SectionNavProps {
 export const SectionNav = ({ sections }: SectionNavProps) => {
   const [activeSection, setActiveSection] = useState(sections[0]?.id || "");
   const pathname = usePathname();
+  const desktopNavRef = useRef<HTMLDivElement>(null);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -43,6 +44,18 @@ export const SectionNav = ({ sections }: SectionNavProps) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [pathname]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (desktopNavRef.current) {
+        desktopNavRef.current.style.maxHeight = `${window.innerHeight * 0.7}px`; // Set max height to 70% of screen height
+      }
+    };
+
+    handleResize(); // Set initial max height
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <>
       {/* Mobile Navigation */}
@@ -67,8 +80,14 @@ export const SectionNav = ({ sections }: SectionNavProps) => {
       </div>
 
       {/* Desktop Navigation */}
-      <div className="hidden lg:block">
-        <div className="flex flex-col space-y-1 p-4 border-[2px] border-grey-50 bg-white rounded-2xl ">
+      <div className="hidden lg:block sticky top-20">
+        {" "}
+        {/* Added sticky and top positioning */}
+        <div
+          ref={desktopNavRef}
+          className="flex flex-col space-y-1 p-4 border-[2px] border-grey-50 bg-white rounded-2xl overflow-y-auto" // Added overflow-y-auto
+          style={{ maxHeight: "70vh" }} // Fallback if JS fails or for initial render
+        >
           <p className="py-2 mb-3 text-[#101928] font-medium text-sm border-b-[#E4E7EC] border-b-2">
             Quick Navigation
           </p>
@@ -76,7 +95,7 @@ export const SectionNav = ({ sections }: SectionNavProps) => {
             <button
               key={section.id}
               onClick={() => scrollToSection(section.id)}
-              className={`px-4 py-3 rounded-lg text-left text-sm  transition-colors ${
+              className={`px-4 py-3 rounded-lg text-left text-sm  transition-colors ${
                 activeSection === section.id
                   ? " text-[#0673FF]"
                   : "text-gray-700 hover:bg-gray-200"

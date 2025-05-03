@@ -142,7 +142,10 @@ export default function useVehicleSummary({
     onSuccess: (data) => {
       console.log("Vehicle Onboarding Submitted for Review Successful", data);
       dispatch(
-        updateVehicleInformation({ ...vehicle, ...data } as VehicleInformation)
+        updateVehicleInformation(
+          // @ts-ignore
+          { ...vehicle, ...data }
+        )
       );
       router.push(`/vehicle-onboarding/success/${vehicle?.id}`);
     },

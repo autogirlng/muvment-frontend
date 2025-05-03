@@ -35,7 +35,7 @@ export default function useListingDrivers(id: string) {
       console.log("Assign New Driver successful", data);
 
       const newDrivers = drivers;
-      newDrivers ? newDrivers.push(data) : data;
+      newDrivers ? newDrivers.push(data as AssignNewDriver) : data;
       queryClient.setQueryData(
         ["getAssignedDrivers", user?.id, id],
         () => newDrivers

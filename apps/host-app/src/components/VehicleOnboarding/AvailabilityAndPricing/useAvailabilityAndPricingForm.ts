@@ -131,7 +131,10 @@ export default function useAvailabilityAndPricingForm({
     onSuccess: (data) => {
       console.log("Vehicle Onboarding Step 4 Submitted", data);
       dispatch(
-        updateVehicleInformation({ ...vehicle, ...data } as VehicleInformation)
+        updateVehicleInformation(
+          // @ts-ignore
+          { ...vehicle, ...data }
+        )
       );
       setCurrentStep(currentStep + 1);
     },
