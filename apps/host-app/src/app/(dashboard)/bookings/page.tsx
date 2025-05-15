@@ -1,9 +1,17 @@
 "use client";
 
-import Bookings from "@/components/BookingsAnalytics";
-import BookingsStats from "@/components/BookingsAnalytics/BookingsStats";
 import DashboardSectionTitle from "@/components/DashboardSectionTitle";
 import Icons from "@repo/ui/icons";
+import dynamic from "next/dynamic";
+
+// Dynamically import components that may use window
+const Bookings = dynamic(() => import("@/components/BookingsAnalytics"), {
+  ssr: false,
+});
+const BookingsStats = dynamic(
+  () => import("@/components/BookingsAnalytics/BookingsStats"),
+  { ssr: false }
+);
 
 export default function BookingsPage() {
   return (
