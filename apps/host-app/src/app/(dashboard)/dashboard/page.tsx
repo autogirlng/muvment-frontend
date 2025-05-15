@@ -1,8 +1,17 @@
 "use client";
-import AccountActivity from "@/components/AccountActivity";
-import BookingsOverview from "@/components/BookingsOverview";
 import { useAppSelector } from "@/lib/hooks";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+// Dynamically import components that may use window
+const AccountActivity = dynamic(() => import("@/components/AccountActivity"), {
+  ssr: false,
+});
+const BookingsOverview = dynamic(
+  () => import("@/components/BookingsOverview"),
+  { ssr: false }
+);
+
 export default function DashboardPage() {
   const { user } = useAppSelector((state) => state.user);
 
@@ -16,7 +25,7 @@ export default function DashboardPage() {
               Complete Account Setup
             </h6>
             <p className="text-xs 2xl:text-sm">
-              Please complete account setup to get full access to Muvment’s
+              Please complete account setup to get full access to Muvment&apos;s
               functionalities
             </p>
           </div>
