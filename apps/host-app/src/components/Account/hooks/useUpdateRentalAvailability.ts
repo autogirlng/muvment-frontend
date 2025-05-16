@@ -38,7 +38,7 @@ export default function useUpdateRentalAvailability() {
   useEffect(() => {
     if (isSuccess) {
       console.log("rental availability fetched successfully", data);
-      const { id, userId, updatedAt, createdAt, ...days } = data;
+      const { ...days } = data;
       setRentalAvalabilityDays(mapRentalAvailabilityToArray(days));
     }
 
@@ -63,7 +63,7 @@ export default function useUpdateRentalAvailability() {
 
     onSuccess: (data) => {
       console.log("rental availability updated Successfully", data);
-      const { id, userId, updatedAt, createdAt, ...days } = data;
+      const { ...days } = data;
       setRentalAvalabilityDays(mapRentalAvailabilityToArray(days));
       toast.success("Rental availability updated successfully ");
     },

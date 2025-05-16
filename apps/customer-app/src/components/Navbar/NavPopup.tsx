@@ -5,7 +5,6 @@ import { HorizontalDivider } from "@repo/ui/divider";
 import { AvatarImage } from "@repo/ui/avatar";
 import MobileNavItem from "@/components/Navbar/MobileNavItem";
 import { User } from "@/utils/types";
-import { Fragment } from "react";
 
 type Props = { handleClick?: () => void; user: User | null };
 
@@ -31,18 +30,16 @@ export default function NavPopup({ handleClick, user }: Props) {
         </>
       )}
 
-      <ul className="list-none space-y-2">
+      <ul className="list-none space-y-3">
         {popupNavItems.map((item, index) => (
-          <Fragment key={index}>
-            <MobileNavItem
-              handleClick={handleClick}
-              icon={item.icon}
-              name={item.name}
-              link={item.link}
-              className="!py-1.5"
-            />
-            {item.border && <HorizontalDivider variant="light" />}
-          </Fragment>
+          <MobileNavItem
+            handleClick={handleClick}
+            key={index}
+            icon={item.icon}
+            name={item.name}
+            link={item.link}
+            className="!py-1.5"
+          />
         ))}
       </ul>
     </div>

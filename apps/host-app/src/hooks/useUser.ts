@@ -43,6 +43,7 @@ export default function useUser() {
       console.log("User data fetched successfully", getUser.data);
       dispatch(
         setUser({
+          // @ts-ignore
           user: getUser.data,
           userToken: userToken || "",
           isAuthenticated: true,

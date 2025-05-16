@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   citiesOptions,
   vehicleAvailabilityOptions,
@@ -5,11 +6,76 @@ import {
 } from "@/utils/data";
 import SelectInput from "@repo/ui/select";
 import Image from "next/image";
-import React from "react";
+import Button from "@repo/ui/button";
 
-type Props = {};
+// Define daily rates for each vehicle type by city
+const getDailyRate = (city: string, vehicleType: string): number => {
+  const rates: Record<string, Record<string, number>> = {
+    Lagos: {
+      Sedan: 70000,
+      SUV: 110000,
+      "Mid-size SUV": 90000,
+      Bus: 100000,
+      "Sports Car": 120000,
+      "Luxury Vehicle": 150000,
+      Truck: 130000,
+      Pickup: 95000,
+    },
+    Abuja: {
+      Sedan: 75000,
+      SUV: 115000,
+      "Mid-size SUV": 95000,
+      Bus: 105000,
+      "Sports Car": 125000,
+      "Luxury Vehicle": 155000,
+      Truck: 135000,
+      Pickup: 100000,
+    },
+    Default: {
+      Sedan: 65000,
+      SUV: 100000,
+      "Mid-size SUV": 85000,
+      Bus: 95000,
+      "Sports Car": 110000,
+      "Luxury Vehicle": 140000,
+      Truck: 120000,
+      Pickup: 90000,
+    },
+  };
 
-function Calculator({}: Props) {
+  return rates[city]?.[vehicleType] || rates["Default"][vehicleType] || 0;
+};
+
+// Convert availability option to number of days
+const getDaysFromAvailability = (availability: string): number => {
+  if (availability.includes("week")) {
+    const weeks = parseInt(availability.split(" ")[0]);
+    return weeks * 7;
+  }
+  if (availability.includes("day")) {
+    return parseInt(availability.split(" ")[0]);
+  }
+  return 0;
+};
+
+function Calculator() {
+  const [location, setLocation] = useState<string>("");
+  const [vehicleType, setVehicleType] = useState<string>("");
+  const [availability, setAvailability] = useState<string>("");
+  const [earnings, setEarnings] = useState<number>(0);
+
+  const calculateEarnings = () => {
+    if (!location || !vehicleType || !availability) return;
+
+    const dailyRate = getDailyRate(location, vehicleType);
+    const days = getDaysFromAvailability(availability);
+
+    const baseEarnings = dailyRate * days;
+    const netEarnings = baseEarnings * 0.8; // Apply 20% commission
+
+    setEarnings(netEarnings);
+  };
+
   return (
     <section
       id="calculator"
@@ -46,7 +112,9 @@ function Calculator({}: Props) {
             <p className="text-sm sm:text-base 3xl:text-h6">
               Potential Earnings
             </p>
-            <h1 className="text-h3 sm:text-h2 3xl:text-h1">NGN 0</h1>
+            <h1 className="text-h3 sm:text-h2 3xl:text-h1">
+              NGN {earnings.toLocaleString()}
+            </h1>
           </div>
           <div className="space-y-8 text-left">
             <div className="flex flex-col md:flex-row items-center gap-8 md:gap-6">
@@ -56,6 +124,8 @@ function Calculator({}: Props) {
                 label="City of operation"
                 id="city"
                 options={citiesOptions}
+                value={location}
+                onChange={setLocation}
               />
               <SelectInput
                 placeholder="Select vehicle type"
@@ -63,6 +133,8 @@ function Calculator({}: Props) {
                 label="Vehicle type"
                 id="vehicleType"
                 options={vehicleTypesOptions}
+                value={vehicleType}
+                onChange={setVehicleType}
               />
             </div>
             <SelectInput
@@ -71,7 +143,19 @@ function Calculator({}: Props) {
               label="Availability"
               id="availability"
               options={vehicleAvailabilityOptions}
+              value={availability}
+              onChange={setAvailability}
             />
+            <Button
+              fullWidth
+              variant="filled"
+              color="primary"
+              onClick={calculateEarnings}
+              loading={false}
+              disabled={!location || !vehicleType || !availability}
+            >
+              Calculate
+            </Button>
           </div>
         </div>
       </div>

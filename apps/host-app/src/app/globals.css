@@ -164,8 +164,7 @@ label svg {
 
 .custom-radix-select span.fi,
 .custom-radix-select svg,
-.label svg,
-.pricing-row svg {
+.label svg {
   width: 1em;
 }
 

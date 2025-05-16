@@ -18,13 +18,7 @@ export default function NavPopup({ handleClick, user }: Props) {
       {user && (
         <>
           <AvatarImage
-            image={
-              user?.isBusiness && user?.businessLogo
-                ? user?.businessLogo
-                : user?.profileImage
-                  ? user?.profileImage
-                  : ""
-            }
+            image={user?.businessLogo ?? user?.profileImage ?? ""}
             initials={getInitialsFromName(user.firstName, user.lastName)}
             size="!w-11 !h-11"
           />

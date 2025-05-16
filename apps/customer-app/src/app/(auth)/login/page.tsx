@@ -30,7 +30,7 @@ export default function LoginPage() {
           loginMutation.mutate(values);
           setSubmitting(false);
         }}
-        // validationSchema={loginFormValidationSchema}
+        validationSchema={loginFormValidationSchema}
         enableReinitialize={true}
         validateOnChange={true}
         validateOnBlur={true}

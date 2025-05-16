@@ -60,7 +60,6 @@ export const StepperNavigation = ({
   isSubmitloading,
   isSaveDraftloading,
   isNextLoading,
-  showSaveDraftButton,
 }: {
   steps: string[];
   currentStep: number;
@@ -77,8 +76,6 @@ export const StepperNavigation = ({
   isSubmitloading?: boolean;
   isSaveDraftloading?: boolean;
   isNextLoading?: boolean;
-
-  showSaveDraftButton?: boolean;
 }) => {
   const handleNext = () => {
     if (currentStep < steps.length) {
@@ -105,16 +102,14 @@ export const StepperNavigation = ({
           </StepperButton>
         )}
         <div className="flex items-center gap-3 justify-end w-full">
-          {showSaveDraftButton && (
-            <StepperButton
-              onClick={handleSaveDraft}
-              disabled={isSaveDraftloading || disableSaveDraftButton}
-              className="sm:border-2 sm:border-grey-600 text-grey-600 disabled:text-grey-300 disabled:sm:border-grey-300"
-              type="button"
-            >
-              <span>Save Draft</span> {isSaveDraftloading && <Spinner />}
-            </StepperButton>
-          )}
+          {/* <StepperButton
+            onClick={handleSaveDraft}
+            disabled={isSaveDraftloading || disableSaveDraftButton}
+            className="sm:border-2 sm:border-grey-600 text-grey-600 disabled:text-grey-300 disabled:sm:border-grey-300"
+            type="button"
+          >
+            <span>Save Draft</span> {isSaveDraftloading && <Spinner />}
+          </StepperButton> */}
           {submitText ? (
             <StepperButton
               onClick={handleSubmit}

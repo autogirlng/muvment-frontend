@@ -42,7 +42,7 @@ export default function VehicleOnboardingSuccessPage({
               View Listing
             </Button>
           </Link>
-          <Link href="/dashboard">
+          <Link href="/">
             <Button variant="filled" color="primary" className="px-6">
               Go to Dashboard
             </Button>

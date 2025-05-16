@@ -21,7 +21,7 @@ const steps: stepProps[] = [
     title: "Meetup & Drive",
     description:
       "Meet the driver at your specified pickup  location and start your journey.",
-    button: "Find good deals",
+    // button: "Find good deals",
   },
 ];
 

@@ -5,9 +5,9 @@ import Withdraw from "@/components/Wallet/Withdraw";
 import VerifyOtp from "@/components/Wallet/VerifyOtp";
 import useWithdrawFunds from "@/components/Wallet/hooks/useWithdrawFunds";
 
-type Props = { wallteBalance: number };
+type Props = {};
 
-export default function WithDrawFunds({ wallteBalance }: Props) {
+export default function WithDrawFunds({}: Props) {
   const {
     sendOtp,
     verifyOtp,
@@ -42,7 +42,6 @@ export default function WithDrawFunds({ wallteBalance }: Props) {
             handleWithdrawal={() => sendOtp.mutate()}
             handleModal={handleWithdrawModal}
             isLoading={false}
-            wallteBalance={wallteBalance}
           />
         }
         width="max-w-[750px] 3xl:max-w-[950px]"

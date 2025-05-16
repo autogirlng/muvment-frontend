@@ -7,11 +7,10 @@ import { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 type Props = {
   handleModal: (open: boolean) => void;
-  handleWithdrawal: (amount: string) => void;
+  handleWithdrawal: (amount: number) => void;
   isLoading: boolean;
-  amount: string;
-  setAmount: Dispatch<SetStateAction<string>>;
-  wallteBalance: number;
+  amount: number;
+  setAmount: Dispatch<SetStateAction<number>>;
 };
 
 const Withdraw = ({
@@ -19,25 +18,14 @@ const Withdraw = ({
   handleWithdrawal,
   isLoading,
   amount,
-  wallteBalance,
   setAmount,
 }: Props) => {
   return (
     <Formik
       initialValues={withdrawalValues}
-      onSubmit={async (values, { setSubmitting, setErrors }) => {
-        setSubmitting(true);
-        const amount = values.amount.replace(/,/g, "");
-        if (Number(amount) < 20000) {
-          setErrors({ amount: "Amount must be greater than 20,000" });
-          return;
-        }
-        if (Number(amount) > wallteBalance) {
-          setErrors({ amount: "Insufficient Balance" });
-        } else {
-          // handleWithdrawal(amount);
-        }
-        setSubmitting(false);
+      onSubmit={async (values, { setSubmitting }) => {
+        console.log(values);
+        handleWithdrawal(amount);
       }}
       validationSchema={withdrawalSchema}
       enableReinitialize={true}
@@ -71,15 +59,10 @@ const Withdraw = ({
               type="amount"
               label="Withdrawal Amount"
               placeholder="Enter amount to withdraw"
-              value={
-                values?.amount
-                  ? Number(values.amount.replace(/[^\d]/g, "")).toLocaleString()
-                  : ""
-              }
+              value={values.amount}
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                const numericValue = event.target.value.replace(/[^\d]/g, "");
                 handleChange(event);
-                setAmount(numericValue);
+                setAmount(parseInt(event.target.value));
               }}
               onBlur={handleBlur}
               error={errors.amount && touched.amount ? errors.amount : ""}

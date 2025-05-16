@@ -2,8 +2,8 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { deleteBookingInformation, handleErrors } from "@/utils/functions";
-import { BookingInformation, ErrorResponse } from "@/utils/types";
+import { handleErrors } from "@/utils/functions";
+import { ErrorResponse } from "@/utils/types";
 import { useHttp } from "@/hooks/useHttp";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/lib/hooks";
@@ -14,17 +14,6 @@ type VehicleAvailabilityCheck = {
   isAvailable: boolean;
   startDate: string;
   endDate: string;
-};
-
-type BookingResponse = {
-  apiKey: string;
-  booking: BookingInformation;
-  checkoutUrl: string;
-  enabledPaymentMethod: string[];
-  merchantName: string;
-  metaData: { transactionId: string };
-  paymentReference: string;
-  transactionReference: string;
 };
 
 export default function useHandleBooking({
@@ -60,16 +49,15 @@ export default function useHandleBooking({
 
   const proceedToPayment = useMutation({
     mutationFn: (values) =>
-      http.post<BookingResponse>(
+      http.post(
         `/api/bookings/${type === "guest" ? "guest-booking" : "create"}/${vehicleId}`,
         values
       ),
 
     onSuccess: (data) => {
       console.log("Vehicle booking saved!", data);
-
-      router.push(`/vehicle/payment/${vehicleId}/${data?.booking?.id}`);
-      deleteBookingInformation(vehicleId);
+      router.push(`/vehicle/payment/${vehicleId}`);
+      // delete booking from local storage after payment
     },
 
     onError: (error: AxiosError<ErrorResponse>) =>

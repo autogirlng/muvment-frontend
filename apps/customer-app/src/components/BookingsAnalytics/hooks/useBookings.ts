@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { useAppSelector } from "@/lib/hooks";
 import { useHttp } from "../../../hooks/useHttp";
 import { BookingInformation } from "@/utils/types";
@@ -14,23 +15,23 @@ type BookingsDataType = {
 export default function useBookings({
   currentPage = 1,
   pageLimit = 10,
-  // search = "",
+  search = "",
   filters = {},
 }: {
   currentPage: number;
   pageLimit: number;
-  // search?: string;
+  search?: string;
   filters?: Record<string, string[]>;
 }) {
   const http = useHttp();
   const { user } = useAppSelector((state) => state.user);
 
   const { data, isError, error, isLoading, isSuccess } = useQuery({
-    queryKey: ["getBookings", user?.id, currentPage, filters],
+    queryKey: ["getBookings", user?.id, currentPage, search, filters],
 
     queryFn: async () =>
       http.get<BookingsDataType>(
-        `/api/bookings/user?page=${currentPage}&limit=${pageLimit}&${handleFilterQuery({ filters })}`
+        `/api/bookings/user?page=${currentPage}&limit=${pageLimit}`
       ),
 
     enabled: !!user?.id,

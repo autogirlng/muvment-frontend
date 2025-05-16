@@ -137,9 +137,15 @@ export interface AdditionalVehicleInformationValues {
   features: string[];
   vehicleColor: string;
   numberOfSeats: string;
-  // vehicleOwner:string
 }
-
+export interface DocumentVehicleInformationValues {
+  proofOfOwnership: string;
+  vehicleRegistration: string;
+  insuranceCertificate: string;
+  vehicleInspectionReport: string;
+  maintenanceHistory?: string;
+  authorizationLetter: string;
+}
 export interface ProfileFormValues {
   firstName: string;
   lastName: string;
@@ -162,7 +168,7 @@ export interface ProfileFormValues {
 }
 
 export interface WithdrawalValues {
-  amount: string;
+  amount: string | number;
 }
 
 // <================= FORM VALUES ENDS =================>
@@ -286,6 +292,14 @@ export enum NotificationType {
   SPECIAL_OFFER = " SPECIAL_OFFER",
 }
 
+// EARNINGS
+export enum EarningPeriod {
+  WEEK = "week",
+  MONTH = "month",
+  QUARTER = "quarter",
+  ALL_TIME = "all_time",
+}
+
 // <================= USER/LISTING/BOOKING/VEHICLE =================>
 type UserVerification = {
   id: string;
@@ -324,8 +338,6 @@ export type User = {
   updatedAt: string;
   Verification: UserVerification;
   averageRating: number;
-  statistics?: EarningsStatistics;
-  isBusiness: boolean;
 };
 
 export interface TripSettings {
@@ -433,6 +445,7 @@ export interface VehicleInformation {
   userId: string;
   createdAt: string;
   updatedAt: string;
+  document: DocumentVehicleInformationValues;
 }
 
 export interface AssignedDriver {
@@ -488,6 +501,7 @@ export interface ListingInformation {
   user: User;
   AssignedDriver: AssignedDriver[];
   Booking: BookingInformation[];
+  statistics: EarningsStatistics;
 }
 
 export interface BookingDetailsInformation {
@@ -599,3 +613,5 @@ export type TransactionTableRow = {
   status: string;
   actions: string;
 };
+
+export type DateRange = { startDate: Date | null; endDate: Date | null };

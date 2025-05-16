@@ -12,7 +12,7 @@ function Hero({}: Props) {
   const [untilTimeValue, setUntilTimeValue] = useState<Date | null>(null);
 
   return (
-    <section className="relative bg-hero-image bg-cover bg-center bg-no-repeat min-h-full md:min-h-screen h-auto md:h-[880px] pt-[35px] pb-6 md:pb-10">
+    <section className="relative bg-hero-image bg-cover bg-top bg-no-repeat min-h-full md:min-h-screen h-auto md:h-[1080px] 2xl:h-[1190px] 3xl:h-[1650px] pt-[77px] pb-6 md:pb-20">
       <div className="bg-[#00000066] absolute inset-0 z-0 w-full h-full" />
       <div className="container h-[calc(100%-100px)] flex items-center z-10">
         <div className="space-y-3 md:space-y-6 text-white text-center md:text-left max-w-[780px] mx-auto md:mx-0">

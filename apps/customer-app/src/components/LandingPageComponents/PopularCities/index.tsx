@@ -1,5 +1,5 @@
 import { Swiper, SwiperSlide, SwiperRef } from "swiper/react";
-import { Pagination, Autoplay } from "swiper/modules";
+import { Pagination, Autoplay, Keyboard } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
@@ -83,8 +83,11 @@ function PopularCities({}: Props) {
       <div className="px-5 sm:px-10 md:px-16 3xl:px-[110px]">
         <div onMouseOver={handleMouseEnter} onMouseLeave={handleMouseLeave}>
           <Swiper
+            onInit={(swiper) => {
+              swiper.autoplay.start(); // Ensure autoplay starts when swiper is initialized
+            }}
             slidesPerView={"auto"}
-            modules={[Pagination, Autoplay]}
+            modules={[Pagination, Autoplay, Keyboard]}
             ref={swiperRef}
             spaceBetween={20}
             pagination={{
@@ -92,9 +95,11 @@ function PopularCities({}: Props) {
               clickable: true,
             }}
             autoplay={{
-              delay: 5000,
+              delay: 3000,
+              disableOnInteraction: false,
               pauseOnMouseEnter: true,
             }}
+            keyboard={{ enabled: true }}
             breakpoints={{
               0: {
                 spaceBetween: 12,

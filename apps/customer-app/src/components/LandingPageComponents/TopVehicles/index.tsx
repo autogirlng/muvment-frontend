@@ -115,7 +115,18 @@ function TopVehicles({}: Props) {
             </Swiper>
           </div>
         ) : (
-          <div className="text-center my-20">no top rated vehicles yet...</div>
+          <div>
+            <Vehicle
+              vehicleId={""}
+              name={""}
+              type={""}
+              location={""}
+              dailyPrice={0}
+              currency={"NGN"}
+              vehicleImages={vehicleImages}
+              showShadow={true}
+            />
+          </div>
         )}
       </div>
     </section>

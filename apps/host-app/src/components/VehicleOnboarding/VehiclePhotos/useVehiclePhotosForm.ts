@@ -55,9 +55,9 @@ export default function useVehiclePhotosForm({
     }))
   );
 
-  // useEffect(() => {
-  //   console.log(photoViews);
-  // }, [photoViews]);
+  useEffect(() => {
+    console.log(photoViews);
+  }, [photoViews]);
 
   const saveStep3 = useMutation({
     mutationFn: (values: FormData) =>
@@ -93,18 +93,6 @@ export default function useVehiclePhotosForm({
       handleErrors(error, "Vehicle Onboarding Step 3"),
   });
 
-  const handlePhotoDelete = (fieldName: string) => {
-    const currentIndex = photoViews.findIndex(
-      (view) => view.name === fieldName
-    );
-
-    if (currentIndex !== 0) {
-      setPhotoTipIndex(currentIndex);
-    } else {
-      setPhotoTipIndex(0);
-    }
-  };
-
   return {
     initialValues,
     photoViews,
@@ -114,6 +102,5 @@ export default function useVehiclePhotosForm({
     vehicle,
     appendFormData,
     photoViewOptions,
-    handlePhotoDelete,
   };
 }

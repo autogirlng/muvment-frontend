@@ -317,26 +317,6 @@ export const saveAndUpdateBookingInformation = (
   }
 };
 
-export const deleteBookingInformation = (vehicleId: string) => {
-  const bookingInformation = localStorage.getItem("bookingInformation");
-
-  if (bookingInformation) {
-    const bookingInformationObject = JSON.parse(bookingInformation);
-
-    delete bookingInformationObject[vehicleId];
-
-    if (Object.keys(bookingInformationObject).length === 0) {
-      localStorage.removeItem("bookingInformation");
-    } else {
-      localStorage.setItem(
-        "bookingInformation",
-        JSON.stringify(bookingInformationObject)
-      );
-    }
-  }
-};
-
-
 // ============================= Notification Icons, Color and Bg Color starts ============================= //
 export const getNotificationIcon = (type: string) => {
   switch (type) {

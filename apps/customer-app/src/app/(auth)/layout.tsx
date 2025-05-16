@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
-import { logo_icon_white } from "@repo/assets";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -36,11 +35,11 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           <div className="fixed top-0 left-0 w-1/2 h-full">
             <Link href="/" className="block absolute top-10 left-14 z-10">
               <Image
-                className="w-16"
-                src={logo_icon_white}
+                className="w-[200px]"
+                src="/images/logo/logo_white.png"
                 alt="logo"
-                width={83}
-                height={83}
+                width={337}
+                height={44}
               />
             </Link>
             <Image

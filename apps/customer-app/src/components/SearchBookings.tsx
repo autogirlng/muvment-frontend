@@ -7,6 +7,7 @@ import SearchInput from "@repo/ui/searchInput";
 import TimePicker from "@/components/TimePicker";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
+import { FullPageSpinner } from "@repo/ui/spinner";
 
 type Props = {
   searchValue: string;
@@ -42,16 +43,45 @@ function SearchBookings({
     <div className="bg-white text-left md:h-[72px] w-full rounded-3xl p-4 flex flex-col md:flex-row  items-center gap-3">
       <div className="w-full flex flex-col md:flex-row items-center divide-y md:divide-y-0 md:divide-x divide-grey-200">
         <Column title="Where">
-          <SearchInput
-            name="search"
-            placeholder="Search by city, airport, address"
-            inputClass="!border-none !pl-0 !h-5 !p-2 !text-xs xl:!text-sm align-top"
-            className="!h-5 min-w-[177px] xl:min-w-[205px]"
-            value={searchValue}
-            onChange={(event: ChangeEvent<HTMLInputElement>) =>
-              setSearchValue(event.target.value)
-            }
-          />
+          <div>
+            <SearchInput
+              name="search"
+              placeholder="Search by city, airport, address"
+              inputClass="!border-none !pl-0 !h-5 !p-2 !text-xs xl:!text-sm align-top"
+              className="!h-5 min-w-[177px] xl:min-w-[205px]"
+              value={searchValue}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                setSearchValue(event.target.value)
+              }
+            />
+            {/* 
+            {(searchAddressLoading ||
+              (googlePlaces.length > 0 && showAddressList)) && (
+              <ul className="list-none border border-grey-300 rounded-xl py-4 px-2 w-full bg-white border border-grey-200 max-h-[200px] overflow-auto shadow-[-2px_4px_6px_-2px_#10192808,12px_16px_37.4px_-4px_#10192814]">
+                {searchAddressError ? (
+                  <p>{searchAddressError}</p>
+                ) : searchAddressLoading ? (
+                  <FullPageSpinner className="!min-h-[100px]" />
+                ) : (
+                  googlePlaces.map((address, index) => (
+                    <li
+                      key={`address-${index}`}
+                      onClick={() => {
+                        setShowAddressList(false);
+                        setFieldValue(
+                          "address",
+                          address?.formattedAddress || ""
+                        );
+                      }}
+                      className="cursor-pointer hover:bg-primary-75 py-2 px-4 text-sm text-grey-900 rounded-xl"
+                    >
+                      {address?.formattedAddress || ""}
+                    </li>
+                  ))
+                )}
+              </ul>
+            )} */}
+          </div>
         </Column>
         <Column title="From">
           <div className="flex items-center justify-between gap-1">

@@ -458,11 +458,10 @@ export interface BookingStatistics {
 }
 
 export interface UserReferrals {
-  referredUserName: string;
-  referredUserEmail: string;
-  createdAt: string;
+  name: string;
+  email: string;
+  date: string;
   status: "PENDING" | "JOINED";
-  id: string;
 }
 
 export interface BookingInformation {
@@ -472,9 +471,8 @@ export interface BookingInformation {
   duration: number;
   bookingType: BookingType;
   amount: number;
-  paymentStatus: TransactionStatus;
-  paymentLink: string;
-  paymentMethod: "BANK_TRANSFER" | "CARD" | "CASH";
+  paymentStatus: PaymentBadgeStatus;
+  paymentMethod: "BANK_TRANSFER" | "CARD_PAYMENT" | "CASH"; //check booking status
   rentalAgreement: string | null;
   bookingStatus: BookingBadgeStatus;
   guestName: string;
@@ -483,17 +481,13 @@ export interface BookingInformation {
   pickupLocation: string;
   dropoffLocation: string;
   emergencyContact: string;
-  vehicle: VehicleInformation;
+  vehicle: string;
   vehicleId: string;
   user?: User;
   userId: string;
   createdAt: string;
   updatedAt: string;
   currencyCode: string;
-  areaOfUse: string;
-  isForSelf: boolean;
-  outskirtsLocation: string[];
-  purposeOfRide: string;
 }
 export interface VehicleInformation {
   id?: string;

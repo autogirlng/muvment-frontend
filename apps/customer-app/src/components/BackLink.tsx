@@ -1,15 +1,12 @@
-import Icons from "@repo/ui/icons";
-import cn from "classnames";
+import { CaretLeft } from "@phosphor-icons/react";
 import Link from "next/link";
 
-type Props = { backLink: string; className?: string };
+type Props = { backLink: string };
 
-export default function BackLink({ backLink, className }: Props) {
+export default function BackLink({ backLink }: Props) {
   return (
-    <div
-      className={cn("flex items-center gap-0.5 text-primary-500", className)}
-    >
-      {Icons.ic_chevron_left}
+    <div className="flex items-center gap-0.5 text-primary-500 fill-primary-500">
+      <CaretLeft size={18} fill="inherit" />
       <Link href={backLink} className="text-sm 2xl:text-base font-medium">
         Back
       </Link>

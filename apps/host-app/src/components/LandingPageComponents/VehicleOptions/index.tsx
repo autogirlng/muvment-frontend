@@ -1,32 +1,31 @@
 import LandingPageSectionHeader from "@/components/Header/LandingPageSectionHeader";
 import Button from "@repo/ui/button";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { truck, bus, suv, sedan } from "@repo/assets";
 
 type Props = {};
 
 type optionProps = {
   type: string;
-  image: StaticImageData;
+  image: string;
 };
 
 const vehicles: optionProps[] = [
   {
-    image: sedan,
+    image: "/images/vehicles/sedan.png",
     type: "Sedan",
   },
   {
-    image: suv,
+    image: "/images/vehicles/sedan.png",
     type: "SUV",
   },
   {
-    image: truck,
+    image: "/images/vehicles/sedan.png",
     type: "Truck",
   },
   {
-    image: bus,
+    image: "/images/vehicles/sedan.png",
     type: "Bus",
   },
 ];

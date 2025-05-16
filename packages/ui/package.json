@@ -1,5 +1,4 @@
 {
-  
   "name": "@repo/ui",
   "version": "0.0.0",
   "private": true,
@@ -19,6 +18,7 @@
     "./checkbox": "./src/checkbox.tsx",
     "./chip": "./src/chip.tsx",
     "./filter": "./src/filter.tsx",
+    "./dateFilter": "./src/DateFilter.tsx",
     "./dialog": "./src/dialog.tsx",
     "./divider": "./src/divider.tsx",
     "./howItWorks": "./src/howItWorks.tsx",

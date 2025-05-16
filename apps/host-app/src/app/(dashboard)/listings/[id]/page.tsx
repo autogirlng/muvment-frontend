@@ -124,18 +124,18 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
             vehicleImages={vehicleImages as string[]}
           />
 
-          {/* <ListingDetailsVehicleAvailability
+          <ListingDetailsVehicleAvailability
             vehicleStatus={listingDetail?.vehicleStatus}
             // isActive={listingDetail?.isActive}
             id={listingDetail?.id}
-          /> */}
+          />
 
           <ListingDetailsVehicleDetails
             extras={extras}
             vehicleDetails={vehicleDetails as MappedInformation[]}
           />
 
-          <ListingDetailsEarnings statistics={listingDetail?.user.statistics} />
+          <ListingDetailsEarnings statistics={listingDetail?.statistics} />
 
           <AppTabs label="listing details tabs" tabs={tabs} />
         </div>

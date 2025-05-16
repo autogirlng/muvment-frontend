@@ -37,18 +37,10 @@ export default function ListingDetailsHeader({ name, status, id }: Props) {
             {Icons.ic_calendar}
           </div>
           <Popup
-            trigger={
-              <button
-                className={
-                  "block border border-grey-200 bg-white text-black rounded-lg p-2 w-fit"
-                }
-              >
-                {Icons.ic_more}
-              </button>
-            }
+            trigger={<MoreButton className="!mx-0" />}
             content={
               <>
-                <p className="!text-xs 3xl:!text-base text-grey-700 !font-bold">
+                <p className="!text-xs 3xl:!text-base !font-semibold">
                   Actions
                 </p>
                 <ul className="space-y-2 *:py-2">

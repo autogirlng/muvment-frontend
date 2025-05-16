@@ -24,13 +24,7 @@ const steps: stepProps[] = [
 ];
 
 function Steps() {
-  return (
-    <HowItWorks
-      className="md:!pt-[120px]"
-      title="Start earning in a few minutes"
-      steps={steps}
-    />
-  );
+  return <HowItWorks title="Start earning in a few minutes" steps={steps} />;
 }
 
 export default Steps;

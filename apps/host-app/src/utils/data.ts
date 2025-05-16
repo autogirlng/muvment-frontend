@@ -13,8 +13,6 @@ import {
 
 type OptionType = { option: string; value: string };
 
-export const customerAppUrl = "http://www.muvment.ng";
-
 export const dashboardNavItems = [
   {
     icon: Icons.ic_dashboard,
@@ -520,55 +518,11 @@ export const vehicleModelsOptions: OptionType[] = [
 ];
 
 export const vehicleColorsOptions: OptionType[] = [
-  { value: "White", option: "White" },
-  { value: "Black", option: "Black" },
-  { value: "Gray", option: "Gray" },
-  { value: "Silver", option: "Silver" },
   { value: "Red", option: "Red" },
-  { value: "Blue", option: "Blue" },
-  { value: "Green", option: "Green" },
-  { value: "Yellow", option: "Yellow" },
-  { value: "Orange", option: "Orange" },
-  { value: "Brown", option: "Brown" },
-  { value: "Beige", option: "Beige" },
-  { value: "Metallic Silver", option: "Metallic Silver" },
-  { value: "Metallic Gray", option: "Metallic Gray" },
-  { value: "Metallic Blue", option: "Metallic Blue" },
-  { value: "Metallic Red", option: "Metallic Red" },
-  { value: "Metallic Black", option: "Metallic Black" },
-  { value: "Metallic Green", option: "Metallic Green" },
-  { value: "Metallic Gold", option: "Metallic Gold" },
-  { value: "Metallic Bronze", option: "Metallic Bronze" },
-  { value: "Metallic Copper", option: "Metallic Copper" },
-  { value: "Pearlescent White", option: "Pearlescent White" },
-  { value: "Matte Black", option: "Matte Black" },
-  { value: "Matte Gray", option: "Matte Gray" },
-  { value: "Matte Blue", option: "Matte Blue" },
-  { value: "Pearl Blue", option: "Pearl Blue" },
-  { value: "Candy Red", option: "Candy Red" },
-  { value: "Champagne Gold", option: "Champagne Gold" },
-  { value: "Gunmetal Gray", option: "Gunmetal Gray" },
-  { value: "Midnight Blue", option: "Midnight Blue" },
-  { value: "Deep Emerald Green", option: "Deep Emerald Green" },
-  { value: "Aqua Blue", option: "Aqua Blue" },
-  { value: "Teal", option: "Teal" },
-  { value: "Turquoise", option: "Turquoise" },
-  { value: "Lavender", option: "Lavender" },
-  { value: "Magenta", option: "Magenta" },
-  { value: "Fuchsia", option: "Fuchsia" },
-  { value: "Burgundy", option: "Burgundy" },
-  { value: "Cobalt Blue", option: "Cobalt Blue" },
-  { value: "Lime Green", option: "Lime Green" },
-  { value: "Coral", option: "Coral" },
-  { value: "Dual-Tone", option: "Dual-Tone" },
-  { value: "Gradient", option: "Gradient" },
-  { value: "Chameleon", option: "Chameleon" },
-  { value: "Satin Finish Colors", option: "Satin Finish Colors" },
-  { value: "Chrome", option: "Chrome" },
-  { value: "Holographic", option: "Holographic" },
-  { value: "Neon", option: "Neon" },
-  { value: "Opalescent", option: "Opalescent" },
-  { value: "Carbon Fiber Pattern", option: "Carbon Fiber Pattern" },
+  { value: "Black", option: "Black" },
+  { value: "White", option: "White" },
+  { value: "Silver", option: "Silver" },
+  { value: "Gold", option: "Gold" },
 ];
 
 export const vehicleFeaturesOptions: string[] = [
@@ -663,27 +617,19 @@ export const photoViewOptions = [
 ];
 
 export const outskirtsLocationOptions: string[] = [
-  "Sangotedo",
+  "Ikorodu",
   "Badagry",
-  "Amuwo Odofin",
-  "Festac Town",
-  "Alaba",
-  "Ikorodu Town",
-  "Agbara",
-  "Agege",
   "Epe",
-  "Free Trade Zone",
-  "Igando",
-  "Akowonjo",
-  "Dopemu",
-  "Ajah",
-  "Agbado",
-  "Ojodu Berger",
-  "Ajegunle",
-  "Ibese",
-  "Iyana Ipaja",
+  "Ibeju-Lekki",
+  "Ojo",
   "Alimosho",
-  "Ibeju Lekki",
+  "Agege",
+  "Ajah",
+  "Agbara",
+  "Sango",
+  "Ijede",
+  "Ikotun",
+  "Egbeda",
 ];
 
 export const daysOfTheWeek: string[] = [
@@ -715,7 +661,7 @@ export const photoUploadTips = [
   {
     title: "Take Photos From Different Angles",
     description:
-      "Show all sides of your car - front, back, sides, and at an angle. Try to take photos during the day when there’s plenty of light, but avoid direct sunlight that can cause harsh shadows.",
+      "Show all sides of your car - front, back, sides, and at an angle. Try to take photos during the day when there's plenty of light, but avoid direct sunlight that can cause harsh shadows.",
   },
   {
     title: "Capture the Car's Condition",
@@ -726,7 +672,7 @@ export const photoUploadTips = [
   {
     title: "Mind the Weather",
     description:
-      "Avoid taking photos on rainy or gloomy days. Sunshine makes everything look better. If the weather isn’t cooperating, wait for a better day to take your pictures.",
+      "Avoid taking photos on rainy or gloomy days. Sunshine makes everything look better. If the weather isn't cooperating, wait for a better day to take your pictures.",
   },
   {
     title: "Clean Your Car Before the Photoshoot",
@@ -743,11 +689,11 @@ export const photoUploadTips = [
     description:
       "Got a great sound system or custom rims? Make sure to capture these unique features in your photos. They can make your car more appealing to potential renters.View detailed guidelines.",
   },
-  // {
-  //   title: "Highlight Unique Features",
-  //   description:
-  //     "Got a great sound system or custom rims? Make sure to capture these unique features in your photos. They can make your car more appealing to potential renters.View detailed guidelines.",
-  // },
+  {
+    title: "Highlight Unique Features",
+    description:
+      "Got a great sound system or custom rims? Make sure to capture these unique features in your photos. They can make your car more appealing to potential renters.View detailed guidelines.",
+  },
 ];
 
 export const bookingOverviewTableHeadItems: string[] = [
@@ -875,6 +821,26 @@ export const transactionFilters = [
     options: [
       { option: "Booking", value: TransactionOrigin.BOOKING },
       { option: "Withdrawal", value: TransactionOrigin.WITHDRAWAL },
+    ],
+  },
+];
+
+export const earningFilters: {
+  title: string;
+  options: OptionType[];
+}[] = [
+  {
+    title: "vehicle",
+    options: [
+      { option: "Hyundai Tuscon 2018", value: "hyundai_tuscon_2018" },
+      { option: "Toyota Camry 2017", value: "toyota_camry_2017" },
+    ],
+  },
+  {
+    title: "location",
+    options: [
+      { option: "Region 1", value: "region_1" },
+      { option: "Region 2", value: "region_2" },
     ],
   },
 ];

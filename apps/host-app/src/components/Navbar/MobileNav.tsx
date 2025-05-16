@@ -14,7 +14,6 @@ import {
   popupNavItemsforNoUser,
 } from "@/utils/data";
 import { User } from "@/utils/types";
-import { mobile_nav_logo } from "@repo/assets";
 
 type Props = { userToken?: string; user: User | null };
 
@@ -26,7 +25,7 @@ export default function MobileNav({ userToken, user }: Props) {
       <div className="flex items-center justify-between">
         <Image
           className=""
-          src={mobile_nav_logo}
+          src="/images/logo/mobile_nav_logo.png"
           alt=""
           width={100}
           height={15}
@@ -51,20 +50,14 @@ export default function MobileNav({ userToken, user }: Props) {
         className={cn(
           "fixed top-[60px] transition-transform overflow-auto",
           openNav
-            ? "right-0 z-[999] w-full min-h-screen h-full bg-white px-8 py-14 translate-x-0 visible"
+            ? "right-0 z-10 w-full min-h-screen h-full bg-white px-8 py-14 translate-x-0 visible"
             : "h-0 w-0 translate-x-[100%] invisible"
         )}
       >
         {userToken || user ? (
           <div className="space-y-6 pb-8">
             <AvatarImage
-              image={
-                user?.isBusiness && user?.businessLogo
-                  ? user?.businessLogo
-                  : user?.profileImage
-                    ? user?.profileImage
-                    : ""
-              }
+              image={user?.businessLogo ?? user?.profileImage ?? ""}
               initials={
                 user
                   ? getInitialsFromName(user.firstName, user.lastName)

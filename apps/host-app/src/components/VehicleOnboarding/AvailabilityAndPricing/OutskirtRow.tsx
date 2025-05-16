@@ -3,6 +3,7 @@ import InputField from "@repo/ui/inputField";
 import {
   calculateRateGuestsWillSee,
   calculateServiceFee,
+  formatNumberWithCommas,
 } from "@/utils/functions";
 import { standardServiceFeeInPercentage } from "@/utils/constants";
 
@@ -32,6 +33,7 @@ const OutskirtRow = ({
   handleBlur,
 }: OutskirtRowProps) => {
   const [guestWillSee, setGuestWillSee] = useState<number>(0);
+  const [serviceFee, setServiceFee] = useState<number>(0);
 
   useEffect(() => {
     if (dailyRateValue) {
@@ -45,6 +47,7 @@ const OutskirtRow = ({
           value + dailyRate,
           standardServiceFeeInPercentage
         );
+        setServiceFee(calculatedFee);
 
         setGuestWillSee(
           calculateRateGuestsWillSee(value + dailyRate, calculatedFee)
@@ -92,9 +95,23 @@ const OutskirtRow = ({
           name={guestWillSeeName}
           id={guestWillSeeName}
           type="text"
+          label="Service Fee"
+          placeholder="NGN0"
+          value={`NGN${formatNumberWithCommas(serviceFee)}`}
+          inputClass="text-right"
+          className="sm:w-[150px] md:w-[180px]"
+          disabled
+        />
+        <p className="text-sm text-nowrap mt-5">{rateUnit} </p>
+      </div>
+      <div className="flex items-center gap-2">
+        <InputField
+          name={guestWillSeeName}
+          id={guestWillSeeName}
+          type="text"
           label="Guests will see"
           placeholder="NGN0"
-          value={`NGN${guestWillSee}`}
+          value={`NGN${formatNumberWithCommas(guestWillSee)}`}
           inputClass="text-right"
           className="sm:w-[150px] md:w-[180px]"
           disabled

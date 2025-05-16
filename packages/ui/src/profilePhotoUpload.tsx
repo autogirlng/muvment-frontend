@@ -15,7 +15,7 @@ type Props = {
   onChange: (name: string, value: File | null) => void;
   value: string | File | null;
   error?: string;
-  isLoading: boolean; showButton: boolean;
+  isLoading: boolean;
   initials?: string;
 };
 export default function ProfilePhotoUpload({
@@ -29,7 +29,7 @@ export default function ProfilePhotoUpload({
   value,
   error,
   isLoading,
-  initials,showButton,
+  initials,
   ...rest
 }: Props) {
   const handleFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +53,7 @@ export default function ProfilePhotoUpload({
           initials={initials || Icons.ic_user}
           size="!w-[130px] !h-[130px]"
         />
-       {showButton && <label className={cn(!disabled && "cursor-pointer")}>
+        <label className={cn(!disabled && "cursor-pointer")}>
           <p className="text-grey-800 hover:text-white text-sm 3xl:text-base !font-semibold rounded-2xl border-2 border-grey-800 hover:bg-grey-800 py-2 px-5">
             {isLoading ? <Spinner /> : "Upload Profile Image"}
           </p>
@@ -67,7 +67,7 @@ export default function ProfilePhotoUpload({
             disabled={disabled || isLoading}
             {...rest}
           />
-        </label>}
+        </label>
       </div>
     </div>
   );

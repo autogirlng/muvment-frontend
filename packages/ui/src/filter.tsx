@@ -4,6 +4,8 @@ import * as Popover from "@radix-ui/react-popover";
 import * as Collapsible from "@radix-ui/react-collapsible";
 import * as Checkbox from "@radix-ui/react-checkbox";
 import cn from "classnames";
+import { format } from "date-fns";
+import DateFilter from "@repo/ui/dateFilter";
 
 type FilterOption = {
   option: string;
@@ -17,28 +19,48 @@ type FilterCategory = {
 
 type FilterByProps = {
   categories: FilterCategory[];
-  onChange: (selectedFilters: Record<string, string[]>) => void;
+  onChange: (
+    selectedFilters: Record<string, string[]>,
+    dateRange?: { startDate: Date | null; endDate: Date | null }
+  ) => void;
   hideOnMobile?: boolean;
+  dateEnabled?: boolean;
 };
 
 const FilterBy: React.FC<FilterByProps> = ({
   categories,
   onChange,
   hideOnMobile,
+  dateEnabled = false,
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [contentHeight, setContentHeight] = useState<number>(0);
-  
+
   const [selectedFilters, setSelectedFilters] = useState<
     Record<string, string[]>
-    >({});
+  >({});
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(
     categories.reduce(
       (acc, category, index) => ({ ...acc, [category.title]: index === 0 }),
       {}
     )
   );
+
+  const [dateRange, setDateRange] = useState<{
+    startDate: Date | null;
+    endDate: Date | null;
+  }>({
+    startDate: null,
+    endDate: null,
+  });
+
+  const handleDateRangeChange = (
+    startDate: Date | null,
+    endDate: Date | null
+  ) => {
+    setDateRange({ startDate, endDate });
+  };
 
   const toggleSection = (title: string) => {
     setOpenSections((prev) => ({ ...prev, [title]: !prev[title] }));
@@ -57,19 +79,17 @@ const FilterBy: React.FC<FilterByProps> = ({
           optionValue,
         ];
       }
-
       return filters;
     });
   };
 
   useEffect(() => {
-    onChange(selectedFilters);
-  }, [selectedFilters, onChange]);
+    onChange(selectedFilters, dateRange); // Pass both filters and date range
+  }, [selectedFilters, dateRange, onChange]);
 
   useEffect(() => {
     if (contentRef.current && isOpen) {
       setContentHeight(contentRef.current.scrollHeight);
-
       document.body.style.minHeight = `calc(100vh + ${contentHeight}px)`;
       document.body.style.overflow = "auto";
     } else {
@@ -77,7 +97,6 @@ const FilterBy: React.FC<FilterByProps> = ({
       document.body.style.minHeight = "";
       document.body.style.overflow = "";
     }
-
     return () => {
       setContentHeight(0);
       document.body.style.minHeight = "";
@@ -87,6 +106,11 @@ const FilterBy: React.FC<FilterByProps> = ({
 
   const addSpaceBeforeUppercase = (str: string): string => {
     return str?.replace(/([a-z])([A-Z])/g, "$1 $2");
+  };
+
+  const handleClearAll = () => {
+    setSelectedFilters({});
+    setDateRange({ startDate: null, endDate: null });
   };
 
   return (
@@ -119,7 +143,16 @@ const FilterBy: React.FC<FilterByProps> = ({
           align="end"
         >
           <div className="space-y-3" ref={contentRef}>
-            <p className="text-base font-semibold text-grey-700">Filter By</p>
+            <div className="flex justify-between items-center">
+              <p className="text-base font-semibold text-grey-700">Filter By</p>
+              <button
+                onClick={handleClearAll}
+                className="text-xs flex gap-2 items-center text-primary-500 hover:underline outline-none"
+              >
+                Clear all{" "}
+                <span className="!h-5 !w-5">{Icons.ic_cancel_circle}</span>
+              </button>
+            </div>
             <div className="space-y-6">
               {categories.map((category) => (
                 <Collapsible.Root
@@ -136,7 +169,6 @@ const FilterBy: React.FC<FilterByProps> = ({
                       <p className="text-sm capitalize">
                         {addSpaceBeforeUppercase(category.title)}
                       </p>
-
                       {openSections[category.title]
                         ? Icons.ic_chevron_up
                         : Icons.ic_chevron_down}
@@ -176,6 +208,34 @@ const FilterBy: React.FC<FilterByProps> = ({
                   </div>
                 </Collapsible.Root>
               ))}
+
+              {dateEnabled && (
+                <div className="mt-4">
+                  <DateFilter
+                    onDateRangeChange={handleDateRangeChange}
+                    initialStartDate={dateRange.startDate}
+                    initialEndDate={dateRange.endDate}
+                  />
+                  {dateRange.startDate && dateRange.endDate && (
+                    <div className="mt-2 text-xs text-grey-600 p-3 flex items-center justify-between rounded-lg bg-[#EDF8FF] ">
+                      <p className="text-primary-500">
+                        {format(dateRange.startDate, "MMM do yyyy")} -{" "}
+                        {format(dateRange.endDate, "MMM do yyyy")}
+                      </p>
+                      <button
+                        onClick={() =>
+                          setDateRange({ startDate: null, endDate: null })
+                        }
+                        className="ml-2 text-primary-500  hover:underline outline-none"
+                      >
+                        <span className="*:!w-5 *:!h-5">
+                          {Icons.ic_close_circle}
+                        </span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </Popover.Content>

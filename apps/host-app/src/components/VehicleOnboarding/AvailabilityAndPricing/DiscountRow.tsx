@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import InputField from "@repo/ui/inputField";
 
+import { formatNumberWithCommas, stripNonNumeric } from "@/utils/formatters";
+
 type DiscountRowProps = {
   title: string;
   dailyRateValue?: string;
@@ -18,7 +20,7 @@ type DiscountRowProps = {
 
 const DiscountRow = ({
   title,
-  dailyRateValue,
+  dailyRateValue = "0",
   percentageLabel,
   percentageName,
   percentagePlaceholder,
@@ -32,22 +34,30 @@ const DiscountRow = ({
 }: DiscountRowProps) => {
   const [whatYouWillReceive, setWhatYouWillReceive] = useState<number>(0);
 
-  const calculateDiscount = (dailyRateValue: string, rateValue: string) => {
-    const valueInPercentage = parseInt(rateValue);
-    const dailyRate = parseInt(dailyRateValue);
-    const discountValue = (valueInPercentage / 100) * dailyRate;
-    return dailyRate - discountValue;
+  const handleFormattedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    let cleaned = stripNonNumeric(value);
+    if (Number(cleaned) > 100) cleaned = "100";
+
+    e.target.value = `${cleaned}%`;
+    handleChange(e);
+  };
+
+  const calculateDiscount = (daily: string, rate: string): number => {
+    const dailyRate = parseFloat(stripNonNumeric(daily));
+    const discountRate = parseFloat(stripNonNumeric(rate));
+    const discountAmount = (discountRate / 100) * dailyRate;
+    return dailyRate - discountAmount;
   };
 
   useEffect(() => {
-    if (dailyRateValue) {
-      if (dailyRateValue === "" || rateValue === "") {
-        setWhatYouWillReceive(0);
-      } else {
-        const value = calculateDiscount(dailyRateValue, rateValue);
-        setWhatYouWillReceive(value);
-      }
+    if (!dailyRateValue || !rateValue) {
+      setWhatYouWillReceive(0);
+      return;
     }
+    const received = calculateDiscount(dailyRateValue, rateValue);
+    setWhatYouWillReceive(received);
   }, [dailyRateValue, rateValue]);
 
   return (
@@ -55,7 +65,9 @@ const DiscountRow = ({
       <p className="text-sm font-semibold text-nowrap min-w-[200px] text-grey-600">
         {title}
       </p>
+
       <div className="flex flex-col sm:flex-row sm:items-center flex-wrap gap-8">
+        {/* Percentage Input */}
         <div className="flex items-center gap-2">
           <InputField
             name={percentageName}
@@ -64,7 +76,7 @@ const DiscountRow = ({
             label={percentageLabel}
             placeholder={percentagePlaceholder}
             value={rateValue}
-            onChange={handleChange}
+            onChange={handleFormattedChange}
             onBlur={handleBlur}
             error={
               errors[percentageName] && touched[percentageName]
@@ -76,6 +88,8 @@ const DiscountRow = ({
           />
           <p className="text-sm text-nowrap mt-5">/day</p>
         </div>
+
+        {/* You'll receive */}
         <div className="flex items-center gap-2">
           <InputField
             name={serviceFeeName}
@@ -83,12 +97,12 @@ const DiscountRow = ({
             type="text"
             label="You'll receive"
             placeholder="NGN0"
-            value={`NGN${whatYouWillReceive}`}
+            value={`NGN${formatNumberWithCommas(whatYouWillReceive.toString())}`}
             inputClass="text-right"
             className="sm:w-[150px] md:w-[180px]"
             disabled
           />
-          <p className="text-sm text-nowrap mt-5">{rateUnit} </p>
+          <p className="text-sm text-nowrap mt-5">{rateUnit}</p>
         </div>
       </div>
     </div>

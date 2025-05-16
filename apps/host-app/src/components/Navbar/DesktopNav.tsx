@@ -2,10 +2,9 @@ import cn from "classnames";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { User } from "@/utils/types";
-import { customerAppUrl, popupNavItemsforNoUser } from "@/utils/data";
+import { popupNavItemsforNoUser } from "@/utils/data";
 import { getInitialsFromName } from "@/utils/functions";
-import { nav_logo } from "@repo/assets";
+import { User } from "@/utils/types";
 import { AvatarInitials } from "@repo/ui/avatar";
 import { Popup } from "@repo/ui/popup";
 import Icons from "@repo/ui/icons";
@@ -32,14 +31,20 @@ export default function DesktopNav({ user, userToken }: Props) {
           : "bg-[#F9FAFB59] backdrop-blur-xl"
       )}
     >
-      <Image className="" src={nav_logo} alt="" width={114} height={40} />
+      <Image
+        className=""
+        src="/images/logo/nav_logo.png"
+        alt=""
+        width={114}
+        height={40}
+      />
       <nav className="flex items-center gap-4">
         <Link
           className={cn(
             "text-base 3xl:text-xl",
             sticky ? "text-grey-700" : "text-white"
           )}
-          href={customerAppUrl}
+          href="/"
         >
           Book a ride
         </Link>

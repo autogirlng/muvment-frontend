@@ -1,5 +1,5 @@
 import { Swiper, SwiperSlide, SwiperRef } from "swiper/react";
-import { Pagination, Autoplay } from "swiper/modules";
+import { Pagination, Autoplay, Keyboard } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
@@ -21,6 +21,7 @@ function SaveBig({}: Props) {
   const handleMouseLeave = () => {
     swiperRef.current?.swiper?.autoplay?.start();
   };
+
   return (
     <section className="py-[98px] md:pb-[200px]">
       <div className="container">
@@ -28,8 +29,7 @@ function SaveBig({}: Props) {
           <LandingPageSectionHeader
             coloredTitle="Save"
             title="Big On Your Next Rental"
-            description=" Monthly getaway or long-term rental? Get the best rates on premium
-              vehicles with our exclusive deals."
+            description=" Monthly getaway or long-term rental? Get the best rates on premium vehicles with our exclusive deals."
             className="text-center"
           />
         </div>
@@ -38,17 +38,18 @@ function SaveBig({}: Props) {
         <div onMouseOver={handleMouseEnter} onMouseLeave={handleMouseLeave}>
           <Swiper
             slidesPerView={"auto"}
-            modules={[Pagination, Autoplay]}
+            modules={[Pagination, Autoplay, Keyboard]}
             spaceBetween={20}
             pagination={{
               type: "bullets",
               clickable: true,
             }}
             autoplay={{
-              delay: 5000,
+              delay: 3000,
               disableOnInteraction: false,
               pauseOnMouseEnter: true,
             }}
+            keyboard={{ enabled: true }}
             breakpoints={{
               0: {
                 spaceBetween: 4,
@@ -59,6 +60,10 @@ function SaveBig({}: Props) {
             }}
             loop={true}
             className="hero-vehicle-swiper !py-8"
+            onInit={(swiper) => {
+              swiper.autoplay.start(); // Ensure autoplay starts when swiper is initialized
+            }}
+            ref={swiperRef}
           >
             <SwiperSlide className="!w-auto py-5">
               <Vehicle vehicleImage={"/images/vehicles/3.png"} showShadow />

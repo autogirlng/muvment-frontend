@@ -17,69 +17,25 @@ import {
 
 type OptionType = { option: string; value: string };
 
-export const hostAppUrl = "http://host.muvment.ng";
-
-
 export const popupNavItems = [
+  // {
+  //   icon: Icons.ic_user_account,
+  //   name: "My account",
+  //   link: "/account",
+  // },
   {
-    icon: Icons.ic_globe_search,
-    name: "Explore",
-    link: "/explore",
-    border: true,
+    icon: Icons.ic_ticket,
+    name: "Bookings",
+    link: "/bookings",
   },
   {
-    icon: Icons.ic_card_payment_confirmed,
+    icon: Icons.ic_wallet,
     name: "Payments",
     link: "/transactions",
-    border: false,
   },
-  {
-    icon: Icons.ic_booking_checked,
-    name: "My Bookings",
-    link: "/bookings",
-    border: false,
-  },
-  {
-    icon: Icons.ic_whishlist,
-    name: "Favorites",
-    link: "/",
-    border: true,
-  },
-  {
-    icon: Icons.ic_user_account,
-    name: "Accounts",
-    link: "/account",
-    border: false,
-  },
-  {
-    icon: Icons.ic_notification,
-    name: "Notifications",
-    link: "/notifications",
-    border: false,
-  },
-  {
-    icon: Icons.ic_gift,
-    name: "Refer A Friend",
-    link: "/account ",
-    border: true,
-  },
-  {
-    icon: Icons.ic_help_circle,
-    name: "How Muvment works",
-    link: "/",
-    border: false,
-  },
-  {
-    icon: Icons.ic_support,
-    name: "Get Help",
-    link: "/",
-    border: false,
-  },
-
   {
     icon: Icons.ic_logout,
     name: "Log out",
-    border: false,
   },
 ];
 
@@ -948,13 +904,13 @@ export const bookingFilters = [
 
 // add type
 export const transactionFilters = [
-  // {
-  //   title: "type",
-  //   options: [
-  //     { option: "Credit", value: TransactionType.CREDIT },
-  //     { option: "Debit", value: TransactionType.DEBIT },
-  //   ],
-  // },
+  {
+    title: "type",
+    options: [
+      { option: "Credit", value: TransactionType.CREDIT },
+      { option: "Debit", value: TransactionType.DEBIT },
+    ],
+  },
   {
     title: "status",
     options: [
@@ -963,13 +919,13 @@ export const transactionFilters = [
       { option: "Failed", value: TransactionStatus.FAILED },
     ],
   },
-  // {
-  //   title: "purpose",
-  //   options: [
-  //     { option: "Booking", value: TransactionOrigin.BOOKING },
-  //     { option: "Withdrawal", value: TransactionOrigin.WITHDRAWAL },
-  //   ],
-  // },
+  {
+    title: "purpose",
+    options: [
+      { option: "Booking", value: TransactionOrigin.BOOKING },
+      { option: "Withdrawal", value: TransactionOrigin.WITHDRAWAL },
+    ],
+  },
 ];
 
 // =================== mock data ===================//
@@ -1016,5 +972,47 @@ export const transactionData: TransactionTableRow[] = [
     amount: "NGN 100,000",
     status: "Failed",
     actions: "",
+  },
+];
+
+export const bookingOverviewTableItems: BookingInformation[] = [
+  {
+    guestName: "Chioma Nwosu",
+    id: "BKG-1234-AB56",
+    bookingType: BookingType.SINGLE_DAY,
+    duration: 3,
+    startDate: "Apr 12, 2023",
+    endDate: "Apr 12, 2023",
+    amount: 100,
+    paymentStatus: PaymentBadgeStatus.PENDING,
+    paymentMethod: "BANK_TRANSFER",
+    rentalAgreement: null,
+    bookingStatus: BookingBadgeStatus.ACCEPTED,
+    guestEmail: "",
+    guestPhoneNumber: "",
+    pickupLocation: "",
+    dropoffLocation: "",
+    emergencyContact: "",
+    vehicleId: "",
+    userId: "",
+    createdAt: "",
+    updatedAt: "",
+    currencyCode: "",
+    vehicle: "Toyota Camry 2021",
+  },
+];
+
+const notifications: Notification[] = [
+  {
+    id: "6705095b809255ea5252730c",
+    title: "Payment Recieved",
+    message: "432.125 has been processed for your recent rental from Daniel",
+    isRead: false,
+    userId: "66ddb4b8e45560fe9d34df42",
+    trxReference: null,
+    notificationType: NotificationType.SECURITY_ALERT,
+    createdAt: "2024-10-08T10:28:43.597Z",
+    updatedAt: "2024-10-08T10:28:43.597Z",
+    transaction: null,
   },
 ];
