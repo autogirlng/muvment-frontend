@@ -8,7 +8,6 @@ import {
   SearchFilterWithoutPopup,
 } from "./Filter";
 import {
-  vehicleFeaturesOptions,
   vehicleMakeArray,
   vehicleTypeArray,
   yearsFilterArray,
@@ -23,7 +22,6 @@ type Props = {
     make: string[];
     yearOfRelease: string[];
     numberOfSeats: string[];
-    features: string[];
   };
   handleFilterChange: (filterName: string, value: string | number[]) => void;
   setShowAllFilters: Dispatch<SetStateAction<boolean>>;
@@ -37,7 +35,7 @@ export default function AllFilters({
   return (
     <div
       className={cn(
-        "space-y-10 flex-col fixed z-[999] left-0 top-[113px] h-full w-full lg:w-[300px] 2xl:w-[500px] bg-grey-50 py-8 px-6 2xl:px-16 !mt-0 !pb-[200px] overflow-auto"
+        "space-y-10 flex-col fixed z-20 left-0 top-0 h-full w-full lg:w-[300px] 2xl:w-[500px] bg-grey-50 py-8 px-6 2xl:px-16 !mt-0 overflow-auto"
       )}
     >
       <button
@@ -96,16 +94,6 @@ export default function AllFilters({
         filterName="numberOfSeats"
         onChange={handleFilterChange}
         selectedItems={filters.numberOfSeats}
-      />
-
-      <HorizontalDivider className="!bg-grey-300" />
-
-      <ChipFilterWithoutPopup
-        name="Vehicle Features"
-        list={vehicleFeaturesOptions}
-        filterName="features"
-        onChange={handleFilterChange}
-        selectedItems={filters.features}
       />
     </div>
   );

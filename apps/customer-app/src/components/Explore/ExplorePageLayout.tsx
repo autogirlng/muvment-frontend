@@ -4,7 +4,7 @@ import cn from "classnames";
 import { useEffect, useState } from "react";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import Icons from "@repo/ui/icons";
-
+// import { Suspense } from "react";
 import ExploreVehicleCard from "./VehicleCard";
 import useExploreListings from "./hooks/useExploreListings";
 import EmptyState from "../EmptyState";
@@ -16,7 +16,7 @@ import MobileNav from "../Navbar/MobileNav";
 import BackLink from "@/components/BackLink";
 
 import { useAppSelector } from "@/lib/hooks";
-import { useSearchParams } from "next/navigation";
+// import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useFetchUrlParams } from "@/utils/functions";
 
@@ -25,11 +25,6 @@ type Props = {
   icon?: JSX.Element;
   type: "top-rated" | "all" | "search";
   location?: string;
-  search?: string;
-  fromDate?: string;
-  fromTime?: string;
-  untilDate?: string;
-  untilTime?: string;
 };
 
 export default function ExplorePageLayout({
@@ -37,11 +32,6 @@ export default function ExplorePageLayout({
   icon,
   type,
   location,
-  search,
-  fromDate,
-  fromTime,
-  untilDate,
-  untilTime,
 }: Props) {
   const { user } = useAppSelector((state) => state.user);
   const pageLimit = 10;
@@ -57,19 +47,17 @@ export default function ExplorePageLayout({
     make: string[];
     yearOfRelease: string[];
     numberOfSeats: string[];
-    features: string[];
   }>({
     price: [0, 100000],
     type: [],
     make: [],
     yearOfRelease: [],
     numberOfSeats: [],
-    features: [],
   });
 
   // get url paramas
-  // const { search, fromDate, fromTime, untilDate, untilTime } =
-  //   useFetchUrlParams();
+  const { search, fromDate, fromTime, untilDate, untilTime } =
+    useFetchUrlParams();
 
   // search states
   const [searchValue, setSearchValue] = useState<string>(search || "");
@@ -92,7 +80,7 @@ export default function ExplorePageLayout({
     pageLimit,
     filters,
     type,
-    search: searchValue,
+    search,
     fromDate: fromDateValue?.toISOString(),
     untilDate: untilDateValue?.toISOString(),
     fromTime: fromTimeValue?.toISOString(),
@@ -154,14 +142,14 @@ export default function ExplorePageLayout({
           className={cn(
             "space-y-8 mx-auto",
             showAllFilters
-              ? "lg:w-[102%] 3xl:w-[103%] max-w-[1650px] 3xl:max-w-[1700px]"
+              ? "lg:w-[104%] 2xl:w-[103%] max-w-[1650px] 2xl:max-w-[1700px]"
               : "w-full max-w-[1400px]"
           )}
         >
           <div
             className={cn(
               "space-y-4 md:space-y-8",
-              showAllFilters && "md:ml-[290px] 2xl:ml-[480px] mr-2"
+              showAllFilters && "md:ml-[260px] 2xl:ml-[480px] mr-2"
             )}
           >
             <BackLink backLink="/" />
@@ -230,7 +218,7 @@ export default function ExplorePageLayout({
           <div
             className={cn(
               "space-y-8",
-              showAllFilters && "md:ml-[290px] 2xl:ml-[480px] mr-2"
+              showAllFilters && "md:ml-[260px] 2xl:ml-[480px] mr-2"
             )}
           >
             {isLoading ? (
@@ -259,7 +247,7 @@ export default function ExplorePageLayout({
                     type={vehicle?.vehicleType}
                     location={vehicle.location ?? ""}
                     dailyPrice={vehicle?.pricing?.dailyRate?.value}
-                    currency={vehicle?.pricing?.dailyRate?.currency}
+                    currency={vehicle?.pricing?.dailyRate?.unit}
                     extraHoursFee={vehicle?.pricing?.extraHoursFee}
                     vehicleImages={[
                       vehicle?.VehicleImage?.frontView,

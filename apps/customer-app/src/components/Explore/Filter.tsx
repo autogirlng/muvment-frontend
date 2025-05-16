@@ -13,8 +13,6 @@ import React, {
 } from "react";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import cn from "classnames";
-import { CANCELLED } from "dns";
 
 type Props = {
   name: string;
@@ -56,13 +54,8 @@ export function ChipFilter({
       isOpen={popupIsOpen}
       handleIsOpen={(open: boolean) => setPopupIsOpen(open)}
       trigger={
-        <button
-          className={cn(
-            "bg-white border border-grey-300 rounded-lg px-3 py-1 flex items-center gap-2 text-grey-600 text-xs 3xl:text-sm !font-semibold",
-            selectedItems.length > 0 && "!bg-black !text-white !border-black"
-          )}
-        >
-          {name} {selectedItems.length > 0 && `(${selectedItems.length})`}
+        <button className="bg-white border border-grey-300 rounded-lg px-3 py-1 flex items-center gap-2 text-grey-600 text-xs 3xl:text-sm !font-semibold">
+          {name}
           {Icons.ic_chevron_down}
         </button>
       }
@@ -175,13 +168,8 @@ export function SearchFilter({
       isOpen={popupIsOpen}
       handleIsOpen={(open: boolean) => setPopupIsOpen(open)}
       trigger={
-        <button
-          className={cn(
-            "bg-white border border-grey-300 rounded-lg px-3 py-1 flex items-center gap-2 text-grey-600 text-xs 3xl:text-sm !font-semibold",
-            selectedItems.length > 0 && "!bg-black !text-white !border-black"
-          )}
-        >
-          {name} {selectedItems.length > 0 && `(${selectedItems.length})`}
+        <button className="bg-white border border-grey-300 rounded-lg px-3 py-1 flex items-center gap-2 text-grey-600 text-xs 3xl:text-sm !font-semibold">
+          {name}
           {Icons.ic_chevron_down}
         </button>
       }

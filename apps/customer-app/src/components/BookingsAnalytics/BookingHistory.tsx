@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Pagination from "@repo/ui/pagination";
-import BookingAnalyticsTable from "@/components/BookingsAnalytics/Table";
+import BookingAnalyticsTable from "@/components/BookingsAnalytics//Table";
 import useBookings from "./hooks/useBookings";
 import { FullPageSpinner } from "@repo/ui/spinner";
 

@@ -2,7 +2,7 @@ import cn from "classnames";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, ReactNode } from "react";
-import { hostAppUrl, popupNavItemsforNoUser } from "@/utils/data";
+import { popupNavItemsforNoUser } from "@/utils/data";
 import { getInitialsFromName } from "@/utils/functions";
 import { User } from "@/utils/types";
 import { AvatarInitials } from "@repo/ui/avatar";
@@ -43,7 +43,7 @@ export default function DesktopNav({ user, children, explorePage }: Props) {
     >
       <Image
         className=""
-        src={`/images/logo/${explorePage || sticky ? "nav_logo" : "logo_white"}.png`}
+        src="/images/logo/nav_logo.png"
         alt=""
         width={114}
         height={40}
@@ -55,8 +55,7 @@ export default function DesktopNav({ user, children, explorePage }: Props) {
             "text-base 3xl:text-xl",
             explorePage || sticky ? "text-grey-700" : "text-white"
           )}
-          target="_blank"
-          href={hostAppUrl}
+          href="/"
         >
           Become a host
         </Link>

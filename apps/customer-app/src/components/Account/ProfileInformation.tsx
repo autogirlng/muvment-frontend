@@ -90,7 +90,6 @@ export default function ProfileInformation({}: Props) {
                   }}
                   isLoading={uploadImage.isPending}
                   disabled={!isProfileEditable}
-                  showButton={isProfileEditable}
                   initials={
                     user
                       ? getInitialsFromName(user.firstName, user.lastName)

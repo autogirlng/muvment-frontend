@@ -156,7 +156,7 @@ export default function ListingCard({ listing }: Props) {
               }
               content={
                 <>
-                  <p className="!text-xs 3xl:!text-base text-grey-700 !font-bold">
+                  <p className="!text-xs 3xl:!text-base !font-semibold">
                     Actions
                   </p>
                   <ul className="space-y-2 *:py-2">
