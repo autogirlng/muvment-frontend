@@ -75,8 +75,9 @@
     "@radix-ui/react-tabs": "^1.1.0",
     "classnames": "^2.5.1",
     "flag-icons": "^7.2.3",
-    "react": "^18.2.0",
+    "react": "^19.1.0",
     "react-datepicker": "^7.4.0",
+    "react-dom": "^19.1.0",
     "react-phone-number-input": "^3.4.5",
     "reactjs-otp-input": "^2.0.10"
   }
