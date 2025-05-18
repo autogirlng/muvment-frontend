@@ -1,18 +1,21 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-
 import StoreProvider from "./StoreProvider";
 import "./globals.css";
 import ReactQueryClientProvider from "./ReactQueryClientProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ReactNode } from "react";
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+<<<<<<< HEAD
   title: "Muvment - Start a business with Muvment",
   description: "Start a business with Muvment",
+=======
+  title: "Muvment",
+  description: "",
+>>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
 };
 
 export default function RootLayout({

@@ -43,13 +43,19 @@ export default function useGetListingById({ id }: { id: string }) {
         data?.VehicleImage?.other,
       ];
     }
-    return [{}];
+    console.log("data images", data);
+    return [];
   }, [data]);
 
   return {
     listingDetail: {
+<<<<<<< HEAD
       ...data,
       statistics: data?.user?.statistics as EarningsStatistics,
+=======
+      ...data?.vehicle,
+      statistics: data?.statistics,
+>>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
     } as ListingInformation,
     isError,
     isLoading,

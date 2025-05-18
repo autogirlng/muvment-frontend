@@ -2,10 +2,16 @@ import cn from "classnames";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+<<<<<<< HEAD
 import { User } from "@/utils/types";
 import { customerAppUrl, popupNavItemsforNoUser } from "@/utils/data";
 import { getInitialsFromName } from "@/utils/functions";
 import { nav_logo } from "@repo/assets";
+=======
+import { popupNavItemsforNoUser } from "@/utils/data";
+import { getInitialsFromName } from "@/utils/functions";
+import { User } from "@/utils/types";
+>>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
 import { AvatarInitials } from "@repo/ui/avatar";
 import { Popup } from "@repo/ui/popup";
 import Icons from "@repo/ui/icons";

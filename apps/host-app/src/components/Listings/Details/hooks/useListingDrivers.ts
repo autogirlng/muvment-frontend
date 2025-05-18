@@ -34,6 +34,7 @@ export default function useListingDrivers(id: string) {
     onSuccess: (data) => {
       console.log("Assign New Driver successful", data);
 
+<<<<<<< HEAD
      queryClient.setQueryData(
        ["getAssignedDrivers", user?.id, id],
        (oldData: AssignNewDriver[] | undefined) => {
@@ -44,6 +45,14 @@ export default function useListingDrivers(id: string) {
          return [...oldData, data];
        }
      );
+=======
+      const newDrivers = drivers;
+      newDrivers ? newDrivers.push(data as AssignNewDriver) : data;
+      queryClient.setQueryData(
+        ["getAssignedDrivers", user?.id, id],
+        () => newDrivers
+      );
+>>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
 
       handleModal(false);
     },

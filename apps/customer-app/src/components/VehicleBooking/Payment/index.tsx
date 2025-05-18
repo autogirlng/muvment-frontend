@@ -6,6 +6,10 @@ import "swiper/css/navigation";
 
 import Button from "@repo/ui/button";
 import Image from "next/image";
+<<<<<<< HEAD
+=======
+import BackLink from "@/components/BackLink";
+>>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
 import Link from "next/link";
 import BackLink from "@/components/BackLink";
 import {

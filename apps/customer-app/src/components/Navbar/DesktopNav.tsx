@@ -43,7 +43,7 @@ export default function DesktopNav({ user, children, explorePage }: Props) {
     >
       <Image
         className=""
-        src={`/images/logo/${explorePage || sticky ? "nav_logo" : "logo_white"}.png`}
+        src="/images/logo/nav_logo.png"
         alt=""
         width={114}
         height={40}

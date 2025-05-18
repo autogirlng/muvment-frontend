@@ -4,7 +4,7 @@ import cn from "classnames";
 import { useEffect, useState } from "react";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import Icons from "@repo/ui/icons";
-
+// import { Suspense } from "react";
 import ExploreVehicleCard from "./VehicleCard";
 import useExploreListings from "./hooks/useExploreListings";
 import EmptyState from "../EmptyState";
@@ -16,7 +16,7 @@ import MobileNav from "../Navbar/MobileNav";
 import BackLink from "@/components/BackLink";
 
 import { useAppSelector } from "@/lib/hooks";
-import { useSearchParams } from "next/navigation";
+// import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useFetchUrlParams } from "@/utils/functions";
 

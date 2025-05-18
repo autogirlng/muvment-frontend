@@ -15,6 +15,8 @@ import {
   vehicleAvailabilityOptions,
 } from "@/utils/data";
 import { availabilityAndPricingSchema } from "@/utils/validationSchema";
+import Tooltip from "@repo/ui/tooltip";
+import { useState } from "react";
 
 type Props = {
   steps: string[];
@@ -35,6 +37,14 @@ const AvailabilityAndPricingForm = ({
     showOuskirts,
     setShowOuskirts,
   } = useAvailabilityAndPricingForm({ currentStep, setCurrentStep });
+  const [showDiscount, setShowDiscount] = useState(
+    Boolean(
+      initialValues.sevenDaysDiscount ||
+        initialValues.threeDaysDiscount ||
+        initialValues.thirtyDaysDiscount
+    )
+  );
+
   return (
     <Formik
       initialValues={initialValues}
@@ -82,8 +92,13 @@ const AvailabilityAndPricingForm = ({
                     : ""
                 }
                 info
+<<<<<<< HEAD
                 tooltipTitle="Advance notice:"
                 tooltipDescription="Set the amount of time in advance that rental requests should be made to ensure availability."
+=======
+                tooltipTitle="Advance Notice"
+                tooltipDescription=" Set the amount of time in advance that rental requests should be made to ensure availability."
+>>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
               />
             </FormRow>
             <FormRow
@@ -100,7 +115,11 @@ const AvailabilityAndPricingForm = ({
                   value={values.minTripDurationInDays}
                   disabled
                   info
+<<<<<<< HEAD
                   tooltipTitle="Minimum trip duration:"
+=======
+                  tooltipTitle="Minumum Duration"
+>>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
                   tooltipDescription="This is the shortest distance you can provide for this vehicle and the standard is 1 day, which equals 12 hours - non-editable."
                 />
                 <SelectInput
@@ -126,8 +145,13 @@ const AvailabilityAndPricingForm = ({
                       : ""
                   }
                   info
+<<<<<<< HEAD
                   tooltipTitle="Maximum trip duration:"
                   tooltipDescription="Define the longest duration you are comfortable providing rental services."
+=======
+                  tooltipTitle="Maximum Duration"
+                  tooltipDescription=" Define the longest duration you are comfortable providing rental services."
+>>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
                 />
               </div>
             </FormRow>
@@ -178,7 +202,11 @@ const AvailabilityAndPricingForm = ({
                       : ""
                   }
                   info
+<<<<<<< HEAD
                   tooltipTitle="Will you provide a driver?:"
+=======
+                  tooltipTitle=""
+>>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
                   tooltipDescription="Indicate if you are offering a driver along with your rental services for a complete experience. Accommodation should be provided for drivers for journey or 24 hours bookings."
                 />
                 <SelectInput
@@ -201,7 +229,11 @@ const AvailabilityAndPricingForm = ({
                       : ""
                   }
                   info
+<<<<<<< HEAD
                   tooltipTitle="Will you provide at least 20 litres of fuel?:"
+=======
+                  tooltipTitle=""
+>>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
                   tooltipDescription="We will provide 15 litres of fuel for your ride, in the event the fuel finishes during trips, you will be responsible for fueling an amount that can complete your ride."
                 />
               </div>
@@ -221,6 +253,8 @@ const AvailabilityAndPricingForm = ({
                 rateUnit="/day"
                 serviceFeeName="serviceFeeDaily"
                 guestWillSeeName="guestWillSeeDaily"
+                tooltipTitle="Daily Rate"
+                tooltipDescription=" Specify your standard rate for providing rental services per day."
                 rateValue={values.dailyRate}
                 errors={errors}
                 touched={touched}
@@ -239,6 +273,8 @@ const AvailabilityAndPricingForm = ({
                 serviceFeeName="serviceFeeHourly"
                 guestWillSeeName="guestWillSeeHourly"
                 rateValue={values.extraHourRate}
+                tooltipDescription="Indicate the additional charge for any extra hours beyond the daily booking duration."
+                tooltipTitle="Hourly Rate"
                 errors={errors}
                 touched={touched}
                 handleChange={handleChange}
@@ -258,6 +294,8 @@ const AvailabilityAndPricingForm = ({
                 rateValue={values.airportPickup}
                 errors={errors}
                 touched={touched}
+                tooltipDescription="Select if you are available for airport pick-ups and drop-offs to cater to travelers."
+                tooltipTitle="Airport pickups & dropoffs"
                 handleChange={handleChange}
                 handleBlur={handleBlur}
                 optional
@@ -269,23 +307,38 @@ const AvailabilityAndPricingForm = ({
           </div>
 
           <div className="space-y-8">
-            <Collapse
-              title={
-                <p className="text-h6 3xl:text-h5 font-medium text-black">
-                  Discounts
-                </p>
-              }
-              closeText={
-                <p className="text-primary-500 font-medium text-sm 3xl:text-xl flex items-center gap-1 ">
+            <div className="flex items-center justify-between">
+              <p className="text-h6 3xl:text-h5 font-medium text-black flex justify-between items-center gap-1">
+                Discounts
+                <Tooltip
+                  title="Discounts"
+                  description=" Mention any discounts you offer for long-term bookings, special promotions,
+                     or specific customer groups."
+                />
+              </p>
+              {!showDiscount && (
+                <p
+                  onClick={() => setShowDiscount(true)}
+                  className="text-primary-500 font-medium text-sm 3xl:text-xl flex items-center gap-1 "
+                >
                   {Icons.ic_add} <span>Add Discounts</span>
                 </p>
-              }
-              openText={
-                <p className="text-primary-500 font-medium text-sm 3xl:text-xl flex items-center gap-1">
+              )}
+              {showDiscount && (
+                <p
+                  onClick={() => {
+                    setShowDiscount(false);
+                    setFieldValue("sevenDaysDiscount", "");
+                    setFieldValue("threeDaysDiscount", "");
+                    setFieldValue("thirtyDaysDiscount", "");
+                  }}
+                  className="text-primary-500 font-medium text-sm 3xl:text-xl flex items-center gap-1"
+                >
                   {Icons.ic_remove} <span>Remove Discounts</span>
                 </p>
-              }
-            >
+              )}
+            </div>
+            {showDiscount && (
               <div className="space-y-8 3xl:space-y-[50px] pt-8">
                 <DiscountRow
                   title="3 days discount"
@@ -330,19 +383,33 @@ const AvailabilityAndPricingForm = ({
                   dailyRateValue={values.dailyRate}
                 />
               </div>
-            </Collapse>
+            )}
           </div>
 
           <div>
             <div className="flex justify-between gap-3">
-              <p className="text-h6 3xl:text-h5 font-medium text-black">
+              <p className="text-h6 3xl:text-h5 font-medium text-black flex justify-between items-center gap-1">
                 Do you charge extra for outskirt locations?
+                <Tooltip
+                  title="Do you charge extra for outskirt locations?"
+                  description="Do you charge extra for outskirt locations? Outskirts locations
+                include but not limited to Sangotedo, Badagry, Amuwo Odofin,
+                Festac Town, Alaba, Ikorodu Town, Agbara, Agege, Epe, Free Trade
+                Zone, Igando, Akowonjo, Dopemu, Ajah, Agbado, Ojodu Berger,
+                Ajegunle, Ibese, Iyana Ipaja, Alimoso, Ibeju Lekki."
+                />
               </p>
               <AppSwitch
                 id="outskirtLocations"
                 name="outskirtLocations"
                 value={showOuskirts}
-                onChange={(checked) => setShowOuskirts(checked)}
+                onChange={(checked) => {
+                  setShowOuskirts(checked);
+                  if (!checked) {
+                    setFieldValue("outskirtsPrice", "");
+                    setFieldValue("outskirtsLocation", []);
+                  }
+                }}
               />
             </div>
             {showOuskirts && (

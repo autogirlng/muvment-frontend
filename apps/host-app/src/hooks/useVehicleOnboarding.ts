@@ -27,6 +27,7 @@ export default function useVehicleOnboarding() {
   useEffect(() => {
     if (isSuccess) {
       console.log("Get Vehicle Information By Id", data);
+      // @ts-ignore
       dispatch(updateVehicleInformation(data));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
