@@ -121,7 +121,7 @@ function PrivacyPolicy() {
 
       <PolicyHeader
         title="Privacy Policy"
-        imageSrc="/images/logo/logo_icon_blue.png"
+        imageSrc="/images/logo_icon_blue.svg"
         date={currentDate}
         bgColor="bg-[#0673FF]"
       />

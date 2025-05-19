@@ -14,12 +14,8 @@ import DocumentInformation from "@/components/VehicleOnboarding/DocumentInformat
 
 const steps = [
   "Basic Details",
-<<<<<<< HEAD
-  "Additional Info",
-=======
   "Additional Details",
   "Documents",
->>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
   "Photos",
   "Availability and Pricing",
 ];

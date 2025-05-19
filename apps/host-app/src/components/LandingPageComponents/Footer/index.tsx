@@ -21,15 +21,9 @@ const footerNav: FooterNavProps[] = [
     links: [
       { name: "About us", link: "/" },
       { name: "Contact us", link: "/" },
-<<<<<<< HEAD
-      { name: "Careers", link: "", badgeTitle: "We're hiring!" },
-      { name: "Events", link: "" },
-      { name: "FAQs", link: "" },
-=======
-      // { name: "Careers", link: "/", badgeTitle: "We're hiring!" },
-      // { name: "Events", link: "/" },
+      // { name: "Careers", link: "", badgeTitle: "We're hiring!" },
+      // { name: "Events", link: "" },
       { name: "FAQs", link: "/" },
->>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
     ],
   },
   {
@@ -64,6 +58,8 @@ type Props = {};
 
 function Footer({}: Props) {
   const { addSubscriber } = useNewsletter();
+
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="px-2 md:px-10 md:pb-[220px]">
@@ -180,7 +176,7 @@ function Footer({}: Props) {
               </div>
             </div>
             <p className="text-sm md:text-base text-grey-400 ">
-              © 2024 Muvment. All rights reserved.
+              © <span>{currentYear}</span> Muvment. All rights reserved.
             </p>
           </div>
         </div>

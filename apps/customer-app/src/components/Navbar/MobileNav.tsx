@@ -25,13 +25,15 @@ export default function MobileNav({ user, children }: Props) {
   return (
     <header className="block md:hidden px-8 py-3 bg-grey-50">
       <div className="flex items-center justify-between">
-        <Image
-          className=""
-          src={mobile_nav_logo}
-          alt=""
-          width={100}
-          height={15}
-        />
+        <Link href="/" className="flex items-center gap-2">
+          <Image
+            className=""
+            src={mobile_nav_logo}
+            alt=""
+            width={100}
+            height={15}
+          />
+        </Link>
         <button
           className="bg-white border border-grey-300 rounded-[33px] p-1 pr-2 flex items-center gap-2"
           onClick={() => setOpenNav(!openNav)}

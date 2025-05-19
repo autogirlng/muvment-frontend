@@ -9,13 +9,8 @@ import { ReactNode } from "react";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-<<<<<<< HEAD
   title: "Muvment - Start a business with Muvment",
   description: "Start a business with Muvment",
-=======
-  title: "Muvment",
-  description: "",
->>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
 };
 
 export default function RootLayout({

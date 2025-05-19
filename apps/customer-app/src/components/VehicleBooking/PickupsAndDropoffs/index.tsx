@@ -16,11 +16,7 @@ const PickupsAndDropoffs = ({ steps, currentStep, setCurrentStep }: Props) => {
         currentStep={currentStep}
         setCurrentStep={setCurrentStep}
       />
-<<<<<<< HEAD
       {/* <VehicleInformationCard /> */}
-=======
-      {/* <VehicleInformationCard  /> */}
->>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
     </div>
   );
 };

@@ -92,13 +92,8 @@ const AvailabilityAndPricingForm = ({
                     : ""
                 }
                 info
-<<<<<<< HEAD
                 tooltipTitle="Advance notice:"
                 tooltipDescription="Set the amount of time in advance that rental requests should be made to ensure availability."
-=======
-                tooltipTitle="Advance Notice"
-                tooltipDescription=" Set the amount of time in advance that rental requests should be made to ensure availability."
->>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
               />
             </FormRow>
             <FormRow
@@ -115,11 +110,7 @@ const AvailabilityAndPricingForm = ({
                   value={values.minTripDurationInDays}
                   disabled
                   info
-<<<<<<< HEAD
                   tooltipTitle="Minimum trip duration:"
-=======
-                  tooltipTitle="Minumum Duration"
->>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
                   tooltipDescription="This is the shortest distance you can provide for this vehicle and the standard is 1 day, which equals 12 hours - non-editable."
                 />
                 <SelectInput
@@ -145,13 +136,8 @@ const AvailabilityAndPricingForm = ({
                       : ""
                   }
                   info
-<<<<<<< HEAD
                   tooltipTitle="Maximum trip duration:"
                   tooltipDescription="Define the longest duration you are comfortable providing rental services."
-=======
-                  tooltipTitle="Maximum Duration"
-                  tooltipDescription=" Define the longest duration you are comfortable providing rental services."
->>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
                 />
               </div>
             </FormRow>
@@ -202,11 +188,7 @@ const AvailabilityAndPricingForm = ({
                       : ""
                   }
                   info
-<<<<<<< HEAD
                   tooltipTitle="Will you provide a driver?:"
-=======
-                  tooltipTitle=""
->>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
                   tooltipDescription="Indicate if you are offering a driver along with your rental services for a complete experience. Accommodation should be provided for drivers for journey or 24 hours bookings."
                 />
                 <SelectInput
@@ -229,11 +211,7 @@ const AvailabilityAndPricingForm = ({
                       : ""
                   }
                   info
-<<<<<<< HEAD
                   tooltipTitle="Will you provide at least 20 litres of fuel?:"
-=======
-                  tooltipTitle=""
->>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
                   tooltipDescription="We will provide 15 litres of fuel for your ride, in the event the fuel finishes during trips, you will be responsible for fueling an amount that can complete your ride."
                 />
               </div>
@@ -253,16 +231,14 @@ const AvailabilityAndPricingForm = ({
                 rateUnit="/day"
                 serviceFeeName="serviceFeeDaily"
                 guestWillSeeName="guestWillSeeDaily"
-                tooltipTitle="Daily Rate"
-                tooltipDescription=" Specify your standard rate for providing rental services per day."
+                tooltipTitle="What is your daily rate?:"
+                tooltipDescription="Specify your standard rate for providing rental services per day."
                 rateValue={values.dailyRate}
                 errors={errors}
                 touched={touched}
                 handleChange={handleChange}
                 handleBlur={handleBlur}
                 info
-                tooltipTitle="What is your daily rate?:"
-                tooltipDescription="Specify your standard rate for providing rental services per day."
               />
               <PricingRow
                 title="What is your extra hourly rate?"
@@ -273,8 +249,6 @@ const AvailabilityAndPricingForm = ({
                 serviceFeeName="serviceFeeHourly"
                 guestWillSeeName="guestWillSeeHourly"
                 rateValue={values.extraHourRate}
-                tooltipDescription="Indicate the additional charge for any extra hours beyond the daily booking duration."
-                tooltipTitle="Hourly Rate"
                 errors={errors}
                 touched={touched}
                 handleChange={handleChange}
@@ -295,13 +269,11 @@ const AvailabilityAndPricingForm = ({
                 errors={errors}
                 touched={touched}
                 tooltipDescription="Select if you are available for airport pick-ups and drop-offs to cater to travelers."
-                tooltipTitle="Airport pickups & dropoffs"
+                tooltipTitle="Airport pickup and drop offs:"
                 handleChange={handleChange}
                 handleBlur={handleBlur}
                 optional
                 info
-                tooltipTitle="Airport pickup and drop offs:"
-                tooltipDescription="Select if you are available for airport pick-ups and drop-offs to cater to travelers."
               />
             </div>
           </div>

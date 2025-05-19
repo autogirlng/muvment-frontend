@@ -28,12 +28,12 @@ const footerNav: FooterNavProps[] = [
   {
     title: "Locations",
     links: [
-      { name: "Lagos" },
-      { name: "Abuja" },
-      { name: "Benin City" },
-      { name: "Enugu" },
-      { name: "Port Harcourt" },
-      { name: "Accra" },
+      { name: "Lagos", link: "/explore" },
+      { name: "Abuja", link: "/explore" },
+      { name: "Benin City", link: "/explore" },
+      { name: "Enugu", link: "/explore" },
+      { name: "Port Harcourt", link: "/explore" },
+      { name: "Accra", link: "/explore" },
     ],
   },
   {
@@ -51,6 +51,9 @@ type Props = {};
 
 function Footer({}: Props) {
   const { addSubscriber } = useNewsletter();
+
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="px-2 md:px-10 md:pb-[220px]">
       <div className="py-8 md:py-20 px-6 md:px-[60px] lg:px-[100px] 3xl:px-[143px] bg-grey-75 md:rounded-[74px]">
@@ -151,7 +154,7 @@ function Footer({}: Props) {
               </div>
             </div>
             <p className="text-sm md:text-base text-grey-400 ">
-              © 2024 Muvment. All rights reserved.
+              © <span>{currentYear}</span> Muvment. All rights reserved.
             </p>
           </div>
         </div>

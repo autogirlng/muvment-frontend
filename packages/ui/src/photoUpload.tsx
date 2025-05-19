@@ -24,12 +24,9 @@ export default function PhotoUpload({
   image,
   value,
   error,
-<<<<<<< HEAD
   fieldName,
   handlePhotoDelete,
   ...rest
-=======
->>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
 }: Props) {
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -77,14 +74,8 @@ export default function PhotoUpload({
               />
               <div className="absolute bottom-4 left-4 flex gap-2">
                 <button
-<<<<<<< HEAD
                   onClick={() => handleDelete(fieldName)}
                   className="w-10 md:w-12 3xl:w-20 h-10 md:h-12 3xl:h-20 rounded-full flex justify-center items-center bg-error-50 text-error-500 *:w-4 *:md:w-5 *:3xl:w-[30px] *:h-4 *:md:h-5 *:3xl:w-[30px]"
-=======
-                  onClick={handleDelete}
-                  className="w-10 h-10 md:w-12 md:h-12 3xl:w-20 3xl:h-20 rounded-full bg-error-50 text-error-500 flex items-center justify-center p-3"
-                  type="button"
->>>>>>> d9f2352492730eeff72d585e92a144a72be36d72
                 >
                   {Icons.ic_delete}
                 </button>

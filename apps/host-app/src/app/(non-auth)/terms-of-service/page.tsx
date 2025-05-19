@@ -286,7 +286,7 @@ function TermsOfService() {
 
       <PolicyHeader
         title="Terms & Conditions"
-        imageSrc="/images/logo/logo_icon_blue.png"
+        imageSrc="/images/logo_icon_blue.svg"
         date={currentDate}
         bgColor="bg-[#0673FF]"
       />
