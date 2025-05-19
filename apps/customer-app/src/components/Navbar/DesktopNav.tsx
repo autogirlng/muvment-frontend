@@ -44,7 +44,7 @@ export default function DesktopNav({ user, children, explorePage }: Props) {
       <Link href="/" className="flex items-center gap-2">
         <Image
           className=""
-          src="/images/logo/nav_logo.png"
+          src="/images/image.png"
           alt=""
           width={114}
           height={40}
