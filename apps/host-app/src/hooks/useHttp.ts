@@ -8,7 +8,6 @@ import { useAppDispatch } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
 
 export const useHttp = () => {
-
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -27,6 +26,15 @@ export const useHttp = () => {
     return config;
   });
 
+  const handleAuthError = (error: AxiosError<ErrorResponse>) => {
+    if (error?.response?.data?.ERR_CODE === "NOT_PERMITTED_REAUTHENICATE") {
+      dispatch(clearUser());
+      router.push("/login");
+      return true;
+    }
+    return false;
+  };
+
   return {
     get: async <T>(url: string) => {
       try {
@@ -34,19 +42,14 @@ export const useHttp = () => {
         return response.data;
       } catch (error) {
         if (error instanceof AxiosError) {
-          if (
-            error?.response?.data?.ERR_CODE === "NOT_PERMITTED_REAUTHENICATE"
-          ) {
-            dispatch(clearUser());
-            router.push("/login");
-          }
-
-          handleErrors(error as AxiosError<ErrorResponse>);
+          if (handleAuthError(error)) return;
+          handleErrors(error);
           throw new Error(error.response?.data.message);
         }
         throw error;
       }
     },
+
     post: async <T>(
       url: string,
       data?: any,
@@ -57,53 +60,36 @@ export const useHttp = () => {
         return response.data;
       } catch (error) {
         if (error instanceof AxiosError) {
-          if (
-            error?.response?.data?.ERR_CODE === "NOT_PERMITTED_REAUTHENICATE"
-          ) {
-            dispatch(clearUser());
-            router.push("/login");
-          }
-
-          handleErrors(error as AxiosError<ErrorResponse>);
-
+          if (handleAuthError(error)) return;
+          handleErrors(error);
           throw new Error(error.response?.data.message ?? error.message);
         }
         throw error;
       }
     },
+
     put: async <T>(url: string, data?: any) => {
       try {
         const response = await http.put<T>(url, data);
         return response.data;
       } catch (error) {
         if (error instanceof AxiosError) {
-          if (
-            error?.response?.data?.ERR_CODE === "NOT_PERMITTED_REAUTHENICATE"
-          ) {
-            dispatch(clearUser());
-            router.push("/login");
-          }
-
-          handleErrors(error as AxiosError<ErrorResponse>);
+          if (handleAuthError(error)) return;
+          handleErrors(error);
           throw new Error(error.response?.data.message);
         }
         throw error;
       }
     },
+
     delete: async <T>(url: string) => {
       try {
         const response = await http.delete<T>(url);
         return response.data;
       } catch (error) {
         if (error instanceof AxiosError) {
-          if (
-            error?.response?.data?.ERR_CODE === "NOT_PERMITTED_REAUTHENICATE"
-          ) {
-            dispatch(clearUser());
-            router.push("/login");
-          }
-
-          handleErrors(error as AxiosError<ErrorResponse>);
+          if (handleAuthError(error)) return;
+          handleErrors(error);
           throw new Error(error.response?.data.message);
         }
         throw error;

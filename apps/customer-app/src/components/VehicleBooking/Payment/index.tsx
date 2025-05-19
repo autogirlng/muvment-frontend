@@ -6,8 +6,8 @@ import "swiper/css/navigation";
 
 import Button from "@repo/ui/button";
 import Image from "next/image";
-import Link from "next/link";
 import BackLink from "@/components/BackLink";
+import Link from "next/link";
 import {
   calculateNumberOfDays,
   formatNumberWithCommas,

@@ -49,7 +49,12 @@ export default function useAdditionalInformationForm({
 
     onSuccess: (data) => {
       console.log("Vehicle Onboarding Step 2 Saved", data);
-      dispatch(updateVehicleInformation({ ...vehicle, ...data }));
+      dispatch(
+        updateVehicleInformation(
+          // @ts-ignore
+          { ...vehicle, ...data }
+        )
+      );
       router.push("/listings");
     },
 
@@ -69,7 +74,12 @@ export default function useAdditionalInformationForm({
 
     onSuccess: (data) => {
       console.log("Vehicle Onboarding Step 2 Submitted", data);
-      dispatch(updateVehicleInformation({ ...vehicle, ...data }));
+      dispatch(
+        updateVehicleInformation(
+          // @ts-ignore
+          { ...vehicle, ...data }
+        )
+      );
       setCurrentStep(currentStep + 1);
     },
 

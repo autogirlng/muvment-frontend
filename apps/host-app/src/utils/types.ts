@@ -139,7 +139,14 @@ export interface AdditionalVehicleInformationValues {
   numberOfSeats: string;
   // vehicleOwner:string
 }
-
+export interface DocumentVehicleInformationValues {
+  proofOfOwnership: string;
+  vehicleRegistration: string;
+  insuranceCertificate: string;
+  vehicleInspectionReport: string;
+  maintenanceHistory?: string;
+  authorizationLetter: string;
+}
 export interface ProfileFormValues {
   firstName: string;
   lastName: string;
@@ -284,6 +291,14 @@ export enum NotificationType {
   SECURITY_ALERT = "SECURITY_ALERT",
   NEW_REVIEW = "NEW_REVIEW",
   SPECIAL_OFFER = " SPECIAL_OFFER",
+}
+
+// EARNINGS
+export enum EarningPeriod {
+  WEEK = "week",
+  MONTH = "month",
+  QUARTER = "quarter",
+  ALL_TIME = "all_time",
 }
 
 // <================= USER/LISTING/BOOKING/VEHICLE =================>
@@ -433,6 +448,7 @@ export interface VehicleInformation {
   userId: string;
   createdAt: string;
   updatedAt: string;
+  document: DocumentVehicleInformationValues;
 }
 
 export interface AssignedDriver {
@@ -599,3 +615,5 @@ export type TransactionTableRow = {
   status: string;
   actions: string;
 };
+
+export type DateRange = { startDate: Date | null; endDate: Date | null };

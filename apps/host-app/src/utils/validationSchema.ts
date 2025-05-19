@@ -1,4 +1,4 @@
-import { array, object, ref, string } from "yup";
+import { array, object, ref, string, mixed } from "yup";
 import {
   emailRegEx,
   lowercaseRegex,
@@ -148,6 +148,18 @@ export const addtionalVehicleInformationSchema = object().shape({
   // vehicleOwner: string().required("This is required"),
 });
 
+export const documentVehicleInformationSchema = object().shape({
+  proofOfOwnership: mixed().required("Proof of ownership is required."),
+  vehicleRegistration: mixed().required(
+    "Vehicle registration document is required."
+  ),
+  insuranceCertificate: mixed().required("Insurance certificate is required."),
+  vehicleInspectionReport: mixed().required(
+    "Vehicle inspection report is required."
+  ),
+  maintenanceHistory: mixed().optional(),
+  authorizationLetter: mixed().required("Authorization letter is required."),
+});
 export const vehiclePhotosSchema = object().shape({
   frontView: string().required("Please upload Front view image"),
   backView: string().required("Please upload Back view image"),
@@ -166,7 +178,7 @@ export const availabilityAndPricingSchema = object().shape({
   extraHourRate: string().required("Please enter the amount"),
   // airportPickup: string().required("Please enter the amount"),
 
-  // these should be activated if discount is on
+  // // these should be activated if discount is on
   // threeDaysDiscount: string().required("Please enter the amount"),
   // sevenDaysDiscount: string().required("Please enter the amount"),
   // thirtyDaysDiscount: string().required("Please enter the amount"),

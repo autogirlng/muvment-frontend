@@ -41,13 +41,15 @@ export default function DesktopNav({ user, children, explorePage }: Props) {
           : "bg-[#F9FAFB59] backdrop-blur-xl"
       )}
     >
-      <Image
-        className=""
-        src={`/images/logo/${explorePage || sticky ? "nav_logo" : "logo_white"}.png`}
-        alt=""
-        width={114}
-        height={40}
-      />
+      <Link href="/" className="flex items-center gap-2">
+        <Image
+          className=""
+          src="/images/logo/nav_logo.png"
+          alt=""
+          width={114}
+          height={40}
+        />
+      </Link>
       {children}
       <nav className="flex items-center gap-4">
         <Link

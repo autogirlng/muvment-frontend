@@ -1,26 +1,13 @@
+"use client";
+
+import { Suspense } from "react";
 import ExplorePageLayout from "@/components/Explore/ExplorePageLayout";
+import { FullPageSpinner } from "@repo/ui/spinner";
 
-export default async function SearchVehiclesPage({
-  searchParams,
-}: {
-  searchParams: {
-    search?: string;
-    fromDate?: string;
-    fromTime?: string;
-    untilDate?: string;
-    untilTime?: string;
-  };
-}) {
-  const { search, fromDate, fromTime, untilDate, untilTime } = searchParams;
-
+export default function SearchVehiclesPage() {
   return (
-    <ExplorePageLayout
-      type="search"
-      search={search}
-      fromDate={fromDate}
-      fromTime={fromTime}
-      untilDate={untilDate}
-      untilTime={untilTime}
-    />
+    <Suspense fallback={<FullPageSpinner />}>
+      <ExplorePageLayout type="search" />
+    </Suspense>
   );
 }

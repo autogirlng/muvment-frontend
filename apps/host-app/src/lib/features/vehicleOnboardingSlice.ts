@@ -1,10 +1,6 @@
 import { VehicleInformation, VehiclePhotos } from "@/utils/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-
-
-
-
 interface VehicleState {
   vehicle: VehicleInformation | null;
   currentStep: number;

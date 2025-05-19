@@ -54,7 +54,7 @@ export default function useSetupWithdrawalAccount() {
 
     onSuccess: (data) => {
       console.log("Bank Account Verified Successfully", data);
-      dispatch(setAccountDetails(data));
+      dispatch(setAccountDetails(data as WithdrawalAccountValues));
       setLoading(false);
     },
 

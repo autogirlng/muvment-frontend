@@ -4,7 +4,6 @@ import cn from "classnames";
 import { useEffect, useState } from "react";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import Icons from "@repo/ui/icons";
-
 import ExploreVehicleCard from "./VehicleCard";
 import useExploreListings from "./hooks/useExploreListings";
 import EmptyState from "../EmptyState";
@@ -14,11 +13,16 @@ import SearchBookings from "../SearchBookings";
 import DesktopNav from "../Navbar/DesktopNav";
 import MobileNav from "../Navbar/MobileNav";
 import BackLink from "@/components/BackLink";
-
 import { useAppSelector } from "@/lib/hooks";
-import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useFetchUrlParams } from "@/utils/functions";
+import Image from "next/image";
+
+// Default placeholder images
+const placeholderImages = [
+  "/images/vehicles/1.png",
+  "/images/vehicles/2.png",
+  "/images/vehicles/3.png",
+];
 
 type Props = {
   title?: string;
@@ -48,9 +52,8 @@ export default function ExplorePageLayout({
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isDisplayList, setIsDisplayList] = useState<boolean>(true);
-
-  // filter states
   const [showAllFilters, setShowAllFilters] = useState<boolean>(false);
+
   const [filters, setFilters] = useState<{
     price: number[];
     type: string[];
@@ -67,11 +70,6 @@ export default function ExplorePageLayout({
     features: [],
   });
 
-  // get url paramas
-  // const { search, fromDate, fromTime, untilDate, untilTime } =
-  //   useFetchUrlParams();
-
-  // search states
   const [searchValue, setSearchValue] = useState<string>(search || "");
   const [fromDateValue, setFromDateValue] = useState<Date | null>(
     fromDate ? new Date(fromDate) : null
@@ -86,7 +84,6 @@ export default function ExplorePageLayout({
     untilTime ? new Date(untilTime) : null
   );
 
-  // fetch data
   const { listings, totalCount, isError, isLoading } = useExploreListings({
     currentPage,
     pageLimit,
@@ -128,6 +125,22 @@ export default function ExplorePageLayout({
                 ]
             : processedValue,
     }));
+  };
+
+  // Function to get valid image URLs from vehicle data
+  const getVehicleImages = (vehicle: any) => {
+    if (!vehicle?.VehicleImage) return placeholderImages;
+
+    const images = [
+      vehicle.VehicleImage.frontView,
+      vehicle.VehicleImage.backView,
+      vehicle.VehicleImage.sideView1,
+      vehicle.VehicleImage.sideView2,
+      vehicle.VehicleImage.interior,
+      vehicle.VehicleImage.other,
+    ].filter(Boolean); // Remove any undefined/null values
+
+    return images.length > 0 ? images : placeholderImages;
   };
 
   return (
@@ -236,7 +249,7 @@ export default function ExplorePageLayout({
             {isLoading ? (
               <FullPageSpinner />
             ) : isError ? (
-              <p>something went wrong</p>
+              <p>Something went wrong</p>
             ) : listings.length > 0 ? (
               <div
                 className={cn(
@@ -255,20 +268,13 @@ export default function ExplorePageLayout({
                     untilTime={untilTimeValue?.toISOString()}
                     showAllFilters={showAllFilters}
                     isDisplayList={isDisplayList}
-                    name={vehicle?.listingName}
-                    type={vehicle?.vehicleType}
-                    location={vehicle.location ?? ""}
-                    dailyPrice={vehicle?.pricing?.dailyRate?.value}
-                    currency={vehicle?.pricing?.dailyRate?.currency}
+                    name={vehicle?.listingName || "Premium Vehicle"}
+                    type={vehicle?.vehicleType || "Luxury"}
+                    location={vehicle.location || "City"}
+                    dailyPrice={vehicle?.pricing?.dailyRate?.value || 0}
+                    currency={vehicle?.pricing?.dailyRate?.currency || "NGN"}
                     extraHoursFee={vehicle?.pricing?.extraHoursFee}
-                    vehicleImages={[
-                      vehicle?.VehicleImage?.frontView,
-                      vehicle?.VehicleImage?.backView,
-                      vehicle?.VehicleImage?.sideView1,
-                      vehicle?.VehicleImage?.sideView2,
-                      vehicle?.VehicleImage?.interior,
-                      vehicle?.VehicleImage?.other,
-                    ]}
+                    vehicleImages={getVehicleImages(vehicle)}
                     vehicleDetails={
                       [
                         {
@@ -277,10 +283,6 @@ export default function ExplorePageLayout({
                             : "No",
                           icon: Icons.ic_driver,
                         },
-                        // {
-                        //   transmission: "Manual",
-                        //   icon: Icons.ic_transmission,
-                        // },
                         {
                           fuelAvailable: vehicle?.tripSettings?.fuelProvided
                             ? "Yes"
@@ -298,7 +300,7 @@ export default function ExplorePageLayout({
               </div>
             ) : (
               <EmptyState
-                title="No Listing"
+                title="No Listings Found"
                 image="/icons/empty_booking_state.png"
               />
             )}

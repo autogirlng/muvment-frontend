@@ -20,29 +20,29 @@ const footerNav: FooterNavProps[] = [
     links: [
       { name: "About us", link: "/" },
       { name: "Contact us", link: "/" },
-      { name: "Careers", link: "/", badgeTitle: "We're hiring!" },
-      { name: "Events", link: "/" },
+      // { name: "Careers", link: "/", badgeTitle: "We're hiring!" },
+      // { name: "Events", link: "/" },
       { name: "FAQs", link: "/" },
     ],
   },
   {
     title: "Locations",
     links: [
-      { name: "Lagos" },
-      { name: "Abuja" },
-      { name: "Benin City" },
-      { name: "Enugu" },
-      { name: "Port Harcourt" },
-      { name: "Accra" },
+      { name: "Lagos", link: "/explore" },
+      { name: "Abuja", link: "/explore" },
+      { name: "Benin City", link: "/explore" },
+      { name: "Enugu", link: "/explore" },
+      { name: "Port Harcourt", link: "/explore" },
+      { name: "Accra", link: "/explore" },
     ],
   },
   {
     title: "Explore",
     links: [
-      { name: "Get paid", link: "/" },
-      { name: "Book a vehicle", link: "/" },
-      { name: "Vehicle types", link: "/" },
-      { name: "Find your location", link: "/" },
+      { name: "Get paid", link: "https://www.host.muvment.ng" },
+      { name: "Book a vehicle", link: "/explore" },
+      { name: "Vehicle types", link: "/explore" },
+      { name: "Find your location", link: "/explore" },
     ],
   },
 ];
@@ -51,6 +51,9 @@ type Props = {};
 
 function Footer({}: Props) {
   const { addSubscriber } = useNewsletter();
+
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="px-2 md:px-10 md:pb-[220px]">
       <div className="py-8 md:py-20 px-6 md:px-[60px] lg:px-[100px] 3xl:px-[143px] bg-grey-75 md:rounded-[74px]">
@@ -137,10 +140,10 @@ function Footer({}: Props) {
           <div className="flex flex-col md:flex-row justify-between items-center pt-10 border-t border-grey-200">
             <div className="w-full md:w-fit flex flex-col md:flex-row items-center gap-5 md:gap-10">
               <div className="w-full md:w-fit flex flex-col md:flex-row md:items-center gap-5 md:gap-10 text-xl md:text-base">
-                <Link href="/" className="font-medium">
+                <Link href="/terms-of-service" className="font-medium">
                   Terms of Service
                 </Link>
-                <Link href="/" className="font-medium">
+                <Link href="/privacy-policy" className="font-medium">
                   Privacy Policy
                 </Link>
               </div>
@@ -150,8 +153,8 @@ function Footer({}: Props) {
                 <Link href="/">{Icons.ic_tiktok}</Link>
               </div>
             </div>
-            <p className="text-sm md:text-base text-grey-400 text-sm md:text-base">
-              © 2024 Muvment. All rights reserved.
+            <p className="text-sm md:text-base text-grey-400 ">
+              © <span>{currentYear}</span> Muvment. All rights reserved.
             </p>
           </div>
         </div>

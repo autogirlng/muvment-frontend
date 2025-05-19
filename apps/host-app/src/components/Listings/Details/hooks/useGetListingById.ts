@@ -43,7 +43,8 @@ export default function useGetListingById({ id }: { id: string }) {
         data?.VehicleImage?.other,
       ];
     }
-    return [{}];
+    console.log("data images", data);
+    return [];
   }, [data]);
 
   return {
