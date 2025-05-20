@@ -25,12 +25,12 @@ export default function useDocumentInformationForm({
   const { vehicle } = useAppSelector((state) => state.vehicleOnboarding);
 
   const initialValues: DocumentVehicleInformationValues = {
-    authorizationLetter: vehicle?.document.authorizationLetter ?? "",
-    insuranceCertificate: vehicle?.document.insuranceCertificate ?? "",
-    maintenanceHistory: vehicle?.document.maintenanceHistory ?? "",
-    proofOfOwnership: vehicle?.document.proofOfOwnership ?? "",
-    vehicleInspectionReport: vehicle?.document.vehicleInspectionReport ?? "",
-    vehicleRegistration: vehicle?.document.vehicleRegistration ?? "",
+    authorizationLetter: vehicle?.document?.authorizationLetter ?? "",
+    insuranceCertificate: vehicle?.document?.insuranceCertificate ?? "",
+    maintenanceHistory: vehicle?.document?.maintenanceHistory ?? "",
+    proofOfOwnership: vehicle?.document?.proofOfOwnership ?? "",
+    vehicleInspectionReport: vehicle?.document?.vehicleInspectionReport ?? "",
+    vehicleRegistration: vehicle?.document?.vehicleRegistration ?? "",
   };
 
   const saveStep5 = useMutation({
