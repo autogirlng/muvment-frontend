@@ -4,7 +4,7 @@ import BackLink from "@/components/BackLink";
 import AdditionalInformation from "@/components/VehicleOnboarding/AdditionalInformation";
 import AvailabilityAndPricing from "@/components/VehicleOnboarding/AvailabilityAndPricing";
 import BasicVehicleInformation from "@/components/VehicleOnboarding/BasicInformation";
-import VehiclePhotos from "@/components/VehicleOnboarding/VehiclePhotos";
+import VehiclePhotos from "@/components/VehiclePhotos";
 import VehicleSummary from "@/components/VehicleOnboarding/VehicleSummary";
 import { Stepper } from "@repo/ui/stepper";
 import useVehicleOnboarding from "../../../hooks/useVehicleOnboarding";

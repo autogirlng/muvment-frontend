@@ -24,6 +24,7 @@ export default function useDocumentInformationForm({
   const dispatch = useAppDispatch();
   const { vehicle } = useAppSelector((state) => state.vehicleOnboarding);
 
+  console.log(vehicle?.document);
   const initialValues: DocumentVehicleInformationValues = {
     authorizationLetter: vehicle?.document?.authorizationLetter ?? "",
     insuranceCertificate: vehicle?.document?.insuranceCertificate ?? "",

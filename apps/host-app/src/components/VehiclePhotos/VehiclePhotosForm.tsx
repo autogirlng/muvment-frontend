@@ -3,9 +3,10 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import { Formik, Form } from "formik";
 import { vehiclePhotosSchema } from "@/utils/validationSchema";
 import { VehiclePhotos } from "@/utils/types";
-import { StepperNavigation } from "@/components/shared/stepper";
-import PhotoUpload from "@/components/shared/photoUpload";
+import { StepperNavigation } from "@repo/ui/stepper";
+import PhotoUpload from "@repo/ui/photoUpload";
 import useVehiclePhotosForm from "@/components/VehiclePhotos/useVehiclePhotosForm";
+import { photoUploadTips } from "@/utils/data";
 
 type Props = {
   steps: string[];
@@ -28,6 +29,7 @@ const VehiclePhotosForm = ({
     saveStep3,
     appendFormData,
     photoViewOptions,
+    handlePhotoDelete,
   } = useVehiclePhotosForm({ setPhotoTipIndex, currentStep, setCurrentStep });
 
   // Set the initial photoTipIndex when the component mounts
@@ -35,8 +37,6 @@ const VehiclePhotosForm = ({
     const filledFields = photoViewOptions.filter(
       (view) => initialValues[view.name as keyof VehiclePhotos]
     );
-    console.log(filledFields);
-
     if (filledFields.length > 0) {
       setPhotoTipIndex(filledFields.length - 1);
     } else {
@@ -50,12 +50,14 @@ const VehiclePhotosForm = ({
       initialValues={initialValues}
       validationSchema={vehiclePhotosSchema}
       onSubmit={(values, { setSubmitting }) => {
+        console.log(values);
+
         const formData = appendFormData(values);
         console.log("values", values);
         console.log("Form data:", formData);
 
-        submitStep3.mutate(formData);
-        setSubmitting(false);
+        // submitStep3.mutate(formData);
+        // setSubmitting(false);
       }}
     >
       {({
@@ -88,6 +90,7 @@ const VehiclePhotosForm = ({
                   />
                 }
                 value={values[fieldName]}
+                fieldName={fieldName}
                 onChange={(fieldName, file) => {
                   setFieldTouched(fieldName, true);
                   setFieldValue(fieldName, file);
@@ -96,7 +99,11 @@ const VehiclePhotosForm = ({
                     (view) => view.name === fieldName
                   );
 
-                  setPhotoTipIndex(currentIndex + 1);
+                  if (currentIndex + 1 < photoUploadTips.length) {
+                    setPhotoTipIndex(currentIndex + 1);
+                  } else {
+                    setPhotoTipIndex(photoUploadTips.length - 1);
+                  }
 
                   const updatedViews = photoViews.map((view, idx) => {
                     if (idx === currentIndex + 1) {
@@ -106,6 +113,7 @@ const VehiclePhotosForm = ({
                   });
                   setPhotoViews(updatedViews);
                 }}
+                handlePhotoDelete={handlePhotoDelete}
                 // error={
                 //   errors[fieldName] && touched[fieldName]
                 //     ? errors[fieldName]
@@ -130,6 +138,7 @@ const VehiclePhotosForm = ({
             disableNextButton={
               !isValid || isSubmitting || submitStep3.isPending
             }
+            showSaveDraftButton
           />
         </Form>
       )}
