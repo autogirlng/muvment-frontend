@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { TipsPopup } from "@/components/shared/popup";
+import { TipsPopup } from "@repo/ui/popup";
 import Tips from "@/components/VehicleOnboarding//Tips";
-import VehiclePhotosForm from "@/components/VehiclePhotos/VehiclePhotosForm";
-import VehiclePhotosTips from "@/components/VehiclePhotos/VehiclePhotosTips";
-
+import VehiclePhotosForm from "./VehiclePhotosForm";
+import VehiclePhotosTips from "./VehiclePhotosTips";
 type Props = {
   steps: string[];
   currentStep: number;

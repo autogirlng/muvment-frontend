@@ -3,10 +3,9 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import { Formik, Form } from "formik";
 import { vehiclePhotosSchema } from "@/utils/validationSchema";
 import { VehiclePhotos } from "@/utils/types";
-import { StepperNavigation } from "@/components/shared/stepper";
-import PhotoUpload from "@/components/shared/photoUpload";
-import useVehiclePhotosForm from "@/components/VehiclePhotos/useVehiclePhotosForm";
-
+import { StepperNavigation } from "@repo/ui/stepper";
+import PhotoUpload from "@repo/ui/photoUpload";
+import useVehiclePhotosForm from "./useVehiclePhotosForm";
 type Props = {
   steps: string[];
   setPhotoTipIndex: Dispatch<SetStateAction<number>>;
@@ -120,10 +119,10 @@ const VehiclePhotosForm = ({
             steps={steps}
             currentStep={currentStep}
             setCurrentStep={setCurrentStep}
-            handleSaveDraft={() => {
+            handleSaveDraft={async () => {
               const formData = appendFormData(values);
               console.log(formData);
-              saveStep3.mutate(formData);
+              await saveStep3.mutate(formData);
             }}
             isSaveDraftloading={saveStep3.isPending}
             isNextLoading={isSubmitting || submitStep3.isPending}

@@ -4,13 +4,13 @@ import BackLink from "@/components/BackLink";
 import AdditionalInformation from "@/components/VehicleOnboarding/AdditionalInformation";
 import AvailabilityAndPricing from "@/components/VehicleOnboarding/AvailabilityAndPricing";
 import BasicVehicleInformation from "@/components/VehicleOnboarding/BasicInformation";
-import VehiclePhotos from "@/components/VehiclePhotos";
 import VehicleSummary from "@/components/VehicleOnboarding/VehicleSummary";
 import { Stepper } from "@repo/ui/stepper";
 import useVehicleOnboarding from "../../../hooks/useVehicleOnboarding";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import { useState } from "react";
 import DocumentInformation from "@/components/VehicleOnboarding/DocumentInformation";
+import VehiclePhotos from "@/components/VehicleOnboarding/VehiclePhotos";
 
 const steps = [
   "Basic Details",
@@ -63,7 +63,6 @@ export default function VehicleOnboardingPage() {
               setCurrentStep={handleCurrentStep}
             />
           )}
-          {/* upload docs */}
           {currentStep === 2 && (
             <DocumentInformation
               steps={steps}
