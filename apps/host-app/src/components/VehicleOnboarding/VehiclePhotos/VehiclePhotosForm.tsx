@@ -90,13 +90,10 @@ const VehiclePhotosForm = ({
                 onChange={(fieldName, file) => {
                   setFieldTouched(fieldName, true);
                   setFieldValue(fieldName, file);
-
                   const currentIndex = photoViews.findIndex(
                     (view) => view.name === fieldName
                   );
-
                   setPhotoTipIndex(currentIndex + 1);
-
                   const updatedViews = photoViews.map((view, idx) => {
                     if (idx === currentIndex + 1) {
                       return { ...view, disabled: file === null };
@@ -105,12 +102,11 @@ const VehiclePhotosForm = ({
                   });
                   setPhotoViews(updatedViews);
                 }}
-                // error={
-                //   errors[fieldName] && touched[fieldName]
-                //     ? errors[fieldName]
-                //     : ""
-                // }
                 disabled={item.disabled}
+                fieldName={item.name}
+                handlePhotoDelete={() => {
+                  setFieldValue(item.name, null);
+                }}
               />
             );
           })}
