@@ -36,6 +36,8 @@ const SearchInput = ({
       type="text"
       id="search"
       placeholder={placeholder}
+      style={{ boxShadow: "none" }}
+      autoComplete="off"
       className={cn(
         "pl-9 w-full rounded-[18px] p-4 text-sm h-12 gap-[5px] outline-none data-[placeholder]:text-grey-400 disabled:bg-grey-100 disabled:text-grey-400 disabled:border-grey-300",
         inputClass,

@@ -20,10 +20,13 @@ export default function NavPopup({ handleClick, user }: Props) {
             size="!w-11 !h-11"
           />
           <div className="space-y-1">
-            <p className="text-sm">
+            <p className="text-sm text-black">
               {user.businessName ?? `${user.firstName} ${user.lastName}`}
             </p>
-            <Link href="/account" className="text-xs text-primary-500">
+            <Link
+              href="/account"
+              className="text-xs text-black hover:text-primary-500 transition-colors duration-200"
+            >
               View Account
             </Link>
           </div>

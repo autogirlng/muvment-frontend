@@ -3,9 +3,14 @@ import React from "react";
 interface NumberedListProps {
   items: { title?: string; content?: string; subItems?: string[] }[];
   className?: string;
+  linkItems?: { type: string; href: string }[];
 }
 
-export const NumberedList = ({ items, className = "" }: NumberedListProps) => (
+export const NumberedList = ({
+  items,
+  className = "",
+  linkItems,
+}: NumberedListProps) => (
   <ol className={`list-decimal pl-6 space-y-4 ${className}`}>
     {items.map((item, index) => (
       <li key={index} className="text-base text-gray-800">
@@ -19,7 +24,16 @@ export const NumberedList = ({ items, className = "" }: NumberedListProps) => (
           <ul className="list-disc pl-6 mt-2 space-y-1">
             {item.subItems.map((subItem, subIndex) => (
               <li key={subIndex} className="text-gray-700  text-[14px]">
-                {subItem}
+                {linkItems && linkItems[subIndex] ? (
+                  <a
+                    href={linkItems[subIndex].href}
+                    className="text-blue-600 hover:underline"
+                  >
+                    {subItem}
+                  </a>
+                ) : (
+                  <p>{subItem}</p>
+                )}
               </li>
             ))}
           </ul>

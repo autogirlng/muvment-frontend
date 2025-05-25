@@ -11,7 +11,10 @@ type HowItWorksProps = {
 
 function HowItWorks({ title, steps, className }: Props) {
   return (
-    <section className={cn("py-[120px] md:pt-0 md:pb-[200px]", className)}>
+    <section
+      id="how-it-works"
+      className={cn("py-[120px] md:pt-[100px] md:pb-[200px]", className)}
+    >
       <div className="space-y-8 md:space-y-[141px] max-w-[914px] mx-auto px-5 md:px-0">
         <h1
           className={

@@ -17,98 +17,153 @@ function PrivacyPolicy() {
   });
 
   const sections = [
-    { id: "general-terms", label: "General Terms" },
-    { id: "general-rental", label: "General Rentals" },
-    { id: "cancellation-refunds", label: "Cancellation and Refunds" },
+    { id: "policy-statement", label: "Policy Statement" },
+    { id: "collection-of-information", label: "Collection of Information" },
+    { id: "use-of-information", label: "Use of Information" },
+    { id: "sharing-of-information", label: "Sharing of Information" },
+    { id: "data-retention-and-security", label: "Data Retention and Security" },
+    { id: "your-rights", label: "Your Rights" },
+    { id: "policy-changes", label: "Policy Changes" },
+    { id: "questions-and-changes", label: "Questions and Changes" },
+    { id: "contact-information", label: "Contact Information" },
   ];
 
-  const generalTerms = [
-    " By making a payment for any of Muvment services after receiving an invoice, you agree to abide by these Terms and Conditions. It is assumed that you have read, understood, and accepted all terms herein.",
+  const policyStatement = [
+    "Welcome to Muvment's Privacy Policy. We are a Nigerian Vehicle Rental Company providing Cars, Boats, and Jets. This policy outlines how we collect, use, store, and protect your personal information. It also details your rights regarding that information. Please note, this policy does not apply to our licensees, affiliates, or other third parties you may interact with through our services.",
   ];
 
-  const generalRentalItems = [
-    { title: "Standard Rental hours are 12 hours." },
+  const collectionOfInformation = [
+    { title: "Methods of Collection:", content: "" },
     {
-      title:
-        "You will have to pay for every extra hour spent outside your 12-hour booking period.",
-    },
-    {
-      title:
-        "You have an hour to inspect or reject a vehicle based on mechanical faults such as faulty AC.",
-    },
-    {
-      title:
-        "Accommodation should be provided for drivers for journey or 24 hours bookings.",
-    },
-    {
-      title:
-        "Our general pricing applies within central city areas. Outskirts locations attract extra charges. Outskirts locations include but not limited to Sangotedo, Badagry, Amuwo Odofin, Festac Town, Alaba, Ikorodu Town, Agbara, Agege, Epe, Free Trade Zone, Igando, Akowonjo, Dopemu, Ajah, Agbado, Ojodu Berger, Ajegunle, Ibese, Iyana Ipaja, Alimoso, Ibeju Lekki.",
-    },
-    {
-      title:
-        "We will provide 15 litres of fuel for your ride, in the event the fuel finishes during trips, you will be responsible for fueling an amount that can complete your ride.",
-    },
-    {
-      title:
-        "For travels, we only give a full tank, afterward, you will be responsible for fueling the car when the fuel finishes.",
-    },
-    {
-      title:
-        "If you know you will be extending beyond your stated time, you will have to place the request and make payment before the expiration of those 12 hours.",
-    },
-    {
-      title:
-        "The driver is allowed to leave when the time has expired after giving a call or dropping a text message notice of expiration for the client.",
-    },
-    {
-      title:
-        "For bookings that are three days or longer, please note that the chauffeur initially assigned to you may be replaced by another verified and professional chauffeur from our office. This is done to ensure your safety and well-being, as our chauffeurs are given regular rest periods to stay alert on the job. Rest assured that any replacement chauffeur will be fully qualified to provide you with the same high-quality service that you expect from us.",
-    },
-    {
-      title:
-        "If a client forgets an item behind in our rental, they are expected to notify us within a 24-hour window after which we are not liable for the missing item if it was left in our rental vehicle.",
-    },
-    {
-      title:
-        "A journey beyond Lagos is a full-day booking, and the rental period does not extend after you are back in Lagos.",
-    },
-    {
-      title:
-        "Fuel Purchase Requirement: For rentals requiring the customer to refuel/fuel the vehicle, there is a mandatory minimum fuel purchase to ensure the proper functioning and maintenance of our fuel pumps. Customers renting SUVs must purchase a minimum of ₦10,000 worth of fuel, while those renting Sedans are required to purchase at least ₦5,000 worth of fuel. This policy helps maintain the optimal operation of our vehicles and ensures that each is adequately fueled for performance and reliability.",
-    },
-    {
-      title:
-        "Customers are solely responsible for any disputes, chargebacks, or reversals of transactions, and the Company is entitled to deduct such amounts from the payment due.",
-    },
-  ];
-
-  const cancellationNoticeItems = [
-    {
-      title: "Cancellations with less than 72 hours’ notice",
-      content: "Bookings canceled within this period will not be refunded.",
-    },
-    {
-      title: "Cancellations with more than 72 hours’ notice",
-      content:
-        "50% of the booking price will be forfeited. The remaining 50% can be refunded (processed within 24 hours of the request) or converted into booking credit for future use.",
-    },
-    {
-      title: "Peak Period Bookings (December)",
-      content:
-        "Due to high demand during the festive season, all December bookings are non-cancellable and non-refundable. Please ensure you are certain of your travel dates before finalizing your booking.",
-    },
-    {
-      title: "Faulty Vehicle Refunds",
-      content:
-        "Refunds are permissible if a vehicle is found to be faulty. However, the issue must be reported to Muvment within one hour of vehicle use to qualify for a refund.",
-    },
-    {
-      title: "Cancellation Process",
-      content:
-        "To cancel a booking, clients must submit a formal request via WhatsApp or by contacting our customer support team.",
+      title: "We collect personal data through various channels, including:",
+      content: "",
       subItems: [
-        "The request must include the reason for cancellation.",
-        "If the request is not properly communicated through these channels before the scheduled start time, the booking period will commence as planned.",
+        "Our websites and mobile apps",
+        "Phone calls and customer service contacts",
+        "Rental vehicles",
+        "Third-party service providers and business partners",
+      ],
+    },
+    {
+      title: "Types of Information Collected:",
+      content: "",
+      subItems: [
+        "Personal Information: Name, age, gender, address, email, phone number, passport number, driver's license, ID photographs, pickup/drop-off locations, areas of use, and duration of use.",
+        "Technological Information: IP address, device ID, browser type, operating system, mobile device identifiers, geo-location data, and details about your interactions with our websites.",
+        "Rental Information: Name, email, phone number, pickup/drop-off locations, charges incurred, and duration of use.",
+        "Vehicle Data: Telematics data such as vehicle condition, performance, location, and driver operation during the rental period.",
+        "Sensitive Data: Health-related information for accommodations or in case of an accident, collected with your consent.",
+        "Cookies and Online Data Collection: We use cookies to enhance your experience on our websites. Cookies help with website functionality, performance analysis, and targeted advertising. You may manage your cookie preferences through your browser settings.",
+      ],
+    },
+  ];
+
+  const useOfInformation = [
+    {
+      title: "Purpose:",
+      content: "",
+      subItems: [
+        "Operations and Services: To provide the services you request, including rental reservations, billing, and customer support.",
+        "Marketing: With your consent, to send you promotional offers and information about our products and services.",
+        "Third-Party Marketing: With your consent, to share your information with third parties that may offer promotions of interest to you.",
+        "Business Operations: To comply with legal obligations, protect our interests, enforce our terms, and manage business transactions.",
+        "Telematics: To track vehicle performance, safety, and location for billing accuracy and security.",
+      ],
+    },
+  ];
+
+  const sharingOfInformation = [
+    {
+      title: "With Service Providers and Partners:",
+      content:
+        "We may share your personal data with trusted third-party providers and partners to fulfill services, process transactions, and enhance your rental experience. This includes:",
+      subItems: [
+        "Agents, licensees, and companies involved in your rental.",
+        "Service providers who assist in business operations, marketing, and research.",
+      ],
+    },
+    {
+      title: "For Legal and Protective Reasons:",
+      content:
+        "We may disclose your data to comply with legal requirements, protect our rights, and manage claims or disputes.",
+    },
+    {
+      title: "Corporate Transactions:",
+      content:
+        "In a merger, sale, or other business transaction, your data may be transferred as part of the process.",
+    },
+  ];
+
+  const dataRetentionAndSecurity = [
+    {
+      title: "Data Retention:",
+      content:
+        "We retain personal data as long as necessary for the purposes it was collected, or as required by law. Retention periods vary based on the type of data and legal obligations.",
+    },
+    {
+      title: "Security Measures:",
+      content:
+        "We implement reasonable administrative, technical, and physical measures to safeguard your data against unauthorized access, loss, or modification. Servers storing your data are primarily located in Nigeria, with some information stored in other locations.",
+    },
+    {
+      title: "Transmission Security:",
+      content:
+        "While we strive to protect your data, no transmission method is completely secure. We encourage you to use secure communication methods when necessary and avoid sharing sensitive information through unencrypted channels.",
+    },
+  ];
+
+  const yourRights = [
+    {
+      title: "You have the following rights regarding your personal data:",
+      content: "",
+      subItems: [
+        "Access and Update: Request access to and update your personal data.",
+        "Rectification: Correct any inaccuracies in your personal data.",
+        "Objection to Processing: Object to the processing of your data for direct marketing or other legitimate interests.",
+        "Erasure: Request the deletion of your data under certain circumstances.",
+        "Restriction of Processing: Limit how your data is processed in specific situations.",
+        "Data Portability: Receive your data in a portable format or request its transfer to another organization.",
+        "Withdrawal of Consent: Withdraw consent for data processing at any time.",
+      ],
+    },
+    {
+      title:
+        "To exercise these rights, please contact us as described in Section 6.",
+      content: "",
+    },
+  ];
+
+  const policyChanges = [
+    {
+      title: "",
+      content:
+        "We reserve the right to update this policy at any time. Changes will be effective upon posting and will not apply retroactively. Material changes will be noted on our website with the updated date.",
+    },
+  ];
+
+  const questionsAndChanges = [
+    {
+      title: "",
+      content:
+        "Contact Us: If you have questions or concerns about our privacy practices, or wish to exercise your rights, please contact our Data Protection Officer at info@muvment.ng or write to:",
+      subItems: ["Muvment, 16 Bankole Street, Oregun, Ikeja, Lagos, Nigeria"],
+    },
+    {
+      title: "",
+      content:
+        "For general customer support inquiries, please visit our website and click the 'Contact Us' link.",
+    },
+  ];
+
+  const contactinformation = [
+    {
+      title: "",
+      content:
+        "Should you have any questions or need further clarification on any aspect of these terms, please do not hesitate to contact our customer support team at the following:",
+      subItems: ["Email: info@muvment.ng ", "Website: https://muvment.ng"],
+      link: [
+        { type: "email", href: "mailto:info@muvment.ng" },
+        { type: "website", href: "https://muvment.ng" },
       ],
     },
   ];
@@ -126,35 +181,86 @@ function PrivacyPolicy() {
         bgColor="bg-[#0673FF]"
       />
 
-      {/* Main Content Area */}
-      <div className="flex flex-col lg:flex-row pt-5 lg:pt-20">
-        {" "}
-        {/* Account for navbar height */}
-        {/* Desktop Navigation Sidebar */}
-        <div className=" lg:w-64 flex-shrink-0 px-4 sticky top-5 lg:top-20  lg:h-[calc(100vh-5rem)]">
-          <SectionNav sections={sections} />
-        </div>
-        {/* Content */}
-        <div className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <TermsContentContainer className="bg-white ">
-            <TermsSection title="General Terms" id="general-terms">
-              <ParagraphText>{generalTerms}</ParagraphText>
-            </TermsSection>
+      {/* Main Content Area - Improved Layout */}
+      <div className="pt-5 lg:pt-20">
+        {/* Container with max-width to control overall layout */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row lg:gap-8">
+            {/* Desktop Navigation Sidebar - Reduced width and better positioning */}
+            <div className="lg:w-72 xl:w-80 flex-shrink-0 sticky top-5 lg:top-20 lg:h-[calc(100vh-5rem)]">
+              <SectionNav sections={sections} />
+            </div>
 
-            <TermsSection title="General Rental" id="general-refund">
-              <NumberedList items={generalRentalItems} className="space-y-4" />
-            </TermsSection>
-
-            <TermsSection
-              title="Cancellation and Refunds"
-              id="cancellation-refunds"
-            >
-              <NumberedList
-                items={cancellationNoticeItems}
-                className="space-y-4"
-              />
-            </TermsSection>
-          </TermsContentContainer>
+            {/* Content - Removed excessive max-width constraints */}
+            <div className="flex-1 py-8 lg:py-0">
+              <TermsContentContainer className="bg-white">
+                <TermsSection title="Policy Statement" id="policy-statement">
+                  <ParagraphText>{policyStatement}</ParagraphText>
+                </TermsSection>
+                <TermsSection
+                  title="Collection of Information"
+                  id="collection-of-information"
+                >
+                  <NumberedList
+                    items={collectionOfInformation}
+                    className="space-y-4"
+                  />
+                </TermsSection>
+                <TermsSection
+                  title="Use of Information"
+                  id="use-of-information"
+                >
+                  <NumberedList
+                    items={useOfInformation}
+                    className="space-y-4"
+                  />
+                </TermsSection>
+                <TermsSection
+                  title="Sharing Of Information"
+                  id="sharing-of-information"
+                >
+                  <NumberedList
+                    items={sharingOfInformation}
+                    className="space-y-4"
+                  />
+                </TermsSection>
+                <TermsSection
+                  title="Data Retention And Security"
+                  id="data-retention-and-security"
+                >
+                  <NumberedList
+                    items={dataRetentionAndSecurity}
+                    className="space-y-4"
+                  />
+                </TermsSection>
+                <TermsSection title="Your Rights" id="your-rights">
+                  <NumberedList items={yourRights} className="space-y-4" />
+                </TermsSection>
+                <TermsSection title="Policy Changes" id="policy-changes">
+                  <NumberedList items={policyChanges} className="space-y-4" />
+                </TermsSection>
+                <TermsSection
+                  title="Questions and Changes"
+                  id="questions-and-changes"
+                >
+                  <NumberedList
+                    items={questionsAndChanges}
+                    className="space-y-4"
+                  />
+                </TermsSection>
+                <TermsSection
+                  title="Contact Information"
+                  id="contact-information"
+                >
+                  <NumberedList
+                    items={contactinformation}
+                    linkItems={contactinformation[0].link}
+                    className="space-y-4"
+                  />
+                </TermsSection>
+              </TermsContentContainer>
+            </div>
+          </div>
         </div>
       </div>
 

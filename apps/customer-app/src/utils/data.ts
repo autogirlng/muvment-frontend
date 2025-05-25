@@ -19,7 +19,6 @@ type OptionType = { option: string; value: string };
 
 export const hostAppUrl = "http://host.muvment.ng";
 
-
 export const popupNavItems = [
   {
     icon: Icons.ic_globe_search,
@@ -42,7 +41,7 @@ export const popupNavItems = [
   {
     icon: Icons.ic_whishlist,
     name: "Favorites",
-    link: "/",
+    link: "/favorites",
     border: true,
   },
   {
@@ -66,13 +65,13 @@ export const popupNavItems = [
   {
     icon: Icons.ic_help_circle,
     name: "How Muvment works",
-    link: "/",
+    link: "/how-it-works",
     border: false,
   },
   {
     icon: Icons.ic_support,
     name: "Get Help",
-    link: "/",
+    link: "/get-help",
     border: false,
   },
 
@@ -100,11 +99,11 @@ export const popupNavItemsforNoUser = [
     name: "How Muvment works",
     link: "/",
   },
-  {
+  /*   {
     icon: Icons.ic_support,
     name: "Get Help",
     link: "/",
-  },
+  }, */
 ];
 
 const currentYear = new Date().getFullYear();

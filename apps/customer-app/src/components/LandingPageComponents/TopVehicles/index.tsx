@@ -56,7 +56,7 @@ function TopVehicles({}: Props) {
   };
 
   return (
-    <section className="pt-[98px] md:pt-0 md:pb-[200px]">
+    <section className="pt-[58px] md:pt-0 md:pb-[50px]">
       <div className="container !flex items-center justify-between">
         <div className="space-y-5 text-center md:text-left">
           <span className="*:mx-auto md:*:mx-0 *:w-10 md:*:w-20">

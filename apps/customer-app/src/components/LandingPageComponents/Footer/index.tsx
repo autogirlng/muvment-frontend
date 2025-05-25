@@ -11,7 +11,12 @@ import { newLetterValidationSchema } from "@/utils/validationSchema";
 
 type FooterNavProps = {
   title: string;
-  links: { name: string; link?: string; badgeTitle?: string }[];
+  links: {
+    name: string;
+    link?: string;
+    badgeTitle?: string;
+    scrollTo?: string;
+  }[];
 };
 
 const footerNav: FooterNavProps[] = [
@@ -22,27 +27,27 @@ const footerNav: FooterNavProps[] = [
       { name: "Contact us", link: "/" },
       // { name: "Careers", link: "/", badgeTitle: "We're hiring!" },
       // { name: "Events", link: "/" },
-      { name: "FAQs", link: "/" },
+      { name: "FAQs", scrollTo: "faq" },
     ],
   },
   {
     title: "Locations",
     links: [
-      { name: "Lagos", link: "/explore" },
-      { name: "Abuja", link: "/explore" },
-      { name: "Benin City", link: "/explore" },
-      { name: "Enugu", link: "/explore" },
-      { name: "Port Harcourt", link: "/explore" },
-      { name: "Accra", link: "/explore" },
+      { name: "Lagos", link: "/explore/cities/lagos" },
+      { name: "Abuja", link: "/explore/cities/abuja" },
+      { name: "Benin City", link: "/explore/cities/benin" },
+      { name: "Enugu", link: "/explore/cities/enugu" },
+      { name: "Port Harcourt", link: "/explore/cities/port-harcourt" },
+      { name: "Accra", link: "/explore/cities/accra" },
     ],
   },
   {
     title: "Explore",
     links: [
-      { name: "Get paid", link: "https://www.host.muvment.ng" },
+      { name: "Get paid", link: "https://host.muvment.ng/" },
       { name: "Book a vehicle", link: "/explore" },
-      { name: "Vehicle types", link: "/explore" },
-      { name: "Find your location", link: "/explore" },
+      { name: "Vehicle types", scrollTo: "vehicle-categories" },
+      { name: "Find your location", scrollTo: "popular-cities" },
     ],
   },
 ];
@@ -53,6 +58,16 @@ function Footer({}: Props) {
   const { addSubscriber } = useNewsletter();
 
   const currentYear = new Date().getFullYear();
+
+  const handleScrollTo = (elementId: string) => {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
 
   return (
     <footer className="px-2 md:px-10 md:pb-[220px]">
@@ -121,7 +136,16 @@ function Footer({}: Props) {
                 <ul className="space-y-5 list-none">
                   {nav.links.map((navLink) => (
                     <li key={navLink.name} className="flex gap-1">
-                      {navLink.link ? (
+                      {navLink.scrollTo ? (
+                        <button
+                          onClick={() =>
+                            navLink.scrollTo && handleScrollTo(navLink.scrollTo)
+                          }
+                          className="text-left hover:text-primary-500"
+                        >
+                          {navLink.name}
+                        </button>
+                      ) : navLink.link ? (
                         <Link href={navLink.link}>{navLink.name}</Link>
                       ) : (
                         <span>{navLink.name}</span>
@@ -148,9 +172,33 @@ function Footer({}: Props) {
                 </Link>
               </div>
               <div className="w-full md:w-fit flex items-center justify-center gap-5 mt-5 md:mt-0 py-10 md:py-0 border-t border-grey-200 md:border-none">
-                <Link href="/">{Icons.ic_instagram}</Link>
-                <Link href="/">{Icons.ic_twitter}</Link>
-                <Link href="/">{Icons.ic_tiktok}</Link>
+                <Link
+                  href="https://www.instagram.com/autogirlng"
+                  target="_blank"
+                >
+                  {Icons.ic_instagram}
+                </Link>
+                <Link href="https://twitter.com/autogirlng" target="_blank">
+                  {Icons.ic_twitter}
+                </Link>
+                <Link
+                  href="https://www.tiktok.com/@autogirl.ng"
+                  target="_blank"
+                >
+                  {Icons.ic_tiktok}
+                </Link>
+                <Link
+                  href="https://web.facebook.com/autogirlng"
+                  target="_blank"
+                >
+                  {Icons.ic_facebook}
+                </Link>
+                <Link
+                  href="https://www.linkedin.com/company/autogirl/"
+                  target="_blank"
+                >
+                  {Icons.ic_linkedin}
+                </Link>
               </div>
             </div>
             <p className="text-sm md:text-base text-grey-400 ">

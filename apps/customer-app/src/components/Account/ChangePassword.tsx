@@ -6,7 +6,7 @@ import Button from "@repo/ui/button";
 import InputField from "@repo/ui/inputField";
 import usePasswordValidation from "@/hooks/usePasswordValidation";
 import { Eye, EyeSlash } from "@phosphor-icons/react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import useChangePassword from "./hooks/useChangePassword";
 
 export default function ChangePassword() {
@@ -20,17 +20,48 @@ export default function ChangePassword() {
   const { changePassword } = useChangePassword();
   const [showChecks, setShowChecks] = useState(true);
 
+  // Create a ref to access Formik's methods
+  const formikRef = useRef<any>(null);
+
   return (
     <Formik
+      ref={formikRef}
       initialValues={changePasswordInitialValues}
-      onSubmit={async (values, { setSubmitting }) => {
+      onSubmit={async (values, { setSubmitting, resetForm, setFieldValue }) => {
         console.log(values);
 
         const { password_checks, ...submissionValues } = values;
-        changePassword.mutate(submissionValues);
 
-        setSubmitting(false);
-        setShowChecks(false);
+        try {
+          // Submit the form
+          await changePassword.mutateAsync(submissionValues);
+
+          // If successful, clear the form and reset states
+          resetForm();
+          setShowChecks(false);
+
+          // Reset password visibility states
+          if (!isCurrentPasswordHidden) toggleCurrentHiddenPassword();
+          if (!isPasswordHidden) toggleHiddenPassword();
+
+          // Optional: You can also manually reset specific fields if needed
+          // setFieldValue('currentPassword', '');
+          // setFieldValue('password', '');
+          // setFieldValue('confirmPassword', '');
+          // setFieldValue('password_checks', {
+          //   digit: false,
+          //   length: false,
+          //   lowercase_letters: false,
+          //   no_space: false,
+          //   special_character: false,
+          //   uppercase_letters: false
+          // });
+        } catch (error) {
+          // Handle error case - form won't be cleared if submission fails
+          console.error("Password change failed:", error);
+        } finally {
+          setSubmitting(false);
+        }
       }}
       validationSchema={changePasswordValidationSchema}
       enableReinitialize={true}

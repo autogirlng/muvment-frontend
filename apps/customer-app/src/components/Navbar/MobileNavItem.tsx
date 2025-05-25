@@ -21,10 +21,11 @@ export default function MobileNavItem({
 }: Props) {
   const pathname = usePathname();
   const { logoutUser } = useLogout();
+
   return (
     <li>
       {name === "Log out" ? (
-        <button onClick={() => logoutUser()}>
+        <button onClick={() => logoutUser()} className="w-full text-left">
           <NavItem icon={icon} name={name} />
         </button>
       ) : (
@@ -32,10 +33,7 @@ export default function MobileNavItem({
           <Link
             onClick={handleClick ? handleClick : () => {}}
             href={link}
-            className={cn(
-              pathname.includes(link) ? "text-primary-500 " : "text-black",
-              className
-            )}
+            className={cn(className)}
           >
             <NavItem icon={icon} name={name} link={link} />
           </Link>
@@ -47,17 +45,31 @@ export default function MobileNavItem({
 
 const NavItem = ({ link, name, icon }: Props) => {
   const pathname = usePathname();
+  const isActive = link && pathname.includes(link);
+
   return (
     <p
       className={cn(
-        "flex items-center gap-3 py-3 text-sm 2xl:text-base",
-        link && pathname.includes(link)
+        "flex items-center gap-3 py-3 text-sm 2xl:text-base transition-colors duration-200",
+        isActive
           ? "text-primary-500"
-          : "text-grey-700 hover:text-primary-500",
-        name === "Log out" && "hover:!text-error-500"
+          : name === "Log out"
+            ? "text-black hover:text-error-500"
+            : "text-black hover:text-primary-500"
       )}
     >
-      <span className="*:!w-5 *:!h-5">{icon}</span>
+      <span
+        className={cn(
+          "*:!w-5 *:!h-5 transition-colors duration-200",
+          isActive
+            ? "text-primary-500"
+            : name === "Log out"
+              ? "text-black group-hover:text-error-500"
+              : "text-black"
+        )}
+      >
+        {icon}
+      </span>
       <span>{name}</span>
     </p>
   );

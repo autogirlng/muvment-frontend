@@ -31,7 +31,10 @@ const vehicles: optionProps[] = [
 
 function VehicleCategories({}: Props) {
   return (
-    <section className="py-[98px] md:pt-0 md:pb-[200px]">
+    <section
+      id="vehicle-categories"
+      className="py-[58px] md:pt-[100px] md:pb-[200px] my-0"
+    >
       <div className="container space-y-[70px] md:space-y-[110px]">
         <div className="container !flex items-center justify-between">
           <LandingPageSectionHeader

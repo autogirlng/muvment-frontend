@@ -6,7 +6,7 @@ type Props = {};
 
 function FAQ({}: Props) {
   return (
-    <section className="py-[120px] md:py-[200px]">
+    <section id="faq" className="py-[120px] md:py-[200px]">
       <div className="container space-y-12">
         <LandingPageSectionHeader className="text-primary-900" title="FAQs" />
         <AccordionList
