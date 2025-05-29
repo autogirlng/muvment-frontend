@@ -6,7 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
-import { logo_icon_white } from "@repo/assets";
+import { loginSignupLogo } from "@repo/assets";
+import MobileNav from "@/components/Navbar/MobileNav";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -31,16 +32,18 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
 
   return (
     <main>
+      <div className="block md:hidden">
+        <MobileNav user={null} />
+      </div>
       <div className="min-h-screen h-full flex">
         <div className="hidden md:block w-1/2 h-auto relative">
           <div className="fixed top-0 left-0 w-1/2 h-full">
             <Link href="/" className="block absolute top-10 left-14 z-10">
               <Image
-                className="w-16"
-                src={logo_icon_white}
+                src={loginSignupLogo}
                 alt="logo"
-                width={83}
-                height={83}
+                width={200}
+                height={200}
               />
             </Link>
             <Image

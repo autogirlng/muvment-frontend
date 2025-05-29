@@ -59,21 +59,21 @@ export const popupNavItems = [
   {
     icon: Icons.ic_gift,
     name: "Refer A Friend",
-    link: "/account ",
+    link: "/account?tab=referrals",
     border: true,
   },
-  {
+  /*   {
     icon: Icons.ic_help_circle,
     name: "How Muvment works",
     link: "/how-it-works",
     border: false,
-  },
-  {
+  }, */
+  /*   {
     icon: Icons.ic_support,
     name: "Get Help",
     link: "/get-help",
     border: false,
-  },
+  }, */
 
   {
     icon: Icons.ic_logout,
@@ -94,11 +94,11 @@ export const popupNavItemsforNoUser = [
     link: "/signup",
   },
 
-  {
+  /*   {
     icon: Icons.ic_help_circle,
     name: "How Muvment works",
     link: "/",
-  },
+  }, */
   /*   {
     icon: Icons.ic_support,
     name: "Get Help",

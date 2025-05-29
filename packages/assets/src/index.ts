@@ -12,6 +12,8 @@ import logo_white from "./images/logo/logo_white.png";
 import mobile_nav_logo from "./images/logo/mobile_nav_logo.png";
 import nav_logo from "./images/logo/nav_logo.png";
 import footer_logo from "./images/logo/footer_logo.png";
+import loginSignupLogo from "./images/logo/loginSignupLogo.png";
+import favouriteIcon from "./images/logo/favourite-icon.png";
 
 export {
   truck,
@@ -25,4 +27,6 @@ export {
   mobile_nav_logo,
   nav_logo,
   footer_logo,
+  loginSignupLogo,
+  favouriteIcon,
 };

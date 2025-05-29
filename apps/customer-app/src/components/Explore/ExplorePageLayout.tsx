@@ -6,6 +6,7 @@ import { FullPageSpinner } from "@repo/ui/spinner";
 import Icons from "@repo/ui/icons";
 import ExploreVehicleCard from "./VehicleCard";
 import useExploreListings from "./hooks/useExploreListings";
+import useFavorites from "./hooks/useFavorites";
 import EmptyState from "../EmptyState";
 import MainFilters from "./MainFilters";
 import AllFilters from "./AllFilters";
@@ -48,6 +49,7 @@ export default function ExplorePageLayout({
   untilTime,
 }: Props) {
   const { user } = useAppSelector((state) => state.user);
+  const { favoriteVehicleIds } = useFavorites();
   const pageLimit = 10;
 
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -96,6 +98,12 @@ export default function ExplorePageLayout({
     untilTime: untilTimeValue?.toISOString(),
     location,
   });
+
+  // Fetch user's favorite vehicles
+  useEffect(() => {
+    // The useFavorites hook automatically handles fetching favorites
+    // No need for manual API calls here
+  }, [user]);
 
   useEffect(() => {
     setCurrentPage(1);

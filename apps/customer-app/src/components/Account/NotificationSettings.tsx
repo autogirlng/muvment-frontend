@@ -11,6 +11,7 @@ export default function NotificationSettings({}: Props) {
     isLoading,
     notificationSettings,
     updateNotificationSettings,
+    loadingStates,
   } = useUpdateNotificationSettings();
 
   return (
@@ -25,15 +26,16 @@ export default function NotificationSettings({}: Props) {
           <NotificationSettingsWrapper
             title="Email Notifications"
             description="Do you want receive notifications via emails?"
-            loading={updateNotificationSettings.isPending}
+            loading={loadingStates.emailNotifications}
           >
             <AppSwitch
               id="emailNotifications"
               name="emailNotifications"
               value={notificationSettings.emailNotifications}
-              disabled={updateNotificationSettings.isPending}
+              disabled={loadingStates.emailNotifications}
               onChange={(checked) => {
                 updateNotificationSettings.mutate({
+                  type: "emailNotifications",
                   emailNotifications: checked,
                   smsNotifications: notificationSettings.smsNotifications,
                 });
@@ -43,22 +45,19 @@ export default function NotificationSettings({}: Props) {
           <NotificationSettingsWrapper
             title="SMS Notifications"
             description="Do you want receive notifications via SMS?"
-            loading={updateNotificationSettings.isPending}
+            loading={loadingStates.smsNotifications}
           >
             <AppSwitch
               id="smsNotifications"
               name="smsNotifications"
               value={notificationSettings.smsNotifications}
-              disabled={updateNotificationSettings.isPending}
+              disabled={loadingStates.smsNotifications}
               onChange={(checked) => {
                 updateNotificationSettings.mutate({
+                  type: "smsNotifications",
                   emailNotifications: notificationSettings.emailNotifications,
                   smsNotifications: checked,
                 });
-                // setNotificationSettings((prev) => ({
-                //   ...prev,
-                //   smsNotifications: checked,
-                // }));
               }}
             />
           </NotificationSettingsWrapper>

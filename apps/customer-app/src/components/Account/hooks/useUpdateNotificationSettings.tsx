@@ -10,7 +10,24 @@ import { toast } from "react-toastify";
 import { useHttp } from "@/hooks/useHttp";
 
 interface NotificationSettings {
-  [key: string]: boolean;
+  emailNotifications: boolean;
+  smsNotifications: boolean;
+}
+
+interface NotificationSettingsResponse extends NotificationSettings {
+  id: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface MutationPayload extends NotificationSettings {
+  type: "emailNotifications" | "smsNotifications";
+}
+
+interface LoadingStates {
+  emailNotifications: boolean;
+  smsNotifications: boolean;
 }
 
 export default function useUpdateNotificationSettings() {
@@ -18,19 +35,25 @@ export default function useUpdateNotificationSettings() {
   const { user } = useAppSelector((state) => state.user);
   const [notificationSettings, setNotificationSettings] =
     useState<NotificationSettings>({
-      emailNotifications: true,
-      smsNotifications: true,
+      emailNotifications: false,
+      smsNotifications: false,
     });
 
+  const [loadingStates, setLoadingStates] = useState<LoadingStates>({
+    emailNotifications: false,
+    smsNotifications: false,
+  });
+
+  // Fetch user settings
   const { data, isError, error, isLoading, isSuccess } = useQuery({
     queryKey: ["getNotificationSettings"],
-    queryFn: () => http.get<NotificationSettings>(`/api/settings/user`),
+    queryFn: () => http.get<NotificationSettingsResponse>(`/api/settings/user`),
     enabled: !!user?.id,
     retry: false,
   });
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && data) {
       console.log("notification settings fetched successfully", data);
       const { id, userId, updatedAt, createdAt, ...settings } = data;
       setNotificationSettings(settings);
@@ -43,21 +66,43 @@ export default function useUpdateNotificationSettings() {
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isError, isSuccess]);
+  }, [isError, isSuccess, data]);
 
   const updateNotificationSettings = useMutation({
-    mutationFn: (values: NotificationSettings) => {
-      return http.put<NotificationSettings>("/api/settings", values);
+    mutationFn: (values: MutationPayload) => {
+      const { type, ...payload } = values;
+      return http.put<NotificationSettingsResponse>("/api/settings", payload);
     },
 
-    onSuccess: (data) => {
+    onMutate: (variables) => {
+      // Set loading state for specific notification type
+      setLoadingStates((prev) => ({
+        ...prev,
+        [variables.type]: true,
+      }));
+    },
+
+    onSuccess: (data, variables) => {
       console.log("Notification settings updated Successfully", data);
       const { id, userId, updatedAt, createdAt, ...settings } = data;
       setNotificationSettings(settings);
-      toast.success("Notification settings updated successfully ");
+
+      // Clear loading state for specific notification type
+      setLoadingStates((prev) => ({
+        ...prev,
+        [variables.type]: false,
+      }));
+
+      toast.success("Notification settings updated successfully");
     },
 
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<ErrorResponse>, variables) => {
+      // Clear loading state for specific notification type
+      setLoadingStates((prev) => ({
+        ...prev,
+        [variables.type]: false,
+      }));
+
       handleErrors(error, "update Notification settings");
     },
   });
@@ -68,7 +113,7 @@ export default function useUpdateNotificationSettings() {
     isError,
     error,
     isLoading,
-
+    loadingStates,
     updateNotificationSettings,
   };
 }

@@ -5,6 +5,7 @@ import { Form, Formik } from "formik";
 import { getCountryCallingCode } from "react-phone-number-input";
 import { signUpFormInitialValues } from "@/utils/initialValues";
 import { signupFormValidationSchema } from "@/utils/validationSchema";
+import * as Yup from "yup";
 import useAuth from "@/hooks/useAuth";
 import Button from "@repo/ui/button";
 import InputField from "@repo/ui/inputField";
@@ -16,11 +17,57 @@ import { replaceCharactersWithString } from "@/utils/functions";
 export default function SignupPage() {
   const { signupMutation } = useAuth();
 
+  // Custom validation schema that accepts 10-digit phone numbers
+  const customValidationSchema = signupFormValidationSchema.shape({
+    phoneNumber: Yup.string()
+      .matches(/^[0-9]{10}$/, "Phone number must be exactly 10 digits")
+      .required("Phone number is required"),
+  });
+
+  const handlePhoneNumberChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    setFieldValue: any,
+    setFieldTouched: any
+  ) => {
+    const rawNumber = replaceCharactersWithString(event.target.value);
+
+    // Auto-remove leading 0 if present and limit to 10 digits
+    let formattedNumber = rawNumber;
+
+    if (rawNumber.startsWith("0") && rawNumber.length === 11) {
+      // Remove leading 0 for 11-digit numbers starting with 0
+      formattedNumber = rawNumber.substring(1);
+    } else {
+      // Limit to 10 digits maximum
+      formattedNumber = rawNumber.slice(0, 10);
+    }
+
+    setFieldTouched("phoneNumber", true);
+    setFieldValue("phoneNumber", formattedNumber);
+  };
+
+  const getPhoneNumberPlaceholder = (country: string) => {
+    return "Enter 10-digit phone number";
+  };
+
+  const getPhoneNumberHelper = (phoneNumber: string) => {
+    if (phoneNumber.length === 0) {
+      return "Enter your 10-digit phone number";
+    }
+    if (phoneNumber.length < 10) {
+      return `${10 - phoneNumber.length} more digits needed`;
+    }
+    if (phoneNumber.length === 10) {
+      return "Perfect! Your number is ready";
+    }
+    return "";
+  };
+
   return (
     <div className="space-y-10">
       <AuthPageHeader
-        title="Become A Host"
-        description=" Generate Extra Income with Your Vehicle"
+        title="Sign Up"
+        description="Fuel your next adventure with a ride from Muvment."
       />
 
       <Formik
@@ -32,7 +79,7 @@ export default function SignupPage() {
           signupMutation.mutate(submissionValues);
           setSubmitting(false);
         }}
-        validationSchema={signupFormValidationSchema}
+        validationSchema={customValidationSchema}
         enableReinitialize={true}
         validateOnChange={true}
         validateOnBlur={true}
@@ -83,41 +130,50 @@ export default function SignupPage() {
                   }
                 />
               </div>
-              <PhoneNumberAndCountryField
-                inputName="phoneNumber"
-                selectName="country"
-                inputId="phoneNumber"
-                selectId="country"
-                label="Phone Number"
-                inputPlaceholder="Enter phone number"
-                selectPlaceholder="+234"
-                inputValue={values.phoneNumber}
-                selectValue={values.country}
-                inputOnChange={(event) => {
-                  const number = replaceCharactersWithString(
-                    event.target.value
-                  );
-                  setFieldTouched("phoneNumber", true);
-                  setFieldValue("phoneNumber", number);
-                }}
-                selectOnChange={(value: string) => {
-                  const countryCode = `+${getCountryCallingCode(value as any)}`;
-                  setFieldValue("country", value);
-                  setFieldValue("countryCode", countryCode);
-                }}
-                inputOnBlur={handleBlur}
-                selectOnBlur={handleBlur}
-                // inputClassname
-                selectClassname="!w-[130px]"
-                inputError={
-                  errors.phoneNumber && touched.phoneNumber
-                    ? errors.phoneNumber
-                    : ""
-                }
-                selectError={
-                  errors.country && touched.country ? errors.country : ""
-                }
-              />
+              <div>
+                <PhoneNumberAndCountryField
+                  inputName="phoneNumber"
+                  selectName="country"
+                  inputId="phoneNumber"
+                  selectId="country"
+                  label="Phone Number"
+                  inputPlaceholder={getPhoneNumberPlaceholder(values.country)}
+                  selectPlaceholder="+234"
+                  inputValue={values.phoneNumber}
+                  selectValue={values.country}
+                  inputOnChange={(event) =>
+                    handlePhoneNumberChange(
+                      event,
+                      setFieldValue,
+                      setFieldTouched
+                    )
+                  }
+                  selectOnChange={(value: string) => {
+                    const countryCode = `+${getCountryCallingCode(value as any)}`;
+                    setFieldValue("country", value);
+                    setFieldValue("countryCode", countryCode);
+                    // Clear phone number when country changes to avoid format confusion
+                    setFieldValue("phoneNumber", "");
+                  }}
+                  inputOnBlur={handleBlur}
+                  selectOnBlur={handleBlur}
+                  selectClassname="!w-[130px]"
+                  inputError={
+                    errors.phoneNumber && touched.phoneNumber
+                      ? errors.phoneNumber
+                      : ""
+                  }
+                  selectError={
+                    errors.country && touched.country ? errors.country : ""
+                  }
+                />
+                {/* Helper text for better UX */}
+                {values.phoneNumber && !errors.phoneNumber && (
+                  <p className="text-xs text-grey-500 mt-1 ml-1">
+                    {getPhoneNumberHelper(values.phoneNumber)}
+                  </p>
+                )}
+              </div>
 
               <InputField
                 name="email"
@@ -157,7 +213,7 @@ export default function SignupPage() {
               />
 
               <p className="text-grey-500 text-sm 2xl:text-base">
-                Already a host?{" "}
+                Already a user?{" "}
                 <Link href="/login" className="text-primary-500">
                   Sign In
                 </Link>
@@ -189,11 +245,11 @@ export default function SignupPage() {
       </Formik>
       <p className="!mt-[74px] text-center text-sm text-grey-500">
         By signing up you agree to Muvment&apos;s{" "}
-        <Link href="/" className="text-black underline">
+        <Link href="/privacy-policy" className="text-black underline">
           Privacy Policy
         </Link>{" "}
         and{" "}
-        <Link href="/" className="text-black underline">
+        <Link href="/terms-of-service" className="text-black underline">
           Terms of Service
         </Link>
       </p>

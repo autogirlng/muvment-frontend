@@ -16,7 +16,7 @@ const AccordionList = ({
   >
     {accordion.map((item, index) => (
       <AccordionItem value={`item-${index + 1}`} key={index}>
-        <AccordionTrigger>{item.title}</AccordionTrigger>
+        <AccordionTrigger className="text-left">{item.title}</AccordionTrigger>
         <AccordionContent>{item.content}</AccordionContent>
       </AccordionItem>
     ))}
