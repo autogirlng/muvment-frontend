@@ -1,12 +1,17 @@
+// Updated BookingHistory.tsx
 import { useEffect, useState } from "react";
 import Pagination from "@repo/ui/pagination";
 import BookingAnalyticsTable from "@/components/BookingsAnalytics/Table";
+import BookingCalendar from "@/components/BookingsAnalytics/BookingCalendar";
 import useBookings from "./hooks/useBookings";
 import { FullPageSpinner } from "@repo/ui/spinner";
 
-type Props = { filters?: Record<string, string[]> };
+type Props = {
+  filters?: Record<string, string[]>;
+  viewMode?: "table" | "calendar";
+};
 
-export default function BookingHistory({ filters }: Props) {
+export default function BookingHistory({ filters, viewMode = "table" }: Props) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageLimit = 10;
 
@@ -16,7 +21,7 @@ export default function BookingHistory({ filters }: Props) {
 
   const { bookings, totalCount, isError, isLoading } = useBookings({
     currentPage,
-    pageLimit,
+    pageLimit: viewMode === "calendar" ? 1000 : pageLimit, // Get more bookings for calendar view
     filters,
   });
 
@@ -28,6 +33,12 @@ export default function BookingHistory({ filters }: Props) {
     return <div>Something went wrong</div>;
   }
 
+  // Render calendar view
+  if (viewMode === "calendar") {
+    return <BookingCalendar filters={filters} />;
+  }
+
+  // Render table view
   return (
     <div className="space-y-4">
       <BookingAnalyticsTable
