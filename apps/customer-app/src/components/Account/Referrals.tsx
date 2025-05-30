@@ -29,7 +29,7 @@ export default function Referrals({}: Props) {
   const { referrals, totalCount, isError, error, isLoading, isSuccess } =
     useFetchReferrals({ currentPage, pageLimit });
 
-  const referralLink = `https://muvment.ng/referral?code=${user?.referralCode}`;
+  const referralLink = `https://muvment.ng/signup?code=${user?.referralCode}`;
 
   const handleCopyCode = () => {
     copyToCipboard(user?.referralCode || "");
