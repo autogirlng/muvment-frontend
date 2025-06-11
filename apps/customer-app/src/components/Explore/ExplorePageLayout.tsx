@@ -15,8 +15,6 @@ import DesktopNav from "../Navbar/DesktopNav";
 import MobileNav from "../Navbar/MobileNav";
 import BackLink from "@/components/BackLink";
 import { useAppSelector } from "@/lib/hooks";
-import Link from "next/link";
-import Image from "next/image";
 
 // Default placeholder images
 const placeholderImages = [

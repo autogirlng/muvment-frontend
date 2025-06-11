@@ -336,7 +336,6 @@ export const deleteBookingInformation = (vehicleId: string) => {
   }
 };
 
-
 // ============================= Notification Icons, Color and Bg Color starts ============================= //
 export const getNotificationIcon = (type: string) => {
   switch (type) {

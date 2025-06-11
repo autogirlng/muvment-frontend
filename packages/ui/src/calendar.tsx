@@ -39,6 +39,18 @@ const DateRangeCalendar = ({
     setCalendarValues(null);
   };
 
+  // Close on select if not range, or if range is complete
+  const handleCalendarChange = (val: Value) => {
+    onChange(val);
+    if (!selectRange) {
+      setCalendarValues(val);
+      handleIsOpen(false);
+    } else if (Array.isArray(val) && val[0] && val[1]) {
+      setCalendarValues(val);
+      handleIsOpen(false);
+    }
+  };
+
   return (
     <Popover.Root open={isOpen} onOpenChange={handleIsOpen}>
       <Popover.Trigger asChild>
@@ -62,7 +74,7 @@ const DateRangeCalendar = ({
             </button>
           </div>
           <Calendar
-            onChange={onChange}
+            onChange={handleCalendarChange}
             value={value}
             selectRange={selectRange}
             next2Label={null}
@@ -104,7 +116,7 @@ export const DatePicker = ({
   isOpen,
   handleIsOpen,
   children,
-  showMinDate
+  showMinDate,
 }: {
   buttonClass?: string;
   value: Value;
@@ -114,6 +126,12 @@ export const DatePicker = ({
   children: ReactNode;
   showMinDate?: boolean;
 }) => {
+  // Close on select
+  const handleCalendarChange = (val: Value) => {
+    onChange(val);
+    handleIsOpen(false);
+  };
+
   return (
     <Popover.Root open={isOpen} onOpenChange={handleIsOpen}>
       <Popover.Trigger asChild>
@@ -126,7 +144,7 @@ export const DatePicker = ({
           sideOffset={5}
         >
           <Calendar
-            onChange={onChange}
+            onChange={handleCalendarChange}
             value={value}
             selectRange={false}
             next2Label={null}

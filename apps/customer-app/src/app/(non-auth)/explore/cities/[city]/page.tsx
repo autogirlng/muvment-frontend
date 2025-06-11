@@ -8,12 +8,15 @@ export default function ExploreCitiesPage({
 }: {
   params: { city: string };
 }) {
+  const capitalizedCity =
+    params.city.charAt(0).toUpperCase() + params.city.slice(1);
+
   return (
     <ExplorePageLayout
-      title={`Vehicles In ${params.city}`}
+      title={`Vehicles In ${capitalizedCity}`}
       icon={Icons.ic_location}
       type="all"
-      location={params.city}
+      location={capitalizedCity}
     />
   );
 }

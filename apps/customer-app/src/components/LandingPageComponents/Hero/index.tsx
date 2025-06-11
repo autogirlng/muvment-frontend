@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Icons from "@repo/ui/icons";
 import SearchBookings from "@/components/SearchBookings";
+import UserLocation from "./UserLocation";
 
 type Props = {};
 
@@ -37,12 +38,16 @@ function Hero({}: Props) {
         </div>
       </div>
       <div className="container h-10 md:h-20 text-white !mt-8 md:!mt-0">
-        <p className="absolute left-0 md:left-4 top-0 flex items-center justify-center md:justify-start gap-1 w-full md:w-fit">
+        <div className="absolute left-0 md:left-4 top-0 flex items-center justify-center md:justify-start gap-1 w-full md:w-fit">
           {Icons.ic_location_filled}
           <span className="text-xl md:text-4xl 3xl:text-h2 !font-bold">
-            Lagos
+            {typeof window !== "undefined" && navigator.geolocation ? (
+              <UserLocation />
+            ) : (
+              ""
+            )}
           </span>
-        </p>
+        </div>
       </div>
     </section>
   );

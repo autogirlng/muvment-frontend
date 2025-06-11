@@ -1,4 +1,4 @@
-import { Swiper, SwiperSlide } from "swiper/react";
+import { Swiper, SwiperSlide, SwiperRef } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -19,10 +19,11 @@ import {
   VehicleInformation,
   VehiclePerksProp,
 } from "@/utils/types";
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useRef } from "react";
 import { DotDivider, VerticalDivider } from "@repo/ui/divider";
 import { AvatarImage } from "@repo/ui/avatar";
 import useFetchReviews from "../hooks/useFetchReviews";
+import useFavorites from "./hooks/useFavorites";
 import ReviewCard from "@/components/ReviewCard";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import EmptyState from "@/components/EmptyState";
@@ -44,22 +45,108 @@ export default function VehicleDetails({
 }: Props) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageLimit = 10;
+  const swiperRef = useRef<SwiperRef>(null);
 
   const { reviews, totalCount, isError, isLoading } = useFetchReviews({
     id: vehicle?.userId ?? "",
     currentPage,
     pageLimit,
   });
+
+  const { isVehicleFavorited, toggleFavorite, isUpdatingFavorites } =
+    useFavorites();
+
+  const handleFavoriteToggle = async () => {
+    if (!vehicle?.id || isUpdatingFavorites) return;
+
+    try {
+      await toggleFavorite(vehicle.id);
+    } catch (error) {
+      console.error("Error updating favorite status:", error);
+    }
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    const title = vehicle?.listingName || "Vehicle Details";
+    const text = `Check out this vehicle: ${title}`;
+
+    // Check if the Web Share API is supported
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title,
+          text,
+          url,
+        });
+      } catch (error) {
+        if ((error as { name?: string })?.name !== "AbortError") {
+          console.error("Error sharing:", error);
+          // Fallback to clipboard
+          fallbackShare(url);
+        }
+      }
+    } else {
+      // Fallback for browsers that don't support Web Share API
+      fallbackShare(url);
+    }
+  };
+
+  const fallbackShare = async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      // You might want to show a toast notification here
+      console.log("Link copied to clipboard");
+    } catch (error) {
+      console.error("Failed to copy link:", error);
+      // Final fallback - select the URL text (though we can't easily do this without creating an input)
+      alert(`Share this link: ${url}`);
+    }
+  };
+
+  const handleThumbnailClick = (index: number) => {
+    if (swiperRef.current) {
+      swiperRef.current.swiper.slideTo(index);
+    }
+  };
+
+  const isFavorite = vehicle?.id ? isVehicleFavorited(vehicle.id) : false;
+
   return (
     <div className="space-y-11">
       <div className="space-y-6 md:space-y-8">
         {/* name of car */}
-        <h2 className="text-h5 md:text-h3 3xl:text-4xl">
-          {vehicle?.listingName}
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-h5 md:text-h3 3xl:text-4xl">
+            {vehicle?.listingName}
+          </h2>
+          <div className="flex gap-3">
+            <button
+              onClick={handleFavoriteToggle}
+              disabled={isUpdatingFavorites}
+              className={cn(
+                "w-10 h-10 rounded-full hover:bg-primary-700 hover:text-white flex items-center justify-center transition-colors duration-200",
+                isFavorite ? "bg-primary-100" : "bg-grey-100",
+                isUpdatingFavorites && "opacity-50 cursor-not-allowed"
+              )}
+            >
+              {Icons.ic_whishlist}
+            </button>
+            <button
+              onClick={handleShare}
+              className="w-10 h-10 bg-grey-100 rounded-full hover:bg-black hover:text-white flex items-center justify-center transition-colors duration-200"
+            >
+              {Icons.ic_share}
+            </button>
+            <div className="w-10 h-10 bg-grey-100 rounded-full flex items-center justify-center">
+              {Icons.ic_warning}
+            </div>
+          </div>
+        </div>
 
         {/* slider */}
         <Swiper
+          ref={swiperRef}
           pagination={{
             type: "fraction",
           }}
@@ -71,10 +158,15 @@ export default function VehicleDetails({
             <SwiperSlide key={index}>
               <Image
                 src={image}
-                alt=""
+                alt={`Vehicle image ${index + 1}`}
                 width={1120}
                 height={460}
                 className="w-full h-[218px] md:h-[460px] rounded-[42px] object-cover"
+                priority={index === 0}
+                quality={95}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1120px"
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
               />
             </SwiperSlide>
           ))}
@@ -84,12 +176,23 @@ export default function VehicleDetails({
         <div className="flex items-center gap-1 md:gap-7 3xl:gap-[41px]">
           {vehicleImages.map((image, index) => (
             <Image
+              onClick={() => handleThumbnailClick(index)}
               key={index}
               src={image}
-              alt=""
+              alt={`Vehicle thumbnail ${index + 1}`}
               width={152}
               height={90}
-              className="w-full h-[44px] sm:h-[90px] rounded-lg sm:rounded-[18px] object-cover"
+              className="w-full h-[44px] sm:h-[90px] rounded-lg sm:rounded-[18px] object-cover cursor-pointer hover:shadow-lg transition-shadow focus:outline-none"
+              tabIndex={0}
+              role="button"
+              aria-label={`View image ${index + 1}`}
+              quality={90}
+              sizes="(max-width: 640px) 25vw, 152px"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  handleThumbnailClick(index);
+                }
+              }}
             />
           ))}
         </div>

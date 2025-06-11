@@ -48,7 +48,14 @@ export default function OnboardingAddImagePage() {
           size="!w-[130px] !h-[130px]"
         />
       ) : (
-        <div className="bg-grey-200 rounded-full w-[120px] h-[120px] "></div>
+        <div className="bg-grey-200 rounded-full w-[120px] h-[120px] ">
+          {user?.firstName && user?.lastName ? (
+            <div className="flex items-center justify-center w-full h-full text-4xl font-semibold text-black-500">
+              {user?.firstName.charAt(0)}
+              {user?.lastName.charAt(0)}
+            </div>
+          ) : null}
+        </div>
       )}
 
       {image ? (
@@ -73,7 +80,7 @@ export default function OnboardingAddImagePage() {
           >
             <div className="w-full min-w-[200px] text-white hover:text-white text-sm 3xl:text-base !font-semibold rounded-2xl bg-primary-500 hover:bg-primary-400 py-4 px-7">
               {uploadImage.isPending ? (
-                <Spinner className='!text-white mx-auto' />
+                <Spinner className="!text-white mx-auto" />
               ) : (
                 "  Upload profile picture"
               )}
