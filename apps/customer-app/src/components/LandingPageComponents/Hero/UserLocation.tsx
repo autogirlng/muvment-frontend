@@ -42,7 +42,7 @@ const UserLocation: React.FC = () => {
           .catch(() => setPlace("Unknown location"));
       },
       () => {
-        setError("Unable to retrieve your location.");
+        setError("Somewhere in the world.");
         setLocation(null);
       }
     );
