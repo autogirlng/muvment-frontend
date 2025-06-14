@@ -68,6 +68,7 @@ const ExploreVehicleCard = ({
 
     try {
       const result = await toggleFavorite(vehicleId);
+
       if (result.requiresLogin) {
         setShowLoginModal(true);
       }
@@ -281,7 +282,7 @@ const ExploreVehicleCard = ({
         open={showLoginModal}
         onOpenChange={setShowLoginModal}
         trigger={<button className="hidden" />}
-        title={<p></p>}
+        title={<p>Add to Favorites</p>}
         content={<LoginModal />}
         width="max-w-[556px]"
       />
