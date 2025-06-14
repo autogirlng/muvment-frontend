@@ -7,6 +7,7 @@ const TimeInput = ({
   error,
   name,
   label,
+  timeType = "all",
   ...rest
 }: {
   onChange: (value: Date) => void;
@@ -14,6 +15,7 @@ const TimeInput = ({
   error?: string;
   label?: string;
   name: string;
+  timeType?: "start" | "end" | "all";
   [key: string]: any;
 }) => {
   return (
@@ -42,6 +44,7 @@ const TimeInput = ({
           onChange={onChange}
           width="w-full"
           showArrow={false}
+          timeType={timeType}
         />
       </div>
       {error && (

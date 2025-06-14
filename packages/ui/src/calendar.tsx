@@ -117,6 +117,8 @@ export const DatePicker = ({
   handleIsOpen,
   children,
   showMinDate,
+  minDate,
+  maxDate,
 }: {
   buttonClass?: string;
   value: Value;
@@ -125,6 +127,8 @@ export const DatePicker = ({
   handleIsOpen: (open: boolean) => void;
   children: ReactNode;
   showMinDate?: boolean;
+  minDate?: Date | null;
+  maxDate?: Date | null;
 }) => {
   // Close on select
   const handleCalendarChange = (val: Value) => {
@@ -152,7 +156,8 @@ export const DatePicker = ({
             className="!border-none !w-full !text-black !text-xs"
             nextLabel={Icons.ic_chevron_right}
             prevLabel={Icons.ic_chevron_left}
-            minDate={showMinDate ? new Date() : undefined}
+            minDate={minDate || (showMinDate ? new Date() : undefined)}
+            maxDate={maxDate || undefined}
           />
         </Popover.Content>
       </Popover.Portal>
