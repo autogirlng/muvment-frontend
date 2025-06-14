@@ -304,63 +304,6 @@ export default function VehicleDetails({
               </div>
             </div>
           </div>
-          {/* host details */}
-          <div className="space-y-5 w-full">
-            <SectionTitle text="Host Details" />
-            <div className="space-y-2 bg-grey-75 py-6 px-8 rounded-3xl">
-              <div className="flex items-center justify-between border border-grey-300 rounded-[74px] p-2 pr-4 ">
-                <div className="flex items-center gap-2">
-                  <AvatarImage
-                    image={vehicle?.user?.profileImage || ""}
-                    initials={
-                      getInitialsFromName(
-                        vehicle?.user?.firstName ?? "",
-                        vehicle?.user?.lastName ?? ""
-                      ) || Icons.ic_user
-                    }
-                    size="!w-[70px] !h-[70px]"
-                  />
-                  <HostInformation
-                    title="Host Name"
-                    value={`${vehicle?.user?.firstName} ${vehicle?.user?.lastName}`}
-                  />
-                </div>
-                <VerticalDivider className="!h-14" />
-
-                <HostInformation
-                  title="Rating"
-                  value={`${vehicle?.statistics?.hostStats?.averageRating ?? 0}`}
-                />
-                <VerticalDivider className="!h-14" />
-
-                <HostInformation
-                  title="No of Completed Rides"
-                  value={`${vehicle?.statistics?.hostStats?.totalCompletedRides ?? 0}`}
-                />
-              </div>
-              {isLoading ? (
-                <FullPageSpinner className="!min-h-[300px]" />
-              ) : reviews.length > 0 ? (
-                <div className={cn("py-6")}>
-                  {reviews.map((review, index) => (
-                    <ReviewCard
-                      key={index}
-                      review={review}
-                      bgColor="bg-white"
-                    />
-                  ))}
-                </div>
-              ) : (
-                <EmptyState
-                  title="No Reviews Yet"
-                  message="Reviews Will Appear Here"
-                  image="/icons/empty_review_state.png"
-                  imageSize="w-[182px] 3xl:w-[265px]"
-                  noBg
-                />
-              )}
-            </div>
-          </div>
         </div>
 
         {children}
@@ -396,18 +339,3 @@ const PricingDescription = ({
     {text}
   </p>
 );
-
-const HostInformation = ({
-  title,
-  value,
-}: {
-  title: string;
-  value: string;
-}) => {
-  return (
-    <div className="space-y-1">
-      <p className="text-xs md:text-sm">{title}</p>
-      <PricingDescription text={value} />
-    </div>
-  );
-};
