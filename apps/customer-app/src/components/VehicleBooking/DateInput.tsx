@@ -10,14 +10,28 @@ const DateInput = ({
   error,
   label,
   name,
+  minDate,
+  maxDate,
+  blockPastDates = false,
 }: {
   name: string;
   onChange: (value: CalendarValue) => void;
   value: Date | null;
   error?: string;
   label?: string;
+  minDate?: Date | null;
+  maxDate?: Date | null;
+  blockPastDates?: boolean;
 }) => {
   const [pickupDateIsOpen, setPickupDateIsOpen] = useState<boolean>(false);
+
+  // If blockPastDates is true, use the later of today or minDate
+  const today = new Date();
+  const effectiveMinDate = blockPastDates
+    ? minDate && minDate > today
+      ? minDate
+      : today
+    : minDate;
 
   return (
     <DatePicker
@@ -26,7 +40,9 @@ const DateInput = ({
       isOpen={pickupDateIsOpen}
       handleIsOpen={(open: boolean) => setPickupDateIsOpen(open)}
       buttonClass="w-full"
-      showMinDate
+      showMinDate={!!effectiveMinDate}
+      minDate={effectiveMinDate}
+      maxDate={maxDate}
     >
       {label && (
         <label

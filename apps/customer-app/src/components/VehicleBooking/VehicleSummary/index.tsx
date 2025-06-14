@@ -7,7 +7,7 @@ import {
   VehicleInformation,
   VehiclePerksProp,
 } from "@/utils/types";
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useMemo, useEffect } from "react";
 import SelectInput from "@repo/ui/select";
 import Button from "@repo/ui/button";
 import { BlurredDialog } from "@repo/ui/dialog";
@@ -17,6 +17,8 @@ import TimeInput from "../TimeInput";
 import { useAppSelector } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
 import useHandleBooking from "../hooks/useHandleBooking";
+import useCalculatePrice from "./hooks/useCalculatePrice";
+import { addDays, differenceInDays } from "date-fns";
 
 type Props = {
   vehicle: VehicleInformation | null;
@@ -27,11 +29,11 @@ type Props = {
 
 type InitialValuesProps = {
   bookingType: "SINGLE_DAY" | "MULTI_DAY" | string;
-  // pickupLocation: string;
   startDate: Date | null;
   startTime: Date | null;
   endDate: Date | null;
   endTime: Date | null;
+  pickupLocation: string;
 };
 
 export default function VehicleSummary({
@@ -51,20 +53,143 @@ export default function VehicleSummary({
     startTime: startTime ? new Date(startTime) : null,
     endDate: endDate ? new Date(endDate) : null,
     endTime: endTime ? new Date(endTime) : null,
+    pickupLocation: "",
   });
 
+  const minStartDate = useMemo(() => {
+    const today = new Date();
+    const advanceNoticeDays = parseInt(
+      vehicle?.tripSettings?.advanceNotice?.replace(/\D/g, "") || "0"
+    );
+    return addDays(today, advanceNoticeDays);
+  }, [vehicle?.tripSettings?.advanceNotice]);
+
+  const { minEndDate, maxEndDate, endDateMinimum } = useMemo(() => {
+    if (!values.startDate) {
+      return { minEndDate: null, maxEndDate: null, endDateMinimum: null };
+    }
+
+    const maxTripDurationText =
+      vehicle?.tripSettings?.maxTripDuration || "1 day";
+    let maxDays = 1;
+
+    if (maxTripDurationText.includes("week")) {
+      const weeks = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
+      maxDays = weeks * 7;
+    } else if (maxTripDurationText.includes("day")) {
+      maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
+    } else if (maxTripDurationText.includes("month")) {
+      const months = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
+      maxDays = months * 30;
+    } else {
+      maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
+    }
+
+    const today = new Date();
+    const minEndDate = values.startDate;
+    const maxEndDate = addDays(values.startDate, maxDays - 1);
+    const endDateMinimum = today;
+
+    return { minEndDate, maxEndDate, endDateMinimum };
+  }, [values.startDate, vehicle?.tripSettings?.maxTripDuration]);
+
+  const validateDateRange = (startDate: Date | null, endDate: Date | null) => {
+    if (!startDate || !endDate) return true;
+
+    const daysDifference = differenceInDays(endDate, startDate);
+
+    const maxTripDurationText =
+      vehicle?.tripSettings?.maxTripDuration || "1 day";
+    let maxDays = 1;
+
+    if (maxTripDurationText.includes("week")) {
+      const weeks = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
+      maxDays = weeks * 7;
+    } else if (maxTripDurationText.includes("day")) {
+      maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
+    } else if (maxTripDurationText.includes("month")) {
+      const months = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
+      maxDays = months * 30;
+    } else {
+      maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
+    }
+
+    return daysDifference >= 0 && daysDifference < maxDays;
+  };
+
   const handleOpenBookRideModal = () => setBookRideModal(!openBookRideModal);
+
   const handleValueChange = (name: string, value: string | Date | null) => {
-    setValues((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setValues((prev) => {
+      const newValues = {
+        ...prev,
+        [name]: value,
+      };
+
+      if (name === "startDate" && value instanceof Date) {
+        if (prev.endDate) {
+          const daysDifference = differenceInDays(prev.endDate, value);
+
+          const maxTripDurationText =
+            vehicle?.tripSettings?.maxTripDuration || "1 day";
+          let maxDays = 1;
+
+          if (maxTripDurationText.includes("week")) {
+            const weeks = parseInt(
+              maxTripDurationText.replace(/\D/g, "") || "1"
+            );
+            maxDays = weeks * 7;
+          } else if (maxTripDurationText.includes("day")) {
+            maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
+          } else if (maxTripDurationText.includes("month")) {
+            const months = parseInt(
+              maxTripDurationText.replace(/\D/g, "") || "1"
+            );
+            maxDays = months * 30;
+          } else {
+            maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
+          }
+
+          if (daysDifference < 0) {
+            newValues.endDate = value;
+          } else if (daysDifference >= maxDays) {
+            newValues.endDate = addDays(value, maxDays - 1);
+          }
+        }
+      }
+
+      return newValues;
+    });
   };
 
   const { checkVehicleAvailability, vehicleAvailableError } = useHandleBooking({
     vehicleId: vehicle?.id || "",
     isSuccessFunction: handleOpenBookRideModal,
   });
+
+  const {
+    priceData,
+    autoCalculatePrice,
+    isLoading: isPriceLoading,
+  } = useCalculatePrice(vehicle?.id || "");
+
+  useEffect(() => {
+    if (
+      values.startDate &&
+      values.startTime &&
+      values.endDate &&
+      values.endTime
+    ) {
+      autoCalculatePrice(
+        values.startDate,
+        values.startTime,
+        values.endDate,
+        values.endTime
+      );
+    }
+  }, [values.startDate, values.startTime, values.endDate, values.endTime]);
+
+  const isDateRangeValid = validateDateRange(values.startDate, values.endDate);
 
   return (
     <VehicleDetails
@@ -86,9 +211,15 @@ export default function VehicleSummary({
                 />
                 <div className="py-2 px-3 bg-grey-75 rounded-[60px] flex items-center gap-2 text-sm 3xl:text-base !font-medium">
                   <p className="text-grey-400">Total</p>
-                  <p className="text-grey-700">{`NGN ${formatNumberWithCommas(
-                    (vehicle?.pricing?.dailyRate?.value || 0) * 1
-                  )}`}</p>
+                  <p className="text-grey-700">
+                    {isPriceLoading
+                      ? "Calculating..."
+                      : priceData
+                        ? `NGN ${formatNumberWithCommas(priceData.totalPrice)}`
+                        : `NGN ${formatNumberWithCommas(
+                            (vehicle?.pricing?.dailyRate?.value || 0) * 1
+                          )}`}
+                  </p>
                 </div>
               </div>
 
@@ -109,7 +240,6 @@ export default function VehicleSummary({
               </InputSection>
             </div>
 
-            {/* {startDate && startTime && ( */}
             <InputSection
               title="Trip Start"
               textColor="blue"
@@ -121,31 +251,53 @@ export default function VehicleSummary({
                 onChange={(value: CalendarValue) =>
                   handleValueChange("startDate", value as Date | null)
                 }
+                minDate={minStartDate}
               />
               <TimeInput
                 name="startTime"
                 value={values.startTime}
                 onChange={(date: Date) => handleValueChange("startTime", date)}
+                timeType="start"
               />
             </InputSection>
 
-            {/* )} */}
-            {/* {endDate && endTime && ( */}
-            <InputSection title="Trip End" textColor="blue">
+            <InputSection
+              title="Trip End"
+              textColor="blue"
+              error={
+                !isDateRangeValid ? "Invalid date range selected" : undefined
+              }
+            >
               <DateInput
                 name="endDate"
                 value={values.endDate}
                 onChange={(value: CalendarValue) =>
                   handleValueChange("endDate", value as Date | null)
                 }
+                minDate={values.startDate || new Date()}
+                maxDate={maxEndDate}
+                blockPastDates={true}
               />
               <TimeInput
                 name="endTime"
                 value={values.endTime}
                 onChange={(date: Date) => handleValueChange("endTime", date)}
+                timeType="end"
               />
             </InputSection>
-            {/* )} */}
+
+            <InputSection title="Pick up and Drop-off location">
+              <input
+                type="text"
+                name="pickupLocation"
+                value={values.pickupLocation}
+                onChange={(e) =>
+                  handleValueChange("pickupLocation", e.target.value)
+                }
+                placeholder="Enter location"
+                className="w-full rounded-[18px] p-4 text-left text-sm h-[56px] outline-none bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A] placeholder:text-grey-400"
+              />
+            </InputSection>
 
             <Button
               color="primary"
@@ -155,7 +307,9 @@ export default function VehicleSummary({
                 !values.startDate ||
                 !values.startTime ||
                 !values.endDate ||
-                !values.endTime||
+                !values.endTime ||
+                !values.pickupLocation.trim() ||
+                !isDateRangeValid ||
                 checkVehicleAvailability.isPending
               }
               loading={checkVehicleAvailability.isPending}
@@ -225,16 +379,6 @@ export default function VehicleSummary({
                   ))}
                 </div>
               )}
-            {vehicle?.pricing?.airportPickupFee && (
-              <div className="py-[22px]">
-                <PricingTitle text="Airport Pickups & dropoffs" />
-                <PricingDescription
-                  text={`NGN ${formatNumberWithCommas(
-                    vehicle?.pricing?.airportPickupFee || 0
-                  )}/hr`}
-                />
-              </div>
-            )}
           </div>
         </div>
       </div>
