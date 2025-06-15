@@ -15,7 +15,7 @@ import {
   VerticalDivider,
 } from "@repo/ui/divider";
 import { format } from "date-fns";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 const VehicleInformationCard = ({
   vehicle,
@@ -26,6 +26,15 @@ const VehicleInformationCard = ({
 }) => {
   const { bookingType, startDate, startTime, endDate, endTime } =
     useFetchUrlParams();
+
+  const [priceData, setPriceData] = useState<any>(null);
+
+  useEffect(() => {
+    const storedPriceData = localStorage.getItem("priceData");
+    if (storedPriceData) {
+      setPriceData(JSON.parse(storedPriceData));
+    }
+  }, []);
 
   return (
     <div className="space-y-8 border border-grey-200 rounded-3xl max-w-[400px] px-6 py-8">
@@ -74,9 +83,13 @@ const VehicleInformationCard = ({
         </p>
         <GreyWrap>
           <p className="text-grey-400">Total</p>
-          <p className="text-grey-700">{`NGN ${formatNumberWithCommas(
-            (vehicle?.pricing?.dailyRate?.value || 0) * 1
-          )}`}</p>
+          <p className="text-grey-700">
+            {priceData?.totalPrice
+              ? `NGN ${formatNumberWithCommas(priceData.totalPrice)}`
+              : `NGN ${formatNumberWithCommas(
+                  (vehicle?.pricing?.dailyRate?.value || 0) * 1
+                )}`}
+          </p>
         </GreyWrap>
       </div>
 

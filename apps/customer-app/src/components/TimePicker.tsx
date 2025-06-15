@@ -162,10 +162,12 @@ function TimePicker({
 
   // Set initial selected time from value prop
   useEffect(() => {
-    if (value) {
+    if (value && value instanceof Date && !isNaN(value.getTime())) {
       const hours = value.getHours().toString().padStart(2, "0");
       const minutes = value.getMinutes().toString().padStart(2, "0");
       setSelectedTime(`${hours}:${minutes}`);
+    } else {
+      setSelectedTime("");
     }
   }, [value]);
 
@@ -204,19 +206,7 @@ function TimePicker({
       } else if (timeType === "end") {
         return "6:30AM";
       } else {
-        // Default to current time
-        const now = new Date();
-        let hours = now.getHours();
-        const minutes = now.getMinutes();
-        const ampm = hours >= 12 ? "PM" : "AM";
-
-        if (hours === 0) {
-          hours = 12;
-        } else if (hours > 12) {
-          hours = hours - 12;
-        }
-
-        return `${hours}:${minutes.toString().padStart(2, "0")}${ampm}`;
+        return "Select time";
       }
     }
 

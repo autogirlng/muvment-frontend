@@ -18,6 +18,30 @@ const TimeInput = ({
   timeType?: "start" | "end" | "all";
   [key: string]: any;
 }) => {
+  // Convert value to proper Date object if it exists
+  const getDateValue = (val: Date | null): Date | null => {
+    if (!val) return null;
+
+    // If it's already a Date object, return it
+    if (val instanceof Date && !isNaN(val.getTime())) {
+      return val;
+    }
+
+    // If it's a string or other format, try to convert it
+    try {
+      const converted = new Date(val);
+      if (!isNaN(converted.getTime())) {
+        return converted;
+      }
+    } catch (error) {
+      console.warn("Invalid date value in TimeInput:", val);
+    }
+
+    return null;
+  };
+
+  const normalizedValue = getDateValue(value);
+
   return (
     <div className="w-full">
       {label && (
@@ -40,7 +64,7 @@ const TimeInput = ({
       >
         <TimePicker
           name={name}
-          value={value}
+          value={normalizedValue}
           onChange={onChange}
           width="w-full"
           showArrow={false}

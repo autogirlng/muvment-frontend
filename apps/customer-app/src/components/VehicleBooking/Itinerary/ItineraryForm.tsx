@@ -15,6 +15,34 @@ import {
 } from "@/utils/functions";
 import { itineraryInformationSchema } from "@/utils/validationSchema";
 
+// Your combineDateTime function - preserves local timezone
+function combineDateTime(
+  startDate: Date,
+  startTime: Date,
+  endDate: Date,
+  endTime: Date
+): { startDateTime: string; endDateTime: string } {
+  // Helper function to combine date and time while preserving local values
+  const combine = (dateObj: Date, timeObj: Date): string => {
+    // Get local date parts
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+    const day = String(dateObj.getDate()).padStart(2, "0");
+
+    // Get local time parts
+    const hours = String(timeObj.getHours()).padStart(2, "0");
+    const minutes = String(timeObj.getMinutes()).padStart(2, "0");
+    const seconds = String(timeObj.getSeconds()).padStart(2, "0");
+
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+  };
+
+  return {
+    startDateTime: combine(startDate, startTime),
+    endDateTime: combine(endDate, endTime),
+  };
+}
+
 const initialValues: ItineraryInformationValues = {
   pickupLocation: "",
   startDate: null,
@@ -48,8 +76,23 @@ const ItineraryForm = ({
       )}
       validationSchema={itineraryInformationSchema}
       onSubmit={(values, { setSubmitting }) => {
+        // Combine date and time fields before saving - now using Date objects directly
+        const { startDateTime, endDateTime } = combineDateTime(
+          values.startDate as Date,
+          values.startTime as Date,
+          values.endDate as Date,
+          values.endTime as Date
+        );
+
+        // Create updated values with combined datetime
+        const updatedValues = {
+          ...values,
+          startDate: startDateTime,
+          endDate: endDateTime,
+        };
+
         saveAndUpdateBookingInformation(
-          values,
+          updatedValues,
           vehicleId,
           "itineraryInformation"
         );

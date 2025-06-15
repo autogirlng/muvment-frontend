@@ -54,8 +54,8 @@ const PersonalInformationForm = ({
           steps={steps}
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
-            vehicleId={vehicleId}
-            type={type}
+          vehicleId={vehicleId}
+          type={type}
         />
       )}
     </div>

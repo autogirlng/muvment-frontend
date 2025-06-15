@@ -191,6 +191,28 @@ export default function VehicleSummary({
 
   const isDateRangeValid = validateDateRange(values.startDate, values.endDate);
 
+  useEffect(() => {
+    if (
+      values.startDate &&
+      values.startTime &&
+      values.endDate &&
+      values.endTime
+    ) {
+      autoCalculatePrice(
+        values.startDate,
+        values.startTime,
+        values.endDate,
+        values.endTime
+      );
+    }
+  }, [values.startDate, values.startTime, values.endDate, values.endTime]);
+
+  useEffect(() => {
+    if (priceData) {
+      localStorage.setItem("priceData", JSON.stringify(priceData));
+    }
+  }, [priceData]);
+
   return (
     <VehicleDetails
       vehicle={vehicle}
@@ -322,6 +344,7 @@ export default function VehicleSummary({
                   startTime: values.startTime?.toISOString() ?? "",
                   endDate: values.endDate?.toISOString() ?? "",
                   endTime: values.endTime?.toISOString() ?? "",
+                  pickupLocation: values.pickupLocation,
                 });
               }}
             >
@@ -398,6 +421,7 @@ export default function VehicleSummary({
               startTime={values.startTime?.toISOString() ?? null}
               endDate={values.endDate?.toISOString() ?? null}
               endTime={values.endTime?.toISOString() ?? null}
+              pickupLocation={values.pickupLocation || null}
             />
           }
           width="max-w-[556px]"
@@ -465,6 +489,7 @@ const BookRideModal = ({
   startTime,
   endDate,
   endTime,
+  pickupLocation,
 }: {
   id: string;
   bookingType: string;
@@ -472,18 +497,26 @@ const BookRideModal = ({
   startTime: string | null;
   endDate: string | null;
   endTime: string | null;
+  pickupLocation: string | null;
 }) => {
   return (
     <div className="space-y-4">
       <Link
         href={`/vehicle/booking/guest/${id}${
-          bookingType || startDate || startTime || endDate || endTime
+          bookingType ||
+          startDate ||
+          startTime ||
+          endDate ||
+          endTime ||
+          pickupLocation
             ? `?${[
                 startDate && `startDate=${startDate}`,
                 startTime && `startTime=${startTime}`,
                 endDate && `endDate=${endDate}`,
                 endTime && `endTime=${endTime}`,
                 bookingType && `bookingType=${bookingType}`,
+                pickupLocation &&
+                  `pickupLocation=${encodeURIComponent(pickupLocation)}`,
               ]
                 .filter(Boolean)
                 .join("&")}`

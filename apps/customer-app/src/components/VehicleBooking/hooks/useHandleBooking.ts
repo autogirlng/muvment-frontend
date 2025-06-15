@@ -83,12 +83,14 @@ export default function useHandleBooking({
       startTime,
       endDate,
       endTime,
+      pickupLocation,
     }: {
       bookingType: string;
       startDate: string;
       startTime: string;
       endDate: string;
       endTime: string;
+      pickupLocation: string;
     }) =>
       http.get<VehicleAvailabilityCheck>(
         `/api/bookings/check-availability?vehicleId=${vehicleId}${
@@ -110,6 +112,7 @@ export default function useHandleBooking({
         startTime: values.startTime,
         endDate: values.endDate,
         endTime: values.endTime,
+        pickupLocation: values.pickupLocation,
       };
     },
 
@@ -124,13 +127,16 @@ export default function useHandleBooking({
               context.startDate ||
               context.startTime ||
               context.endDate ||
-              context.endTime
+              context.endTime ||
+              context.pickupLocation
                 ? `?${[
                     context.startDate && `startDate=${context.startDate}`,
                     context.startTime && `startTime=${context.startTime}`,
                     context.endDate && `endDate=${context.endDate}`,
                     context.endTime && `endTime=${context.endTime}`,
                     context.bookingType && `bookingType=${context.bookingType}`,
+                    context.pickupLocation &&
+                      `pickupLocation=${encodeURIComponent(context.pickupLocation)}`,
                   ]
                     .filter(Boolean)
                     .join("&")}`

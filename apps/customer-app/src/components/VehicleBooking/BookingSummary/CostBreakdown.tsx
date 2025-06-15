@@ -31,6 +31,9 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
 
   const { bookingType } = useFetchUrlParams();
 
+  const priceDataString = localStorage.getItem("priceData");
+  const priceData = priceDataString ? JSON.parse(priceDataString) : null;
+
   const currencyCode = vehicle?.vehicleCurrency;
   const dailyRate = vehicle?.pricing?.dailyRate?.value ?? 0;
   const hostDiscounts = vehicle?.pricing?.discounts ?? [];
@@ -76,6 +79,8 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
       ...itineraryInformationValues
     } = itineraryInformation;
 
+    console.log(itineraryInformation);
+
     saveBooking.mutate({
       ...personalInformationValues,
       ...itineraryInformationValues,
@@ -104,12 +109,16 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
       ...itineraryInformationValues
     } = itineraryInformation;
 
+    const amount = priceData?.totalPrice
+      ? parseInt(priceData?.totalPrice)
+      : parseInt(subTotal);
+
     proceedToPayment.mutate({
       ...personalInformationValues,
       ...itineraryInformationValues,
       // startDate: itineraryInformation.startDate,
       // endDate: itineraryInformation.endDate,
-      amount: parseInt(subTotal),
+      amount: amount,
       currencyCode: currencyCode,
       bookingType,
       duration: parseInt(numberOfDays),
@@ -121,7 +130,7 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
       <h6 className="text-base md:text-xl 3xl:text-h6">Cost Breakdown</h6>
       <Prices
         title="Total Cost"
-        price={`${currencyCode} ${formatNumberWithCommas(totalCostWithoutServiceFee)}`}
+        price={`${currencyCode} ${priceData?.totalPrice ? formatNumberWithCommas(priceData.totalPrice) : formatNumberWithCommas(totalCostWithoutServiceFee)}`}
       />
       <Prices
         title="Extra hours"
@@ -135,21 +144,30 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
 
       <Prices
         title={`Discount (-${
+          priceData?.breakdown?.discountPercentage ||
           hostDiscounts.find((d) => parseInt(numberOfDays) <= d.durationInDays)
-            ?.percentage || 0
+            ?.percentage ||
+          0
         }%)`}
-        price={`-${currencyCode} ${formatNumberWithCommas(
-          calculateDiscount(
-            totalCostWithoutServiceFee,
-            hostDiscounts,
-            parseInt(numberOfDays)
+        price={`-${currencyCode} ${
+          formatNumberWithCommas(priceData?.breakdown?.discountAmount) ||
+          formatNumberWithCommas(
+            calculateDiscount(
+              totalCostWithoutServiceFee,
+              hostDiscounts,
+              parseInt(numberOfDays)
+            )
           )
-        )}`}
+        }`}
       />
 
       <HorizontalDivider variant="light" />
 
-      <Prices title="Total" price={`${currencyCode} ${subTotal}`} isTotalCost />
+      <Prices
+        title="Total"
+        price={`${currencyCode} ${formatNumberWithCommas(priceData.totalPrice)}`}
+        isTotalCost
+      />
 
       <HorizontalDivider variant="light" />
       <p className="text-primary-500 ext-sm md:text-base 3xl:text-xl">
