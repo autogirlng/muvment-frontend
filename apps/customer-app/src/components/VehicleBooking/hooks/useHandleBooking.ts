@@ -8,6 +8,7 @@ import { useHttp } from "@/hooks/useHttp";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/lib/hooks";
 import { useState } from "react";
+import { combineDateTime } from "@/utils/combineDateTime";
 
 type VehicleAvailabilityCheck = {
   vehicleId: string;
@@ -66,9 +67,10 @@ export default function useHandleBooking({
       ),
 
     onSuccess: (data) => {
-      console.log("Vehicle booking saved!", data);
-
+      console.log("Vehicle booking paid!", data);
       router.push(`/vehicle/payment/${vehicleId}/${data?.booking?.id}`);
+      localStorage.setItem("bookingId", JSON.stringify(data?.booking?.id));
+      localStorage.setItem("vehicleId", JSON.stringify(vehicleId));
       deleteBookingInformation(vehicleId);
     },
 
@@ -119,6 +121,13 @@ export default function useHandleBooking({
     onSuccess: (data, _values, context) => {
       console.log("Vehicle is available!", data);
 
+      const { startDateTime, endDateTime } = combineDateTime(
+        context.startDate,
+        context.startTime,
+        context.endDate,
+        context.endTime
+      );
+
       if (data?.isAvailable) {
         if (user) {
           router.push(
@@ -130,10 +139,8 @@ export default function useHandleBooking({
               context.endTime ||
               context.pickupLocation
                 ? `?${[
-                    context.startDate && `startDate=${context.startDate}`,
-                    context.startTime && `startTime=${context.startTime}`,
-                    context.endDate && `endDate=${context.endDate}`,
-                    context.endTime && `endTime=${context.endTime}`,
+                    startDateTime && `startDate=${startDateTime}`,
+                    endDateTime && `endDate=${endDateTime}`,
                     context.bookingType && `bookingType=${context.bookingType}`,
                     context.pickupLocation &&
                       `pickupLocation=${encodeURIComponent(context.pickupLocation)}`,

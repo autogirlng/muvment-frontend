@@ -9,6 +9,7 @@ type Props = {
   width?: string;
   showArrow?: boolean;
   timeType?: "start" | "end" | "all";
+  disabled?: boolean; // Add disabled prop
 };
 
 // Generate time options based on type
@@ -152,6 +153,7 @@ function TimePicker({
   width = "",
   showArrow = true,
   timeType = "all",
+  disabled = false, // Add disabled prop with default
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTime, setSelectedTime] = useState<string>("");
@@ -189,6 +191,8 @@ function TimePicker({
   }, []);
 
   const handleTimeSelect = (timeValue: string) => {
+    if (disabled) return; // Prevent selection if disabled
+
     const [hours, minutes] = timeValue.split(":").map(Number);
     const newDate = new Date();
     newDate.setHours(hours, minutes, 0, 0);
@@ -196,6 +200,11 @@ function TimePicker({
     setSelectedTime(timeValue);
     onChange(newDate);
     setIsOpen(false);
+  };
+
+  const handleTriggerClick = () => {
+    if (disabled) return; // Prevent opening if disabled
+    setIsOpen(!isOpen);
   };
 
   const getDisplayTime = () => {
@@ -232,19 +241,30 @@ function TimePicker({
       {/* Time Picker Trigger */}
       <div
         ref={triggerRef}
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 cursor-pointer hover:text-grey-700 transition-colors"
+        onClick={handleTriggerClick}
+        className={`flex items-center gap-1 transition-colors ${
+          disabled
+            ? "cursor-not-allowed opacity-60"
+            : "cursor-pointer hover:text-grey-700"
+        }`}
+        style={disabled ? { pointerEvents: "none" } : {}}
       >
         <span
           className={`text-xs xl:text-sm transition-colors ${
-            selectedTime ? "text-grey-800" : "text-grey-400"
+            disabled
+              ? "text-grey-400"
+              : selectedTime
+                ? "text-grey-800"
+                : "text-grey-400"
           }`}
         >
           {getDisplayTime()}
         </span>
         {showArrow && (
           <div
-            className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+            className={`transition-transform duration-200 ${
+              isOpen && !disabled ? "rotate-180" : ""
+            } ${disabled ? "text-grey-400" : ""}`}
           >
             {Icons.ic_chevron_down}
           </div>
@@ -252,7 +272,7 @@ function TimePicker({
       </div>
 
       {/* Time Dropdown */}
-      {isOpen && (
+      {isOpen && !disabled && (
         <div
           ref={dropdownRef}
           className="absolute top-full right-0 mt-2 w-[120px] bg-white border border-grey-200 rounded-2xl shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)] z-50 max-h-[300px] overflow-hidden"

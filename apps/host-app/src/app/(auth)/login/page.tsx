@@ -36,16 +36,7 @@ export default function LoginPage() {
         validateOnBlur={true}
       >
         {(props) => {
-          const {
-            values,
-            touched,
-            errors,
-            isValid,
-            dirty,
-            handleBlur,
-            handleChange,
-            isSubmitting,
-          } = props;
+          const { values, handleBlur, handleChange, isSubmitting } = props;
 
           return (
             <Form className="space-y-6">
@@ -58,7 +49,6 @@ export default function LoginPage() {
                 value={values.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={errors.email && touched.email ? errors.email : ""}
               />
               <InputField
                 name="password"
@@ -77,9 +67,6 @@ export default function LoginPage() {
                 toggleShowPassword={toggleHiddenPassword}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={
-                  errors.password && touched.password ? errors.password : ""
-                }
               />
               <div className="flex items-center justify-between text-sm 2xl:text-base">
                 <p className="text-grey-500">
@@ -99,7 +86,7 @@ export default function LoginPage() {
                 color="primary"
                 type="submit"
                 loading={isSubmitting || loginMutation.isPending}
-                disabled={isSubmitting || loginMutation.isPending || !isValid}
+                disabled={isSubmitting || loginMutation.isPending}
               >
                 Sign In
               </Button>

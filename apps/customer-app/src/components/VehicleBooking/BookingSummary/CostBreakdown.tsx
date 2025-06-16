@@ -14,10 +14,17 @@ import {
 import { VehicleInformation } from "@/utils/types";
 import { standardServiceFeeInPercentage } from "@/utils/constants";
 import useHandleBooking from "../hooks/useHandleBooking";
+import { useSearchParams } from "next/navigation";
 
 type Props = { vehicle: VehicleInformation | null; type: "guest" | "user" };
 
 const CostBreakdown = ({ vehicle, type }: Props) => {
+  const searchParams = useSearchParams();
+
+  // Get startDate and endDate from URL params
+  const urlStartDate = searchParams.get("startDate");
+  const urlEndDate = searchParams.get("endDate");
+
   const itineraryInformation = getExistingBookingInformation(
     {},
     vehicle?.id ?? "",
@@ -37,10 +44,16 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
   const currencyCode = vehicle?.vehicleCurrency;
   const dailyRate = vehicle?.pricing?.dailyRate?.value ?? 0;
   const hostDiscounts = vehicle?.pricing?.discounts ?? [];
-  const endDate = new Date(itineraryInformation?.endDate);
-  const startDate = new Date(itineraryInformation?.startDate);
+  const startDate = urlStartDate
+    ? new Date(urlStartDate)
+    : new Date(itineraryInformation?.startDate);
+  const endDate = urlEndDate
+    ? new Date(urlEndDate)
+    : new Date(itineraryInformation?.endDate);
 
+  // Calculate number of days
   const numberOfDays = calculateNumberOfDays(endDate, startDate);
+
   const totalCostWithoutServiceFee = calculateTotalCostWithoutServiceFee(
     endDate,
     startDate,
@@ -90,6 +103,7 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
       currencyCode: currencyCode,
       bookingType,
       duration: parseInt(numberOfDays),
+      redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/draft`,
     });
   };
   const proceedToPaymentHandler = () => {
@@ -110,7 +124,7 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
     } = itineraryInformation;
 
     const amount = priceData?.totalPrice
-      ? parseInt(priceData?.totalPrice)
+      ? parseFloat(priceData?.totalPrice)
       : parseInt(subTotal);
 
     proceedToPayment.mutate({
@@ -122,6 +136,7 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
       currencyCode: currencyCode,
       bookingType,
       duration: parseInt(numberOfDays),
+      redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`,
     });
   };
 

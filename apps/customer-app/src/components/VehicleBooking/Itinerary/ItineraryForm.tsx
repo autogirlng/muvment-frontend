@@ -14,6 +14,8 @@ import {
   saveAndUpdateBookingInformation,
 } from "@/utils/functions";
 import { itineraryInformationSchema } from "@/utils/validationSchema";
+import { useSearchParams } from "next/navigation";
+import { useMemo } from "react";
 
 // Your combineDateTime function - preserves local timezone
 function combineDateTime(
@@ -43,7 +45,40 @@ function combineDateTime(
   };
 }
 
-const initialValues: ItineraryInformationValues = {
+// Helper function to parse URL date parameters
+function parseDateFromUrl(dateString: string | null): {
+  date: Date | null;
+  time: Date | null;
+} {
+  if (!dateString) {
+    return { date: null, time: null };
+  }
+
+  try {
+    const parsedDate = new Date(dateString);
+
+    // Create separate Date objects for date and time
+    const dateOnly = new Date(
+      parsedDate.getFullYear(),
+      parsedDate.getMonth(),
+      parsedDate.getDate()
+    );
+    const timeOnly = new Date();
+    timeOnly.setHours(
+      parsedDate.getHours(),
+      parsedDate.getMinutes(),
+      parsedDate.getSeconds(),
+      0
+    );
+
+    return { date: dateOnly, time: timeOnly };
+  } catch (error) {
+    console.error("Error parsing date from URL:", error);
+    return { date: null, time: null };
+  }
+}
+
+const baseInitialValues: ItineraryInformationValues = {
   pickupLocation: "",
   startDate: null,
   startTime: null,
@@ -67,13 +102,42 @@ const ItineraryForm = ({
   setCurrentStep: (step: number) => void;
   vehicleId: string;
 }) => {
+  const searchParams = useSearchParams();
+
+  // Get URL parameters
+  const startDateParam = searchParams.get("startDate");
+  const endDateParam = searchParams.get("endDate");
+  const pickupLocationParam = searchParams.get("pickupLocation");
+
+  // Parse dates from URL parameters
+  const { date: startDate, time: startTime } = parseDateFromUrl(startDateParam);
+  const { date: endDate, time: endTime } = parseDateFromUrl(endDateParam);
+
+  // Check if dates are from URL (to determine if fields should be disabled)
+  const hasUrlDates = startDateParam && endDateParam;
+
+  // Create initial values with URL parameters
+  const initialValues = useMemo(() => {
+    const existingValues = getExistingBookingInformation(
+      baseInitialValues,
+      vehicleId,
+      "itineraryInformation"
+    );
+
+    return {
+      ...existingValues,
+      // Override with URL parameters if they exist
+      ...(startDate && { startDate }),
+      ...(startTime && { startTime }),
+      ...(endDate && { endDate }),
+      ...(endTime && { endTime }),
+      ...(pickupLocationParam && { pickupLocation: pickupLocationParam }),
+    };
+  }, [vehicleId, startDate, startTime, endDate, endTime, pickupLocationParam]);
+
   return (
     <Formik
-      initialValues={getExistingBookingInformation(
-        initialValues,
-        vehicleId,
-        "itineraryInformation"
-      )}
+      initialValues={initialValues}
       validationSchema={itineraryInformationSchema}
       onSubmit={(values, { setSubmitting }) => {
         // Combine date and time fields before saving - now using Date objects directly
@@ -126,6 +190,7 @@ const ItineraryForm = ({
             value={values.pickupLocation}
             onChange={handleChange}
             onBlur={handleBlur}
+            disabled={!!pickupLocationParam}
             error={
               errors.pickupLocation && touched.pickupLocation
                 ? String(errors.pickupLocation)
@@ -141,6 +206,7 @@ const ItineraryForm = ({
               onChange={(value: CalendarValue) =>
                 setFieldValue("startDate", value as Date | null)
               }
+              disabled={!!hasUrlDates}
               error={
                 errors.startDate && touched.startDate
                   ? String(errors.startDate)
@@ -153,6 +219,7 @@ const ItineraryForm = ({
               value={values.startTime}
               onChange={(date: Date) => setFieldValue("startTime", date)}
               onBlur={handleBlur}
+              disabled={!!hasUrlDates}
               error={
                 errors.startTime && touched.startTime
                   ? String(errors.startTime)
@@ -185,6 +252,7 @@ const ItineraryForm = ({
               onChange={(value: CalendarValue) =>
                 setFieldValue("endDate", value as Date | null)
               }
+              disabled={!!hasUrlDates}
               error={
                 errors.endDate && touched.endDate ? String(errors.endDate) : ""
               }
@@ -195,11 +263,13 @@ const ItineraryForm = ({
               value={values.endTime}
               onChange={(date: Date) => setFieldValue("endTime", date)}
               onBlur={handleBlur}
+              disabled={!!hasUrlDates}
               error={
                 errors.endTime && touched.endTime ? String(errors.endTime) : ""
               }
             />
           </FormRow>
+
           <SelectInput
             id="areaOfUse"
             label="Area of use"
