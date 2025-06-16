@@ -327,6 +327,7 @@ export const deleteBookingInformation = (vehicleId: string) => {
 
     if (Object.keys(bookingInformationObject).length === 0) {
       localStorage.removeItem("bookingInformation");
+      // localStorage.removeItem("priceData");
     } else {
       localStorage.setItem(
         "bookingInformation",

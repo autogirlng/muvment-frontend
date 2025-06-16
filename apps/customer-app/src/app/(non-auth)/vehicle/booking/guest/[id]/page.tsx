@@ -54,7 +54,7 @@ export default function VehicleBookingPage({
         )}
       >
         <div className="space-y-8">
-          <BackLink backLink="/" />
+          <BackLink backLink="/explore" />
           <h2 className="text-h5 md:text-h3 3xl:text-4xl text-black">
             {currentStep === 3 ? "Summary" : "Book Ride"}
           </h2>

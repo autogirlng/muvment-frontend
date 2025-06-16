@@ -1,4 +1,4 @@
-function combineDateTime(
+export function combineDateTime(
   startDate: string,
   startTime: string,
   endDate: string,

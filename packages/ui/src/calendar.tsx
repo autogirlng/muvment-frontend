@@ -119,6 +119,7 @@ export const DatePicker = ({
   showMinDate,
   minDate,
   maxDate,
+  disabled = false, // Add disabled prop
 }: {
   buttonClass?: string;
   value: Value;
@@ -129,17 +130,31 @@ export const DatePicker = ({
   showMinDate?: boolean;
   minDate?: Date | null;
   maxDate?: Date | null;
+  disabled?: boolean; // Add to interface
 }) => {
   // Close on select
   const handleCalendarChange = (val: Value) => {
+    if (disabled) return; // Prevent changes if disabled
     onChange(val);
     handleIsOpen(false);
   };
 
+  // Prevent opening if disabled
+  const handleOpenChange = (open: boolean) => {
+    if (disabled) return;
+    handleIsOpen(open);
+  };
+
   return (
-    <Popover.Root open={isOpen} onOpenChange={handleIsOpen}>
+    <Popover.Root open={isOpen && !disabled} onOpenChange={handleOpenChange}>
       <Popover.Trigger asChild>
-        <button className={buttonClass ?? ""}>{children}</button>
+        <button
+          className={buttonClass ?? ""}
+          disabled={disabled}
+          style={disabled ? { pointerEvents: "none", opacity: 0.6 } : {}}
+        >
+          {children}
+        </button>
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content
@@ -164,4 +179,5 @@ export const DatePicker = ({
     </Popover.Root>
   );
 };
+
 export default DateRangeCalendar;
