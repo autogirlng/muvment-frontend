@@ -9,6 +9,7 @@ import cn from "classnames";
 import Link from "next/link";
 import Chip from "@repo/ui/chip";
 import Icons from "@repo/ui/icons";
+import Button from "@repo/ui/button";
 import {
   addSpaceBeforeUppercase,
   getInitialsFromName,
@@ -47,6 +48,7 @@ export default function VehicleDetails({
 }: Props) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [openCancellationModal, setOpenCancellationModal] = useState(false);
   const pageLimit = 10;
   const swiperRef = useRef<SwiperRef>(null);
 
@@ -62,6 +64,10 @@ export default function VehicleDetails({
     isUpdatingFavorites,
     isUserLoggedIn,
   } = useFavorites();
+
+  const handleOpenCancellationModal = () => {
+    setOpenCancellationModal(!openCancellationModal);
+  };
 
   const handleFavoriteToggle = async () => {
     if (!vehicle?.id || isUpdatingFavorites) return;
@@ -280,12 +286,12 @@ export default function VehicleDetails({
                         />
                       )
                   )}
-                  <Link
-                    href="/"
-                    className="block w-full text-primary-500 text-base 3xl:text-xl"
+                  <button
+                    onClick={handleOpenCancellationModal}
+                    className="block w-full text-primary-500 text-base 3xl:text-xl hover:underline cursor-pointer bg-transparent border-none p-0 text-left"
                   >
                     Learn more about our free cancellation
-                  </Link>
+                  </button>
                 </div>
               </div>
 
@@ -333,6 +339,7 @@ export default function VehicleDetails({
         </div>
       </div>
 
+      {/* Login Modal */}
       <BlurredDialog
         open={showLoginModal}
         onOpenChange={setShowLoginModal}
@@ -341,9 +348,118 @@ export default function VehicleDetails({
         content={<LoginModal />}
         width="max-w-[556px]"
       />
+
+      {/* Cancellation Policy Modal */}
+      <BlurredDialog
+        open={openCancellationModal}
+        onOpenChange={handleOpenCancellationModal}
+        trigger={<button className="hidden" />}
+        title={
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="text-red-500"
+              >
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+            <p className="text-xl font-semibold text-gray-900">
+              Cancellation Policy
+            </p>
+          </div>
+        }
+        content={<CancellationPolicyModal />}
+      />
     </>
   );
 }
+
+const CancellationPolicyModal = () => {
+  return (
+    <div className="space-y-6 py-4">
+      {/* 72+ Hours Before Trip */}
+      <div className="space-y-2">
+        <h3 className="font-semibold text-gray-900 text-base">
+          72+ Hours Before Trip?
+        </h3>
+        <p className="text-gray-600 text-sm">
+          Get a full refund — no penalties.
+        </p>
+      </div>
+
+      {/* 48-72 Hours Before Trip */}
+      <div className="space-y-2">
+        <h3 className="font-semibold text-gray-900 text-base">
+          48-72 Hours Before Trip?
+        </h3>
+        <p className="text-gray-600 text-sm">
+          You&apos;ll receive a 50% refund or booking credit. Refunds are
+          processed within
+        </p>
+      </div>
+
+      {/* Less Than 48 hours */}
+      <div className="space-y-2">
+        <h3 className="font-semibold text-gray-900 text-base">
+          Less Than 48 hours?
+        </h3>
+        <p className="text-gray-600 text-sm">
+          Cancellations are non-refundable.
+        </p>
+      </div>
+
+      {/* December Bookings */}
+      <div className="space-y-2">
+        <h3 className="font-semibold text-gray-900 text-base">
+          December Bookings
+        </h3>
+        <p className="text-gray-600 text-sm">
+          All December bookings are non-cancellable and non-refundable. Please
+        </p>
+      </div>
+
+      {/* Vehicle Issues */}
+      <div className="space-y-2">
+        <h3 className="font-semibold text-gray-900 text-base">
+          Vehicle Issues
+        </h3>
+        <p className="text-gray-600 text-sm">
+          If the vehicle is faulty, report it within 1 hour of pickup for a
+          refund.
+        </p>
+      </div>
+
+      {/* How To Cancel */}
+      <div className="space-y-2">
+        <h3 className="font-semibold text-gray-900 text-base">How To Cancel</h3>
+        <p className="text-gray-600 text-sm">
+          Log in to your account, go to Bookings, select the trip, and follow
+          the steps to
+        </p>
+      </div>
+
+      {/* Action Button */}
+      <div className="pt-4">
+        <Button
+          color="primary"
+          rounded="full"
+          fullWidth
+          className="bg-blue-600 hover:bg-blue-700"
+        >
+          Okay, Got it 👍
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 const SectionTitle = ({
   text,
