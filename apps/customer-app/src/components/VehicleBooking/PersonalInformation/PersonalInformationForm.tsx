@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Import useEffect
 import PersonalInformationFormMyself from "./PersonalInformationFormMyself";
 import PersonalInformationFormOthers from "./PersonalInformationFormOthers";
 
@@ -20,6 +20,15 @@ const PersonalInformationForm = ({
   const [whoBookedRide, setWhoBookedRide] = useState<"myself" | "others">(
     "myself"
   );
+
+  // isOthers state should be derived from whoBookedRide
+  const [isOthers, setIsOthers] = useState<boolean>(whoBookedRide === "others"); // Initialize based on whoBookedRide
+
+  // Use useEffect to update isOthers whenever whoBookedRide changes
+  useEffect(() => {
+    setIsOthers(whoBookedRide === "others");
+  }, [whoBookedRide]); // Dependency array: run this effect when whoBookedRide changes
+
   return (
     <div className="max-w-[730px] w-full space-y-9">
       <h6 className="!font-bold text-base md:text-xl 3xl:text-h6">
@@ -56,6 +65,7 @@ const PersonalInformationForm = ({
           setCurrentStep={setCurrentStep}
           vehicleId={vehicleId}
           type={type}
+          isOthers={isOthers} // Pass the updated isOthers state
         />
       )}
     </div>
