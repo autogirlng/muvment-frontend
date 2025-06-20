@@ -21,19 +21,68 @@ export default function useExploreListings({
   fromTime = "",
   untilTime = "",
   location = "",
+  categoryType = "",
 }: {
   currentPage: number;
   pageLimit: number;
   filters?: Record<string, string[] | number[]>;
-  type: "top-rated" | "all" | "search";
+  type: "top-rated" | "all" | "search" | "category";
   search?: string;
   fromDate?: string;
   untilDate?: string;
   fromTime?: string;
   untilTime?: string;
   location?: string;
+  categoryType?: string;
 }) {
   const http = useHttp();
+
+  const buildUrl = () => {
+    const baseParams = `page=${currentPage}&limit=${pageLimit}`;
+
+    switch (type) {
+      case "search":
+        return `/api/listings?${baseParams}&${handleFilterQuery({
+          filters,
+          search,
+          fromDate,
+          untilDate,
+          fromTime,
+          untilTime,
+        })}`;
+
+      case "top-rated":
+        return `/api/listings/top-rated?${baseParams}&${handleFilterQuery({
+          filters,
+        })}`;
+
+      case "category":
+        // For category type, add the vehicle type to the URL
+        const categoryParams = categoryType
+          ? `type=${encodeURIComponent(categoryType)}`
+          : "";
+        const filterQuery = handleFilterQuery({ filters, location });
+
+        // Combine all query parameters properly
+        const allParams = [baseParams, categoryParams]
+          .filter(Boolean)
+          .join("&");
+
+        // console.log("Category URL:", `/api/listings?${allParams}`);
+
+        return `/api/listings?${allParams}`;
+
+      default: // "all"
+        return `/api/listings?${baseParams}`;
+
+      /* 
+        return `/api/listings?${baseParams}&${handleFilterQuery({
+          filters,
+          location,
+        })}`;
+        */
+    }
+  };
 
   const { data, isError, error, isLoading, isSuccess } = useQuery({
     queryKey: [
@@ -46,18 +95,11 @@ export default function useExploreListings({
       fromTime,
       untilTime,
       location,
+      categoryType,
+      type,
     ],
 
-    queryFn: async () =>
-      http.get<ExploreDataType>(
-        type === "search"
-          ? `/api/listings?page=${currentPage}&limit=${pageLimit}&${handleFilterQuery(
-              { filters, search, fromDate, untilDate, fromTime, untilTime }
-            )}`
-          : type === "top-rated"
-            ? `/api/listings/top-rated?page=${currentPage}&limit=${pageLimit}&${handleFilterQuery({ filters })}`
-            : `/api/listings?page=${currentPage}&limit=${pageLimit}&${handleFilterQuery({ filters, location })}`
-      ),
+    queryFn: async () => http.get<ExploreDataType>(buildUrl()),
 
     retry: false,
   });

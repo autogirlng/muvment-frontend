@@ -7,7 +7,7 @@ import { FullPageSpinner } from "@repo/ui/spinner";
 export default function SearchVehiclesPage() {
   return (
     <Suspense fallback={<FullPageSpinner />}>
-      <ExplorePageLayout type="search" />
+      <ExplorePageLayout type="all" />
     </Suspense>
   );
 }

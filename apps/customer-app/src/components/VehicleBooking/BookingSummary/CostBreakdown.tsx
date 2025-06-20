@@ -94,12 +94,16 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
 
     console.log(itineraryInformation);
 
+    const amount = priceData?.totalPrice
+      ? parseFloat(priceData?.totalPrice)
+      : parseInt(subTotal);
+
     saveBooking.mutate({
       ...personalInformationValues,
       ...itineraryInformationValues,
       // startDate: itineraryInformation.startDate,
       // endDate: itineraryInformation.endDate,
-      amount: parseInt(subTotal),
+      amount: amount,
       currencyCode: currencyCode,
       bookingType,
       duration: parseInt(numberOfDays),
