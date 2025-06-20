@@ -8,7 +8,6 @@ import { useAppDispatch } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
 
 export const useHttp = () => {
-
   const dispatch = useAppDispatch();
   const router = useRouter();
 
