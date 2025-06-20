@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import useHandleBooking from "../hooks/useHandleBooking";
 import useCalculatePrice from "./hooks/useCalculatePrice";
 import { addDays, differenceInDays } from "date-fns";
+import Icons from "@repo/ui/icons";
 
 type Props = {
   vehicle: VehicleInformation | null;
@@ -225,22 +226,27 @@ export default function VehicleSummary({
         <div className="space-y-11 md:py-8 md:px-6 divide-y divide-grey-200 text-grey-800 !font-medium text-base 3xl:text-xl">
           <div className="space-y-11">
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2 xs:gap-4">
                 <PricingDescription
                   text={`NGN ${formatNumberWithCommas(
                     vehicle?.pricing?.dailyRate?.value || 0
                   )}/day`}
+                  className="text-sm sm:text-base" // Assuming you can pass className to PricingDescription
                 />
-                <div className="py-2 px-3 bg-grey-75 rounded-[60px] flex items-center gap-2 text-sm 3xl:text-base !font-medium">
-                  <p className="text-grey-400">Total</p>
-                  <p className="text-grey-700">
-                    {isPriceLoading
-                      ? "Calculating..."
-                      : priceData
-                        ? `NGN ${formatNumberWithCommas(priceData.totalPrice)}`
-                        : `NGN ${formatNumberWithCommas(
-                            (vehicle?.pricing?.dailyRate?.value || 0) * 1
-                          )}`}
+                <div className="py-2 px-3 bg-grey-75 rounded-[60px] flex items-center gap-2 text-xs sm:text-sm 3xl:text-base !font-medium w-full xs:w-auto justify-between xs:justify-normal">
+                  <p className="text-grey-400 whitespace-nowrap">Total</p>
+                  <p className="text-grey-700 whitespace-nowrap">
+                    {isPriceLoading ? (
+                      <span className="inline-flex items-center gap-1">
+                        Calculating...
+                      </span>
+                    ) : priceData ? (
+                      `NGN ${formatNumberWithCommas(priceData.totalPrice)}`
+                    ) : (
+                      `NGN ${formatNumberWithCommas(
+                        (vehicle?.pricing?.dailyRate?.value || 0) * 1
+                      )}`
+                    )}
                   </p>
                 </div>
               </div>

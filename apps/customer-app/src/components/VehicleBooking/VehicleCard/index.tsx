@@ -47,17 +47,20 @@ const VehicleInformationCard = ({
     <>
       <div className="space-y-8 border border-grey-200 rounded-3xl max-w-[400px] px-6 py-8">
         {/* name of car */}
-        <div className="flex items-center gap-2 justify-between">
-          <div className="space-y-2">
-            <h6 className="text-base md:text-xl 3xl:text-h6">
+        <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2 xs:gap-4">
+          <div className="space-y-1 xs:space-y-2">
+            <h6 className="text-sm sm:text-base md:text-xl 3xl:text-h6 font-medium">
               {vehicle?.listingName}
             </h6>
-            <p className="text-xs md:text-sm 3xl:text-base text-black">{`NGN ${formatNumberWithCommas(
-              vehicle?.pricing?.dailyRate?.value || 0
-            )}/day`}</p>
+            <p className="text-xs sm:text-sm md:text-sm 3xl:text-base text-black">
+              {`NGN ${formatNumberWithCommas(vehicle?.pricing?.dailyRate?.value || 0)}/day`}
+            </p>
           </div>
           <GreyWrap>
-            <Link href="" className="!text-grey-700 hover:underline">
+            <Link
+              href=""
+              className="!text-grey-700 hover:underline text-xs sm:text-sm"
+            >
               Preview listing
             </Link>
           </GreyWrap>
@@ -70,17 +73,25 @@ const VehicleInformationCard = ({
           }}
           navigation={true}
           modules={[Pagination, Navigation]}
-          className="vehicle-summary-swiper !z-[-1]"
+          className="vehicle-summary-swiper"
+          style={{
+            width: "100%",
+            height: "auto",
+            borderRadius: "24px",
+            overflow: "hidden",
+          }}
         >
           {vehicleImages.map((image, index) => (
             <SwiperSlide key={index}>
-              <Image
-                src={image}
-                alt=""
-                width={431}
-                height={212}
-                className="w-full h-[212px] rounded-3xl object-cover"
-              />
+              <div className="relative w-full h-[212px]">
+                <Image
+                  src={image}
+                  alt={`Vehicle image ${index + 1}`}
+                  fill
+                  className="object-cover"
+                  priority={index === 0} // Prioritize loading the first image
+                />
+              </div>
             </SwiperSlide>
           ))}
         </Swiper>
