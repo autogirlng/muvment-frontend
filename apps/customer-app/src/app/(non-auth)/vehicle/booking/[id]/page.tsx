@@ -9,7 +9,6 @@ import { Stepper } from "@repo/ui/stepper";
 import { useEffect, useState } from "react";
 import useFetchVehicleById from "@/components/VehicleBooking/hooks/useFetchVehicleById";
 import { FullPageSpinner } from "@repo/ui/spinner";
-import { useFetchUrlParams } from "@/utils/functions";
 import { useRouter } from "next/navigation";
 
 const steps = ["Personal Information", "Itinerary", "Booking Summary"];
