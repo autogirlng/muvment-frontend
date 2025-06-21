@@ -1,8 +1,8 @@
 import { CaretLeft } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
 import React from "react";
-type Props = { backLink: string };
-export default function BackLink({ backLink }: Props) {
+type Props = { backLink: string; className?: string };
+export default function BackLink({ backLink, className }: Props) {
   const router = useRouter();
 
   const handleGoBack = () => {
