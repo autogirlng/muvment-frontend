@@ -15,7 +15,6 @@ export const useHttp = () => {
     return axios.create({
       baseURL: apiUrl,
       timeout: 20000,
-      // if aborted rety request ...ECONNABORTED
     });
   }, []);
 
