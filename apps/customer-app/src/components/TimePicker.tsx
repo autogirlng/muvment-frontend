@@ -256,7 +256,7 @@ function TimePicker({
               : selectedTime
                 ? "text-grey-800"
                 : "text-grey-400"
-          }`}
+          } whitespace-nowrap`}
         >
           {getDisplayTime()}
         </span>

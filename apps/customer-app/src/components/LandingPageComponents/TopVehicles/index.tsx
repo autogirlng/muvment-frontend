@@ -10,8 +10,13 @@ import Image from "next/image";
 import Link from "next/link";
 import Icons from "@repo/ui/icons";
 import LandingPageSectionHeader from "@/components/Header/LandingPageSectionHeader";
-import useExploreListings from "@/components/Explore/hooks/useExploreListings";
 import { FullPageSpinner } from "@repo/ui/spinner";
+import useListings, { Vehicle } from "@/components/Explore/hooks/useListings";
+import useFavorites from "@/components/Explore/hooks/useFavorites";
+import { useHttp } from "@/hooks/useHttp";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { BlurredDialog } from "@repo/ui/dialog";
+import LoginModal from "@/components/LoginModal";
 
 type Props = {};
 
@@ -24,6 +29,7 @@ const placeholderImages = [
 
 function TopVehicles({}: Props) {
   const swiperRef = useRef<SwiperRef>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handleMouseEnter = () => {
     swiperRef.current?.swiper?.autoplay?.stop();
@@ -33,14 +39,17 @@ function TopVehicles({}: Props) {
     swiperRef.current?.swiper?.autoplay?.start();
   };
 
-  const { listings, isError, isLoading } = useExploreListings({
-    currentPage: 1,
-    pageLimit: 5,
-    type: "top-rated",
+  // Use the custom hook instead of useExploreListings
+  const { listings, isError, isLoading, error, refetch } = useListings({
+    page: 1,
+    limit: 5,
   });
 
+  // Get favorites using the new hook
+  const { isVehicleFavorited } = useFavorites();
+
   // Function to get valid image URLs from vehicle data
-  const getVehicleImages = (vehicle: any) => {
+  const getVehicleImages = (vehicle: Vehicle) => {
     if (!vehicle?.VehicleImage) return placeholderImages;
 
     const images = [
@@ -50,10 +59,32 @@ function TopVehicles({}: Props) {
       vehicle.VehicleImage.sideView2,
       vehicle.VehicleImage.interior,
       vehicle.VehicleImage.other,
-    ].filter(Boolean); // Remove any undefined/null values
+    ].filter(Boolean);
 
     return images.length > 0 ? images : placeholderImages;
   };
+
+  // Check if vehicle is in favorites using the hook function
+  const checkIfFavorited = (vehicleId: string) => {
+    return isVehicleFavorited(vehicleId);
+  };
+
+  // Handle error state
+  if (isError) {
+    return (
+      <section className="pt-[58px] md:pt-0 md:pb-[50px]">
+        <div className="container text-center">
+          <p className="text-red-500 mb-4">Failed to load vehicles: {error}</p>
+          <button
+            onClick={refetch}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Try Again
+          </button>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="pt-[58px] md:pt-0 md:pb-[50px]">
@@ -108,44 +139,58 @@ function TopVehicles({}: Props) {
             >
               {listings.map((vehicle, index) => (
                 <SwiperSlide key={vehicle.id || index} className="!w-auto py-5">
-                  <Vehicle
+                  <VehicleCard
                     vehicleId={vehicle?.id ?? ""}
                     name={vehicle?.listingName || "Premium Vehicle"}
                     type={vehicle?.vehicleType || "Luxury"}
                     location={vehicle?.location || "City"}
                     dailyPrice={vehicle?.pricing?.dailyRate?.value || 0}
-                    currency={vehicle?.pricing?.dailyRate?.currency || "NGN"}
+                    currency={
+                      vehicle?.pricing?.dailyRate?.currency ||
+                      vehicle?.vehicleCurrency ||
+                      "NGN"
+                    }
                     vehicleImages={getVehicleImages(vehicle)}
                     showShadow={index === 0}
+                    isFavorited={checkIfFavorited(vehicle.id)}
+                    onShowLoginModal={() => setShowLoginModal(true)}
                   />
                 </SwiperSlide>
               ))}
             </Swiper>
           </div>
         ) : (
-          // Fallback when no listings are available
-          <div className="flex justify-center">
-            <Vehicle
-              vehicleId=""
-              name="Premium Vehicle"
-              type="Luxury"
-              location="City"
-              dailyPrice={0}
-              currency="NGN"
-              vehicleImages={placeholderImages}
-              showShadow={true}
-            />
+          <div className="text-center py-10">
+            <p className="text-grey-600 text-lg mb-4">
+              No vehicles available at the moment
+            </p>
+            <button
+              onClick={refetch}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Refresh
+            </button>
           </div>
         )}
       </div>
+
+      {/* Login Modal */}
+      <BlurredDialog
+        open={showLoginModal}
+        onOpenChange={setShowLoginModal}
+        trigger={<button className="hidden" />}
+        title={<p></p>}
+        content={<LoginModal />}
+        width="max-w-[556px]"
+      />
     </section>
   );
 }
 
 export default TopVehicles;
 
-// Vehicle component with proper image handling
-const Vehicle = ({
+// Vehicle component with like functionality
+const VehicleCard = ({
   vehicleId,
   vehicleImages,
   name,
@@ -154,6 +199,8 @@ const Vehicle = ({
   dailyPrice,
   currency,
   showShadow,
+  isFavorited,
+  onShowLoginModal,
 }: {
   vehicleId: string;
   vehicleImages: string[];
@@ -163,10 +210,32 @@ const Vehicle = ({
   dailyPrice: number;
   currency: string;
   showShadow?: boolean;
+  isFavorited?: boolean;
+  onShowLoginModal: () => void;
 }) => {
+  const { toggleFavorite, isUpdatingFavorites, isUserLoggedIn } =
+    useFavorites();
+
+  // Handle like/unlike action
+  const handleLikeClick = async () => {
+    const result = await toggleFavorite(vehicleId);
+
+    if (result.requiresLogin) {
+      onShowLoginModal();
+    }
+  };
+
   // Fallback for empty image array
   const imagesToDisplay =
     vehicleImages.length > 0 ? vehicleImages : placeholderImages;
+
+  // Format currency display
+  const formatPrice = (price: number, curr: string) => {
+    if (curr === "NGN") {
+      return `₦${price.toLocaleString()}`;
+    }
+    return `${curr} ${price.toLocaleString()}`;
+  };
 
   return (
     <div
@@ -201,7 +270,6 @@ const Vehicle = ({
                   sizes="(max-width: 768px) 100vw, 348px"
                   priority={index === 0}
                   onError={(e) => {
-                    // Fallback to placeholder if image fails to load
                     const target = e.target as HTMLImageElement;
                     target.src =
                       placeholderImages[index % placeholderImages.length];
@@ -217,13 +285,34 @@ const Vehicle = ({
           <h5 className="text-grey-800 text-xl md:text-h6 3xl:text-h5 !font-semibold">
             {name}
           </h5>
-          <div className="bg-grey-90 text-grey-600 h-10 w-10 rounded-full flex items-center justify-center">
-            {Icons.ic_whishlist}
-          </div>
+          <button
+            onClick={handleLikeClick}
+            disabled={isUpdatingFavorites}
+            className={cn(
+              "h-10 w-10 rounded-full flex items-center justify-center transition-all duration-200",
+              isFavorited
+                ? "bg-red-50 text-red-500"
+                : "bg-grey-90 text-grey-600 hover:bg-grey-100",
+              isUpdatingFavorites && "opacity-50 cursor-not-allowed"
+            )}
+          >
+            {isUpdatingFavorites ? (
+              <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+            ) : (
+              <span
+                className={cn(
+                  "transition-all duration-200",
+                  isFavorited && "text-red-500"
+                )}
+              >
+                {isFavorited
+                  ? Icons.ic_whishlist_red || Icons.ic_whishlist
+                  : Icons.ic_whishlist}
+              </span>
+            )}
+          </button>
         </div>
-        <p>
-          {currency} {dailyPrice.toLocaleString()}/day
-        </p>
+        <p>{formatPrice(dailyPrice, currency)}/day</p>
         <p>{type}</p>
         <Link
           href={`/vehicle/details/${vehicleId}`}

@@ -73,6 +73,64 @@ const defaultLocationSuggestions = [
   },
 ];
 
+// Global flag to track if Google Maps is being loaded
+let isGoogleMapsLoading = false;
+let googleMapsLoadPromise: Promise<void> | null = null;
+
+// Function to load Google Maps script only once
+const loadGoogleMapsScript = (): Promise<void> => {
+  // If already loaded, resolve immediately
+  if (window.google && window.google.maps && window.google.maps.places) {
+    return Promise.resolve();
+  }
+
+  // If already loading, return the existing promise
+  if (googleMapsLoadPromise) {
+    return googleMapsLoadPromise;
+  }
+
+  // Check if script is already in the DOM
+  const existingScript = document.querySelector(
+    'script[src*="maps.googleapis.com"]'
+  );
+  if (existingScript) {
+    // Wait for the existing script to load
+    googleMapsLoadPromise = new Promise((resolve, reject) => {
+      if (window.google && window.google.maps && window.google.maps.places) {
+        resolve();
+      } else {
+        existingScript.addEventListener("load", () => resolve());
+        existingScript.addEventListener("error", reject);
+      }
+    });
+    return googleMapsLoadPromise;
+  }
+
+  // Create new script
+  googleMapsLoadPromise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+    script.async = true;
+    script.defer = true;
+
+    script.onload = () => {
+      isGoogleMapsLoading = false;
+      resolve();
+    };
+
+    script.onerror = () => {
+      isGoogleMapsLoading = false;
+      googleMapsLoadPromise = null;
+      reject(new Error("Failed to load Google Maps script"));
+    };
+
+    isGoogleMapsLoading = true;
+    document.head.appendChild(script);
+  });
+
+  return googleMapsLoadPromise;
+};
+
 function SearchBookings({
   searchValue,
   setSearchValue,
@@ -105,23 +163,26 @@ function SearchBookings({
 
   // Initialize Google Places Autocomplete Service
   useEffect(() => {
-    const initializeGoogleMaps = () => {
-      if (window.google && window.google.maps && !autocompleteService.current) {
-        autocompleteService.current =
-          new window.google.maps.places.AutocompleteService();
+    const initializeGoogleMaps = async () => {
+      try {
+        await loadGoogleMapsScript();
+
+        if (
+          window.google &&
+          window.google.maps &&
+          window.google.maps.places &&
+          !autocompleteService.current
+        ) {
+          autocompleteService.current =
+            new window.google.maps.places.AutocompleteService();
+        }
+      } catch (error) {
+        console.error("Failed to load Google Maps:", error);
+        setSearchError("Location search is currently unavailable.");
       }
     };
 
-    // Check if Google Maps is already loaded
-    if (window.google) {
-      initializeGoogleMaps();
-    } else {
-      // Load Google Maps script if not already loaded
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
-      script.onload = initializeGoogleMaps;
-      document.head.appendChild(script);
-    }
+    initializeGoogleMaps();
   }, []);
 
   // Debounced Google Places search

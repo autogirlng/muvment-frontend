@@ -393,7 +393,7 @@ export function RangeFilter({
             <Slider
               range
               min={0}
-              max={100000}
+              max={10000000}
               step={1000}
               // defaultValue={selectedItems[0] as number}
               value={selectedItems as [number, number]}
@@ -464,7 +464,7 @@ export function RangeFilterWithoutPopup({
         <Slider
           range
           min={0}
-          max={100000}
+          max={10000000}
           step={1000}
           // defaultValue={selectedItems[0] as number}
           value={selectedItems as [number, number]}

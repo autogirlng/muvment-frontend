@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Icons from "@repo/ui/icons";
-import SearchBookings from "@/components/SearchBookings";
+import SearchBookings from "@/components/SearchBooking/SearchBookings";
 import UserLocation from "./UserLocation";
 
 type Props = {};
