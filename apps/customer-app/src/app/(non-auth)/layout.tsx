@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 import { useAppSelector } from "@/lib/hooks";
@@ -23,9 +23,5 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     return <FullPageSpinner />;
   }
 
-  return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
-    </html>
-  );
+  return <main className={inter.className}>{children}</main>;
 }

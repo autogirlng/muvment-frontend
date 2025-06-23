@@ -282,7 +282,7 @@ const ExploreVehicleCard = ({
         open={showLoginModal}
         onOpenChange={setShowLoginModal}
         trigger={<button className="hidden" />}
-        title={<p>Add to Favorites</p>}
+        title={<p></p>}
         content={<LoginModal />}
         width="max-w-[556px]"
       />

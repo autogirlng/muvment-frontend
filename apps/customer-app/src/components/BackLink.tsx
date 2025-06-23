@@ -10,8 +10,8 @@ export default function BackLink({ backLink, className }: Props) {
   };
 
   return (
-    <div
-      className="flex items-center gap-0.5 text-primary-500 fill-primary-500 cursor-pointer"
+    <span
+      className="flex items-center gap-0.5 text-primary-500 fill-primary-500 cursor-pointer w-[80px]"
       onClick={handleGoBack}
       // Add keyboard accessibility
       role="button"
@@ -24,6 +24,6 @@ export default function BackLink({ backLink, className }: Props) {
     >
       <CaretLeft size={18} fill="inherit" />
       <span className="text-sm 2xl:text-base font-medium">Back</span>
-    </div>
+    </span>
   );
 }
