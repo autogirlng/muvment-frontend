@@ -152,96 +152,141 @@ const ExploreVehicleCard = ({
                 : "py-6 px-4 3xl:px-8 space-y-3"
           )}
         >
-          <div
-            className={cn(
-              "text-grey-600 text-base md:text-xl 3xl:text-h6",
-              isDisplayList && showAllFilters
-                ? "xl:px-5 xl:min-w-[230px] 2xl:min-w-fit space-y-4"
-                : isDisplayList
-                  ? "md:px-5 3xl:px-10 md:py-8 space-y-4"
-                  : "space-y-3"
-            )}
+          <Link
+            href={`/vehicle/details/${vehicleId}${
+              fromDate || fromTime || untilDate || untilTime
+                ? // || bookingType
+                  `?${[
+                    fromDate && `startDate=${fromDate}`,
+                    fromTime && `startTime=${fromTime}`,
+                    untilDate && `endDate=${untilDate}`,
+                    untilTime && `endTime=${untilTime}`,
+                    // bookingType && `bookingType=${bookingType}`,
+                  ]
+                    .filter(Boolean)
+                    .join("&")}`
+                : ""
+            }`}
           >
-            <Link
-              href={`/vehicle/details/${vehicleId}${
-                fromDate || fromTime || untilDate || untilTime
-                  ? // || bookingType
-                    `?${[
-                      fromDate && `startDate=${fromDate}`,
-                      fromTime && `startTime=${fromTime}`,
-                      untilDate && `endDate=${untilDate}`,
-                      untilTime && `endTime=${untilTime}`,
-                      // bookingType && `bookingType=${bookingType}`,
-                    ]
-                      .filter(Boolean)
-                      .join("&")}`
-                  : ""
-              }`}
-            >
-              <h5 className="text-grey-800 text-xl md:text-h6 3xl:text-h5 !font-semibold">
-                {name}
-              </h5>
-            </Link>
             <div
               className={cn(
-                isDisplayList
-                  ? "flex items-center divide-x divide-grey-200 space-x-3"
-                  : "space-y-3",
-                showAllFilters && "2xl:divide-x 2xl:divide-grey-200 "
+                "text-grey-600 text-base md:text-xl 3xl:text-h6",
+                isDisplayList && showAllFilters
+                  ? "xl:px-5 xl:min-w-[230px] 2xl:min-w-fit space-y-4"
+                  : isDisplayList
+                    ? "md:px-5 3xl:px-10 md:py-8 space-y-4"
+                    : "space-y-3"
               )}
             >
-              <div>
-                {isDisplayList && (
-                  <p className="text-sm 3xl:text-base">Daily</p>
+              <div className="flex flex-row items-center gap-2 flex-wrap">
+                <h5 className="text-grey-800 text-xl md:text-h6 3xl:text-h5 !font-semibold">
+                  {name}
+                </h5>
+                {type === "Luxury" && (
+                  <span className="inline-block px-2 py-0.5 rounded-full bg-success-500 text-xs md:text-sm 3xl:text-sm text-white font-sm relative -top-3">
+                    Electric Vehicle
+                  </span>
                 )}
-                <p className="text-sm md:text-base 3xl:text-xl !font-semibold">
-                  {currency} {formatNumberWithCommas(dailyPrice)}{" "}
-                  {!isDisplayList && "/day"}
-                </p>
               </div>
-              <div className="pl-3">
-                {isDisplayList && (
-                  <p className="text-sm 3xl:text-base">Extra Hours</p>
+
+              <div
+                className={cn(
+                  isDisplayList
+                    ? "flex items-center divide-x divide-grey-200 gap-2 sm:gap-4"
+                    : "flex flex-col gap-1",
+                  showAllFilters && "2xl:divide-x 2xl:divide-grey-200"
                 )}
-                <p className="text-sm md:text-base 3xl:text-xl !font-semibold">
-                  {currency} {extraHoursFee} {!isDisplayList && "/extra hour"}
-                </p>
+              >
+                <div className={isDisplayList ? "pr-2 sm:pr-4" : ""}>
+                  {isDisplayList && (
+                    <p className="text-xs sm:text-sm lg:text-base text-grey-500 font-medium">
+                      Daily
+                    </p>
+                  )}
+                  <p className="text-base sm:text-lg lg:text-xl 3xl:text-2xl font-bold text-grey-800 whitespace-nowrap">
+                    {currency} {formatNumberWithCommas(dailyPrice)}
+                    {!isDisplayList && (
+                      <span className="ml-1 text-xs sm:text-sm text-grey-500 font-normal">
+                        /day
+                      </span>
+                    )}
+                  </p>
+                </div>
+                <div className={isDisplayList ? "pl-2 sm:pl-4" : ""}>
+                  {isDisplayList && (
+                    <p className="text-xs sm:text-sm lg:text-base text-grey-500 font-medium">
+                      Extra Hours
+                    </p>
+                  )}
+                  <p className="text-base sm:text-lg lg:text-xl 3xl:text-2xl font-bold text-grey-800 whitespace-nowrap">
+                    {currency} {formatNumberWithCommas(extraHoursFee)}
+                    {!isDisplayList && (
+                      <span className="ml-1 text-xs sm:text-sm text-grey-500 font-normal">
+                        /extra hour
+                      </span>
+                    )}
+                  </p>
+                </div>
               </div>
+              <p
+                className={cn(
+                  "text-xs md:text-sm 3xl:text-base text-grey-500 font-bold mt-1",
+                  "truncate max-w-[120px] md:max-w-[180px] 3xl:max-w-[220px]"
+                )}
+                title={type === "Luxury" ? "Electric Vehicle" : type}
+              >
+                {type === "Luxury" ? "Electric Vehicle" : type}
+              </p>
             </div>
-            <p>{type}</p>
-          </div>
+          </Link>
 
           {isDisplayList && (
             <VerticalDivider
               className={showAllFilters ? "hidden xl:block" : "hidden md:block"}
             />
           )}
-
-          {isDisplayList && (
-            <div
-              className={cn(
-                "flex flex-wrap gap-3 3xl:max-w-[400px]",
-                showAllFilters ? "xl:max-w-[365px]" : "xl:max-w-[365px]"
-              )}
-            >
-              {vehicleDetails?.map((detail, index) => {
-                const [key, value] = Object.entries(detail)[0];
-                if (key !== "icon") {
-                  return (
-                    <Chip
-                      icon={detail.icon}
-                      key={index}
-                      text={keyAndValueInAChip(key, value as string)}
-                      variant="filled"
-                      radius="sm"
-                      color="lighter"
-                      className="!px-2 !text-grey-900 !bg-grey-75 border border-grey-200"
-                    />
-                  );
-                }
-              })}
-            </div>
-          )}
+          <Link
+            href={`/vehicle/details/${vehicleId}${
+              fromDate || fromTime || untilDate || untilTime
+                ? // || bookingType
+                  `?${[
+                    fromDate && `startDate=${fromDate}`,
+                    fromTime && `startTime=${fromTime}`,
+                    untilDate && `endDate=${untilDate}`,
+                    untilTime && `endTime=${untilTime}`,
+                    // bookingType && `bookingType=${bookingType}`,
+                  ]
+                    .filter(Boolean)
+                    .join("&")}`
+                : ""
+            }`}
+          >
+            {isDisplayList && (
+              <div
+                className={cn(
+                  "flex flex-wrap gap-3 3xl:max-w-[400px]",
+                  showAllFilters ? "xl:max-w-[365px]" : "xl:max-w-[365px]"
+                )}
+              >
+                {vehicleDetails?.map((detail, index) => {
+                  const [key, value] = Object.entries(detail)[0];
+                  if (key !== "icon") {
+                    return (
+                      <Chip
+                        icon={detail.icon}
+                        key={index}
+                        text={keyAndValueInAChip(key, value as string)}
+                        variant="filled"
+                        radius="sm"
+                        color="lighter"
+                        className="!px-2 !text-grey-900 !bg-grey-75 border border-grey-200"
+                      />
+                    );
+                  }
+                })}
+              </div>
+            )}
+          </Link>
 
           {isDisplayList && (
             <VerticalDivider

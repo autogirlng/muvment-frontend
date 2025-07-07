@@ -275,7 +275,15 @@ const ItineraryForm = ({
             label="Area of use"
             placeholder="Select"
             variant="outlined"
-            options={[{ option: "All Areas", value: "All Areas" }]}
+            options={[
+              { option: "All Areas", value: "All Areas" },
+              { option: "Mainland Central", value: "Mainland Central" },
+              { option: "Island Central", value: "Island Central" },
+              {
+                option: "Mainland and Island Central",
+                value: "Mainland and Island Central",
+              },
+            ]}
             value={values.areaOfUse}
             onChange={(value: string) => {
               setFieldTouched("areaOfUse", true);

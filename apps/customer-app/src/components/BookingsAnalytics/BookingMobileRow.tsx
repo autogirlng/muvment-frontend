@@ -11,6 +11,7 @@ import { BookingTableBadge, TransactionBadge } from "@repo/ui/badge";
 import MoreButton from "@repo/ui/moreButton";
 import DeclineTrip from "@/components/BookingsAnalytics/Details/modals/DeclineTrip";
 import AcceptTrip from "@/components/BookingsAnalytics/Details/modals/AcceptTrip";
+import { formatNumberWithCommas } from "@/utils/functions";
 
 const TableCell = ({
   title,
@@ -133,7 +134,7 @@ const BookingMobileRow = ({ items }: { items: BookingInformation }) => {
 
       <TableCell
         title="Price"
-        content={`${items?.currencyCode} ${items?.amount}`}
+        content={`${items?.currencyCode} ${formatNumberWithCommas(items?.amount)}`}
       />
     </div>
   );

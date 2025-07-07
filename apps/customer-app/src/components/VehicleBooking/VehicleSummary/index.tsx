@@ -18,7 +18,12 @@ import { useAppSelector } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
 import useHandleBooking from "../hooks/useHandleBooking";
 import useCalculatePrice from "./hooks/useCalculatePrice";
-import { addDays, differenceInDays } from "date-fns";
+import {
+  addDays,
+  differenceInDays,
+  differenceInMinutes,
+  addMinutes,
+} from "date-fns";
 import Icons from "@repo/ui/icons";
 
 type Props = {
@@ -49,13 +54,16 @@ export default function VehicleSummary({
   const { bookingType, startDate, startTime, endDate, endTime } =
     useFetchUrlParams();
   const [values, setValues] = useState<InitialValuesProps>({
-    bookingType: bookingType || "",
+    bookingType: bookingType || "SINGLE_DAY",
     startDate: startDate ? new Date(startDate) : null,
     startTime: startTime ? new Date(startTime) : null,
     endDate: endDate ? new Date(endDate) : null,
     endTime: endTime ? new Date(endTime) : null,
     pickupLocation: "",
   });
+
+  // Check if vehicle is luxury
+  const isLuxuryVehicle = vehicle?.vehicleType === "Luxury";
 
   const minStartDate = useMemo(() => {
     const today = new Date();
@@ -66,10 +74,22 @@ export default function VehicleSummary({
   }, [vehicle?.tripSettings?.advanceNotice]);
 
   const { minEndDate, maxEndDate, endDateMinimum } = useMemo(() => {
-    if (!values.startDate) {
+    if (!values.startDate || !values.startTime) {
       return { minEndDate: null, maxEndDate: null, endDateMinimum: null };
     }
 
+    if (isLuxuryVehicle) {
+      // For luxury vehicles, max 6 hours from start time
+      const maxEndDateTime = addMinutes(values.startTime, 6 * 60); // 6 hours = 360 minutes
+      return {
+        minEndDate: values.startDate,
+        maxEndDate: values.startDate, // Same day for luxury vehicles
+        endDateMinimum: values.startDate,
+        maxEndDateTime,
+      };
+    }
+
+    // Original logic for non-luxury vehicles
     const maxTripDurationText =
       vehicle?.tripSettings?.maxTripDuration || "1 day";
     let maxDays = 1;
@@ -86,19 +106,50 @@ export default function VehicleSummary({
       maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
     }
 
-    const today = new Date();
     const minEndDate = values.startDate;
     const maxEndDate = addDays(values.startDate, maxDays - 1);
-    const endDateMinimum = today;
+    const endDateMinimum = values.startDate;
 
     return { minEndDate, maxEndDate, endDateMinimum };
-  }, [values.startDate, vehicle?.tripSettings?.maxTripDuration]);
+  }, [
+    values.startDate,
+    values.startTime,
+    vehicle?.tripSettings?.maxTripDuration,
+    isLuxuryVehicle,
+  ]);
 
-  const validateDateRange = (startDate: Date | null, endDate: Date | null) => {
-    if (!startDate || !endDate) return true;
+  const validateDateRange = (
+    startDate: Date | null,
+    endDate: Date | null,
+    startTime: Date | null,
+    endTime: Date | null
+  ) => {
+    if (!startDate || !endDate || !startTime || !endTime) return true;
 
+    if (isLuxuryVehicle) {
+      // For luxury vehicles, check if end time is within 6 hours of start time
+      // Also ensure it's the same day
+      const isSameDay = startDate.toDateString() === endDate.toDateString();
+      if (!isSameDay) return false;
+
+      // Calculate total minutes between start and end time
+      const startDateTime = new Date(startDate);
+      startDateTime.setHours(
+        startTime.getHours(),
+        startTime.getMinutes(),
+        0,
+        0
+      );
+
+      const endDateTime = new Date(endDate);
+      endDateTime.setHours(endTime.getHours(), endTime.getMinutes(), 0, 0);
+
+      const totalMinutes = differenceInMinutes(endDateTime, startDateTime);
+      return totalMinutes > 0 && totalMinutes <= 6 * 60; // Max 6 hours
+    }
+
+    // Original validation logic for non-luxury vehicles
     const daysDifference = differenceInDays(endDate, startDate);
-
     const maxTripDurationText =
       vehicle?.tripSettings?.maxTripDuration || "1 day";
     let maxDays = 1;
@@ -128,33 +179,107 @@ export default function VehicleSummary({
       };
 
       if (name === "startDate" && value instanceof Date) {
-        if (prev.endDate) {
-          const daysDifference = differenceInDays(prev.endDate, value);
+        if (isLuxuryVehicle) {
+          // For luxury vehicles, automatically set end date to same day
+          newValues.endDate = value;
 
-          const maxTripDurationText =
-            vehicle?.tripSettings?.maxTripDuration || "1 day";
-          let maxDays = 1;
+          // If there's a start time and end time, ensure end time is within 6 hours
+          if (prev.startTime && prev.endTime) {
+            const startDateTime = new Date(value);
+            startDateTime.setHours(
+              prev.startTime.getHours(),
+              prev.startTime.getMinutes(),
+              0,
+              0
+            );
 
-          if (maxTripDurationText.includes("week")) {
-            const weeks = parseInt(
-              maxTripDurationText.replace(/\D/g, "") || "1"
+            const maxEndDateTime = addMinutes(startDateTime, 6 * 60);
+
+            // If current end time exceeds 6 hours, adjust it
+            const currentEndDateTime = new Date(value);
+            currentEndDateTime.setHours(
+              prev.endTime.getHours(),
+              prev.endTime.getMinutes(),
+              0,
+              0
             );
-            maxDays = weeks * 7;
-          } else if (maxTripDurationText.includes("day")) {
-            maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
-          } else if (maxTripDurationText.includes("month")) {
-            const months = parseInt(
-              maxTripDurationText.replace(/\D/g, "") || "1"
-            );
-            maxDays = months * 30;
-          } else {
-            maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
+
+            if (currentEndDateTime > maxEndDateTime) {
+              newValues.endTime = maxEndDateTime;
+            }
           }
+        } else {
+          // Original logic for non-luxury vehicles
+          if (prev.endDate) {
+            const daysDifference = differenceInDays(prev.endDate, value);
+            const maxTripDurationText =
+              vehicle?.tripSettings?.maxTripDuration || "1 day";
+            let maxDays = 1;
 
-          if (daysDifference < 0) {
-            newValues.endDate = value;
-          } else if (daysDifference >= maxDays) {
-            newValues.endDate = addDays(value, maxDays - 1);
+            if (maxTripDurationText.includes("week")) {
+              const weeks = parseInt(
+                maxTripDurationText.replace(/\D/g, "") || "1"
+              );
+              maxDays = weeks * 7;
+            } else if (maxTripDurationText.includes("day")) {
+              maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
+            } else if (maxTripDurationText.includes("month")) {
+              const months = parseInt(
+                maxTripDurationText.replace(/\D/g, "") || "1"
+              );
+              maxDays = months * 30;
+            } else {
+              maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
+            }
+
+            if (daysDifference < 0) {
+              newValues.endDate = value;
+            } else if (daysDifference >= maxDays) {
+              newValues.endDate = addDays(value, maxDays - 1);
+            }
+          }
+        }
+      }
+
+      // Handle start time changes for luxury vehicles
+      if (name === "startTime" && value instanceof Date && isLuxuryVehicle) {
+        if (prev.startDate && prev.endTime) {
+          const startDateTime = new Date(prev.startDate);
+          startDateTime.setHours(value.getHours(), value.getMinutes(), 0, 0);
+
+          const endDateTime = new Date(prev.startDate);
+          endDateTime.setHours(
+            prev.endTime.getHours(),
+            prev.endTime.getMinutes(),
+            0,
+            0
+          );
+
+          // If end time is more than 6 hours after new start time, adjust it
+          if (differenceInMinutes(endDateTime, startDateTime) > 6 * 60) {
+            newValues.endTime = addMinutes(startDateTime, 6 * 60);
+          }
+        }
+      }
+
+      // Handle end time changes for luxury vehicles
+      if (name === "endTime" && value instanceof Date && isLuxuryVehicle) {
+        if (prev.startDate && prev.startTime) {
+          const startDateTime = new Date(prev.startDate);
+          startDateTime.setHours(
+            prev.startTime.getHours(),
+            prev.startTime.getMinutes(),
+            0,
+            0
+          );
+
+          const endDateTime = new Date(prev.startDate);
+          endDateTime.setHours(value.getHours(), value.getMinutes(), 0, 0);
+
+          // Ensure end time is not more than 6 hours after start time
+          const maxEndDateTime = addMinutes(startDateTime, 6 * 60);
+          if (endDateTime > maxEndDateTime) {
+            newValues.endTime = maxEndDateTime;
           }
         }
       }
@@ -190,23 +315,12 @@ export default function VehicleSummary({
     }
   }, [values.startDate, values.startTime, values.endDate, values.endTime]);
 
-  const isDateRangeValid = validateDateRange(values.startDate, values.endDate);
-
-  useEffect(() => {
-    if (
-      values.startDate &&
-      values.startTime &&
-      values.endDate &&
-      values.endTime
-    ) {
-      autoCalculatePrice(
-        values.startDate,
-        values.startTime,
-        values.endDate,
-        values.endTime
-      );
-    }
-  }, [values.startDate, values.startTime, values.endDate, values.endTime]);
+  const isDateRangeValid = validateDateRange(
+    values.startDate,
+    values.endDate,
+    values.startTime,
+    values.endTime
+  );
 
   useEffect(() => {
     if (priceData) {
@@ -230,8 +344,8 @@ export default function VehicleSummary({
                 <PricingDescription
                   text={`NGN ${formatNumberWithCommas(
                     vehicle?.pricing?.dailyRate?.value || 0
-                  )}/day`}
-                  className="text-sm sm:text-base" // Assuming you can pass className to PricingDescription
+                  )}${isLuxuryVehicle ? "/6hrs" : "/day"}`}
+                  className="text-sm sm:text-base"
                 />
                 <div className="py-2 px-3 bg-grey-75 rounded-[60px] flex items-center gap-2 text-xs sm:text-sm 3xl:text-base !font-medium w-full xs:w-auto justify-between xs:justify-normal">
                   <p className="text-grey-400 whitespace-nowrap">Total</p>
@@ -251,21 +365,31 @@ export default function VehicleSummary({
                 </div>
               </div>
 
-              <InputSection title="Booking Type">
-                <SelectInput
-                  id="bookingType"
-                  placeholder="Select"
-                  variant="outlined"
-                  options={[
-                    { option: "Daily Rental", value: "SINGLE_DAY" },
-                    { option: "Monthly Rental", value: "MULTI_DAY" },
-                  ]}
-                  value={values.bookingType}
-                  onChange={(value: string) => {
-                    handleValueChange("bookingType", value);
-                  }}
-                />
-              </InputSection>
+              {!isLuxuryVehicle && (
+                <InputSection title="Booking Type">
+                  <SelectInput
+                    id="bookingType"
+                    placeholder="Select"
+                    variant="outlined"
+                    options={[
+                      { option: "Daily Rental", value: "SINGLE_DAY" },
+                      { option: "Monthly Rental", value: "MULTI_DAY" },
+                    ]}
+                    value={values.bookingType}
+                    onChange={(value: string) => {
+                      handleValueChange("bookingType", value);
+                    }}
+                  />
+                </InputSection>
+              )}
+
+              {isLuxuryVehicle && (
+                <div className="bg-primary-50 border border-primary-500 rounded-lg p-3">
+                  <p className="text-sm text-primary-700 font-medium">
+                    🌟 Electric Vehicle - Maximum 6 hours booking
+                  </p>
+                </div>
+              )}
             </div>
 
             <InputSection
@@ -293,7 +417,11 @@ export default function VehicleSummary({
               title="Trip End"
               textColor="blue"
               error={
-                !isDateRangeValid ? "Invalid date range selected" : undefined
+                !isDateRangeValid
+                  ? isLuxuryVehicle
+                    ? "Trip duration cannot exceed 6 hours"
+                    : "Invalid date range selected"
+                  : undefined
               }
             >
               <DateInput
@@ -305,6 +433,7 @@ export default function VehicleSummary({
                 minDate={values.startDate || new Date()}
                 maxDate={maxEndDate}
                 blockPastDates={true}
+                disabled={isLuxuryVehicle} // Disable date picker for luxury vehicles since it's same day
               />
               <TimeInput
                 name="endTime"
@@ -331,7 +460,7 @@ export default function VehicleSummary({
               color="primary"
               fullWidth
               disabled={
-                !values.bookingType ||
+                (!isLuxuryVehicle && !values.bookingType) ||
                 !values.startDate ||
                 !values.startTime ||
                 !values.endDate ||
@@ -345,7 +474,9 @@ export default function VehicleSummary({
                 console.log("Form values:", values);
 
                 checkVehicleAvailability.mutate({
-                  bookingType: values.bookingType,
+                  bookingType: isLuxuryVehicle
+                    ? "SINGLE_DAY"
+                    : values.bookingType,
                   startDate: values.startDate?.toISOString() ?? "",
                   startTime: values.startTime?.toISOString() ?? "",
                   endDate: values.endDate?.toISOString() ?? "",
@@ -369,11 +500,13 @@ export default function VehicleSummary({
             </div>
             <div className="py-[22px] flex divide-x divide-grey-200">
               <div className="pr-6">
-                <PricingTitle text="Daily (12 hrs)" />
+                <PricingTitle
+                  text={isLuxuryVehicle ? "6 Hours" : "Daily (12 hrs)"}
+                />
                 <PricingDescription
                   text={`NGN ${formatNumberWithCommas(
                     vehicle?.pricing?.dailyRate?.value || 0
-                  )}/day`}
+                  )}${isLuxuryVehicle ? "/6hrs" : "/day"}`}
                 />
               </div>
               <div className="pl-6">
@@ -388,11 +521,16 @@ export default function VehicleSummary({
             <div className="py-[22px]">
               <PricingTitle text="Trip Duration" />
               <PricingDescription
-                text={`Min: 1 day | Max: ${vehicle?.tripSettings?.maxTripDuration}`}
+                text={
+                  isLuxuryVehicle
+                    ? "Min: 1 hour | Max: 6 hours"
+                    : `Min: 1 day | Max: ${vehicle?.tripSettings?.maxTripDuration}`
+                }
               />
             </div>
             {vehicle?.pricing?.discounts &&
-              vehicle?.pricing?.discounts?.length > 0 && (
+              vehicle?.pricing?.discounts?.length > 0 &&
+              !isLuxuryVehicle && (
                 <div className="py-[22px] space-y-2">
                   <PricingTitle text="Discounts" />
                   {vehicle.pricing.discounts.map((discount, index) => (
@@ -422,7 +560,7 @@ export default function VehicleSummary({
           content={
             <BookRideModal
               id={vehicle?.id || ""}
-              bookingType={values.bookingType}
+              bookingType={isLuxuryVehicle ? "SINGLE_DAY" : values.bookingType}
               startDate={values.startDate?.toISOString() ?? null}
               startTime={values.startTime?.toISOString() ?? null}
               endDate={values.endDate?.toISOString() ?? null}
