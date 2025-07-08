@@ -20,10 +20,9 @@ export default function NotificationsPage() {
     notifications,
     isError,
     isLoading,
-
     totalCount,
     // unreadCount,
-  } = useNotifications({ pageLimit, currentPage, filters });
+  } = useNotifications({ pageLimit, currentPage });
 
   useEffect(() => {
     setFilters(calendarValues);
@@ -56,6 +55,8 @@ export default function NotificationsPage() {
         isError={isError}
         isLoading={isLoading}
         isDivider
+        startDate={Array.isArray(value) && value[0] ? value[0] : undefined}
+        endDate={Array.isArray(value) && value[1] ? value[1] : undefined}
       />
       <Pagination
         currentPage={currentPage}
