@@ -237,6 +237,7 @@ export const useFetchUrlParams = () => {
   const startTime = searchParams.get("startTime") ?? null;
   const endDate = searchParams.get("endDate") ?? null;
   const endTime = searchParams.get("endTime") ?? null;
+  const pickupLocation = searchParams.get("pickupLocation") ?? null;
 
   const search = searchParams.get("search") ?? "";
   const fromDate = searchParams.get("fromDate") ?? null;
@@ -255,6 +256,7 @@ export const useFetchUrlParams = () => {
     fromTime,
     untilDate,
     untilTime,
+    pickupLocation,
   };
 };
 
