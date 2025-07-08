@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useState } from "react";
-import { ListingStatus } from "@/utils/types";
-import { ListingBadge } from "@repo/ui/badge";
+import { ListingStatus, VehicleStatus } from "@/utils/types";
+import { ListingBadge, VehicleListingBadge } from "@repo/ui/badge";
 import { BlurredDialog } from "@repo/ui/dialog";
 import { Popup } from "@repo/ui/popup";
 import MoreButton from "@repo/ui/moreButton";
@@ -12,7 +12,7 @@ import DeactivateListing from "@/components/Listings/Details/modals/DeactivateLi
 
 type Props = {
   name?: string;
-  status?: ListingStatus;
+  status: VehicleStatus;
   id?: string;
 };
 
@@ -112,7 +112,8 @@ export default function ListingDetailsHeader({ name, status, id }: Props) {
         <h5 className="text-h6 sm:text-4xl 3xl:text-h2 !font-bold">
           {name || ""}
         </h5>
-        <ListingBadge status={status ? status : "review"} />
+        <VehicleListingBadge status={status} />
+        {/* <ListingBadge status={status ? status : "review"} /> */}
       </div>
     </div>
   );

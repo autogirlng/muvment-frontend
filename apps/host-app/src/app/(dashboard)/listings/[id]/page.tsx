@@ -109,7 +109,6 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
   if (isError) {
     return <p>something went wrong </p>;
   }
-
   return (
     <main className="flex gap-10">
       <div className="py-[56px] w-full lg:w-[calc(100%-320px)] xl:w-[calc(100%-360px)] 3xl:w-[calc(100%-500px)]">
@@ -118,7 +117,7 @@ export default function ListingsPage({ params }: { params: { id: string } }) {
           <ListingDetailsHeader
             name={listingDetail?.listingName}
             id={listingDetail?.id}
-            status={listingDetail?.status}
+            status={listingDetail?.vehicleStatus}
           />
           <ListingDetailsVehicleImages
             vehicleImages={vehicleImages as string[]}

@@ -598,7 +598,8 @@ export type TopRatedVehicleType = {
   make: string;
   model: string;
   year: string;
-  colour: string;
+  color: string;
+  colour?:string;
   seatingCapacity: string;
   totalRides: string;
   totalEarnings: string;
