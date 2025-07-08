@@ -34,11 +34,11 @@ export default function TopRatedVehicle({ topRatedVehicle, isLoading }: Props) {
           ) : Object.keys(topRatedVehicle || {}).length > 0 ? (
             <div className="space-y-10">
               <h6 className="text-grey-800 text-xl 2xl:text-h6 font-medium">
-                {`${topRatedVehicle?.make} ${topRatedVehicle?.model} ${topRatedVehicle?.year}`}
+                {`${topRatedVehicle?.make} ${topRatedVehicle?.model} ${topRatedVehicle?.year || ''}`}
               </h6>
               <div className="flex flex-wrap gap-3">
                 <Tag value={topRatedVehicle?.make || ""} title="Make" />
-                <Tag value={topRatedVehicle?.colour || ""} title="Colour" />
+                <Tag value={topRatedVehicle?.color || ""} title="Colour" />
                 <Tag
                   value={topRatedVehicle?.seatingCapacity || ""}
                   title="Seating Capacity"
