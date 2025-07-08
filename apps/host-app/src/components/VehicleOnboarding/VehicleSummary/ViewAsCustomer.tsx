@@ -267,87 +267,127 @@ export default function ViewAsCustomer({ vehicle }: Props) {
             </p>
           </div>
         }
-        content={<CancellationPolicyModal />}
+        content={<CancellationPolicyModal  />}
       />
     </>
   );
 }
 
+
 const CancellationPolicyModal = () => {
   return (
     <div className="space-y-6 py-4">
-      {/* 72+ Hours Before Trip */}
-      <div className="space-y-2">
-        <h3 className="font-semibold text-gray-900 text-base">
-          72+ Hours Before Trip?
-        </h3>
+      {/* Modal Title and Introduction */}
+      <div>
+        <h2 className="font-bold text-gray-900 text-lg mb-2">
+          Understand Our Cancellation & Refund Policy
+        </h2>
         <p className="text-gray-600 text-sm">
-          Get a full refund — no penalties.
+          A cancellation fee is a charge applied when a customer cancels a
+          confirmed booking, especially close to the scheduled start time. At
+          Muvment, our cancellation policy is designed to protect both hosts and
+          customers by ensuring fairness, transparency, and accountability.
         </p>
       </div>
 
-      {/* 48-72 Hours Before Trip */}
+      {/* Cancellation Notice Period */}
       <div className="space-y-2">
         <h3 className="font-semibold text-gray-900 text-base">
-          48-72 Hours Before Trip?
+          Cancellation Notice Period
         </h3>
         <p className="text-gray-600 text-sm">
-          You&apos;ll receive a 50% refund or booking credit. Refunds are
-          processed within
+          <span className="font-medium text-gray-800">
+            More than 72 hours before the booking start time:
+          </span>
+          <br />
+          The customer forfeits 50% of the total booking fee. The remaining 50%
+          will be refunded or can be converted into booking credit for future
+          use.
+        </p>
+        <p className="text-gray-600 text-sm">
+          <span className="font-medium text-gray-800">
+            Less than 72 hours before the booking start time:
+          </span>
+          <br />
+          No refund will be issued. The full booking amount is retained by the host.
         </p>
       </div>
 
-      {/* Less Than 48 hours */}
+      {/* Peak Period Bookings (e.g., December) */}
       <div className="space-y-2">
         <h3 className="font-semibold text-gray-900 text-base">
-          Less Than 48 hours?
+          Peak Period Bookings (e.g., December)
         </h3>
         <p className="text-gray-600 text-sm">
-          Cancellations are non-refundable.
+          All bookings during festive and high-demand periods are considered
+          final. These are **non-cancellable** and **non-refundable**. Customers
+          should ensure their travel plans are confirmed before booking during such periods.
         </p>
       </div>
 
-      {/* December Bookings */}
+      {/* Faulty Vehicle Reporting */}
       <div className="space-y-2">
         <h3 className="font-semibold text-gray-900 text-base">
-          December Bookings
+          Faulty Vehicle Reporting
         </h3>
         <p className="text-gray-600 text-sm">
-          All December bookings are non-cancellable and non-refundable. Please
+          If you discover a mechanical or safety issue with the vehicle, it must
+          be reported to Muvment within **1 hour of starting the trip**. If
+          verified, you may be eligible for a full or partial refund.
         </p>
       </div>
 
-      {/* Vehicle Issues */}
+      {/* Cancellation Process */}
       <div className="space-y-2">
         <h3 className="font-semibold text-gray-900 text-base">
-          Vehicle Issues
+          Cancellation Process
         </h3>
         <p className="text-gray-600 text-sm">
-          If the vehicle is faulty, report it within 1 hour of pickup for a
-          refund.
+          All cancellations must be submitted **before the trip start time**
+          through Muvment customer support. You are required to state the reason
+          for cancellation. If a cancellation isn't communicated properly via
+          approved channels, the booking is considered active and will proceed as
+          planned.
         </p>
       </div>
 
-      {/* How To Cancel */}
+      {/* Additional Terms */}
       <div className="space-y-2">
-        <h3 className="font-semibold text-gray-900 text-base">How To Cancel</h3>
+        <h3 className="font-semibold text-gray-900 text-base">
+          Additional Terms
+        </h3>
         <p className="text-gray-600 text-sm">
-          Log in to your account, go to Bookings, select the trip, and follow
-          the steps to
+          Muvment reserves the right to review all cancellation and refund
+          requests on a case-by-case basis. Hosts are notified immediately when
+          a cancellation request is submitted. Incomplete vehicle information,
+          non-responsiveness, or misleading details from the host may also
+          qualify for trip cancellation or refund to the customer.
+        </p>
+      </div>
+
+      {/* Need More Support? */}
+      <div className="space-y-2">
+        <h3 className="font-semibold text-gray-900 text-base">
+          Need More Support?
+        </h3>
+        <p className="text-gray-600 text-sm">
+          Feel free to reach out to the Muvment team anytime—we’re here to assist!
         </p>
       </div>
 
       {/* Action Button */}
-      <div className="pt-4">
+      {/* <div className="pt-4">
         <Button
           color="primary"
           rounded="full"
           fullWidth
           className="bg-blue-600 hover:bg-blue-700"
+          // You might add an onClick handler here to close the modal
+          // For example: onClick={onClose} or onClick={handleModalClose}
         >
           Okay, Got it 👍
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 };

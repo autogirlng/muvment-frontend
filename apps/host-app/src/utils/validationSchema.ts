@@ -157,7 +157,7 @@ export const documentVehicleInformationSchema = object().shape({
   vehicleInspectionReport: mixed().required(
     "Vehicle inspection report is required."
   ),
-  maintenanceHistory: mixed().optional(),
+  maintenanceHistory: mixed().nullable(),
   authorizationLetter: mixed().required("Authorization letter is required."),
 });
 export const vehiclePhotosSchema = object().shape({

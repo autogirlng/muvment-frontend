@@ -166,7 +166,7 @@ Bluetooth connectivity, and a sunroof.`}
             <InputField
               name="numberOfSeats"
               id="numberOfSeats"
-              type="text"
+              type="number"
               label="Number of seats"
               placeholder="Enter number of seats"
               value={values.numberOfSeats}

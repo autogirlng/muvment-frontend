@@ -70,6 +70,7 @@ const PricingRow = ({
     handleChange(e);
   };
 
+  
   useEffect(() => {
     const unformatted = stripNonNumeric(rateValue.replace(/%/g, ""));
     const value = parseFloat(unformatted);
