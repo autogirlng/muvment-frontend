@@ -8,7 +8,6 @@ import { useAppDispatch } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
 
 export const useHttp = () => {
-
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -16,7 +15,6 @@ export const useHttp = () => {
     return axios.create({
       baseURL: apiUrl,
       timeout: 20000,
-      // if aborted rety request ...ECONNABORTED
     });
   }, []);
 

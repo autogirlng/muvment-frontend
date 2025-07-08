@@ -42,7 +42,7 @@ export default function HomePage() {
       <PopularCities />
       <VehicleCategories />
       <NewListings />
-      <SaveBig />
+      {/* <SaveBig /> */}
       <Steps />
       <FAQ />
       <Footer />

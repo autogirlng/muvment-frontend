@@ -10,11 +10,12 @@ import useFavorites from "./hooks/useFavorites";
 import EmptyState from "../EmptyState";
 import MainFilters from "./MainFilters";
 import AllFilters from "./AllFilters";
-import SearchBookings from "../SearchBookings";
+// import SearchBookings from "../SearchBookings";
 import DesktopNav from "../Navbar/DesktopNav";
 import MobileNav from "../Navbar/MobileNav";
 import BackLink from "@/components/BackLink";
 import { useAppSelector } from "@/lib/hooks";
+import SearchBookings from "../SearchBooking/SearchBookings";
 
 // Default placeholder images
 const placeholderImages = [
@@ -26,13 +27,14 @@ const placeholderImages = [
 type Props = {
   title?: string;
   icon?: JSX.Element;
-  type: "top-rated" | "all" | "search";
+  type: "top-rated" | "all" | "search" | "category";
   location?: string;
   search?: string;
   fromDate?: string;
   fromTime?: string;
   untilDate?: string;
   untilTime?: string;
+  categoryType?: string;
 };
 
 export default function ExplorePageLayout({
@@ -45,6 +47,7 @@ export default function ExplorePageLayout({
   fromTime,
   untilDate,
   untilTime,
+  categoryType,
 }: Props) {
   const { user } = useAppSelector((state) => state.user);
   const { favoriteVehicleIds } = useFavorites();
@@ -62,7 +65,7 @@ export default function ExplorePageLayout({
     numberOfSeats: string[];
     features: string[];
   }>({
-    price: [0, 100000],
+    price: [0, 10000000],
     type: [],
     make: [],
     yearOfRelease: [],
@@ -92,10 +95,12 @@ export default function ExplorePageLayout({
     search: searchValue,
     fromDate: fromDateValue?.toISOString(),
     untilDate: untilDateValue?.toISOString(),
-    fromTime: fromTimeValue?.toISOString(),
-    untilTime: untilTimeValue?.toISOString(),
     location,
+    categoryType, // Pass category type to the hook
   });
+
+  console.log("Listings:", listings);
+  console.log("Total Count:", totalCount);
 
   // Fetch user's favorite vehicles
   useEffect(() => {

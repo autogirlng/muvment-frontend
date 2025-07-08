@@ -1,13 +1,13 @@
 "use client";
 
 import { Suspense } from "react";
-import ExplorePageLayout from "@/components/Explore/ExplorePageLayout";
+import ExternalBookingLinkPage from "./ExternalPayment";
 import { FullPageSpinner } from "@repo/ui/spinner";
 
-export default function SearchVehiclesPage() {
+export default function ReviewBookingPage() {
   return (
     <Suspense fallback={<FullPageSpinner />}>
-      <ExplorePageLayout type="all" />
+      <ExternalBookingLinkPage />
     </Suspense>
   );
 }

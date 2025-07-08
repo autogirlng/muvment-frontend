@@ -8,6 +8,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import { loginSignupLogo } from "@repo/assets";
 import MobileNav from "@/components/Navbar/MobileNav";
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -31,7 +34,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <main>
+    <main className={inter.className}>
       <div className="block md:hidden">
         <MobileNav user={null} />
       </div>
