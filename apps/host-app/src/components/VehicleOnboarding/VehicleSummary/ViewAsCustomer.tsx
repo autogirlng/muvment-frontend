@@ -283,10 +283,7 @@ const CancellationPolicyModal = () => {
           Understand Our Cancellation & Refund Policy
         </h2>
         <p className="text-gray-600 text-sm">
-          A cancellation fee is a charge applied when a customer cancels a
-          confirmed booking, especially close to the scheduled start time. At
-          Muvment, our cancellation policy is designed to protect both hosts and
-          customers by ensuring fairness, transparency, and accountability.
+          A cancellation fee is a charge applied when a customer cancels a confirmed booking, especially close to the scheduled start time. At Muvment, our cancellation policy is designed to protect both hosts and  customers by ensuring fairness, transparency, and accountability.
         </p>
       </div>
 
@@ -300,9 +297,7 @@ const CancellationPolicyModal = () => {
             More than 72 hours before the booking start time:
           </span>
           <br />
-          The customer forfeits 50% of the total booking fee. The remaining 50%
-          will be refunded or can be converted into booking credit for future
-          use.
+          The customer forfeits 50% of the total booking fee. The remaining 50% will be refunded or can be converted into booking credit for future use.
         </p>
         <p className="text-gray-600 text-sm">
           <span className="font-medium text-gray-800">
@@ -319,9 +314,7 @@ const CancellationPolicyModal = () => {
           Peak Period Bookings (e.g., December)
         </h3>
         <p className="text-gray-600 text-sm">
-          All bookings during festive and high-demand periods are considered
-          final. These are **non-cancellable** and **non-refundable**. Customers
-          should ensure their travel plans are confirmed before booking during such periods.
+          All bookings during festive and high-demand periods are considered final. These are **non-cancellable** and **non-refundable**. Customers  should ensure their travel plans are confirmed before booking during such periods.
         </p>
       </div>
 
@@ -331,9 +324,7 @@ const CancellationPolicyModal = () => {
           Faulty Vehicle Reporting
         </h3>
         <p className="text-gray-600 text-sm">
-          If you discover a mechanical or safety issue with the vehicle, it must
-          be reported to Muvment within **1 hour of starting the trip**. If
-          verified, you may be eligible for a full or partial refund.
+          If you discover a mechanical or safety issue with the vehicle, it must be reported to Muvment within **1 hour of starting the trip**. If verified, you may be eligible for a full or partial refund.
         </p>
       </div>
 
@@ -343,11 +334,7 @@ const CancellationPolicyModal = () => {
           Cancellation Process
         </h3>
         <p className="text-gray-600 text-sm">
-          All cancellations must be submitted **before the trip start time**
-          through Muvment customer support. You are required to state the reason
-          for cancellation. If a cancellation isn't communicated properly via
-          approved channels, the booking is considered active and will proceed as
-          planned.
+          All cancellations must be submitted **before the trip start time**through Muvment customer support. You are required to state the reason for cancellation. If a cancellation isn't communicated properly via approved channels, the booking is considered active and will proceed as planned.
         </p>
       </div>
 
@@ -357,11 +344,7 @@ const CancellationPolicyModal = () => {
           Additional Terms
         </h3>
         <p className="text-gray-600 text-sm">
-          Muvment reserves the right to review all cancellation and refund
-          requests on a case-by-case basis. Hosts are notified immediately when
-          a cancellation request is submitted. Incomplete vehicle information,
-          non-responsiveness, or misleading details from the host may also
-          qualify for trip cancellation or refund to the customer.
+          Muvment reserves the right to review all cancellation and refund requests on a case-by-case basis. Hosts are notified immediately when   a cancellation request is submitted. Incomplete vehicle information, non-responsiveness, or misleading details from the host may also qualify for trip cancellation or refund to the customer.
         </p>
       </div>
 

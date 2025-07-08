@@ -76,7 +76,7 @@ export default function LoginPage() {
                   </Link>
                 </p>
                 <Link href="/forgot-password" className="text-primary-500">
-                  Forgot password?
+                   Forgot password?
                 </Link>
               </div>
 
@@ -91,10 +91,7 @@ export default function LoginPage() {
                 Sign In
               </Button>
                 <p className="text-grey-500 text-center text-sm">
-                 By signing in you agree to muvment's {" "}
-                  <Link href="/privacy-policy" className="text-primary-500 mr-1">
-                    Privacy Policy
-                  </Link>
+                 By signing in you agree to muvment's  <Link href="/privacy-policy" className="text-primary-500 mr-1">   Privacy Policy      </Link>
                   and 
                     <Link href="/terms-of-service" className="ml-1 text-primary-500">
                     Terms of Service
