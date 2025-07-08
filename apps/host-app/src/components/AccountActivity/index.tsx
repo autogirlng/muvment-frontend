@@ -9,8 +9,9 @@ import useDashboardStats from "@/hooks/useHostStats";
 
 type Props = {};
 
-export default function AccountActivity({}: Props) {
+export default function AccountActivity({ }: Props) {
   const { isError, isLoading, dashboardStats } = useDashboardStats();
+  console.log(dashboardStats)
 
   return (
     <div className="space-y-6 2xl:space-y-8">
@@ -47,6 +48,7 @@ export default function AccountActivity({}: Props) {
           />
           <ActivityCard
             title="Total Wallet Balance"
+            modalName="balance"
             value={`${dashboardStats?.walletBalance || "-"}`}
             isLoading={isLoading}
           />

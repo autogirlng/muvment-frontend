@@ -1,6 +1,7 @@
 import { SignupFormValues } from "@/utils/types";
 
 export const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+console.log('DEBUG apiUrl:', apiUrl, 'process.env.NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
 
 export const fullNameRegEx = /^[A-Za-z'-]+\s[A-Za-z'-]+(?:\s[A-Za-z'-]+)*\s*$/;
 

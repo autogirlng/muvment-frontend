@@ -48,7 +48,7 @@ const footerNav: FooterNavProps[] = [
         name: "Book a vehicle",
         link: customerAppUrl,
       },
-      { name: "Vehicle types", link: "/" },
+      { name: "Vehicle types", link: `${customerAppUrl}/explore/categories?type=truck` },
       // { name: "Find your location", link: "/" },
     ],
   },
@@ -170,9 +170,11 @@ function Footer({}: Props) {
                 </Link>
               </div>
               <div className="w-full md:w-fit flex items-center justify-center gap-5 mt-5 md:mt-0 py-10 md:py-0 border-t border-grey-200 md:border-none">
-                <Link href="/">{Icons.ic_instagram}</Link>
-                <Link href="/">{Icons.ic_twitter}</Link>
-                <Link href="/">{Icons.ic_tiktok}</Link>
+                <Link href="https://www.instagram.com/autogirlng/#" target="_blank" >{Icons.ic_instagram}</Link>
+                <Link href="https://x.com/autogirlng" target="_blank">{Icons.ic_twitter}</Link>
+                <Link href="https://www.tiktok.com/@autogirl.ng" target="_blank">{Icons.ic_tiktok}</Link>
+                <Link href='https://www.facebook.com/autogirlng?_rdc=1&_rdr#' target="_blank">{Icons.ic_facebook}</Link>
+                <Link href='https://www.linkedin.com/company/autogirl/' target="_blank">{Icons.ic_linkedin}</Link>
               </div>
             </div>
             <p className="text-sm md:text-base text-grey-400 ">

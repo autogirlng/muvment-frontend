@@ -35,8 +35,6 @@ const initialValues: PersonalInformationOthersValues = {
   specialInstructions: "",
   tripPurpose: "",
 
-  userEmail: "",
-  userPhoneNumber: "",
   userCountry: "NG",
   userCountryCode: "+234",
   isForSelf: false, // Initial value, will be managed by `isOthers` prop
@@ -244,7 +242,7 @@ thank you.`}
         tooltipDescription=""
       />
 
-      <FormRow>
+      {/* <FormRow>
         <InputField
           name="userEmail"
           id="userEmail"
@@ -301,7 +299,7 @@ thank you.`}
           tooltipTitle=""
           tooltipDescription=""
         />
-      </FormRow>
+      </FormRow> */}
 
       <StepperNavigation
         steps={steps}

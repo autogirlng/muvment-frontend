@@ -47,7 +47,11 @@ const Chip = ({ text, variant, color, radius, icon, className }: ChipProps) => {
           <span>{text}</span>
         </>
       ) : (
-        text
+        <span>
+          {text === "Vehicle Type: Luxury"
+            ? "Vehicle Type: Electric Vehicle"
+            : text}
+        </span>
       )}
     </p>
   );

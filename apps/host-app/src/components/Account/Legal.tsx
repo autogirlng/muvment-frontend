@@ -7,15 +7,15 @@ type Props = {};
 const legalLinks = [
   {
     title: "Terms of Service",
-    href: "/",
+    href: "/terms-of-service",
   },
   {
     title: "Privacy Policy",
-    href: "/",
+    href: '/privacy-policy',
   },
   {
     title: "Rental Agreement",
-    href: "/",
+    href: "/terms-of-service",
   },
 ];
 

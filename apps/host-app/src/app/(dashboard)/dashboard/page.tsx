@@ -37,7 +37,6 @@ export default function DashboardPage() {
           </Link>
         </div>
       )}
-      {/* complete tasks component ends */}
 
       <AccountActivity />
       <BookingsOverview />

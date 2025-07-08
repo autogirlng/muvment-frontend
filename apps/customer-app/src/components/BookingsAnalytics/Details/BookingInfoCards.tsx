@@ -41,7 +41,7 @@ const BookingInfoCards = ({
           <p className="text-grey-500 text-sm 3xl:text-base">{nameTitle}</p>
           <h5 className="text-h6 3xl:text-h5 !font-bold text-black flex gap-2">
             <span className="break-all"> {nameValue}</span>
-           
+
             {copyText && (
               <button onClick={() => copyToCipboard(copyText)}>
                 {Icons.ic_copy}

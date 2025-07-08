@@ -15,7 +15,7 @@ import {
 } from "@/utils/functions";
 import { itineraryInformationSchema } from "@/utils/validationSchema";
 import { useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useRef, useEffect, useState } from "react";
 
 // Your combineDateTime function - preserves local timezone
 function combineDateTime(
@@ -77,6 +77,278 @@ function parseDateFromUrl(dateString: string | null): {
     return { date: null, time: null };
   }
 }
+
+// Google Maps Places Autocomplete Input Component
+interface GoogleMapsInputProps {
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
+  error: string;
+  placeholder?: string;
+  label?: string;
+}
+
+interface PlacePrediction {
+  place_id: string;
+  description: string;
+  structured_formatting: {
+    main_text: string;
+    secondary_text: string;
+  };
+}
+
+const GoogleMapsInput: React.FC<GoogleMapsInputProps> = ({
+  value,
+  onChange,
+  onBlur,
+  error,
+  placeholder = "Enter the drop-off location",
+  label = "Drop-off location",
+}) => {
+  const [predictions, setPredictions] = useState<PlacePrediction[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const autocompleteServiceRef =
+    useRef<google.maps.places.AutocompleteService | null>(null);
+  const placesServiceRef = useRef<google.maps.places.PlacesService | null>(
+    null
+  );
+  const debounceRef = useRef<NodeJS.Timeout>();
+
+  // Initialize Google Maps services
+  useEffect(() => {
+    const initServices = () => {
+      if (window.google && window.google.maps && window.google.maps.places) {
+        autocompleteServiceRef.current =
+          new window.google.maps.places.AutocompleteService();
+        // Create a dummy div for PlacesService
+        const dummyDiv = document.createElement("div");
+        placesServiceRef.current = new window.google.maps.places.PlacesService(
+          dummyDiv
+        );
+      }
+    };
+
+    // Check if Google Maps is already loaded
+    if (window.google) {
+      initServices();
+    } else {
+      // Load Google Maps script if not already loaded
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+      script.onload = initServices;
+      document.head.appendChild(script);
+    }
+  }, []);
+
+  // Handle input changes and fetch predictions
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value;
+    onChange(event);
+
+    // Clear previous debounce
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    if (inputValue.length > 0) {
+      setIsLoading(true);
+      // Debounce the API call
+      debounceRef.current = setTimeout(() => {
+        fetchPredictions(inputValue);
+      }, 300);
+    } else {
+      setPredictions([]);
+      setShowDropdown(false);
+    }
+  };
+
+  const fetchPredictions = (input: string) => {
+    if (!autocompleteServiceRef.current) return;
+
+    const request = {
+      input,
+      componentRestrictions: { country: "ng" },
+      types: ["establishment", "geocode"],
+    };
+
+    autocompleteServiceRef.current.getPlacePredictions(
+      request,
+      (results, status) => {
+        setIsLoading(false);
+        if (
+          status === window.google.maps.places.PlacesServiceStatus.OK &&
+          results
+        ) {
+          setPredictions(results);
+          setShowDropdown(true);
+        } else {
+          setPredictions([]);
+          setShowDropdown(false);
+        }
+      }
+    );
+  };
+
+  const handlePlaceSelect = (prediction: PlacePrediction) => {
+    if (!placesServiceRef.current) return;
+
+    const request = {
+      placeId: prediction.place_id,
+      fields: ["formatted_address", "name"],
+    };
+
+    placesServiceRef.current.getDetails(request, (place, status) => {
+      if (
+        status === window.google.maps.places.PlacesServiceStatus.OK &&
+        place
+      ) {
+        const selectedAddress =
+          place.name || place.formatted_address || prediction.description;
+
+        // Create a synthetic event
+        const syntheticEvent = {
+          target: {
+            name: "dropoffLocation",
+            value: selectedAddress,
+          },
+        } as React.ChangeEvent<HTMLInputElement>;
+
+        onChange(syntheticEvent);
+        setShowDropdown(false);
+        setPredictions([]);
+      }
+    });
+  };
+
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    // Delay hiding dropdown to allow for selection
+    setTimeout(() => {
+      setShowDropdown(false);
+    }, 200);
+    onBlur(event);
+  };
+
+  return (
+    <div className="relative">
+      <InputField
+        name="dropoffLocation"
+        id="dropoffLocation"
+        type="text"
+        label={label}
+        placeholder={placeholder}
+        value={value}
+        onChange={handleInputChange}
+        onBlur={handleBlur}
+        error={error}
+        autoComplete="off"
+      />
+
+      {/* Premium Dropdown */}
+      {showDropdown && (
+        <div className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-2xl max-h-72 overflow-y-auto transition-all duration-200">
+          {isLoading ? (
+            <div className="flex items-center justify-center px-6 py-6 text-gray-500">
+              <svg
+                className="animate-spin h-5 w-5 text-primary-600 mr-3"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              <span className="text-base font-medium">Searching...</span>
+            </div>
+          ) : predictions.length > 0 ? (
+            predictions.map((prediction, idx) => (
+              <div
+                key={prediction.place_id}
+                className={`flex items-start gap-3 px-6 py-4 cursor-pointer transition-colors duration-150 ${
+                  idx === 0 ? "rounded-t-xl" : ""
+                } ${
+                  idx === predictions.length - 1 ? "rounded-b-xl" : ""
+                } hover:bg-primary-50 active:bg-primary-100 border-b border-gray-100 last:border-b-0`}
+                onClick={() => handlePlaceSelect(prediction)}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    handlePlaceSelect(prediction);
+                  }
+                }}
+                aria-label={`Select ${prediction.description}`}
+              >
+                <div className="flex-shrink-0 mt-1">
+                  <svg
+                    className="h-5 w-5 text-primary-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    ></path>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-base font-semibold text-gray-900 truncate">
+                    {prediction.structured_formatting.main_text}
+                  </div>
+                  <div className="text-sm text-gray-500 truncate">
+                    {prediction.structured_formatting.secondary_text}
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="px-6 py-6 text-gray-400 text-center text-base font-medium">
+              <svg
+                className="mx-auto mb-2 h-6 w-6 text-gray-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                ></path>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                ></path>
+              </svg>
+              No locations found
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const baseInitialValues: ItineraryInformationValues = {
   pickupLocation: "",
@@ -228,12 +500,8 @@ const ItineraryForm = ({
             />
           </FormRow>
 
-          <InputField
-            name="dropoffLocation"
-            id="dropoffLocation"
-            type="text"
-            label="Drop-off location"
-            placeholder="Enter the drop-off location"
+          {/* Google Maps Autocomplete Drop-off Location */}
+          <GoogleMapsInput
             value={values.dropoffLocation}
             onChange={handleChange}
             onBlur={handleBlur}
@@ -275,7 +543,15 @@ const ItineraryForm = ({
             label="Area of use"
             placeholder="Select"
             variant="outlined"
-            options={[{ option: "All Areas", value: "All Areas" }]}
+            options={[
+              { option: "All Areas", value: "All Areas" },
+              { option: "Mainland Central", value: "Mainland Central" },
+              { option: "Island Central", value: "Island Central" },
+              {
+                option: "Mainland and Island Central",
+                value: "Mainland and Island Central",
+              },
+            ]}
             value={values.areaOfUse}
             onChange={(value: string) => {
               setFieldTouched("areaOfUse", true);

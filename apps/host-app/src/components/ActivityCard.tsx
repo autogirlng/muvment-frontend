@@ -63,7 +63,7 @@ export default function ActivityCard({
             primary && value !== "-" ? "text-white" : "text-black"
           )}
         >
-          {value}
+          {(modalName == "graph" || modalName == "balance") && value !== "-" ? `₦${Number(value).toFixed(2)}` : value}
         </h2>
       )}
     </div>
