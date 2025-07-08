@@ -127,7 +127,7 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
       ...personalInformationValues
     } = personalInformation;
 
-    const {
+    let {
       // startDate,
       // endDate,
       startTime,
@@ -139,11 +139,20 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
       ? parseFloat(priceData?.totalPrice)
       : parseInt(subTotal);
 
+    // console.log({
     proceedToPayment.mutate({
       ...personalInformationValues,
       ...itineraryInformationValues,
-      // startDate: itineraryInformation.startDate,
-      // endDate: itineraryInformation.endDate,
+      startDate:
+        itineraryInformation.startDate &&
+        !itineraryInformation.startDate.endsWith("Z")
+          ? itineraryInformation.startDate + "Z"
+          : itineraryInformation.startDate,
+      endDate:
+        itineraryInformation.endDate &&
+        !itineraryInformation.endDate.endsWith("Z")
+          ? itineraryInformation.endDate + "Z"
+          : itineraryInformation.endDate,
       amount: amount,
       currencyCode: currencyCode,
       bookingType,

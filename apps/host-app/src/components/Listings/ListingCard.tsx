@@ -74,7 +74,6 @@ export default function ListingCard({ listing }: Props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listing]);
-
   return (
     <div className="flex flex-col md:flex-row items-center gap-5 px-3 md:px-0 py-5 rounded-3xl bg-grey-75 md:bg-transparent md:border-b md:border-grey-200 last:border-none relative">
       <div className="h-[200px] w-full md:w-[200px]">
@@ -144,13 +143,13 @@ export default function ListingCard({ listing }: Props) {
               <div className="flex flex-wrap gap-3">
                 {extras.map((detail: any, index: number) => {
                   return (
-                    <Chip
+                    detail.status && <Chip
                       key={index}
                       icon={detail.icon}
                       text={detail.name}
                       variant="filled"
                       radius="sm"
-                      color={detail.status ? "primary" : "lighter"}
+                      color={"primary"}
                     />
                   );
                 })}

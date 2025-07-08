@@ -31,7 +31,7 @@ function CategoriesContent() {
       Sedan: "Sedans",
       SUV: "SUVs",
       Truck: "Trucks",
-      Luxury: "Luxury Vehicles",
+      Luxury: "Electric Vehicles",
       Bus: "Buses",
     };
 

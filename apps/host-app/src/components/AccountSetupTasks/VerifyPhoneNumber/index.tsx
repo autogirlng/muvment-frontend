@@ -6,14 +6,21 @@ import Button from "@repo/ui/button";
 import PhoneNumberAndCountryField from "@repo/ui/phoneNumberAndCountryField";
 import usePhoneNumberVerification from "../hooks/usePhoneNumberVerification";
 import { replaceCharactersWithString } from "@/utils/functions";
+import { useAppSelector } from "@/lib/hooks";
 
 type Props = {};
 
 export default function VerifyPhoneNumber({}: Props) {
+  const { user } = useAppSelector((state) => state.user);
   const { sendPhoneNumberToken } = usePhoneNumberVerification();
   return (
     <Formik
-      initialValues={verifyPhoneNumberValues}
+      initialValues={{
+        ...verifyPhoneNumberValues,
+        phoneNumber: user?.phoneNumber || "",
+        country: user?.country || "",
+        countryCode: user?.countryCode || "",
+      }}
       onSubmit={async (values, { setSubmitting }) => {
         console.log(values);
         sendPhoneNumberToken.mutate({ phoneNumber: values.phoneNumber });

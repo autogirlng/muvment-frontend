@@ -9,7 +9,7 @@ import {
   getNotificationIcon,
   getNotificationIconColor,
 } from "@/utils/functions";
-import { parseISO, format, isToday, isYesterday } from "date-fns";
+import { parseISO, format, isToday, isYesterday, isAfter, isBefore } from "date-fns";
 
 type Props = {
   isError: boolean;
@@ -48,12 +48,23 @@ function formatNotificationDate(dateStr: string) {
   return format(date, "do MMM");
 }
 
+// In the Notifications component, before rendering, map notifications to override SECURITY_ALERT titles
+const overrideNotificationTitle = (notification: Notification) => {
+  if (notification.notificationType === 'SECURITY_ALERT') {
+    return { ...notification, title: 'Host Login' };
+  }
+  return notification;
+};
+
+// Add props for date range filtering
 export default function Notifications({
   notifications,
   isLoading,
   isError,
   isDivider = false,
-}: Props) {
+  startDate,
+  endDate,
+}: Props & { startDate?: Date | null; endDate?: Date | null }) {
   if (isLoading) {
     return <FullPageSpinner className="min-h-[480px]" />;
   }
@@ -61,7 +72,40 @@ export default function Notifications({
     return <p>Something went wrong</p>;
   }
 
-  const groupedNotifications = groupNotificationsByDay(notifications);
+  // Map notifications to override SECURITY_ALERT titles before grouping
+  const notificationsToRender = notifications.map(overrideNotificationTitle);
+
+  // Client-side filter by date range if provided
+  const filteredNotifications = notificationsToRender.filter((n) => {
+    if (!startDate && !endDate) return true;
+    const created = parseISO(n.createdAt);
+    let inclusiveEndDate = endDate
+      ? new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999)
+      : undefined;
+    if (startDate && inclusiveEndDate) {
+      return (
+        (isAfter(created, startDate) || created.getTime() === startDate.getTime()) &&
+        (isBefore(created, inclusiveEndDate) || created.getTime() === inclusiveEndDate.getTime())
+      );
+    }
+    if (startDate) {
+      return isAfter(created, startDate) || created.getTime() === startDate.getTime();
+    }
+    if (inclusiveEndDate) {
+      return isBefore(created, inclusiveEndDate) || created.getTime() === inclusiveEndDate.getTime();
+    }
+    return true;
+  });
+
+  const groupedNotifications = groupNotificationsByDay(filteredNotifications);
+
+  if (Object.keys(groupedNotifications).length === 0) {
+    return (
+      <div className="py-12 text-center text-grey-500 text-lg">
+        No notifications found for this date range.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">

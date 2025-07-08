@@ -263,19 +263,21 @@ export default function ViewAsCustomer({ vehicle }: Props) {
               </svg>
             </div>
             <p className="text-xl font-semibold text-gray-900">
-              Cancellation Policy
+              Understand Our Cancellation & Refund Policy
             </p>
           </div>
         }
-        content={<CancellationPolicyModal  />}
+        content={<CancellationPolicyModal onClose={() => setOpenCancellationModal(false)} />}
       />
     </>
   );
 }
 
-
-const CancellationPolicyModal = () => {
-  return (
+type CancellationPolicyModalProps = {
+  onClose: () => void;
+};
+const CancellationPolicyModal = ({ onClose }: CancellationPolicyModalProps) => {
+ return (
     <div className="space-y-6 py-4">
       {/* Modal Title and Introduction */}
       <div>
@@ -359,21 +361,30 @@ const CancellationPolicyModal = () => {
       </div>
 
       {/* Action Button */}
-      {/* <div className="pt-4">
+      <div className="pt-4">
         <Button
           color="primary"
           rounded="full"
           fullWidth
           className="bg-blue-600 hover:bg-blue-700"
-          // You might add an onClick handler here to close the modal
-          // For example: onClick={onClose} or onClick={handleModalClose}
+          onClick={onClose}
         >
           Okay, Got it 👍
         </Button>
-      </div> */}
+      </div>
     </div>
   );
 };
+
+const SectionBlock = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <div className="mb-2">
+    <h3 className="font-semibold text-gray-900 text-base md:text-lg mb-1 flex items-center gap-2">
+      <span className="inline-block w-1.5 h-4 bg-blue-500 rounded-sm mr-2" />
+      {title}
+    </h3>
+    {children}
+  </div>
+);
 
 const SectionTitle = ({
   text,
