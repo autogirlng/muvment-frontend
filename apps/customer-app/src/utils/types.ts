@@ -129,8 +129,8 @@ export interface PersonalInformationOthersValues {
   countryCode: string;
   specialInstructions?: string;
   tripPurpose?: string;
-  userEmail: string;
-  userPhoneNumber: string;
+  /*   userEmail: string;
+  userPhoneNumber: string; */
   userCountry: string;
   userCountryCode: string;
   isForSelf: boolean;

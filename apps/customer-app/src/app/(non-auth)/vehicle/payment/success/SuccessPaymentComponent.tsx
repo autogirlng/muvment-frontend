@@ -21,10 +21,16 @@ import { useEffect, useState } from "react";
 const SuccessPaymentComponent = () => {
   const [vehicleId, setVehicleId] = useState<string>("");
   const [bookingId, setBookingId] = useState<string>("");
+  const [userLoggedIn, setUserLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
     const storedVehicleId = localStorage.getItem("vehicleId");
     const storedBookingId = localStorage.getItem("bookingId");
+    const userLoggedInVal = localStorage.getItem("user_token");
+
+    if (userLoggedInVal) {
+      setUserLoggedIn(true);
+    }
 
     if (storedVehicleId) {
       try {
@@ -267,7 +273,14 @@ const SuccessPaymentComponent = () => {
                 >
                   Cancel Booking
                 </Button>
-                <Link href="/bookings" className="block w-full">
+                <Link
+                  href={
+                    userLoggedIn
+                      ? "/bookings"
+                      : `/vehicle/guest-booking/${bookingId}`
+                  }
+                  className="block w-full"
+                >
                   <Button
                     color="primary"
                     rounded="full"
@@ -279,7 +292,9 @@ const SuccessPaymentComponent = () => {
                       localStorage.removeItem("bookingInformation");
                     }}
                   >
-                    Manage my bookings
+                    {userLoggedIn
+                      ? "Manage my bookings"
+                      : "View Booking Details"}
                   </Button>
                 </Link>
               </div>

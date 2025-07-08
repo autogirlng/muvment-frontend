@@ -25,6 +25,7 @@ import {
   addMinutes,
 } from "date-fns";
 import Icons from "@repo/ui/icons";
+import { combineDateTime } from "@/utils/combineDateTime";
 
 type Props = {
   vehicle: VehicleInformation | null;
@@ -643,6 +644,13 @@ const BookRideModal = ({
   endTime: string | null;
   pickupLocation: string | null;
 }) => {
+  const { startDateTime, endDateTime } = combineDateTime(
+    startDate || "",
+    startTime || "",
+    endDate || "",
+    endTime || ""
+  );
+
   return (
     <div className="space-y-4">
       <Link
@@ -654,10 +662,8 @@ const BookRideModal = ({
           endTime ||
           pickupLocation
             ? `?${[
-                startDate && `startDate=${startDate}`,
-                startTime && `startTime=${startTime}`,
-                endDate && `endDate=${endDate}`,
-                endTime && `endTime=${endTime}`,
+                startDate && `startDate=${startDateTime}`,
+                endDate && `endDate=${endDateTime}`,
                 bookingType && `bookingType=${bookingType}`,
                 pickupLocation &&
                   `pickupLocation=${encodeURIComponent(pickupLocation)}`,

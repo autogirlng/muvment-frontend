@@ -46,6 +46,7 @@ const VehiclePayment = ({
 
   useEffect(() => {
     console.log("bookingDetail", bookingDetail);
+    console.log("VehicleId", vehicleId);
   }, [bookingDetail]);
 
   return (
