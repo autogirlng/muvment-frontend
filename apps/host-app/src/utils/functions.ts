@@ -262,8 +262,7 @@ export const handleFilterQuery = ({
   if (search) filterQuery.append("search", search.toString());
   if (startDate) filterQuery.append("startDate", startDate.toString());
   if (endDate) filterQuery.append("endDate", endDate.toString());
-
-  return encodeURIComponent(filterQuery.toString());
+  return filterQuery.toString();
 };
 
 export const handleErrors = (

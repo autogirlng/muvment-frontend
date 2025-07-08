@@ -904,6 +904,7 @@ export const topRatedVehicle: TopRatedVehicleType = {
   make: "Hyundai",
   model: "Tuscon",
   year: "2018",
+  color:"Black",
   colour: "Black",
   seatingCapacity: "4",
   totalRides: "440",
