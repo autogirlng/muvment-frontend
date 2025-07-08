@@ -27,10 +27,6 @@ type FileFieldProps = {
   /** Enable file picking */
   filePicker?: boolean;
 
-  // IMPORTANT: Add onChange and onBlur props for Formik compatibility
-  // Formik will pass an event that relates to the HTMLInputElement's type.
-  // For file inputs, onFileSelect is often preferred for passing the File object.
-  // onChange here is primarily for standard text inputs or if Formik's handleChange is needed for file event.
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
 
@@ -71,6 +67,7 @@ const FileInputField = ({
     if (fileInputRef.current) {
       fileInputRef.current.value = ""; // Programmatically clear the native file input value
     }
+    
     onFileSelect?.(null); // Notify parent that the file is cleared
   };
 
