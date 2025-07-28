@@ -209,12 +209,12 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
 
         <HorizontalDivider variant="light" />
 
-        <button
+        {/* <button
           onClick={handleOpenCancellationModal}
           className="text-primary-500 text-sm md:text-base 3xl:text-xl hover:underline cursor-pointer bg-transparent border-none p-0"
         >
           Learn more about our free cancellation
-        </button>
+        </button> */}
 
         <Button
           variant="outlined"

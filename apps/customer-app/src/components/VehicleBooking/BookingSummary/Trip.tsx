@@ -89,20 +89,29 @@ const Trip = ({ vehicle }: Props) => {
           description={itineraryInformation?.outskirtsLocation}
         />
       </TripInfoWrapper>
-      <TripInfoWrapper title="Extras">
-        <SectionDetails
-          title="Extra Details"
-          description={itineraryInformation?.extraDetails}
-        />
-        <SectionDetails
-          title="Trip Purpose"
-          description={
-            personalInformation?.tripPurpose ??
-            itineraryInformation?.purposeOfRide ??
-            "-"
-          }
-        />
-      </TripInfoWrapper>
+      {(itineraryInformation?.extraDetails ||
+        personalInformation?.tripPurpose ||
+        itineraryInformation?.purposeOfRide) && (
+        <TripInfoWrapper title="Extras">
+          {itineraryInformation?.extraDetails && (
+            <SectionDetails
+              title="Extra Details"
+              description={itineraryInformation?.extraDetails}
+            />
+          )}
+          {(personalInformation?.tripPurpose ||
+            itineraryInformation?.purposeOfRide) && (
+            <SectionDetails
+              title="Trip Purpose"
+              description={
+                personalInformation?.tripPurpose ??
+                itineraryInformation?.purposeOfRide ??
+                "-"
+              }
+            />
+          )}
+        </TripInfoWrapper>
+      )}
     </div>
   );
 };
@@ -153,6 +162,20 @@ const DurationDetails = ({
   );
 };
 
+// Helper function to open Google Maps with location
+const openGoogleMaps = (location: string) => {
+  if (!location) return;
+
+  // Encode the location for URL
+  const encodedLocation = encodeURIComponent(location);
+
+  // Create Google Maps URL
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
+
+  // Open in new tab
+  window.open(googleMapsUrl, "_blank");
+};
+
 const SectionDetails = ({
   title,
   description,
@@ -162,6 +185,12 @@ const SectionDetails = ({
   description: string | string[];
   isLocation?: boolean;
 }) => {
+  const handleLocationClick = () => {
+    if (isLocation && typeof description === "string") {
+      openGoogleMaps(description);
+    }
+  };
+
   return (
     <div className="space-y-4 text-xs md:text-sm 3xl:text-base">
       <div className="flex items-center justify-between gap-2">
@@ -169,7 +198,14 @@ const SectionDetails = ({
           {isLocation && Icons.ic_location}
           <p className="text-grey-800 !font-medium">{title}</p>
         </div>
-        {isLocation && <p className="text-primary-500">View Location</p>}
+        {isLocation && description && (
+          <button
+            onClick={handleLocationClick}
+            className="text-primary-500 hover:text-primary-600 hover:underline transition-colors cursor-pointer"
+          >
+            View Location
+          </button>
+        )}
       </div>
 
       {description && Array.isArray(description) ? (
