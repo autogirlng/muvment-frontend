@@ -496,6 +496,10 @@ export interface BookingInformation {
   purposeOfRide: string;
 }
 export interface VehicleInformation {
+  availabilityAndPricing: any;
+  availabilityAndPricing: any;
+  availabilityAndPricing: any;
+  availabilityAndPricing: any;
   id?: string;
   listingName: string;
   location?: string;
