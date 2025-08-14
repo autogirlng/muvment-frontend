@@ -497,9 +497,6 @@ export interface BookingInformation {
 }
 export interface VehicleInformation {
   availabilityAndPricing: any;
-  availabilityAndPricing: any;
-  availabilityAndPricing: any;
-  availabilityAndPricing: any;
   id?: string;
   listingName: string;
   location?: string;

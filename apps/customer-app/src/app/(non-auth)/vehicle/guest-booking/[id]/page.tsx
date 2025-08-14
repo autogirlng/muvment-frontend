@@ -16,6 +16,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 interface Booking {
   id: string;
@@ -473,20 +474,26 @@ const BookingPage: React.FC = () => {
             <div className="bg-gray-50 rounded-lg p-6">
               <h3 className="text-lg font-semibold mb-4">Vehicle Photos</h3>
               <div className="space-y-4">
-                <img
+                <Image
                   src={booking.vehicle.VehicleImage.frontView}
                   alt="Vehicle front view"
+                  width={500}
+                  height={300}
                   className="w-full h-48 object-cover rounded-lg"
                 />
                 <div className="grid grid-cols-2 gap-2">
-                  <img
+                  <Image
                     src={booking.vehicle.VehicleImage.sideView1}
                     alt="Side view"
+                    width={250}
+                    height={150}
                     className="w-full h-24 object-cover rounded-lg"
                   />
-                  <img
+                  <Image
                     src={booking.vehicle.VehicleImage.interior}
                     alt="Interior"
+                    width={250}
+                    height={150}
                     className="w-full h-24 object-cover rounded-lg"
                   />
                 </div>

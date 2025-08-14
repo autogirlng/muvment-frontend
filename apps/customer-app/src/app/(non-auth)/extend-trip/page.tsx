@@ -103,15 +103,7 @@ const ExtendTripPage: NextPage = () => {
     }
   }, [isError, router]);
 
-  // Loading and error states
-  if (!bookingId || isLoading) {
-    return <FullPageSpinner />;
-  }
-
-  if (isError || !booking) {
-    return null;
-  }
-
+  // Moved the useMemo hook above the conditional return to ensure consistent hook order
   const EXTRA_HOUR_COST = booking?.vehicle?.pricing?.extraHoursFee || 50000;
   const OUTSKIRT_COST = 10537;
 
@@ -120,10 +112,19 @@ const ExtendTripPage: NextPage = () => {
     return hoursCost + OUTSKIRT_COST;
   }, [extraHours, EXTRA_HOUR_COST]);
 
+  // Loading and error states
+  if (!bookingId || isLoading) {
+    return <FullPageSpinner />;
+  }
+
   const handleHoursChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setExtraHours(value === "" ? 0 : parseInt(value, 10));
   };
+
+  if (isError || !booking) {
+    return null;
+  }
 
   return (
     <>
@@ -321,7 +322,7 @@ const ExtendTripPage: NextPage = () => {
                       href="#"
                       className="font-medium text-primary-600 hover:text-primary-500"
                     >
-                      Muvment's pricing policy.
+                      Muvment&apos;s pricing policy.
                     </a>
                   </label>
                 </div>
