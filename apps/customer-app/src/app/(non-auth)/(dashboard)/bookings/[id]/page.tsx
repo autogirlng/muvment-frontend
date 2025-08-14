@@ -60,6 +60,7 @@ export default function BookingDetailPage({
             nameValue={bookingDetail?.id || ""}
             copyText={bookingDetail?.id || ""}
             status={bookingDetail?.bookingStatus}
+            bookingId={bookingDetail?.id}
           >
             <div className="flex items-center gap-8">
               <div className="space-y-2">
