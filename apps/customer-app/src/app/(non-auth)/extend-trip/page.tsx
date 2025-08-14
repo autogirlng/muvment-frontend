@@ -21,6 +21,7 @@ import useExtendBooking from "./hooks/useExtendBooking";
 import { useSearchParams } from "next/navigation";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import Link from "next/link";
+import { useHttp } from "@/hooks/useHttp";
 
 // Helper component for displaying trip details
 const InfoCard: FC<{
@@ -45,17 +46,22 @@ const InfoCard: FC<{
   </div>
 );
 
-// Helper component for the timeline in the trip summary
+// Updated TimelineItem to include broken lines and color-coded icons
 const TimelineItem: FC<{
   icon: ReactNode;
   text: string;
   subtext?: string;
   isWarning?: boolean;
-}> = ({ icon, text, subtext, isWarning }) => (
-  <div className="flex items-start space-x-4">
-    <div className={`mt-1 ${isWarning ? "text-red-500" : "text-green-500"}`}>
+  color?: string;
+}> = ({ icon, text, subtext, isWarning, color }) => (
+  <div className="flex items-start space-x-4 relative">
+    <div
+      className={`mt-1 ${color} ${isWarning ? "text-red-500" : ""}`}
+      style={{ color }}
+    >
       {icon}
     </div>
+    <div className="absolute -left-1.5 top-6 h-8 border-l-2 border-dashed border-[#828181]"></div>
     <div>
       <p
         className={`font-medium ${isWarning ? "text-red-500" : "text-gray-800"}`}
@@ -68,6 +74,7 @@ const TimelineItem: FC<{
 );
 
 const ExtendTripPage: NextPage = () => {
+  const http = useHttp();
   const router = useRouter();
   const searchParams = useSearchParams();
   const bookingId = searchParams.get("id");
@@ -78,6 +85,9 @@ const ExtendTripPage: NextPage = () => {
   const [reason, setReason] = useState<string>("");
   const [specialRequests, setSpecialRequests] = useState<string>("");
   const [isChecked, setIsChecked] = useState<boolean>(true);
+  const [dropoffLocation, setDropoffLocation] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Data fetching
   const { booking, isLoading, isError } = useExtendBooking({
@@ -98,14 +108,19 @@ const ExtendTripPage: NextPage = () => {
   }, [booking]);
 
   useEffect(() => {
+    if (booking?.dropoffLocation) {
+      setDropoffLocation(booking.dropoffLocation);
+    }
+  }, [booking]);
+
+  useEffect(() => {
     if (isError) {
       router.push("/bookings");
     }
   }, [isError, router]);
 
-  // Moved the useMemo hook above the conditional return to ensure consistent hook order
-  const EXTRA_HOUR_COST = booking?.vehicle?.pricing?.extraHoursFee || 50000;
-  const OUTSKIRT_COST = 10537;
+  const EXTRA_HOUR_COST = booking?.vehicle?.pricing?.extraHoursFee || 0;
+  const OUTSKIRT_COST = booking?.vehicle?.outskirtsPrice || 0;
 
   const totalCost = useMemo(() => {
     const hoursCost = extraHours * EXTRA_HOUR_COST;
@@ -125,6 +140,47 @@ const ExtendTripPage: NextPage = () => {
   if (isError || !booking) {
     return null;
   }
+
+  // Function to initialize booking extension payment
+  const initializeExtensionPayment = async () => {
+    try {
+      setLoading(true);
+      const response = await http.post<{
+        paymentUrl?: string;
+        [key: string]: any; // Allow additional fields for debugging
+      }>("/api/bookings/extend/initialize", {
+        bookingId: bookingId,
+        newEndDate: new Date(
+          new Date(booking.endDate).getTime() + extraHours * 60 * 60 * 1000
+        ).toISOString(),
+        additionalHours: extraHours,
+        additionalAmount: totalCost,
+        currencyCode: booking.currencyCode,
+        redirectUrl: `${window.location.origin}/bookings`,
+      });
+
+      console.log("Full response received:", response);
+      console.log("Response status (HTTP):", response?.status || "Not available");
+      console.log("Payment URL:", response.paymentUrl);
+
+      const paymentUrl = response.paymentUrl;
+
+      // Adjust condition to check if paymentUrl exists
+      if (paymentUrl) {
+        console.log("Redirecting to payment URL:", paymentUrl);
+        window.open(paymentUrl, "_blank"); // Open in a new tab
+      } else {
+        setError("Payment URL is missing in the response. Please contact support.");
+      }
+    } catch (error) {
+      console.error("Error initializing payment:", error);
+      setError(
+        error instanceof Error ? error.message : "An unexpected error occurred."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -179,7 +235,7 @@ const ExtendTripPage: NextPage = () => {
             </div>
 
             {/* Trip Summary Section */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 order-1 lg:order-none">
               <div className="bg-white p-6 rounded-3xl border border-grey-200 shadow-sm">
                 <div className="bg-gray-50 p-4 rounded-xl">
                   <h2 className="text-lg font-bold text-grey-900 mb-4">
@@ -190,11 +246,19 @@ const ExtendTripPage: NextPage = () => {
                       icon={<MapPin size={20} />}
                       text={booking.pickupLocation}
                       subtext="Pick-up"
+                      color="green"
+                    />
+                    <TimelineItem
+                      icon={<CaretDown size={20} />}
+                      text={dropoffLocation}
+                      subtext="Current Location"
+                      color="blue"
                     />
                     <TimelineItem
                       icon={<MapPin size={20} />}
-                      text={booking.dropoffLocation}
-                      subtext="Drop-off"
+                      text={dropoffLocation}
+                      subtext="Drop-off Location"
+                      color="red"
                     />
                     <TimelineItem
                       icon={<Warning size={20} />}
@@ -207,6 +271,7 @@ const ExtendTripPage: NextPage = () => {
                           : format(new Date(booking.endDate), "hh:mma")
                       }`}
                       isWarning
+                      color="black"
                     />
                   </div>
                 </div>
@@ -221,8 +286,8 @@ const ExtendTripPage: NextPage = () => {
               </label>
               <input
                 type="text"
-                value={booking.dropoffLocation}
-                readOnly
+                value={dropoffLocation}
+                onChange={(e) => setDropoffLocation(e.target.value)}
                 className="mt-1 block w-full border border-grey-300 rounded-lg shadow-sm p-4 text-xs"
               />
 
@@ -317,20 +382,14 @@ const ExtendTripPage: NextPage = () => {
                   <label htmlFor="accept" className="text-grey-700">
                     I understand and accept that exceeding the agreed booking
                     duration whether in hours or days will result in additional
-                    charges, as outlined in{" "}
-                    <a
-                      href="#"
-                      className="font-medium text-primary-600 hover:text-primary-500"
-                    >
-                      Muvment&apos;s pricing policy.
-                    </a>
+                    charges, as outlined in Muvment&apos;s pricing policy.{" "}
                   </label>
                 </div>
               </div>
             </div>
 
             {/* Cost Breakdown Section */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 order-1 lg:order-none">
               <div className="bg-white p-6 rounded-3xl border border-grey-200 shadow-sm">
                 <div className="bg-gray-50 p-4 rounded-xl">
                   <h2 className="text-lg font-bold text-grey-900 mb-4">
@@ -339,9 +398,7 @@ const ExtendTripPage: NextPage = () => {
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
                       <p className="text-grey-600">Number of extra hours</p>
-                      <p className="font-medium text-grey-800">
-                        {extraHours}
-                      </p>
+                      <p className="font-medium text-grey-800">{extraHours}</p>
                     </div>
                     <div className="flex justify-between">
                       <p className="text-grey-600">
@@ -373,14 +430,12 @@ const ExtendTripPage: NextPage = () => {
                 </div>
               </div>
               <Button
-                className="w-full mt-6 bg-primary-700 hover:bg-primary-500 text-white"
+                className="w-full mt-6 bg-[#1d4ed8] hover:bg-primary-500 text-white rounded-3xl"
                 size="lg"
-                disabled={!isChecked}
-                onClick={() => {
-                  // Handle payment logic here
-                }}
+                disabled={!isChecked || loading}
+                onClick={initializeExtensionPayment}
               >
-                Proceed to payment
+                {loading ? "Processing..." : "Proceed to payment"}
               </Button>
             </div>
           </div>
