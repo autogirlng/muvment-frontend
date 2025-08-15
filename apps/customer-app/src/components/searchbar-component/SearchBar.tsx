@@ -7,8 +7,10 @@ import {
   FC,
   Dispatch,
   SetStateAction,
+  useMemo,
 } from "react";
-import { ChevronDown, MapPin, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ChevronDown, Search } from "lucide-react";
 import { DatePicker } from "@repo/ui/calendar";
 
 import { useLocationSearch } from "../SearchBooking/useLocationSearch";
@@ -24,6 +26,7 @@ type CustomDropdownProps = {
   columnClasses: string;
 };
 
+// Your CustomDropdown component remains unchanged
 const CustomDropdown: FC<CustomDropdownProps> = ({
   label,
   options,
@@ -33,6 +36,19 @@ const CustomDropdown: FC<CustomDropdownProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const formatDisplayValue = (rawValue: string): string => {
+    const mappings: { [key: string]: string } = {
+      AN_HOUR: "1 Hour",
+      THREE_HOURS: "3 Hours",
+      SIX_HOURS: "6 Hours",
+      TWELVE_HOURS: "12 Hours",
+      AIRPORT_PICKUP: "Airport Transfers",
+      SedanElectric: "Sedan Electric",
+      SUVElectric: "SUV Electric",
+    };
+    return mappings[rawValue] || rawValue;
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -56,7 +72,7 @@ const CustomDropdown: FC<CustomDropdownProps> = ({
     "block text-xs font-medium text-[#98A2B3] whitespace-nowrap";
   const inputDisplayClasses =
     "w-full text-left bg-transparent border-none focus:ring-0 p-0 mt-1 font-semibold text-[#98A2B3] placeholder-gray-500 text-xs sm:text-sm cursor-pointer";
-  const columnPadding = "p-4 lg:py-2 lg:px-5 border-[#98A2B3]";
+  const columnPadding = "ml-2 p-4 lg:py-2 lg:px-1 border-[#98A2B3]";
 
   return (
     <div
@@ -72,7 +88,7 @@ const CustomDropdown: FC<CustomDropdownProps> = ({
           aria-haspopup="listbox"
           aria-expanded={isOpen}
         >
-          <span>{value}</span>
+          <span>{formatDisplayValue(value)}</span>
           <ChevronDown
             size={20}
             className={`transition-transform duration-200 ${
@@ -83,7 +99,7 @@ const CustomDropdown: FC<CustomDropdownProps> = ({
 
         {isOpen && (
           <div
-            className="absolute z-10 w-full mt-2 bg-white rounded-xl shadow-lg p-2 origin-top-right"
+            className="absolute z-10 w-full mt-2 bg-white rounded-xl shadow-lg origin-top-right"
             role="listbox"
           >
             {options.map((option) => (
@@ -94,7 +110,7 @@ const CustomDropdown: FC<CustomDropdownProps> = ({
                 role="option"
                 aria-selected={value === option}
               >
-                {option}
+                {formatDisplayValue(option)}
               </button>
             ))}
           </div>
@@ -105,11 +121,12 @@ const CustomDropdown: FC<CustomDropdownProps> = ({
 };
 
 const BookingSearchBar = () => {
-  const [bookingType, setBookingType] = useState<string>("6 hours");
+  const router = useRouter();
+  const [bookingType, setBookingType] = useState<string>("AN_HOUR");
   const [location, setLocation] = useState<string>("");
-  const [fromDate, setFromDate] = useState<Value>(new Date("2025/08/13"));
-  const [untilDate, setUntilDate] = useState<Value>(new Date("2025/08/13"));
-  const [category, setCategory] = useState<string>("SUV");
+  const [fromDate, setFromDate] = useState<Value>(new Date());
+  const [untilDate, setUntilDate] = useState<Value>(new Date());
+  const [category, setCategory] = useState<string>("SUVElectric"); // Set initial default to a valid option
   const [openPicker, setOpenPicker] = useState<"from" | "until" | null>(null);
 
   const {
@@ -150,15 +167,27 @@ const BookingSearchBar = () => {
   };
 
   const handleSearch = () => {
+    const formatDate = (date: Value) => {
+      if (!date) return "";
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
     const searchData = {
       bookingType,
       location,
-      fromDate: fromDate ? formatDateDisplay(fromDate) : "N/A",
-      untilDate: untilDate ? formatDateDisplay(untilDate) : "N/A",
+      fromDate: formatDate(fromDate),
+      untilDate: formatDate(untilDate),
       category,
     };
-    console.log("Searching with:", searchData);
-    alert(`Searching for a ${category} in ${location || "any location"}...`);
+    const queryParams = new URLSearchParams();
+    Object.entries(searchData).forEach(([key, value]) => {
+      if (value) {
+        queryParams.append(key, value);
+      }
+    });
+    router.push(`/explore/results?${queryParams.toString()}`);
   };
 
   const labelClasses =
@@ -169,14 +198,46 @@ const BookingSearchBar = () => {
     "w-full text-left bg-transparent border-none focus:ring-0 p-0 font-semibold text-[#98A2B3] placeholder-gray-500 text-xs sm:text-sm cursor-pointer";
   const columnPadding = "p-4 lg:py-2 lg:px-5 border-[#98A2B3]";
   const bookingTypeOptions = [
-    "1 hour",
-    "3 hours",
-    "6 hours",
-    "12 hours",
-    "24 hours",
-    "Airport Transfers",
+    "AN_HOUR",
+    "THREE_HOURS",
+    "SIX_HOURS",
+    "TWELVE_HOURS",
+    "AIRPORT_PICKUP",
   ];
-  const categoryOptions = ["SUV", "Sedan", "Minivan", "Coupe"];
+  // --- START: MODIFICATION ---
+  // Renamed to represent all possible categories
+  const allCategoryOptions = [
+    "SUV",
+    "Sedan",
+    "SedanElectric",
+    "SUVElectric",
+    "BUS",
+  ];
+
+  // This function determines which categories to show based on the booking type
+  const getFilteredCategories = (type: string) => {
+    const hourlyElectricOnly = ["AN_HOUR", "THREE_HOURS", "SIX_HOURS"];
+    if (hourlyElectricOnly.includes(type)) {
+      return ["SUVElectric", "SedanElectric"];
+    }
+    // For all other types, show all categories
+    return allCategoryOptions;
+  };
+
+  // useMemo will prevent re-calculating the list on every render, only when bookingType changes
+  const filteredCategoryOptions = useMemo(
+    () => getFilteredCategories(bookingType),
+    [bookingType]
+  );
+
+  // This effect ensures that if the booking type changes,
+  // the category is reset to a valid option if the current one is no longer available.
+  useEffect(() => {
+    if (!filteredCategoryOptions.includes(category)) {
+      setCategory(filteredCategoryOptions[0]);
+    }
+  }, [filteredCategoryOptions, category]);
+  // --- END: MODIFICATION ---
 
   return (
     <div className="w-full max-w-5xl mx-auto bg-white shadow-lg rounded-2xl lg:rounded-[25px] flex flex-col lg:flex-row items-center p-2 text-left">
@@ -261,9 +322,10 @@ const BookingSearchBar = () => {
             </div>
           </DatePicker>
         </div>
+        {/* Pass the dynamically filtered options to the dropdown */}
         <CustomDropdown
           label="Category"
-          options={categoryOptions}
+          options={filteredCategoryOptions}
           value={category}
           onChange={setCategory}
           columnClasses="lg:w-[130px] lg:flex-shrink-0"
