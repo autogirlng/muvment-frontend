@@ -7,7 +7,7 @@ import {
   VehicleInformation,
   VehiclePerksProp,
 } from "@/utils/types";
-import { ReactNode, useState, useMemo, useEffect } from "react";
+import React, { ReactNode, useState, useMemo, useEffect } from "react";
 import SelectInput from "@repo/ui/select";
 import Button from "@repo/ui/button";
 import { BlurredDialog } from "@repo/ui/dialog";
@@ -20,6 +20,9 @@ import useHandleBooking from "../hooks/useHandleBooking";
 import useCalculatePrice from "./hooks/useCalculatePrice";
 import { addDays, differenceInDays } from "date-fns";
 import Icons from "@repo/ui/icons";
+import { TripPerDaySelect } from "./TripPerDaySelect";
+import { useHttp } from "@/hooks/useHttp";
+import { useQuery } from "@tanstack/react-query";
 
 type Props = {
   vehicle: VehicleInformation | null;
@@ -36,7 +39,27 @@ type InitialValuesProps = {
   endTime: Date | null;
   pickupLocation: string;
 };
+// For the nested 'breakdown' object
+interface Breakdown {
+  bookingTypes: string[];
+  bookingTypeBreakdown: {
+    [key: string]: number; // An object with string keys and number values
+  };
+  outskirtFee: number;
+  extensionFee: number;
+  discountAmount: number;
+  discountPercentage: number;
+  isExtension: boolean;
+  isOutskirt: boolean;
+}
 
+// For the top-level object
+interface BookingSummaryPricing {
+  totalPrice: number;
+  breakdown: Breakdown;
+  currency: string;
+  unit: string;
+}
 export default function VehicleSummary({
   vehicle,
   perks,
@@ -46,8 +69,95 @@ export default function VehicleSummary({
   const router = useRouter();
   const { user } = useAppSelector((state) => state.user);
   const [openBookRideModal, setBookRideModal] = useState<boolean>(false);
+  const [bookingPriceBreakdown, setBookingPriceBreakdown] = useState<BookingSummaryPricing | undefined>();
+  const [tripOutskirt, setTripOutskirt] = useState<boolean>(false)
+
+
+  interface tripDetails {
+    id?: string;
+    bookingType?: string;
+    tripDate?: string;
+    tripTime?: string;
+    pickupLocation?: string;
+    dropOffLocation?: string;
+    areaOfUse?: string;
+
+
+  }
+  interface IOtherTrips {
+    id: string;
+    tripDetails?: tripDetails;
+  }
+
+  const [otherTrips, setOtherTrips] = useState<IOtherTrips[]>([])
+
+  const http = useHttp()
+
+  const addTrip = (id: string) => {
+    setOtherTrips(prev => [...prev, { id }])
+  }
+  const deleteTrip = async (idToDelete: string) => {
+    const trips: tripDetails[] = JSON.parse(sessionStorage.getItem("trips") || '[]');
+    const updatedTrips = trips.filter((trip) => trip.id !== idToDelete);
+    sessionStorage.setItem("trips", JSON.stringify(updatedTrips));
+    setOtherTrips(prev => prev.filter((trip) => trip.id !== idToDelete));
+    const bookingTypes: string[] = [];
+    updatedTrips.map((trip) => {
+      trip.bookingType && bookingTypes.push(trip.bookingType)
+    })
+    const bookingPrice = await http.post<BookingSummaryPricing>("/api/bookings/calculate-price",
+      {
+        vehicleId: vehicle?.id,
+        bookingTypes,
+        isExtension: false,
+        isOutskirt: false
+      }
+    );
+    bookingPrice && setBookingPriceBreakdown(bookingPrice)
+
+  }
+
+  const onChangeTrip = async (id: string, details: tripDetails) => {
+
+    const updatedDays = otherTrips.map(trip => {
+      if (trip.id === id) {
+        const currentTripDetails = trip.tripDetails || {};
+        return {
+          ...trip,
+          tripDetails: { ...currentTripDetails, ...details }
+        };
+      }
+      return trip;
+    });
+    setOtherTrips(updatedDays);
+    if (details.bookingType && details.bookingType.length > 0) {
+      const bookingTypes: string[] = [];
+      let isOutskirt = false;
+      updatedDays.map((trip) => {
+        if (trip.tripDetails?.areaOfUse === "MAINLAND_OUTSKIRT") {
+          isOutskirt = true;
+          setTripOutskirt(true)
+        };
+        trip.tripDetails?.bookingType && bookingTypes.push(trip.tripDetails?.bookingType)
+      })
+
+      const bookingPrice = await http.post<BookingSummaryPricing>("/api/bookings/calculate-price",
+        {
+          vehicleId: vehicle?.id,
+          bookingTypes,
+          isExtension: false,
+          isOutskirt
+        }
+      );
+
+      bookingPrice && setBookingPriceBreakdown(bookingPrice)
+    }
+  }
+
   const { bookingType, startDate, startTime, endDate, endTime } =
     useFetchUrlParams();
+
+
   const [values, setValues] = useState<InitialValuesProps>({
     bookingType: bookingType || "",
     startDate: startDate ? new Date(startDate) : null,
@@ -212,7 +322,13 @@ export default function VehicleSummary({
     if (priceData) {
       localStorage.setItem("priceData", JSON.stringify(priceData));
     }
+    setOtherTrips([{ id: "trip-0" }])
   }, [priceData]);
+
+
+  useEffect(() => {
+    sessionStorage.removeItem("trips")
+  }, [])
 
   return (
     <VehicleDetails
@@ -225,8 +341,62 @@ export default function VehicleSummary({
       <div className="w-full md:min-w-[350px] md:w-1/2 md:border md:border-grey-200 md:rounded-[42px]">
         <div className="space-y-11 md:py-8 md:px-6 divide-y divide-grey-200 text-grey-800 !font-medium text-base 3xl:text-xl">
           <div className="space-y-11">
-            <div className="space-y-6">
-              <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2 xs:gap-4">
+
+            <div className="space-y-6 ">
+              <h1 className="font-bold text-[#1d2739]">Trip Rules & Pricing</h1>
+
+              <div className="py-[5px]">
+                <div className="pr-6">
+                  <PricingTitle text="Advance notice" />
+                  <PricingDescription
+                    text={vehicle?.tripSettings.advanceNotice ?? ""}
+                  />
+                </div>
+              </div>
+              <div className=" flex divide-x divide-grey-200">
+                <div className="pr-6">
+                  <PricingTitle text="Daily (12 hrs)" />
+                  <PricingDescription
+                    text={`NGN ${formatNumberWithCommas(
+                      vehicle?.pricing?.dailyRate?.value || 0
+                    )}/day`}
+                  />
+                </div>
+                <div className="pl-6">
+                  <PricingTitle text="Extra Hours" />
+                  <PricingDescription
+                    text={`NGN ${formatNumberWithCommas(
+                      vehicle?.pricing?.extraHoursFee || 0
+                    )}/hr`}
+                  />
+                </div>
+
+              </div>
+              <div className="py-[5px]">
+                <PricingTitle text="Trip Duration" />
+                <PricingDescription
+                  text={`Min: 1 day | Max: ${vehicle?.tripSettings?.maxTripDuration}`}
+                />
+              </div>
+
+              {vehicle?.pricing?.discounts &&
+                vehicle?.pricing?.discounts?.length > 0 && (
+                  <div className="py-[5px] space-y-2">
+                    <PricingTitle text="Discounts" />
+                    {vehicle.pricing.discounts.map((discount, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center text-sm justify-between gap-2 bg-grey-75 border border-grey-300 px-3 py-2 rounded-lg  "
+                      >
+                        <p>{discount?.durationInDays} days</p>
+                        <p className="text-success-500">
+                          {discount.percentage || 0}% off
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              {/* <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2 xs:gap-4">
                 <PricingDescription
                   text={`NGN ${formatNumberWithCommas(
                     vehicle?.pricing?.dailyRate?.value || 0
@@ -249,8 +419,8 @@ export default function VehicleSummary({
                     )}
                   </p>
                 </div>
-              </div>
-
+              </div> */}
+              {/* 
               <InputSection title="Booking Type">
                 <SelectInput
                   id="bookingType"
@@ -265,10 +435,10 @@ export default function VehicleSummary({
                     handleValueChange("bookingType", value);
                   }}
                 />
-              </InputSection>
+              </InputSection> */}
             </div>
 
-            <InputSection
+            {/* <InputSection
               title="Trip Start"
               textColor="blue"
               error={vehicleAvailableError}
@@ -312,9 +482,29 @@ export default function VehicleSummary({
                 onChange={(date: Date) => handleValueChange("endTime", date)}
                 timeType="end"
               />
-            </InputSection>
+            </InputSection> */}
 
-            <InputSection title="Pick up and Drop-off location">
+
+            <div>
+              <h1 className="font-bold text-[17px]">Add Booking Details</h1>
+              <p className="text-sm my-4">Trip per day</p>
+
+              {/* <TripPerDaySelect day="1" id="trip-0" onChangeTrip={onChangeTrip} vehicle={vehicle} /> */}
+              {otherTrips.map((key, index) => {
+                return <TripPerDaySelect key={key.id}
+                  day={`${index + 1}`}
+                  id={key.id}
+                  vehicle={vehicle}
+                  deleteMethod={deleteTrip}
+                  onChangeTrip={onChangeTrip} />
+              })}
+
+              <div className="text-center">
+                <button onClick={() => addTrip(`trip-${otherTrips.length}`)} className="text-[#0673ff] mt-3 border-0 bg-white">+ Add Trip</button>
+              </div>
+
+            </div>
+            {/* <InputSection title="Pick up and Drop-off location">
               <input
                 type="text"
                 name="pickupLocation"
@@ -325,7 +515,45 @@ export default function VehicleSummary({
                 placeholder="Enter location"
                 className="w-full rounded-[18px] p-4 text-left text-sm h-[56px] outline-none bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A] placeholder:text-grey-400"
               />
-            </InputSection>
+            </InputSection> */}
+            {
+              bookingPriceBreakdown && <div className="rounded-2xl p-5 m-0 border border-grey-200">
+                <h2 className="font-bold">Cost Breakdown</h2>
+                <div className="border-b border-grey-200 pb-4">
+
+                  <div className="w-full text-sm flex justify-between mt-3">
+                    <span>Total Cost</span>
+                    <span>NGN {bookingPriceBreakdown.totalPrice - bookingPriceBreakdown.breakdown.discountAmount || 0}</span>
+                  </div>
+                  <div className="w-full  text-sm flex justify-between mt-4">
+                    <span>Extra Hours</span>
+                    <span>Billed as you go</span>
+                  </div>
+
+                  <div className="w-full  text-sm flex justify-between mt-4">
+                    <span>Area of Use</span>
+                    <span style={{ textTransform: "capitalize" }}>
+                      {otherTrips.map((trip) => {
+                        return <>{trip.tripDetails?.areaOfUse?.split("_")[0].toLowerCase()} {trip.tripDetails?.areaOfUse?.split("_")[1].toLowerCase()}  <br /></>
+                      })}
+                    </span>
+                  </div>
+
+                  {
+                    bookingPriceBreakdown.breakdown.discountAmount > 0 &&
+                    <div className="w-full text-sm flex justify-between mt-4">
+                      <span>Discount -{bookingPriceBreakdown.breakdown.discountPercentage}%</span>
+                      <span>-NGN {bookingPriceBreakdown.breakdown.discountAmount}</span>
+                    </div>
+                  }
+                </div>
+                <div className="w-full text-sm flex justify-between mt-4">
+                  <span>Total</span>
+                  <span className="font-bold">NGN {bookingPriceBreakdown.totalPrice}</span>
+                </div>
+              </div>
+            }
+
 
             <Button
               color="primary"
@@ -359,55 +587,10 @@ export default function VehicleSummary({
           </div>
 
           <div className="divide-y divide-grey-200 text-grey-800">
-            <div className="py-[22px]">
-              <div className="pr-6">
-                <PricingTitle text="Advance notice" />
-                <PricingDescription
-                  text={vehicle?.tripSettings.advanceNotice ?? ""}
-                />
-              </div>
-            </div>
-            <div className="py-[22px] flex divide-x divide-grey-200">
-              <div className="pr-6">
-                <PricingTitle text="Daily (12 hrs)" />
-                <PricingDescription
-                  text={`NGN ${formatNumberWithCommas(
-                    vehicle?.pricing?.dailyRate?.value || 0
-                  )}/day`}
-                />
-              </div>
-              <div className="pl-6">
-                <PricingTitle text="Extra Hours" />
-                <PricingDescription
-                  text={`NGN ${formatNumberWithCommas(
-                    vehicle?.pricing?.extraHoursFee || 0
-                  )}/hr`}
-                />
-              </div>
-            </div>
-            <div className="py-[22px]">
-              <PricingTitle text="Trip Duration" />
-              <PricingDescription
-                text={`Min: 1 day | Max: ${vehicle?.tripSettings?.maxTripDuration}`}
-              />
-            </div>
-            {vehicle?.pricing?.discounts &&
-              vehicle?.pricing?.discounts?.length > 0 && (
-                <div className="py-[22px] space-y-2">
-                  <PricingTitle text="Discounts" />
-                  {vehicle.pricing.discounts.map((discount, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between gap-2 bg-grey-75 border border-grey-300 p-2 rounded-lg text-sm md:text-xl md:text-h6"
-                    >
-                      <p>{discount?.durationInDays}+ days</p>
-                      <p className="text-success-500">
-                        {discount.percentage || 0}% off
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
+
+
+
+
           </div>
         </div>
       </div>
@@ -508,26 +691,25 @@ const BookRideModal = ({
   return (
     <div className="space-y-4">
       <Link
-        href={`/vehicle/booking/guest/${id}${
-          bookingType ||
+        href={`/vehicle/booking/guest/${id}${bookingType ||
           startDate ||
           startTime ||
           endDate ||
           endTime ||
           pickupLocation
-            ? `?${[
-                startDate && `startDate=${startDate}`,
-                startTime && `startTime=${startTime}`,
-                endDate && `endDate=${endDate}`,
-                endTime && `endTime=${endTime}`,
-                bookingType && `bookingType=${bookingType}`,
-                pickupLocation &&
-                  `pickupLocation=${encodeURIComponent(pickupLocation)}`,
-              ]
-                .filter(Boolean)
-                .join("&")}`
-            : ""
-        }`}
+          ? `?${[
+            startDate && `startDate=${startDate}`,
+            startTime && `startTime=${startTime}`,
+            endDate && `endDate=${endDate}`,
+            endTime && `endTime=${endTime}`,
+            bookingType && `bookingType=${bookingType}`,
+            pickupLocation &&
+            `pickupLocation=${encodeURIComponent(pickupLocation)}`,
+          ]
+            .filter(Boolean)
+            .join("&")}`
+          : ""
+          }`}
         className="block"
       >
         <Button className="!bg-grey-90 !text-grey-700" fullWidth>
