@@ -22,7 +22,7 @@ export default function VehicleBookingPage({
   const { vehicle, perks, vehicleDetails, vehicleImages, isError, isLoading } =
     useFetchVehicleById({
       id: params?.id,
-    });
+    }); 
 
   const [currentStep, setCurrentStep] = useState<number>(0);
 

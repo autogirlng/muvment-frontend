@@ -2,8 +2,6 @@ import { useMutation } from "@tanstack/react-query";
 import { useState, useCallback } from "react";
 
 type CalculatePricePayload = {
-  startDate: string;
-  endDate: string;
   vehicleId: string;
 };
 
@@ -39,7 +37,7 @@ const useCalculatePrice = (vehicleId: string) => {
       const token = localStorage.getItem("user_token");
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/calculate-price`,
+        `${process.env.NEXT_PUBLIC_API_URL}api/bookings/calculate-price`,
         {
           method: "POST",
           headers: {
@@ -73,44 +71,6 @@ const useCalculatePrice = (vehicleId: string) => {
       }
 
       const payload: CalculatePricePayload = {
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
-        vehicleId,
-      };
-
-      calculatePriceMutation.mutate(payload);
-    },
-    [vehicleId, calculatePriceMutation]
-  );
-
-  // Auto-calculate when dates change
-  const autoCalculatePrice = useCallback(
-    (
-      startDate: Date | null,
-      startTime: Date | null,
-      endDate: Date | null,
-      endTime: Date | null
-    ) => {
-      if (!startDate || !startTime || !endDate || !endTime || !vehicleId) {
-        setPriceData(null);
-        return;
-      }
-
-      // Combine date and time
-      const combinedStartDate = new Date(startDate);
-      combinedStartDate.setHours(
-        startTime.getHours(),
-        startTime.getMinutes(),
-        0,
-        0
-      );
-
-      const combinedEndDate = new Date(endDate);
-      combinedEndDate.setHours(endTime.getHours(), endTime.getMinutes(), 0, 0);
-
-      const payload: CalculatePricePayload = {
-        startDate: combinedStartDate.toISOString(),
-        endDate: combinedEndDate.toISOString(),
         vehicleId,
       };
 
@@ -122,7 +82,6 @@ const useCalculatePrice = (vehicleId: string) => {
   return {
     priceData,
     calculatePrice,
-    autoCalculatePrice,
     isLoading: calculatePriceMutation.isPending,
     error: calculatePriceMutation.error,
     isError: calculatePriceMutation.isError,

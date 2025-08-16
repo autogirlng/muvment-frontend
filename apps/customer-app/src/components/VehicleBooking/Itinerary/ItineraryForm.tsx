@@ -380,6 +380,9 @@ const ItineraryForm = ({
   const startDateParam = searchParams.get("startDate");
   const endDateParam = searchParams.get("endDate");
   const pickupLocationParam = searchParams.get("pickupLocation");
+  const dropoffLocationParam = searchParams.get("dropoffLocation");
+  const areaOfUseParam = searchParams.get("areaOfUse");
+  const urlVehicleId = searchParams.get("vehicleId");
 
   // Parse dates from URL parameters
   const { date: startDate, time: startTime } = parseDateFromUrl(startDateParam);
@@ -392,7 +395,7 @@ const ItineraryForm = ({
   const initialValues = useMemo(() => {
     const existingValues = getExistingBookingInformation(
       baseInitialValues,
-      vehicleId,
+      urlVehicleId || vehicleId,
       "itineraryInformation"
     );
 
@@ -404,6 +407,8 @@ const ItineraryForm = ({
       ...(endDate && { endDate }),
       ...(endTime && { endTime }),
       ...(pickupLocationParam && { pickupLocation: pickupLocationParam }),
+      ...(dropoffLocationParam && { dropoffLocation: dropoffLocationParam }),
+      ...(areaOfUseParam && { areaOfUse: areaOfUseParam }),
     };
   }, [vehicleId, startDate, startTime, endDate, endTime, pickupLocationParam]);
 

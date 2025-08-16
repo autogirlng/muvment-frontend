@@ -16,7 +16,7 @@ const steps = ["Personal Information", "Itinerary", "Booking Summary"];
 
 export default function VehicleBookingPage({
   params,
-}: {
+}: { 
   params: { id: string };
 }) {
   const router = useRouter();

@@ -1,3 +1,5 @@
+"use client";
+
 import cn from "classnames";
 import Link from "next/link";
 import { formatNumberWithCommas, useFetchUrlParams } from "@/utils/functions";
@@ -7,7 +9,7 @@ import {
   VehicleInformation,
   VehiclePerksProp,
 } from "@/utils/types";
-import { ReactNode, useState, useMemo, useEffect, useRef } from "react";
+import { ReactNode, useState, useMemo, useEffect, useRef, useCallback } from "react";
 import SelectInput from "@repo/ui/select";
 import Button from "@repo/ui/button";
 import { BlurredDialog } from "@repo/ui/dialog";
@@ -34,13 +36,24 @@ type Props = {
   vehicleImages: string[];
 };
 
+interface Day {
+  id: number;
+  dayNumber: number;
+  startDate: string;
+  endDate: string;
+  pickupLocation: string;
+  dropOffLocation: string;
+  bookingType?: string;
+  areaOfUse?: string;
+}
+
 type InitialValuesProps = {
   bookingType: "SINGLE_DAY" | "MULTI_DAY" | string;
   startDate: Date | null;
-  startTime: Date | null;
   endDate: Date | null;
-  endTime: Date | null;
   pickupLocation: string;
+  areaOfUse?: string;
+  days?: Day[];
 };
 
 interface PlacePrediction {
@@ -58,7 +71,6 @@ interface GoogleMapsLocationInputProps {
   placeholder?: string;
 }
 
-// Google Maps Location Input Component
 const GoogleMapsLocationInput: React.FC<GoogleMapsLocationInputProps> = ({
   value,
   onChange,
@@ -75,14 +87,12 @@ const GoogleMapsLocationInput: React.FC<GoogleMapsLocationInputProps> = ({
   );
   const debounceRef = useRef<NodeJS.Timeout>();
 
-  // Initialize Google Maps services
   useEffect(() => {
     const initServices = () => {
       if (window.google?.maps?.places) {
         try {
           autocompleteServiceRef.current =
             new window.google.maps.places.AutocompleteService();
-          // Create a dummy div for PlacesService
           const dummyDiv = document.createElement("div");
           placesServiceRef.current =
             new window.google.maps.places.PlacesService(dummyDiv);
@@ -94,11 +104,9 @@ const GoogleMapsLocationInput: React.FC<GoogleMapsLocationInputProps> = ({
       }
     };
 
-    // Check if Google Maps is already loaded
     if (window.google?.maps?.places) {
       initServices();
     } else {
-      // Load Google Maps script if not already loaded
       const script = document.createElement("script");
       script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
       script.async = true;
@@ -124,7 +132,6 @@ const GoogleMapsLocationInput: React.FC<GoogleMapsLocationInputProps> = ({
     };
   }, []);
 
-  // Handle input changes and fetch predictions
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
     onChange(inputValue);
@@ -134,14 +141,12 @@ const GoogleMapsLocationInput: React.FC<GoogleMapsLocationInputProps> = ({
       return;
     }
 
-    // Clear previous debounce
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
     }
 
     if (inputValue.length > 0) {
       setIsLoading(true);
-      // Debounce the API call
       debounceRef.current = setTimeout(() => {
         fetchPredictions(inputValue);
       }, 300);
@@ -208,7 +213,6 @@ const GoogleMapsLocationInput: React.FC<GoogleMapsLocationInputProps> = ({
   };
 
   const handleBlur = () => {
-    // Delay hiding dropdown to allow for selection
     setTimeout(() => {
       setShowDropdown(false);
     }, 200);
@@ -223,11 +227,10 @@ const GoogleMapsLocationInput: React.FC<GoogleMapsLocationInputProps> = ({
         onChange={handleInputChange}
         onBlur={handleBlur}
         placeholder={placeholder}
-        className="w-full rounded-[18px] p-4 text-left text-sm h-[56px] outline-none bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A] placeholder:text-grey-400"
+        className="w-full rounded-[18px] p-3 text-left text-sm h-[44px] outline-none bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A] placeholder:text-grey-400"
         autoComplete="off"
       />
 
-      {/* Custom Dropdown */}
       {showDropdown && (
         <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
           {isLoading ? (
@@ -316,19 +319,86 @@ export default function VehicleSummary({
   const router = useRouter();
   const { user } = useAppSelector((state) => state.user);
   const [openBookRideModal, setBookRideModal] = useState<boolean>(false);
-  const { bookingType, startDate, startTime, endDate, endTime } =
-    useFetchUrlParams();
+  const { bookingType, startDate, endDate } = useFetchUrlParams();
+  
+  // Initialize with a default day if none exist
   const [values, setValues] = useState<InitialValuesProps>({
     bookingType: bookingType || "SINGLE_DAY",
     startDate: startDate ? new Date(startDate) : null,
-    startTime: startTime ? new Date(startTime) : null,
     endDate: endDate ? new Date(endDate) : null,
-    endTime: endTime ? new Date(endTime) : null,
     pickupLocation: "",
+    days: [{
+      id: 1,
+      dayNumber: 1,
+      startDate: "",
+      endDate: "",
+      pickupLocation: "",
+      dropOffLocation: "",
+      bookingType: "",
+      areaOfUse: "",
+    }],
   });
+  
+  const [showCostBreakdown, setShowCostBreakdown] = useState(false);
+  const [priceCalculationRequested, setPriceCalculationRequested] = useState(false);
+  const [customPriceData, setCustomPriceData] = useState<any>(null);
+  const [customPriceLoading, setCustomPriceLoading] = useState(false);
+  const [customPriceError, setCustomPriceError] = useState<string | null>(null);
 
-  // Check if vehicle is luxury
   const isLuxuryVehicle = vehicle?.vehicleType === "Luxury";
+
+  // Store the current API request data for the price calculation
+  const [currentApiRequest, setCurrentApiRequest] = useState<any>(null);
+
+  // Helper function to format API request data
+  const formatPriceRequestData = (day: Day) => {
+    // Ensure bookingType is valid
+    const allowedBookingTypes = ["AN_HOUR", "THREE_HOURS", "SIX_HOURS", "TWELVE_HOURS", "AIRPORT_PICKUP"];
+
+    if (!day.bookingType || !allowedBookingTypes.includes(day.bookingType)) {
+      throw new Error(`Invalid bookingType: ${day.bookingType}`);
+    }
+
+    return {
+      vehicleId: vehicle?.id,
+      bookingTypes: [day.bookingType],
+    };
+  };
+
+  // Custom price calculation function that properly formats the API request
+  const calculatePriceWithCorrectFormat = async (day: Day) => {
+    try {
+      const apiData = formatPriceRequestData(day);
+      console.log("Making API request with data:", apiData);
+      console.log("API URL:", process.env.NEXT_PUBLIC_API_URL); // Debug log
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/bookings/calculate-price`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(apiData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data; // Return the API response data instead of just setting state
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Error calculating price:", error);
+        setCustomPriceError(error.message);
+      } else {
+        console.error("Unknown error calculating price:", error);
+        setCustomPriceError("An unknown error occurred.");
+      }
+      return null;
+    } finally {
+      setCustomPriceLoading(false);
+    }
+  };
 
   const { minEndDate, maxEndDate, endDateMinimum } = useMemo(() => {
     if (!values.startDate) {
@@ -336,7 +406,6 @@ export default function VehicleSummary({
     }
 
     if (isLuxuryVehicle) {
-      // For luxury vehicles, end date must be same as start date
       return {
         minEndDate: values.startDate,
         maxEndDate: values.startDate,
@@ -344,7 +413,6 @@ export default function VehicleSummary({
       };
     }
 
-    // Original logic for non-luxury vehicles
     const maxTripDurationText =
       vehicle?.tripSettings?.maxTripDuration || "1 day";
     let maxDays = 1;
@@ -372,50 +440,17 @@ export default function VehicleSummary({
     isLuxuryVehicle,
   ]);
 
-  // Separate memo for luxury vehicle time validation
-  const { maxEndDateTime } = useMemo(() => {
-    if (!isLuxuryVehicle || !values.startDate || !values.startTime) {
-      return { maxEndDateTime: null };
-    }
-
-    // For luxury vehicles, max 6 hours from start time
-    const maxEndDateTime = addMinutes(values.startTime, 6 * 60);
-    return { maxEndDateTime };
-  }, [isLuxuryVehicle, values.startTime]);
-
   const validateDateRange = (
     startDate: Date | null,
-    endDate: Date | null,
-    startTime: Date | null,
-    endTime: Date | null
+    endDate: Date | null
   ) => {
     if (!startDate || !endDate) return true;
 
     if (isLuxuryVehicle) {
-      // For luxury vehicles, check if end time is within 6 hours of start time
-      // Also ensure it's the same day
       const isSameDay = startDate.toDateString() === endDate.toDateString();
-      if (!isSameDay) return false;
-
-      if (!startTime || !endTime) return true;
-
-      // Calculate total minutes between start and end time
-      const startDateTime = new Date(startDate);
-      startDateTime.setHours(
-        startTime.getHours(),
-        startTime.getMinutes(),
-        0,
-        0
-      );
-
-      const endDateTime = new Date(endDate);
-      endDateTime.setHours(endTime.getHours(), endTime.getMinutes(), 0, 0);
-
-      const totalMinutes = differenceInMinutes(endDateTime, startDateTime);
-      return totalMinutes > 0 && totalMinutes <= 6 * 60; // Max 6 hours
+      return isSameDay;
     }
 
-    // Original validation logic for non-luxury vehicles
     const daysDifference = differenceInDays(endDate, startDate);
     const maxTripDurationText =
       vehicle?.tripSettings?.maxTripDuration || "1 day";
@@ -439,118 +474,10 @@ export default function VehicleSummary({
   const handleOpenBookRideModal = () => setBookRideModal(!openBookRideModal);
 
   const handleValueChange = (name: string, value: string | Date | null) => {
-    setValues((prev) => {
-      const newValues = {
-        ...prev,
-        [name]: value,
-      };
-
-      if (name === "startDate" && value instanceof Date) {
-        if (isLuxuryVehicle) {
-          // For luxury vehicles, automatically set end date to same day
-          newValues.endDate = value;
-
-          // Reset end time if it's no longer valid
-          if (prev.startTime && prev.endTime) {
-            const startDateTime = new Date(value);
-            startDateTime.setHours(
-              prev.startTime.getHours(),
-              prev.startTime.getMinutes(),
-              0,
-              0
-            );
-
-            const maxEndDateTime = addMinutes(startDateTime, 6 * 60);
-            const currentEndDateTime = new Date(value);
-            currentEndDateTime.setHours(
-              prev.endTime.getHours(),
-              prev.endTime.getMinutes(),
-              0,
-              0
-            );
-
-            if (currentEndDateTime > maxEndDateTime) {
-              newValues.endTime = maxEndDateTime;
-            }
-          }
-        } else {
-          // For non-luxury vehicles, adjust end date if needed
-          if (prev.endDate) {
-            const daysDifference = differenceInDays(prev.endDate, value);
-            const maxTripDurationText =
-              vehicle?.tripSettings?.maxTripDuration || "1 day";
-            let maxDays = 1;
-
-            if (maxTripDurationText.includes("week")) {
-              const weeks = parseInt(
-                maxTripDurationText.replace(/\D/g, "") || "1"
-              );
-              maxDays = weeks * 7;
-            } else if (maxTripDurationText.includes("day")) {
-              maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
-            } else if (maxTripDurationText.includes("month")) {
-              const months = parseInt(
-                maxTripDurationText.replace(/\D/g, "") || "1"
-              );
-              maxDays = months * 30;
-            } else {
-              maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
-            }
-
-            if (daysDifference < 0) {
-              newValues.endDate = value;
-            } else if (daysDifference >= maxDays) {
-              newValues.endDate = addDays(value, maxDays - 1);
-            }
-          }
-        }
-      }
-
-      // Handle start time changes for luxury vehicles
-      if (name === "startTime" && value instanceof Date && isLuxuryVehicle) {
-        if (prev.startDate && prev.endTime) {
-          const startDateTime = new Date(prev.startDate);
-          startDateTime.setHours(value.getHours(), value.getMinutes(), 0, 0);
-
-          const endDateTime = new Date(prev.startDate);
-          endDateTime.setHours(
-            prev.endTime.getHours(),
-            prev.endTime.getMinutes(),
-            0,
-            0
-          );
-
-          // If end time is more than 6 hours after new start time, adjust it
-          if (differenceInMinutes(endDateTime, startDateTime) > 6 * 60) {
-            newValues.endTime = addMinutes(startDateTime, 6 * 60);
-          }
-        }
-      }
-
-      // Handle end time changes for luxury vehicles
-      if (name === "endTime" && value instanceof Date && isLuxuryVehicle) {
-        if (prev.startDate && prev.startTime) {
-          const startDateTime = new Date(prev.startDate);
-          startDateTime.setHours(
-            prev.startTime.getHours(),
-            prev.startTime.getMinutes(),
-            0,
-            0
-          );
-
-          const endDateTime = new Date(prev.startDate);
-          endDateTime.setHours(value.getHours(), value.getMinutes(), 0, 0);
-
-          // Ensure end time is not more than 6 hours after start time
-          const maxEndDateTime = addMinutes(startDateTime, 6 * 60);
-          if (endDateTime > maxEndDateTime) {
-            newValues.endTime = maxEndDateTime;
-          }
-        }
-      }
-
-      return newValues;
-    });
+    setValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const { checkVehicleAvailability, vehicleAvailableError } = useHandleBooking({
@@ -560,38 +487,311 @@ export default function VehicleSummary({
 
   const {
     priceData,
-    autoCalculatePrice,
+    calculatePrice,
     isLoading: isPriceLoading,
+    error: priceError,
+    isError: isPriceError,
   } = useCalculatePrice(vehicle?.id || "");
 
-  useEffect(() => {
-    if (
-      values.startDate &&
-      values.startTime &&
-      values.endDate &&
-      values.endTime
-    ) {
-      autoCalculatePrice(
-        values.startDate,
-        values.startTime,
-        values.endDate,
-        values.endTime
-      );
-    }
-  }, [values.startDate, values.startTime, values.endDate, values.endTime]);
+  console.log("useCalculatePrice hook initialized with vehicleId:", vehicle?.id);
 
-  const isDateRangeValid = validateDateRange(
-    values.startDate,
-    values.endDate,
-    values.startTime,
-    values.endTime
-  );
+  // Check if dates are valid and complete
+  const isValidDateTimeString = (dateStr: string) => {
+    if (!dateStr || dateStr.trim() === "") return false;
+    const date = new Date(dateStr);
+    return !isNaN(date.getTime());
+  };
+
+  // Custom price calculation effect - only when price calculation is explicitly requested
+  useEffect(() => {
+    if (!priceCalculationRequested) return;
+    
+    const performPriceCalculation = async () => {
+      if (values.days && values.days.length > 0) {
+        const firstDay = values.days[0];
+
+        if (firstDay.startDate && firstDay.endDate) {
+          if (isValidDateTimeString(firstDay.startDate) && isValidDateTimeString(firstDay.endDate)) {
+            const startDate = new Date(firstDay.startDate);
+            const endDate = new Date(firstDay.endDate);
+            
+            setCustomPriceLoading(true);
+            setCustomPriceError(null);
+            
+            try {
+              const data = await calculatePriceWithCorrectFormat(firstDay);
+              if (data) {
+                setCustomPriceData(data);
+                setShowCostBreakdown(true);
+                setCustomPriceError(null);
+                console.log("Price calculation completed:", data);
+              } else {
+                setCustomPriceError("Failed to calculate price");
+                setShowCostBreakdown(false);
+              }
+            } catch (error) {
+              const errorMessage = error instanceof Error ? error.message : 'Failed to calculate price';
+              setCustomPriceError(errorMessage);
+              setShowCostBreakdown(false);
+              console.error("Price calculation failed:", errorMessage);
+            } finally {
+              setCustomPriceLoading(false);
+            }
+          } else {
+            console.log("Invalid date format provided:", {
+              startDate: firstDay.startDate,
+              endDate: firstDay.endDate,
+            });
+            setCustomPriceError("Invalid date format provided");
+          }
+        } else {
+          console.log("Missing required dates:", {
+            startDate: firstDay.startDate,
+            endDate: firstDay.endDate,
+          });
+          setCustomPriceError("Start Date and End Date are required");
+        }
+      }
+      setPriceCalculationRequested(false); // Reset the flag
+    };
+    
+    performPriceCalculation();
+  }, [priceCalculationRequested, values.days, vehicle?.id]);
+
+  const handleCalculateCost = () => {
+    console.log("handleCalculateCost called with values:", values);
+
+    if (!values.days || values.days.length === 0) {
+      console.error("No days added for calculation");
+      alert("Please add at least one trip day with booking details.");
+      return;
+    }
+
+    const firstDay = values.days[0];
+
+    // Debugging logs for startDate and endDate
+    console.log("Debug - First day startDate:", firstDay.startDate);
+    console.log("Debug - First day endDate:", firstDay.endDate);
+
+    // Validate all required fields
+    const missingFields = [];
+    if (!firstDay.bookingType) missingFields.push("Booking Type");
+    if (!firstDay.startDate || !isValidDateTimeString(firstDay.startDate)) missingFields.push("Start Date");
+    if (!firstDay.endDate || !isValidDateTimeString(firstDay.endDate)) missingFields.push("End Date");
+    if (!firstDay.pickupLocation || firstDay.pickupLocation.trim() === "") missingFields.push("Pickup Location");
+    if (!firstDay.dropOffLocation || firstDay.dropOffLocation.trim() === "") missingFields.push("Drop-off Location");
+    if (!firstDay.areaOfUse) missingFields.push("Area of Use");
+    
+    if (missingFields.length > 0) {
+      console.error("Missing required fields:", missingFields);
+      alert(`Please fill in all required fields: ${missingFields.join(", ")}`);
+      return;
+    }
+
+    // Reset previous custom price data
+    setCustomPriceData(null);
+    setCustomPriceError(null);
+    setShowCostBreakdown(false);
+
+    // Proceed with cost calculation
+    setPriceCalculationRequested(true);
+  };
 
   useEffect(() => {
     if (priceData) {
-      localStorage.setItem("priceData", JSON.stringify(priceData));
+      console.log("Received price data:", priceData);
     }
   }, [priceData]);
+
+  useEffect(() => {
+    if (isPriceError) {
+      console.error("Price calculation error:", priceError);
+    }
+  }, [isPriceError, priceError]);
+
+  const handleAddDay = () => {
+    const newDay: Day = {
+      id: Date.now(),
+      dayNumber: (values.days?.length || 0) + 1,
+      bookingType: "SINGLE_DAY",
+      startDate: "",
+      endDate: "",
+      pickupLocation: "",
+      dropOffLocation: "",
+      areaOfUse: "",
+    };
+
+    setValues((prev) => ({
+      ...prev,
+      days: [...(prev.days || []), newDay],
+    }));
+  };
+
+  const handleUpdateDay = useCallback((id: number, field: keyof Day, value: string) => {
+    console.log(`Updating day ${id}, field ${field}, value:`, value);
+    setValues((prev) => {
+      const updatedDays = prev.days?.map((day) =>
+        day.id === id ? { ...day, [field]: value } : day
+      ) || [];
+      
+      const updatedDay = updatedDays.find(d => d.id === id);
+      console.log(`Updated day ${id}:`, updatedDay);
+      
+      return {
+        ...prev,
+        days: updatedDays,
+      };
+    });
+  }, []);
+
+  const handleDeleteDay = (id: number) => {
+    setValues((prev) => {
+      const updatedDays = prev.days?.filter((day) => day.id !== id) || [];
+      return {
+        ...prev,
+        days: updatedDays.map((day, index) => ({
+          ...day,
+          dayNumber: index + 1,
+        })),
+      };
+    });
+  };
+
+  const renderCostBreakdown = () => {
+    // Use custom price data instead of the hook's price data
+    const currentPriceData = customPriceData || priceData;
+    const currentLoading = customPriceLoading || isPriceLoading;
+    const currentError = customPriceError || (isPriceError ? priceError?.message : null);
+
+    console.log("Rendering cost breakdown with custom price data:", currentPriceData);
+
+    if (!currentPriceData || !currentPriceData.totalPrice) {
+      return (
+        <div className="space-y-2">
+          <p className="text-gray-500">No pricing data available.</p>
+          {currentLoading && <p className="text-gray-500">Calculating prices...</p>}
+          {currentError && (
+            <p className="text-error-500">
+              Error: {currentError || "Failed to calculate price"}
+            </p>
+          )}
+        </div>
+      );
+    }
+
+    const { breakdown } = currentPriceData;
+    
+    // Mapping for booking type labels
+    const bookingTypeLabels: { [key: string]: string } = {
+      'AN_HOUR': '1 Hour',
+      'THREE_HOURS': '3 Hours',
+      'SIX_HOURS': '6 Hours',
+      'TWELVE_HOURS': '12 Hours',
+      'AIRPORT_PICKUP': 'Airport Pickup'
+    };
+
+    return (
+      <div className="space-y-4">
+        {/* Total */}
+        <div className="flex justify-between text-base text-grey-700">
+          <span>Total:</span>
+          <span>NGN {formatNumberWithCommas(currentPriceData.breakdown.originalPrice)}</span>
+        </div>
+ {/* Booking Details */}
+        <div className="mt-4 p-3 bg-grey-50 rounded-lg space-y-2 text-sm text-grey-700">
+          <div className="flex justify-between">
+            <span>Service Type:</span>
+            <span>Extra Hours</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Area of Use:</span>
+            <span>
+              {(() => {
+                const areaOfUse = values.days?.[0]?.areaOfUse;
+                switch (areaOfUse) {
+                  case 'ISLAND_CENTRAL':
+                    return 'Island Central';
+                  case 'MAINLAND_CENTRAL':
+                    return 'Mainland Central';
+                  case 'MAINLAND':
+                    return 'Mainland';
+                  case 'ISLAND':
+                    return 'Island';
+                  default:
+                    return '-';
+                }
+              })()}
+            </span>
+          </div>
+        </div>
+        {/* Extra Fees */}
+        {currentPriceData.breakdown.extensionFee > 0 && (
+          <div className="flex justify-between text-base text-grey-700">
+            <span>Extra Hours Fee:</span>
+            <span>+ NGN {formatNumberWithCommas(currentPriceData.breakdown.extensionFee)}</span>
+          </div>
+        )}
+        
+        {/* Area of Use Fee */}
+        {currentPriceData.breakdown.isOutskirt && (
+          <div className="flex justify-between text-base text-grey-700">
+            <span>Area of Use Fee:</span>
+            <span>+ NGN {formatNumberWithCommas(currentPriceData.breakdown.outskirtFee)}</span>
+          </div>
+        )}
+
+        {/* Discount if applicable */}
+        {currentPriceData.breakdown.discountAmount > 0 && (
+          <div className="flex justify-between text-base text-success-600">
+            <span>Discount ({currentPriceData.breakdown.discountPercentage}% off):</span>
+            <span>- NGN {formatNumberWithCommas(currentPriceData.breakdown.discountAmount)}</span>
+          </div>
+        )}
+
+        {/* Divider */}
+        <div className="border-t border-grey-200 my-2"></div>
+
+        {/* Final Total */}
+        <div className="flex justify-between text-lg font-bold text-grey-900">
+          <span>Final Total:</span>
+          <span>NGN {formatNumberWithCommas(currentPriceData.totalPrice)}</span>
+        </div>
+      </div>
+    );
+  };
+
+  const handleBooking = () => {
+    if (!values.days || values.days.length === 0) {
+      alert("No booking details available.");
+      return;
+    }
+
+    const firstDay = values.days[0];
+    
+    // Construct URL parameters
+    const params = new URLSearchParams({
+      pickupLocation: firstDay.pickupLocation,
+      startDate: firstDay.startDate,
+      endDate: firstDay.endDate,
+      areaOfUse: firstDay.areaOfUse || '',
+      dropoffLocation: firstDay.dropOffLocation,
+      vehicleId: vehicle?.id || ''
+    });
+
+    // Navigate to itinerary page with the parameters
+    router.push(`/vehicle/booking/itinerary?${params.toString()}`);
+  };
+
+  // Define missing variables
+  const isBookingComplete = true; // Replace with actual logic if needed
+  const bookingStartDate = new Date().toISOString(); // Convert Date to string
+  const bookingEndDate = new Date().toISOString(); // Convert Date to string
+  const bookingPickupLocation = "Default Location"; // Replace with actual logic if needed
+
+  // Remove or define setTestDates if necessary
+  const setTestDates = () => {
+    console.log("Test dates set");
+  };
 
   return (
     <VehicleDetails
@@ -600,171 +800,19 @@ export default function VehicleSummary({
       perks={perks}
       vehicleImages={vehicleImages}
     >
-      {/* pricing */}
       <div className="w-full md:min-w-[350px] md:w-1/2 md:border md:border-grey-200 md:rounded-[42px]">
         <div className="space-y-11 md:py-8 md:px-6 divide-y divide-grey-200 text-grey-800 !font-medium text-base 3xl:text-xl">
-          <div className="space-y-11">
-            <div className="space-y-6">
-              <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2 xs:gap-4">
-                <PricingDescription
-                  text={`NGN ${formatNumberWithCommas(
-                    vehicle?.pricing?.dailyRate?.value || 0
-                  )}${isLuxuryVehicle ? "/6hrs" : "/day"}`}
-                  className="text-sm sm:text-base"
-                />
-                <div className="py-2 px-3 bg-grey-75 rounded-[60px] flex items-center gap-2 text-xs sm:text-sm 3xl:text-base !font-medium w-full xs:w-auto justify-between xs:justify-normal">
-                  <p className="text-grey-400 whitespace-nowrap">Total</p>
-                  <p className="text-grey-700 whitespace-nowrap">
-                    {isPriceLoading ? (
-                      <span className="inline-flex items-center gap-1">
-                        Calculating...
-                      </span>
-                    ) : priceData ? (
-                      `NGN ${formatNumberWithCommas(priceData.totalPrice)}`
-                    ) : (
-                      `NGN ${formatNumberWithCommas(
-                        (vehicle?.pricing?.dailyRate?.value || 0) * 1
-                      )}`
-                    )}
-                  </p>
-                </div>
-              </div>
-
-              {!isLuxuryVehicle && (
-                <InputSection title="Booking Type">
-                  <SelectInput
-                    id="bookingType"
-                    placeholder="Select"
-                    variant="outlined"
-                    options={[
-                      { option: "Daily Rental", value: "SINGLE_DAY" },
-                      { option: "Monthly Rental", value: "MULTI_DAY" },
-                    ]}
-                    value={values.bookingType}
-                    onChange={(value: string) => {
-                      handleValueChange("bookingType", value);
-                    }}
-                  />
-                </InputSection>
-              )}
-
-              {isLuxuryVehicle && (
-                <div className="bg-primary-50 border border-primary-500 rounded-lg p-3">
-                  <p className="text-sm text-primary-700 font-medium">
-                    🌟 Electric Vehicle - Maximum 6 hours booking
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <InputSection
-              title="Trip Start"
-              textColor="blue"
-              error={vehicleAvailableError}
-            >
-              <DateInput
-                name="startDate"
-                value={values.startDate}
-                onChange={(value: CalendarValue) =>
-                  handleValueChange("startDate", value as Date | null)
-                }
-                minDate={values.startDate || new Date()}
-              />
-              <TimeInput
-                name="startTime"
-                value={values.startTime}
-                onChange={(date: Date) => handleValueChange("startTime", date)}
-                timeType="start"
-              />
-            </InputSection>
-
-            <InputSection
-              title="Trip End"
-              textColor="blue"
-              error={
-                !isDateRangeValid
-                  ? isLuxuryVehicle
-                    ? "Trip duration cannot exceed 6 hours"
-                    : "Invalid date range selected"
-                  : undefined
-              }
-            >
-              <DateInput
-                name="endDate"
-                value={values.endDate}
-                onChange={(value: CalendarValue) =>
-                  handleValueChange("endDate", value as Date | null)
-                }
-                minDate={values.startDate || new Date()}
-                maxDate={maxEndDate}
-                blockPastDates={true}
-                disabled={isLuxuryVehicle} // Disable date picker for luxury vehicles since it's same day
-              />
-              <TimeInput
-                name="endTime"
-                value={values.endTime}
-                onChange={(date: Date) => handleValueChange("endTime", date)}
-                timeType="end"
-              />
-            </InputSection>
-
-            <InputSection title="Pick up and Drop-off location">
-              <GoogleMapsLocationInput
-                value={values.pickupLocation}
-                onChange={(value: string) =>
-                  handleValueChange("pickupLocation", value)
-                }
-                placeholder="Enter location"
-              />
-            </InputSection>
-
-            <Button
-              color="primary"
-              fullWidth
-              disabled={
-                (!isLuxuryVehicle && !values.bookingType) ||
-                !values.startDate ||
-                !values.startTime ||
-                !values.endDate ||
-                !values.endTime ||
-                !values.pickupLocation.trim() ||
-                !isDateRangeValid ||
-                checkVehicleAvailability.isPending
-              }
-              loading={checkVehicleAvailability.isPending}
-              onClick={() => {
-                console.log("Form values:", values);
-
-                checkVehicleAvailability.mutate({
-                  bookingType: isLuxuryVehicle
-                    ? "SINGLE_DAY"
-                    : values.bookingType,
-                  startDate: values.startDate?.toISOString() ?? "",
-                  startTime: values.startTime?.toISOString() ?? "",
-                  endDate: values.endDate?.toISOString() ?? "",
-                  endTime: values.endTime?.toISOString() ?? "",
-                  pickupLocation: values.pickupLocation,
-                });
-              }}
-            >
-              Book Now
-            </Button>
-          </div>
-
           <div className="divide-y divide-grey-200 text-grey-800">
+            <h3 className="text-lg font-bold mb-4">Trip Rules & Pricing</h3>
             <div className="py-[22px]">
               <div className="pr-6">
                 <PricingTitle text="Advance notice" />
-                <PricingDescription
-                  text={vehicle?.tripSettings.advanceNotice ?? ""}
-                />
+                <PricingDescription text={vehicle?.tripSettings.advanceNotice ?? ""} />
               </div>
             </div>
             <div className="py-[22px] flex divide-x divide-grey-200">
               <div className="pr-6">
-                <PricingTitle
-                  text={isLuxuryVehicle ? "6 Hours" : "Daily (12 hrs)"}
-                />
+                <PricingTitle text={isLuxuryVehicle ? "6 Hours" : "Daily (12 hrs)"} />
                 <PricingDescription
                   text={`NGN ${formatNumberWithCommas(
                     vehicle?.pricing?.dailyRate?.value || 0
@@ -798,7 +846,7 @@ export default function VehicleSummary({
                   {vehicle.pricing.discounts.map((discount, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between gap-2 bg-grey-75 border border-grey-300 p-2 rounded-lg text-sm md:text-xl md:text-h6"
+                      className="flex items-center justify-between gap-2 bg-grey-75 border border-grey-300 p-2 rounded-lg text-sm md:text-xl"
                     >
                       <p>{discount?.durationInDays}+ days</p>
                       <p className="text-success-500">
@@ -809,10 +857,67 @@ export default function VehicleSummary({
                 </div>
               )}
           </div>
+
+          <div className="pt-6 space-y-6">
+            <h3 className="text-xl font-bold text-grey-900">Add Booking Details</h3>
+            <TripDetailsManager 
+              days={values.days || []}
+              onAddDay={handleAddDay}
+              onUpdateDay={handleUpdateDay}
+              onDeleteDay={handleDeleteDay}
+            />
+          </div>
+
+          <div className="pt-6 space-y-4">
+            <h3 className="text-xl font-bold text-grey-900">Cost Breakdown</h3> 
+            {!showCostBreakdown ? (
+              <Button
+                className="w-full text-lg h-14 bg-[#1C86EE] text-white hover:bg-[#1C86EE] focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:ring-offset-2"
+                variant="filled"
+                onClick={handleCalculateCost}
+                disabled={customPriceLoading || isPriceLoading}
+              >
+                {customPriceLoading || isPriceLoading ? "Calculating..." : "Calculate"}
+              </Button>
+            ) : (
+              <div className="space-y-2">
+                {renderCostBreakdown()}
+                <Button
+                  className="w-full text-sm h-10 bg-gray-100 text-[gray] hover:text-[darkgray] focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 mt-2 p-5"
+                  variant="filled"
+                  onClick={() => {
+                    setShowCostBreakdown(false);
+                    setPriceCalculationRequested(false);
+                    setCustomPriceData(null);
+                    setCustomPriceError(null);
+                  }}
+                >
+                  Recalculate
+                </Button>
+              </div>
+            )}
+            {(customPriceError || (isPriceError && priceError)) && (
+              <p className="text-error-500 text-sm">
+                {customPriceError || priceError?.message || "Failed to calculate price"}
+              </p>
+            )}
+          </div>
+
+          <div className="pt-6">
+            <Button
+              className={`w-full text-lg h-14 ${!showCostBreakdown || customPriceLoading || isPriceLoading || !isBookingComplete
+                ? 'bg-[grey] text-white cursor-not-allowed'
+                : 'bg-[#1C86EE] text-white hover:bg-[#1C86EE]'} focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:ring-offset-2`}
+              variant="filled"
+              onClick={handleBooking}
+              disabled={!showCostBreakdown || customPriceLoading || isPriceLoading || !isBookingComplete}
+            >
+              Book Now
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* only show if user is not signed in */}
       {!user && (
         <BlurredDialog
           open={openBookRideModal}
@@ -823,11 +928,9 @@ export default function VehicleSummary({
             <BookRideModal
               id={vehicle?.id || ""}
               bookingType={isLuxuryVehicle ? "SINGLE_DAY" : values.bookingType}
-              startDate={values.startDate?.toISOString() ?? null}
-              startTime={values.startTime?.toISOString() ?? null}
-              endDate={values.endDate?.toISOString() ?? null}
-              endTime={values.endTime?.toISOString() ?? null}
-              pickupLocation={values.pickupLocation || null}
+              startDate={bookingStartDate}
+              endDate={bookingEndDate}
+              pickupLocation={bookingPickupLocation}
             />
           }
           width="max-w-[556px]"
@@ -892,24 +995,20 @@ const BookRideModal = ({
   id,
   bookingType,
   startDate,
-  startTime,
   endDate,
-  endTime,
   pickupLocation,
 }: {
   id: string;
   bookingType: string;
   startDate: string | null;
-  startTime: string | null;
   endDate: string | null;
-  endTime: string | null;
   pickupLocation: string | null;
 }) => {
   const { startDateTime, endDateTime } = combineDateTime(
     startDate || "",
-    startTime || "",
+    "",
     endDate || "",
-    endTime || ""
+    ""
   );
 
   return (
@@ -918,9 +1017,7 @@ const BookRideModal = ({
         href={`/vehicle/booking/guest/${id}${
           bookingType ||
           startDate ||
-          startTime ||
           endDate ||
-          endTime ||
           pickupLocation
             ? `?${[
                 startDate && `startDate=${startDateTime}`,
@@ -944,6 +1041,206 @@ const BookRideModal = ({
           Sign In
         </Button>
       </Link>
+    </div>
+  );
+};
+
+const TripDetailsManager = ({
+  days,
+  onAddDay,
+  onUpdateDay,
+  onDeleteDay,
+}: {
+  days: Day[];
+  onAddDay: () => void;
+  onUpdateDay: (id: number, field: keyof Day, value: string) => void;
+  onDeleteDay: (id: number) => void;
+}) => {
+  return (
+    <div className="space-y-4">
+      {days.map((day) => (
+        <DayCard
+          key={day.id}
+          day={day}
+          onUpdate={onUpdateDay}
+          onDelete={onDeleteDay}
+        />
+      ))}
+      <button
+        onClick={onAddDay}
+        className="w-full py-3 px-4 text-primary-500 font-semibold rounded-xl hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-offset-2 transition duration-200 ease-in-out flex items-center justify-center gap-2"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={2}
+          stroke="currentColor"
+          className="w-5 h-5"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 4.5v15m7.5-7.5h-15"
+          />
+        </svg>
+        Add Trip
+      </button>
+    </div>
+  );
+};
+
+const DayCard = ({
+  day,
+  onUpdate,
+  onDelete,
+}: {
+  day: Day;
+  onUpdate: (id: number, field: keyof Day, value: string) => void;
+  onDelete: (id: number) => void;
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleDateChange = (field: 'startDate' | 'endDate', value: string) => {
+    console.log(`Date input changed for day ${day.id}, field ${field}:`, value);
+    onUpdate(day.id, field, value);
+  };
+
+  const handleLocationChange = (field: 'pickupLocation' | 'dropOffLocation', value: string) => {
+    console.log(`Location changed for day ${day.id}, field ${field}:`, value);
+    onUpdate(day.id, field, value);
+  };
+
+  const handleSelectChange = (field: 'bookingType' | 'areaOfUse', value: string) => {
+    console.log(`Select changed for day ${day.id}, field ${field}:`, value);
+    onUpdate(day.id, field, value);
+  };
+
+  // Helper function to format date for display
+  const formatDateForDisplay = (dateStr: string) => {
+    if (!dateStr || dateStr.trim() === "") return "";
+    try {
+      return new Date(dateStr).toLocaleDateString();
+    } catch {
+      return "";
+    }
+  };
+
+  return (
+    <div className="bg-white border border-grey-200 rounded-xl shadow-sm overflow-hidden">
+      <div
+        className="flex justify-between items-center py-2 px-4 cursor-pointer bg-grey-50 hover:bg-grey-100 transition duration-150 ease-in-out"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-base text-grey-900">Day{day.dayNumber}</span>
+          <span className="text-sm text-grey-600">
+            {day.startDate && day.startDate.trim() !== "" && day.endDate && day.endDate.trim() !== "" 
+              ? `(${formatDateForDisplay(day.startDate)} - ${formatDateForDisplay(day.endDate)})`
+              : "(Choose date)"}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          {isExpanded ? Icons.ic_chevron_up : Icons.ic_chevron_down}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(day.id);
+            }}
+            className="p-2 rounded-full hover:bg-error-100 text-error-500 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-error-500 focus:ring-offset-2"
+            aria-label="Delete Day"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-5 h-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {isExpanded && (
+        <div className="p-4 space-y-4 border-t border-grey-100">
+          {/* Booking Type */}
+          <InputSection title="Booking Type *">
+            <select
+              value={day.bookingType}
+              onChange={(e) => handleSelectChange('bookingType', e.target.value)}
+              className="w-full rounded-[18px] p-3 text-left text-sm h-[44px] outline-none bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A]"
+              required
+            >
+              <option value="">Select Booking Type</option>
+              <option value="AN_HOUR">1 hour</option>
+              <option value="THREE_HOURS">3 hours</option>
+              <option value="SIX_HOURS">6 hours</option>
+              <option value="TWELVE_HOURS">12 hours</option>
+              <option value="AIRPORT_PICKUP">Airport transfers</option>
+            </select>
+          </InputSection>
+
+          {/* Date Inputs */}
+          <div className="space-y-4">
+            <InputSection title="Start Date *">
+              <input
+                type="date"
+                className="w-full rounded-[18px] p-3 text-left text-sm h-[44px] outline-none bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A]"
+                value={day.startDate || ""}
+                onChange={(e) => handleDateChange('startDate', e.target.value)}
+              />
+            </InputSection>
+            <InputSection title="End Date *">
+              <input
+                type="date"
+                className="w-full rounded-[18px] p-3 text-left text-sm h-[44px] outline-none bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A]"
+                value={day.endDate || ""}
+                onChange={(e) => handleDateChange('endDate', e.target.value)}
+              />
+            </InputSection>
+          </div>
+
+          {/* Location Inputs */}
+          <div className="space-y-4">
+            <InputSection title="Pickup Location *">
+              <GoogleMapsLocationInput
+                value={day.pickupLocation}
+                onChange={(value) => handleLocationChange('pickupLocation', value)}
+                placeholder="Enter pickup location"
+              />
+            </InputSection>
+            
+            <InputSection title="Drop-off Location *">
+              <GoogleMapsLocationInput
+                value={day.dropOffLocation}
+                onChange={(value) => handleLocationChange('dropOffLocation', value)}
+                placeholder="Enter drop-off location"
+              />
+            </InputSection>
+          </div>
+
+          {/* Area of Use */}
+          <InputSection title="Area of Use *">
+            <select
+              value={day.areaOfUse || ""}
+              onChange={(e) => handleSelectChange('areaOfUse', e.target.value)}
+              className="w-full rounded-[18px] p-3 text-left text-sm h-[44px] outline-none bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A]"
+              required
+            >
+              <option value="">Select Area of Use</option>
+              <option value="MAINLAND_CENTRAL">Mainland Central</option>
+              <option value="ISLAND_CENTRAL">Island Central</option>
+            </select>
+          </InputSection>
+        </div>
+      )}
     </div>
   );
 };
