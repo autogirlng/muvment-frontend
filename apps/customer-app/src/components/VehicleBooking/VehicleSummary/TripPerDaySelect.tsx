@@ -1,8 +1,6 @@
-
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import DateInput from "../DateInput";
 import TimeInput from "../TimeInput";
-import { useFetchUrlParams } from "@/utils/functions";
 import Icons from "@repo/ui/icons";
 import SelectInput from "@repo/ui/select";
 import { ReactNode } from "react";
@@ -10,23 +8,10 @@ import cn from "classnames";
 import { format } from 'date-fns';
 import {
     CalendarValue,
-    MappedInformation,
-    VehicleInformation,
-    VehiclePerksProp,
+    TripDetails,
+    ITripPerDaySelect
 } from "@/utils/types";
-import { addDays, differenceInDays } from "date-fns";
-import { setFlagsFromString } from "v8";
-"./TripPerDaySelect";
-
-type InitialValuesProps = {
-    bookingType: "SINGLE_DAY" | "MULTI_DAY" | string;
-    startDate: Date | null;
-    startTime: Date | null;
-    endDate: Date | null;
-    endTime: Date | null;
-    pickupLocation: string;
-};
-
+import { toTitleCase } from "@/utils/functions";
 
 const InputSection = ({
     title,
@@ -49,33 +34,18 @@ const InputSection = ({
                 {title}
             </p>
             <div className="flex items-center gap-3">{children}</div>
-            {error && <p className="text-error-500 ">{error}</p>}
+            {error && <p className="text-error-500 text-sm">{error}</p>}
         </div>
     );
 };
-interface tripDetails {
-    id?: string;
-    bookingType?: string;
-    tripStartDate?: string;
-    tripStartTime?: string;
-    pickupLocation?: string;
-    dropOffLocation?: string;
-    areaOfUse?: string;
-}
 
-interface ITripPerDaySelect {
-    day: string,
-    deleteMethod?: (idToDelete: string) => void,
-    id: string,
-    onChangeTrip: (id: string, details: tripDetails) => void;
-    vehicle?: VehicleInformation | null
-}
+
 
 const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle }: ITripPerDaySelect) => {
     const [date, setDate] = useState(`Day ${day}: Choose Date`);
 
     const [bookingType, setBookingType] = useState('');
-    const [tripStartDate, setTripStartDate] = useState<Date>(new Date());
+    const [tripStartDate, setTripStartDate] = useState<Date | null>(null);
     const [tripStartTime, setTripStartTime] = useState<Date | null>(null);
     const [pickupLocation, setPickupLocation] = useState('');
     const [dropoffLocation, setDropoffLocation] = useState('');
@@ -83,7 +53,7 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle }: ITri
     const [isDayTwoCollapsed, setIsDayTwoCollapsed] = useState(false);
 
     const onChange = (key: string, value: string) => {
-        const trips: tripDetails[] = JSON.parse(sessionStorage.getItem('trips') || '[]')
+        const trips: TripDetails[] = JSON.parse(sessionStorage.getItem('trips') || '[]')
         const tripExists = trips.some(trip => trip.id === id);
         let updatedTrips;
         if (tripExists) {
@@ -105,7 +75,6 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle }: ITri
                 setDate(value);
                 break;
             case 'bookingType':
-
                 setBookingType(value)
                 break;
             case 'tripStartDate':
@@ -129,10 +98,7 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle }: ITri
             default:
                 break;
         }
-
     }
-
-
 
     return <>
         <div className="rounded-2xl px-4 p-2 mt-1 border border-grey-200">
@@ -224,18 +190,13 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle }: ITri
                                     onChange("tripStartDate", value?.toString() || '')
                                 }}
                                 minDate={new Date()} />
-
-
                             <TimeInput
                                 name="startTime"
                                 value={tripStartTime}
                                 onChange={(date: Date) => onChange("tripStartTime", date.toString())}
                                 timeType="start" />
                         </InputSection>
-
                     </div>
-
-
                     <InputSection title="Pickup Location">
                         <input
                             type="text"
@@ -246,7 +207,6 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle }: ITri
                             className="w-full rounded-[18px] p-4 text-left text-sm h-[56px] outline-none bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A] placeholder:text-grey-400"
                         />
                     </InputSection>
-
                     <InputSection title="Drop-off Location">
                         <input
                             type="text"
@@ -259,23 +219,29 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle }: ITri
                     </InputSection>
 
                     {/* Area of Use */}
-                    <InputSection title="Area of Use">
+                    <InputSection title="Area of Use" >
                         <SelectInput
                             id="areaOfUse"
                             placeholder="Select Area of Use"
                             variant="outlined"
                             options={[
-                                { option: "Mainland Central", value: "MAINLAND_CENTRAL" },
-                                { option: "Island Central", value: "ISLAND_CENTRAL" },
-                                { option: "Mainland Outskirt", value: "MAINLAND_OUTSKIRT" },
-
+                                {
+                                    option: `${toTitleCase(vehicle?.stateOfRegistration || "")} Mainland Central`,
+                                    value: `${vehicle?.stateOfRegistration.toUpperCase()}_MAINLAND_CENTRAL`
+                                },
+                                {
+                                    option: `${toTitleCase(vehicle?.stateOfRegistration || "")} Island Central`,
+                                    value: `${toTitleCase(vehicle?.stateOfRegistration || "")}_ISLAND_CENTRAL`
+                                },
+                                {
+                                    option: `${toTitleCase(vehicle?.stateOfRegistration || "")} Mainland Outskirt`,
+                                    value: `${toTitleCase(vehicle?.stateOfRegistration || "")}_MAINLAND_OUTSKIRT`
+                                },
                             ]}
                             value={areaOfUse}
                             onChange={(value) => onChange("areaOfUse", value)}
-
                         />
                     </InputSection>
-
                 </div>
             )}
         </div>

@@ -1,28 +1,23 @@
 import cn from "classnames";
 import Link from "next/link";
-import { formatNumberWithCommas, useFetchUrlParams } from "@/utils/functions";
+import { formatNumberWithCommas } from "@/utils/functions";
 import {
-  CalendarValue,
   MappedInformation,
   VehicleInformation,
   VehiclePerksProp,
+  BookingSummaryPricing,
+  TripDetails,
+  Trips
 } from "@/utils/types";
-import React, { ReactNode, useState, useMemo, useEffect } from "react";
-import SelectInput from "@repo/ui/select";
+import React, { ReactNode, useState, useEffect } from "react";
 import Button from "@repo/ui/button";
-import { BlurredDialog } from "@repo/ui/dialog";
 import VehicleDetails from "./VehicleDetails";
-import DateInput from "../DateInput";
-import TimeInput from "../TimeInput";
-import { useAppSelector } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
-import useHandleBooking from "../hooks/useHandleBooking";
-import useCalculatePrice from "./hooks/useCalculatePrice";
-import { addDays, differenceInDays } from "date-fns";
-import Icons from "@repo/ui/icons";
 import { TripPerDaySelect } from "./TripPerDaySelect";
 import { useHttp } from "@/hooks/useHttp";
-import { useQuery } from "@tanstack/react-query";
+import { toTitleCase } from "@/utils/functions";
+
+
 
 type Props = {
   vehicle: VehicleInformation | null;
@@ -31,76 +26,47 @@ type Props = {
   vehicleImages: string[];
 };
 
-type InitialValuesProps = {
-  bookingType: "SINGLE_DAY" | "MULTI_DAY" | string;
-  startDate: Date | null;
-  startTime: Date | null;
-  endDate: Date | null;
-  endTime: Date | null;
-  pickupLocation: string;
-};
+// type InitialValuesProps = {
+//   bookingType: "SINGLE_DAY" | "MULTI_DAY" | string;
+//   startDate: Date | null;
+//   startTime: Date | null;
+//   endDate: Date | null;
+//   endTime: Date | null;
+//   pickupLocation: string;
+// };
 // For the nested 'breakdown' object
-interface Breakdown {
-  bookingTypes: string[];
-  bookingTypeBreakdown: {
-    [key: string]: number; // An object with string keys and number values
-  };
-  outskirtFee: number;
-  extensionFee: number;
-  discountAmount: number;
-  discountPercentage: number;
-  isExtension: boolean;
-  isOutskirt: boolean;
-}
 
-// For the top-level object
-interface BookingSummaryPricing {
-  totalPrice: number;
-  breakdown: Breakdown;
-  currency: string;
-  unit: string;
-}
+
 export default function VehicleSummary({
   vehicle,
   perks,
   vehicleDetails,
   vehicleImages,
 }: Props) {
-  const router = useRouter();
-  const { user } = useAppSelector((state) => state.user);
-  const [openBookRideModal, setBookRideModal] = useState<boolean>(false);
+  // const router = useRouter();
+  // const { user } = useAppSelector((state) => state.user);
+  // const [openBookRideModal, setBookRideModal] = useState<boolean>(false);
   const [bookingPriceBreakdown, setBookingPriceBreakdown] = useState<BookingSummaryPricing | undefined>();
-  const [tripOutskirt, setTripOutskirt] = useState<boolean>(false)
+  const [_, setTripOutskirt] = useState<boolean>(false)
 
 
-  interface tripDetails {
-    id?: string;
-    bookingType?: string;
-    tripDate?: string;
-    tripTime?: string;
-    pickupLocation?: string;
-    dropOffLocation?: string;
-    areaOfUse?: string;
 
+  const [trips, setTrips] = useState<Trips[]>([])
 
-  }
-  interface IOtherTrips {
-    id: string;
-    tripDetails?: tripDetails;
-  }
-
-  const [otherTrips, setOtherTrips] = useState<IOtherTrips[]>([])
+  const [isTripFormsComplete, setIsTripFormComplete] = useState<boolean>(false)
 
   const http = useHttp()
-
   const addTrip = (id: string) => {
-    setOtherTrips(prev => [...prev, { id }])
+    setTrips(prev => [...prev, { id }])
+    setIsTripFormComplete(false)
+
   }
+
   const deleteTrip = async (idToDelete: string) => {
-    const trips: tripDetails[] = JSON.parse(sessionStorage.getItem("trips") || '[]');
+    const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || '[]');
     const updatedTrips = trips.filter((trip) => trip.id !== idToDelete);
     sessionStorage.setItem("trips", JSON.stringify(updatedTrips));
-    setOtherTrips(prev => prev.filter((trip) => trip.id !== idToDelete));
+    setTrips(prev => prev.filter((trip) => trip.id !== idToDelete));
     const bookingTypes: string[] = [];
     updatedTrips.map((trip) => {
       trip.bookingType && bookingTypes.push(trip.bookingType)
@@ -117,9 +83,8 @@ export default function VehicleSummary({
 
   }
 
-  const onChangeTrip = async (id: string, details: tripDetails) => {
-
-    const updatedDays = otherTrips.map(trip => {
+  const onChangeTrip = async (id: string, details: TripDetails) => {
+    const updatedDays = trips.map(trip => {
       if (trip.id === id) {
         const currentTripDetails = trip.tripDetails || {};
         return {
@@ -129,7 +94,7 @@ export default function VehicleSummary({
       }
       return trip;
     });
-    setOtherTrips(updatedDays);
+    setTrips(updatedDays);
     if (details.bookingType && details.bookingType.length > 0) {
       const bookingTypes: string[] = [];
       let isOutskirt = false;
@@ -154,181 +119,62 @@ export default function VehicleSummary({
     }
   }
 
-  const { bookingType, startDate, startTime, endDate, endTime } =
-    useFetchUrlParams();
+  // const { bookingType, startDate, startTime, endDate, endTime } =
+  //   useFetchUrlParams();
 
 
-  const [values, setValues] = useState<InitialValuesProps>({
-    bookingType: bookingType || "",
-    startDate: startDate ? new Date(startDate) : null,
-    startTime: startTime ? new Date(startTime) : null,
-    endDate: endDate ? new Date(endDate) : null,
-    endTime: endTime ? new Date(endTime) : null,
-    pickupLocation: "",
-  });
+  // const [values, setValues] = useState<InitialValuesProps>({
+  //   bookingType: bookingType || "",
+  //   startDate: startDate ? new Date(startDate) : null,
+  //   startTime: startTime ? new Date(startTime) : null,
+  //   endDate: endDate ? new Date(endDate) : null,
+  //   endTime: endTime ? new Date(endTime) : null,
+  //   pickupLocation: "",
+  // });
 
-  const minStartDate = useMemo(() => {
-    const today = new Date();
-    const advanceNoticeDays = parseInt(
-      vehicle?.tripSettings?.advanceNotice?.replace(/\D/g, "") || "0"
-    );
-    return addDays(today, advanceNoticeDays);
-  }, [vehicle?.tripSettings?.advanceNotice]);
 
-  const { minEndDate, maxEndDate, endDateMinimum } = useMemo(() => {
-    if (!values.startDate) {
-      return { minEndDate: null, maxEndDate: null, endDateMinimum: null };
-    }
+  // const handleOpenBookRideModal = () => setBookRideModal(!openBookRideModal);
 
-    const maxTripDurationText =
-      vehicle?.tripSettings?.maxTripDuration || "1 day";
-    let maxDays = 1;
 
-    if (maxTripDurationText.includes("week")) {
-      const weeks = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
-      maxDays = weeks * 7;
-    } else if (maxTripDurationText.includes("day")) {
-      maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
-    } else if (maxTripDurationText.includes("month")) {
-      const months = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
-      maxDays = months * 30;
-    } else {
-      maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
-    }
 
-    const today = new Date();
-    const minEndDate = values.startDate;
-    const maxEndDate = addDays(values.startDate, maxDays - 1);
-    const endDateMinimum = today;
 
-    return { minEndDate, maxEndDate, endDateMinimum };
-  }, [values.startDate, vehicle?.tripSettings?.maxTripDuration]);
+  useEffect(() => {
+    const requiredFields: (keyof TripDetails)[] = [
+      'bookingType',
+      'tripStartDate',
+      'tripStartTime',
+      'pickupLocation',
+      'dropoffLocation',
+      'areaOfUse'
+    ];
+    const missingFields: { id: string, fields: string[] }[] = [];
+    for (const trip of trips) {
+      const tripId = trip.id
+      const details = trip.tripDetails;
 
-  const validateDateRange = (startDate: Date | null, endDate: Date | null) => {
-    if (!startDate || !endDate) return true;
+      const fields: (keyof TripDetails)[] = []
 
-    const daysDifference = differenceInDays(endDate, startDate);
-
-    const maxTripDurationText =
-      vehicle?.tripSettings?.maxTripDuration || "1 day";
-    let maxDays = 1;
-
-    if (maxTripDurationText.includes("week")) {
-      const weeks = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
-      maxDays = weeks * 7;
-    } else if (maxTripDurationText.includes("day")) {
-      maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
-    } else if (maxTripDurationText.includes("month")) {
-      const months = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
-      maxDays = months * 30;
-    } else {
-      maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
-    }
-
-    return daysDifference >= 0 && daysDifference < maxDays;
-  };
-
-  const handleOpenBookRideModal = () => setBookRideModal(!openBookRideModal);
-
-  const handleValueChange = (name: string, value: string | Date | null) => {
-    setValues((prev) => {
-      const newValues = {
-        ...prev,
-        [name]: value,
-      };
-
-      if (name === "startDate" && value instanceof Date) {
-        if (prev.endDate) {
-          const daysDifference = differenceInDays(prev.endDate, value);
-
-          const maxTripDurationText =
-            vehicle?.tripSettings?.maxTripDuration || "1 day";
-          let maxDays = 1;
-
-          if (maxTripDurationText.includes("week")) {
-            const weeks = parseInt(
-              maxTripDurationText.replace(/\D/g, "") || "1"
-            );
-            maxDays = weeks * 7;
-          } else if (maxTripDurationText.includes("day")) {
-            maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
-          } else if (maxTripDurationText.includes("month")) {
-            const months = parseInt(
-              maxTripDurationText.replace(/\D/g, "") || "1"
-            );
-            maxDays = months * 30;
-          } else {
-            maxDays = parseInt(maxTripDurationText.replace(/\D/g, "") || "1");
-          }
-
-          if (daysDifference < 0) {
-            newValues.endDate = value;
-          } else if (daysDifference >= maxDays) {
-            newValues.endDate = addDays(value, maxDays - 1);
-          }
-        }
+      if (!details) {
+        continue;
       }
 
-      return newValues;
-    });
-  };
 
-  const { checkVehicleAvailability, vehicleAvailableError } = useHandleBooking({
-    vehicleId: vehicle?.id || "",
-    isSuccessFunction: handleOpenBookRideModal,
-  });
-
-  const {
-    priceData,
-    autoCalculatePrice,
-    isLoading: isPriceLoading,
-  } = useCalculatePrice(vehicle?.id || "");
-
-  useEffect(() => {
-    if (
-      values.startDate &&
-      values.startTime &&
-      values.endDate &&
-      values.endTime
-    ) {
-      autoCalculatePrice(
-        values.startDate,
-        values.startTime,
-        values.endDate,
-        values.endTime
-      );
+      for (const field of requiredFields) {
+        if (!(field in details) || !details[field]) {
+          fields.push(field)
+        }
+      }
+      if (fields.length >= 1) missingFields.push({ id: tripId, fields })
     }
-  }, [values.startDate, values.startTime, values.endDate, values.endTime]);
-
-  const isDateRangeValid = validateDateRange(values.startDate, values.endDate);
-
-  useEffect(() => {
-    if (
-      values.startDate &&
-      values.startTime &&
-      values.endDate &&
-      values.endTime
-    ) {
-      autoCalculatePrice(
-        values.startDate,
-        values.startTime,
-        values.endDate,
-        values.endTime
-      );
-    }
-  }, [values.startDate, values.startTime, values.endDate, values.endTime]);
-
-  useEffect(() => {
-    if (priceData) {
-      localStorage.setItem("priceData", JSON.stringify(priceData));
-    }
-    setOtherTrips([{ id: "trip-0" }])
-  }, [priceData]);
-
+    setIsTripFormComplete(missingFields.length === 0)
+  }, [trips])
 
   useEffect(() => {
     sessionStorage.removeItem("trips")
+    setTrips([{ id: "trip-0", tripDetails: {} }])
+
   }, [])
+
 
   return (
     <VehicleDetails
@@ -396,101 +242,15 @@ export default function VehicleSummary({
                     ))}
                   </div>
                 )}
-              {/* <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2 xs:gap-4">
-                <PricingDescription
-                  text={`NGN ${formatNumberWithCommas(
-                    vehicle?.pricing?.dailyRate?.value || 0
-                  )}/day`}
-                  className="text-sm sm:text-base" // Assuming you can pass className to PricingDescription
-                />
-                <div className="py-2 px-3 bg-grey-75 rounded-[60px] flex items-center gap-2 text-xs sm:text-sm 3xl:text-base !font-medium w-full xs:w-auto justify-between xs:justify-normal">
-                  <p className="text-grey-400 whitespace-nowrap">Total</p>
-                  <p className="text-grey-700 whitespace-nowrap">
-                    {isPriceLoading ? (
-                      <span className="inline-flex items-center gap-1">
-                        Calculating...
-                      </span>
-                    ) : priceData ? (
-                      `NGN ${formatNumberWithCommas(priceData.totalPrice)}`
-                    ) : (
-                      `NGN ${formatNumberWithCommas(
-                        (vehicle?.pricing?.dailyRate?.value || 0) * 1
-                      )}`
-                    )}
-                  </p>
-                </div>
-              </div> */}
-              {/* 
-              <InputSection title="Booking Type">
-                <SelectInput
-                  id="bookingType"
-                  placeholder="Select"
-                  variant="outlined"
-                  options={[
-                    { option: "Daily Rental", value: "SINGLE_DAY" },
-                    { option: "Monthly Rental", value: "MULTI_DAY" },
-                  ]}
-                  value={values.bookingType}
-                  onChange={(value: string) => {
-                    handleValueChange("bookingType", value);
-                  }}
-                />
-              </InputSection> */}
+
+
             </div>
-
-            {/* <InputSection
-              title="Trip Start"
-              textColor="blue"
-              error={vehicleAvailableError}
-            >
-              <DateInput
-                name="startDate"
-                value={values.startDate}
-                onChange={(value: CalendarValue) =>
-                  handleValueChange("startDate", value as Date | null)
-                }
-                minDate={minStartDate}
-              />
-              <TimeInput
-                name="startTime"
-                value={values.startTime}
-                onChange={(date: Date) => handleValueChange("startTime", date)}
-                timeType="start"
-              />
-            </InputSection>
-
-            <InputSection
-              title="Trip End"
-              textColor="blue"
-              error={
-                !isDateRangeValid ? "Invalid date range selected" : undefined
-              }
-            >
-              <DateInput
-                name="endDate"
-                value={values.endDate}
-                onChange={(value: CalendarValue) =>
-                  handleValueChange("endDate", value as Date | null)
-                }
-                minDate={values.startDate || new Date()}
-                maxDate={maxEndDate}
-                blockPastDates={true}
-              />
-              <TimeInput
-                name="endTime"
-                value={values.endTime}
-                onChange={(date: Date) => handleValueChange("endTime", date)}
-                timeType="end"
-              />
-            </InputSection> */}
-
 
             <div>
               <h1 className="font-bold text-[17px]">Add Booking Details</h1>
               <p className="text-sm my-4">Trip per day</p>
 
-              {/* <TripPerDaySelect day="1" id="trip-0" onChangeTrip={onChangeTrip} vehicle={vehicle} /> */}
-              {otherTrips.map((key, index) => {
+              {trips.map((key, index) => {
                 return <TripPerDaySelect key={key.id}
                   day={`${index + 1}`}
                   id={key.id}
@@ -500,22 +260,11 @@ export default function VehicleSummary({
               })}
 
               <div className="text-center">
-                <button onClick={() => addTrip(`trip-${otherTrips.length}`)} className="text-[#0673ff] mt-3 border-0 bg-white">+ Add Trip</button>
+                <button onClick={() => addTrip(`trip-${trips.length}`)} className="text-[#0673ff] mt-3 border-0 bg-white">+ Add Trip</button>
               </div>
 
             </div>
-            {/* <InputSection title="Pick up and Drop-off location">
-              <input
-                type="text"
-                name="pickupLocation"
-                value={values.pickupLocation}
-                onChange={(e) =>
-                  handleValueChange("pickupLocation", e.target.value)
-                }
-                placeholder="Enter location"
-                className="w-full rounded-[18px] p-4 text-left text-sm h-[56px] outline-none bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A] placeholder:text-grey-400"
-              />
-            </InputSection> */}
+
             {
               bookingPriceBreakdown && <div className="rounded-2xl p-5 m-0 border border-grey-200">
                 <h2 className="font-bold">Cost Breakdown</h2>
@@ -533,8 +282,13 @@ export default function VehicleSummary({
                   <div className="w-full  text-sm flex justify-between mt-4">
                     <span>Area of Use</span>
                     <span style={{ textTransform: "capitalize" }}>
-                      {otherTrips.map((trip) => {
-                        return <>{trip.tripDetails?.areaOfUse?.split("_")[0].toLowerCase()} {trip.tripDetails?.areaOfUse?.split("_")[1].toLowerCase()}  <br /></>
+                      {trips.map((trip) => {
+                        const areaOfUse = toTitleCase(trip.tripDetails?.areaOfUse || '')
+                        const state = toTitleCase(areaOfUse?.split("_")[0] || '')
+                        const area1 = toTitleCase(toTitleCase(areaOfUse?.split("_")[1] || ''))
+                        let area2 = toTitleCase(areaOfUse?.split("_")[2] || '')
+
+                        return <>{state} {area1} {area2}<br /> {area2 === "Outskirt" && <span className="text-xs text-[blue]">+NGN 8000</span>} <br /></>
                       })}
                     </span>
                   </div>
@@ -554,32 +308,15 @@ export default function VehicleSummary({
               </div>
             }
 
-
             <Button
               color="primary"
               fullWidth
               disabled={
-                !values.bookingType ||
-                !values.startDate ||
-                !values.startTime ||
-                !values.endDate ||
-                !values.endTime ||
-                !values.pickupLocation.trim() ||
-                !isDateRangeValid ||
-                checkVehicleAvailability.isPending
+                !isTripFormsComplete
               }
-              loading={checkVehicleAvailability.isPending}
               onClick={() => {
-                console.log("Form values:", values);
+                console.log('booking')
 
-                checkVehicleAvailability.mutate({
-                  bookingType: values.bookingType,
-                  startDate: values.startDate?.toISOString() ?? "",
-                  startTime: values.startTime?.toISOString() ?? "",
-                  endDate: values.endDate?.toISOString() ?? "",
-                  endTime: values.endTime?.toISOString() ?? "",
-                  pickupLocation: values.pickupLocation,
-                });
               }}
             >
               Book Now
@@ -587,16 +324,12 @@ export default function VehicleSummary({
           </div>
 
           <div className="divide-y divide-grey-200 text-grey-800">
-
-
-
-
           </div>
         </div>
       </div>
 
       {/* only show if user is not signed in */}
-      {!user && (
+      {/* {!user && (
         <BlurredDialog
           open={openBookRideModal}
           onOpenChange={handleOpenBookRideModal}
@@ -615,7 +348,7 @@ export default function VehicleSummary({
           }
           width="max-w-[556px]"
         />
-      )}
+      )} */}
     </VehicleDetails>
   );
 }
