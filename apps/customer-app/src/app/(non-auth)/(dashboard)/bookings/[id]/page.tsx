@@ -13,6 +13,7 @@ import {
   PaymentBadgeStatus,
 } from "@/utils/types";
 import useGetBookingById from "@/components/BookingsAnalytics/hooks/useGetBookingById";
+import { formatNumberWithCommas } from "@/utils/functions";
 
 export default function BookingDetailPage({
   params,
@@ -59,12 +60,13 @@ export default function BookingDetailPage({
             nameValue={bookingDetail?.id || ""}
             copyText={bookingDetail?.id || ""}
             status={bookingDetail?.bookingStatus}
+            bookingId={bookingDetail?.id}
           >
             <div className="flex items-center gap-8">
               <div className="space-y-2">
                 <p className="text-grey-500 text-sm 3xl:text-base">Amount</p>
                 <p className="text-primary-500 text-4xl 3xl:text-h2">
-                  {`${bookingDetail?.currencyCode} ${bookingDetail?.amount}`}
+                  {`${bookingDetail?.currencyCode} ${formatNumberWithCommas(bookingDetail?.amount ?? 0)}`}
                 </p>
               </div>
               <div className="space-y-2">
@@ -98,7 +100,6 @@ export default function BookingDetailPage({
           chipData={vehicleDetails as MappedInformation[]}
           nameTitle="Vehicle Requested"
           nameValue={bookingDetail?.vehicle?.listingName || ""}
-          
         />
       </div>
     </main>

@@ -18,9 +18,9 @@ const steps: stepProps[] = [
       "Use our easy online booking system to reserve your vehicle in minutes.",
   },
   {
-    title: "Meetup & Drive",
+    title: "Enjoy your ride",
     description:
-      "Meet the driver at your specified pickup  location and start your journey.",
+      "Meet the driver at your specified pickup location and start your journey.",
     // button: "Find good deals",
   },
 ];

@@ -59,7 +59,7 @@ const DateRangeCalendar = ({
       <Popover.Portal>
         <Popover.Content
           align="end"
-          className="rounded-xl p-4 w-[280px] sm:w-[380px] bg-white border border-grey-200 will-change-[transform,opacity] data-[state=open]:data-[side=top]:animate-slideDownAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade"
+          className="z-50 rounded-xl p-4 w-[90vw] max-w-sm bg-white border border-grey-200 will-change-[transform,opacity] data-[state=open]:data-[side=top]:animate-slideDownAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade"
           sideOffset={5}
         >
           <div className="flex justify-between items-center mb-3">
@@ -83,7 +83,7 @@ const DateRangeCalendar = ({
             nextLabel={Icons.ic_chevron_right}
             prevLabel={Icons.ic_chevron_left}
           />
-          <div className="flex justify-between gap-4 mt-8">
+          <div className="flex flex-col sm:flex-row justify-between gap-4 mt-8">
             <Button
               fullWidth
               onClick={() => {
@@ -119,7 +119,7 @@ export const DatePicker = ({
   showMinDate,
   minDate,
   maxDate,
-  disabled = false, // Add disabled prop
+  disabled = false,
 }: {
   buttonClass?: string;
   value: Value;
@@ -130,11 +130,11 @@ export const DatePicker = ({
   showMinDate?: boolean;
   minDate?: Date | null;
   maxDate?: Date | null;
-  disabled?: boolean; // Add to interface
+  disabled?: boolean;
 }) => {
   // Close on select
   const handleCalendarChange = (val: Value) => {
-    if (disabled) return; // Prevent changes if disabled
+    if (disabled) return;
     onChange(val);
     handleIsOpen(false);
   };
@@ -159,7 +159,7 @@ export const DatePicker = ({
       <Popover.Portal>
         <Popover.Content
           align="end"
-          className="rounded-xl p-4 w-[280px] sm:w-[380px] bg-white border border-grey-200 will-change-[transform,opacity] data-[state=open]:data-[side=top]:animate-slideDownAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade"
+          className="z-50 rounded-xl p-4 w-[90vw] max-w-sm bg-white border border-grey-200 will-change-[transform,opacity] data-[state=open]:data-[side=top]:animate-slideDownAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade"
           sideOffset={5}
         >
           <Calendar

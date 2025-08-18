@@ -26,8 +26,14 @@ const VehicleInformationCard = ({
   vehicle: VehicleInformation | null;
   vehicleImages: string[];
 }) => {
-  const { bookingType, startDate, startTime, endDate, endTime } =
-    useFetchUrlParams();
+  const {
+    bookingType,
+    startDate,
+    startTime,
+    endDate,
+    endTime,
+    pickupLocation,
+  } = useFetchUrlParams();
 
   const [priceData, setPriceData] = useState<any>(null);
   const [openCancellationModal, setOpenCancellationModal] = useState(false);
@@ -119,7 +125,7 @@ const VehicleInformationCard = ({
           />
         )}
 
-        {startDate && startTime && (
+        {startDate && (
           <>
             <HorizontalDivider variant="light" />
             <BookingSummaryItems
@@ -130,13 +136,23 @@ const VehicleInformationCard = ({
           </>
         )}
 
-        {endDate && endTime && (
+        {endDate && (
           <>
             <HorizontalDivider variant="light" />
             <BookingSummaryItems
               title="Trip End"
               date={`${format(new Date(endDate), "EEEE do MMMM yyyy")}`}
-              time={`${format(new Date(endTime), "hh:mma")}`}
+              time={`${format(new Date(endDate), "hh:mma")}`}
+            />
+          </>
+        )}
+
+        {endDate && (
+          <>
+            <HorizontalDivider variant="light" />
+            <BookingSummaryItems
+              title="Pickup Location & Dropoff Location"
+              value={pickupLocation ?? undefined}
             />
           </>
         )}

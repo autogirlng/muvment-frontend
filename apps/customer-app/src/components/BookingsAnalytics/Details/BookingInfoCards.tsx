@@ -4,6 +4,7 @@ import { BookingBadge } from "@repo/ui/badge";
 import Chip from "@repo/ui/chip";
 import Icons from "@repo/ui/icons";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 
 type BookingInfoCardsProps = {
@@ -17,6 +18,7 @@ type BookingInfoCardsProps = {
   copyText?: string;
   children?: ReactNode;
   status?: BookingBadgeStatus;
+  bookingId?: string;
 };
 
 const BookingInfoCards = ({
@@ -30,21 +32,33 @@ const BookingInfoCards = ({
   copyText,
   children,
   status,
+  bookingId,
 }: BookingInfoCardsProps) => {
+  const router = useRouter();
+  
   return (
     <div className="space-y-6 border-b border-dashed border-grey-300 pb-8">
       <p className="text-grey-700 text-sm 3xl:text-base uppercase !font-semibold">
         {title}
       </p>
+      
       <div className="space-y-8">
         <div className="space-y-2">
           <p className="text-grey-500 text-sm 3xl:text-base">{nameTitle}</p>
           <h5 className="text-h6 3xl:text-h5 !font-bold text-black flex gap-2">
             <span className="break-all"> {nameValue}</span>
-           
+
             {copyText && (
               <button onClick={() => copyToCipboard(copyText)}>
                 {Icons.ic_copy}
+              </button>
+            )}
+            {title === "BOOKING INFORMATION" && (
+              <button 
+                className="bg-primary-500 text-white px-4 py-1 rounded-lg text-sm hover:bg-primary-600 transition-colors ml-4"
+                onClick={() => bookingId ? router.push(`/extend-trip?id=${bookingId}`) : null}
+              >
+                Extend Trip
               </button>
             )}
           </h5>

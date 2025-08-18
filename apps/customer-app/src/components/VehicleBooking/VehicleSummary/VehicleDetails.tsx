@@ -201,29 +201,41 @@ export default function VehicleDetails({
             ))}
           </Swiper>
 
-          {/* car preview */}
-          <div className="flex items-center gap-1 md:gap-7 3xl:gap-[41px]">
-            {vehicleImages.map((image, index) => (
-              <Image
-                onClick={() => handleThumbnailClick(index)}
-                key={index}
-                src={image}
-                alt={`Vehicle thumbnail ${index + 1}`}
-                width={152}
-                height={90}
-                className="w-full h-[44px] sm:h-[90px] rounded-lg sm:rounded-[18px] object-cover cursor-pointer hover:shadow-lg transition-shadow focus:outline-none"
-                tabIndex={0}
-                role="button"
-                aria-label={`View image ${index + 1}`}
-                quality={90}
-                sizes="(max-width: 640px) 25vw, 152px"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    handleThumbnailClick(index);
-                  }
-                }}
-              />
-            ))}
+          {/* Thumbnail Gallery */}
+          <div className="relative mt-4">
+            <div
+              className="flex items-center gap-2 md:gap-4 overflow-x-auto pb-3 -mx-4 px-4 
+    [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+            >
+              {vehicleImages.map((image, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleThumbnailClick(index)}
+                  className={cn(
+                    "relative flex-shrink-0 rounded-lg sm:rounded-xl overflow-hidden transition-all duration-200",
+                    "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2",
+                    "w-[80px] h-[50px] sm:w-[100px] sm:h-[60px] md:w-[120px] md:h-[75px] lg:w-[152px] lg:h-[90px]",
+                    "border-2 border-transparent",
+                    {
+                      "border-primary-500":
+                        swiperRef.current?.swiper.activeIndex === index,
+                      "opacity-80 hover:opacity-100":
+                        swiperRef.current?.swiper.activeIndex !== index,
+                    }
+                  )}
+                  aria-label={`View image ${index + 1}`}
+                >
+                  <Image
+                    src={image}
+                    alt={`Vehicle thumbnail ${index + 1}`}
+                    fill
+                    className="object-cover"
+                    quality={85}
+                    sizes="(max-width: 640px) 80px, (max-width: 768px) 100px, (max-width: 1024px) 120px, 152px"
+                  />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -312,26 +324,28 @@ export default function VehicleDetails({
               </div>
 
               {/* outskirt locations */}
-              <div className="space-y-5">
-                <div className="flex items-center gap-3">
-                  <SectionTitle text="Outskirt Locations" />
-                  <DotDivider />
-                  <p className="text-sm md:text-base !font-medium text-primary-500 ">
-                    {vehicle?.outskirtsPrice}/hr
-                  </p>
-                </div>
-                <div className="flex flex-wrap gap-y-8 gap-x-[18px]">
-                  {vehicle?.outskirtsLocation?.map((location, index) => (
-                    <p
-                      key={index}
-                      className="text-sm md:text-base 3xl:text-xl !font-medium text-black flex items-center gap-[14px] w-[170px]"
-                    >
-                      {Icons.ic_location}
-                      <span>{location}</span>
+              {vehicle?.outskirtsPrice && (
+                <div className="space-y-5">
+                  <div className="flex items-center gap-3">
+                    <SectionTitle text="Outskirt Locations" />
+                    <DotDivider />
+                    <p className="text-sm md:text-base !font-medium text-primary-500 ">
+                      {vehicle?.outskirtsPrice}/hr
                     </p>
-                  ))}
+                  </div>
+                  <div className="flex flex-wrap gap-y-8 gap-x-[18px]">
+                    {vehicle?.outskirtsLocation?.map((location, index) => (
+                      <p
+                        key={index}
+                        className="text-sm md:text-base 3xl:text-xl !font-medium text-black flex items-center gap-[14px] w-[170px]"
+                      >
+                        {Icons.ic_location}
+                        <span>{location}</span>
+                      </p>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 

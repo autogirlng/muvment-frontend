@@ -30,14 +30,14 @@ export default function ViewAsCustomer({ vehicle }: Props) {
   const [openCancellationModal, setOpenCancellationModal] = useState(false);
 
   const handleOpenCancellationModal = () => {
-    setOpenCancellationModal(!openCancellationModal);
+    setOpenCancellationModal((prev) => !prev); // Use functional update for state
   };
 
   return (
     <>
       <div className="space-y-11">
         <div className="space-y-6 md:space-y-8">
-          {/* slider */}
+          {/* Slider */}
           <Swiper
             pagination={{
               type: "fraction",
@@ -55,7 +55,7 @@ export default function ViewAsCustomer({ vehicle }: Props) {
               <SwiperSlide key={index}>
                 <Image
                   src={image}
-                  alt=""
+                  alt={`Vehicle image ${index + 1}`} // Add more descriptive alt text
                   width={1120}
                   height={460}
                   className="w-full h-[218px] md:h-[460px] rounded-[42px] object-cover"
@@ -64,18 +64,18 @@ export default function ViewAsCustomer({ vehicle }: Props) {
             ))}
           </Swiper>
 
-          {/* name of car */}
+          {/* Name of car */}
           <h2 className="text-h5 md:text-h3 3xl:text-4xl">
             {vehicle?.listingName}
           </h2>
 
-          {/* car preview */}
+          {/* Car preview */}
           <div className="flex items-center gap-1 md:gap-7 3xl:gap-[41px]">
             {vehicleImages.map((image, index) => (
               <Image
                 key={index}
                 src={image}
-                alt=""
+                alt={`Thumbnail image ${index + 1}`} // Add more descriptive alt text
                 width={152}
                 height={90}
                 className="w-full h-[44px] sm:h-[90px] rounded-lg sm:rounded-[18px] object-cover"
@@ -84,7 +84,7 @@ export default function ViewAsCustomer({ vehicle }: Props) {
           </div>
         </div>
 
-        {/* advance notice */}
+        {/* Advance Notice */}
         <div className="bg-grey-75 p-3 flex gap-3 items-center rounded-[18px]">
           <div className="bg-warning-75 border border-warning-400 text-warning-400 h-[50px] w-[50px] flex justify-center items-center rounded-xl">
             {Icons.ic_notification}
@@ -93,12 +93,12 @@ export default function ViewAsCustomer({ vehicle }: Props) {
             {vehicle?.tripSettings.advanceNotice} advance notice required before
             booking
           </h6>
-          <SectionTitle text="" />
+          {/* <SectionTitle text="" /> - This component was here but 'text' prop was empty. Removed if not needed. */}
         </div>
 
         <div className="flex flex-col md:flex-row items-start gap-10 ">
           <div className="w-full md:w-[62%] space-y-10">
-            {/* vehicle details */}
+            {/* Vehicle Details */}
             <div className="space-y-5">
               <SectionTitle text="Vehicle Details" />
               <div className="flex flex-wrap gap-3">
@@ -117,7 +117,7 @@ export default function ViewAsCustomer({ vehicle }: Props) {
               </div>
             </div>
 
-            {/* vehicle description */}
+            {/* Vehicle Description */}
             <div className="space-y-5">
               <SectionTitle text="Description" className="text-black" />
               <p className="text-xs md:text-base 3xl:text-xl max-w-[535px]">
@@ -125,7 +125,7 @@ export default function ViewAsCustomer({ vehicle }: Props) {
               </p>
             </div>
 
-            {/* vehicle perks */}
+            {/* Vehicle Perks */}
             <div className="space-y-5">
               <SectionTitle text="Perks" />
               <div className="flex flex-wrap gap-3">
@@ -151,7 +151,7 @@ export default function ViewAsCustomer({ vehicle }: Props) {
               </div>
             </div>
 
-            {/* vehicle features */}
+            {/* Vehicle Features */}
             <div className="space-y-5">
               <SectionTitle text="Features" />
               <div className="flex flex-wrap gap-3">
@@ -167,7 +167,7 @@ export default function ViewAsCustomer({ vehicle }: Props) {
               </div>
             </div>
 
-            {/* outskirt locations */}
+            {/* Outskirt Locations */}
             <div className="space-y-5">
               <SectionTitle text="Outskirt Locations" />
               <div className="flex flex-wrap gap-y-8 gap-x-[18px]">
@@ -184,7 +184,7 @@ export default function ViewAsCustomer({ vehicle }: Props) {
             </div>
           </div>
 
-          {/* pricing */}
+          {/* Pricing */}
           <div className="w-full md:w-[38%] md:border md:border-grey-200 md:rounded-[42px]">
             <div className="md:p-8 divide-y divide-grey-200 text-grey-800 !font-medium text-base 3xl:text-xl">
               <h4 className="text-h5 3xl:text-h4 !font-medium pb-[22px]">
@@ -263,77 +263,102 @@ export default function ViewAsCustomer({ vehicle }: Props) {
               </svg>
             </div>
             <p className="text-xl font-semibold text-gray-900">
-              Cancellation Policy
+              Understand Our Cancellation & Refund Policy
             </p>
           </div>
         }
-        content={<CancellationPolicyModal />}
+        content={<CancellationPolicyModal onClose={() => setOpenCancellationModal(false)} />}
       />
     </>
   );
 }
 
-const CancellationPolicyModal = () => {
+type CancellationPolicyModalProps = {
+  onClose: () => void;
+};
+
+const CancellationPolicyModal = ({ onClose }: CancellationPolicyModalProps) => {
   return (
     <div className="space-y-6 py-4">
-      {/* 72+ Hours Before Trip */}
-      <div className="space-y-2">
-        <h3 className="font-semibold text-gray-900 text-base">
-          72+ Hours Before Trip?
-        </h3>
+      {/* Modal Title and Introduction */}
+      <div>
+        <h2 className="font-bold text-gray-900 text-lg mb-2">
+          Understand Our Cancellation & Refund Policy
+        </h2>
         <p className="text-gray-600 text-sm">
-          Get a full refund — no penalties.
+          A cancellation fee is a charge applied when a customer cancels a confirmed booking, especially close to the scheduled start time. At Muvment, our cancellation policy is designed to protect both hosts and
+          **customer&apos;s** by ensuring fairness, transparency, and accountability.
         </p>
       </div>
 
-      {/* 48-72 Hours Before Trip */}
+      {/* Cancellation Notice Period */}
       <div className="space-y-2">
         <h3 className="font-semibold text-gray-900 text-base">
-          48-72 Hours Before Trip?
+          Cancellation Notice Period
         </h3>
         <p className="text-gray-600 text-sm">
-          You&apos;ll receive a 50% refund or booking credit. Refunds are
-          processed within
+          <span className="font-medium text-gray-800">
+            More than 72 hours before the booking start time:
+          </span>
+          <br />
+          The customer forfeits 50% of the total booking fee. The remaining 50% will be refunded or can be converted into booking credit for future use.
+        </p>
+        <p className="text-gray-600 text-sm">
+          <span className="font-medium text-gray-800">
+            Less than 72 hours before the booking start time:
+          </span>
+          <br />
+          No refund will be issued. The full booking amount is retained by the host.
         </p>
       </div>
 
-      {/* Less Than 48 hours */}
+      {/* Peak Period Bookings (e.g., December) */}
       <div className="space-y-2">
         <h3 className="font-semibold text-gray-900 text-base">
-          Less Than 48 hours?
+          Peak Period Bookings (e.g., December)
         </h3>
         <p className="text-gray-600 text-sm">
-          Cancellations are non-refundable.
+          All bookings during festive and high-demand periods are considered final. These are **non-cancellable** and **non-refundable**. Customers should ensure their travel plans are confirmed before booking during such periods.
         </p>
       </div>
 
-      {/* December Bookings */}
+      {/* Faulty Vehicle Reporting */}
       <div className="space-y-2">
         <h3 className="font-semibold text-gray-900 text-base">
-          December Bookings
+          Faulty Vehicle Reporting
         </h3>
         <p className="text-gray-600 text-sm">
-          All December bookings are non-cancellable and non-refundable. Please
+          If you discover a mechanical or safety issue with the vehicle, it must be reported to Muvment within **1 hour of starting the trip**. If verified, you may be eligible for a full or partial refund.
         </p>
       </div>
 
-      {/* Vehicle Issues */}
+      {/* Cancellation Process */}
       <div className="space-y-2">
         <h3 className="font-semibold text-gray-900 text-base">
-          Vehicle Issues
+          Cancellation Process
         </h3>
         <p className="text-gray-600 text-sm">
-          If the vehicle is faulty, report it within 1 hour of pickup for a
-          refund.
+          All cancellations must be submitted **before the trip start time** through Muvment customer support. You are required to state the reason for cancellation. If a cancellation isn&apos;t communicated properly via approved channels, the booking is considered active and will proceed as planned.
         </p>
       </div>
 
-      {/* How To Cancel */}
+      {/* Additional Terms */}
       <div className="space-y-2">
-        <h3 className="font-semibold text-gray-900 text-base">How To Cancel</h3>
+        <h3 className="font-semibold text-gray-900 text-base">
+          Additional Terms
+        </h3>
         <p className="text-gray-600 text-sm">
-          Log in to your account, go to Bookings, select the trip, and follow
-          the steps to
+          Muvment reserves the right to review all cancellation and refund requests on a case-by-case basis. Hosts are notified immediately when a cancellation request is submitted. Incomplete vehicle information, non-responsiveness, or misleading details from the host may also qualify for trip cancellation or refund to the customer.
+        </p>
+      </div>
+
+      {/* Need More Support? */}
+      <div className="space-y-2">
+        <h3 className="font-semibold text-gray-900 text-base">
+          Need More Support?
+        </h3>
+        <p className="text-gray-600 text-sm">
+          Feel free to reach out to the Muvment team anytime—**we&apos;re** here to assist!
         </p>
       </div>
 
@@ -344,6 +369,7 @@ const CancellationPolicyModal = () => {
           rounded="full"
           fullWidth
           className="bg-blue-600 hover:bg-blue-700"
+          onClick={onClose}
         >
           Okay, Got it 👍
         </Button>
@@ -351,6 +377,16 @@ const CancellationPolicyModal = () => {
     </div>
   );
 };
+
+const SectionBlock = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <div className="mb-2">
+    <h3 className="font-semibold text-gray-900 text-base md:text-lg mb-1 flex items-center gap-2">
+      <span className="inline-block w-1.5 h-4 bg-blue-500 rounded-sm mr-2" />
+      {title}
+    </h3>
+    {children}
+  </div>
+);
 
 const SectionTitle = ({
   text,

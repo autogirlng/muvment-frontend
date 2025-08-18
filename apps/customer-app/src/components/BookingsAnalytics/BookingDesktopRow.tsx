@@ -6,6 +6,7 @@ import TableCell from "@repo/ui/tableCell";
 import { BookingTableBadge } from "@repo/ui/badge";
 import { useState } from "react";
 import Icons from "@repo/ui/icons";
+import { formatNumberWithCommas } from "@/utils/functions";
 
 const BookingDesktopRow = ({ items }: { items: BookingInformation }) => {
   return (
@@ -38,7 +39,9 @@ const BookingDesktopRow = ({ items }: { items: BookingInformation }) => {
         }
       />
 
-      <TableCell content={`${items?.currencyCode} ${items?.amount}`} />
+      <TableCell
+        content={`${items?.currencyCode} ${formatNumberWithCommas(items?.amount)}`}
+      />
       <td>
         <Popup
           trigger={

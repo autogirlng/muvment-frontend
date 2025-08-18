@@ -37,7 +37,7 @@ export default function VehicleSummary({
             }}
           />
           By submitting your vehicle you agree to the Rental{" "}
-          <Link href="/" className="text-primary-500">
+          <Link href="/terms-of-service" className="text-primary-500">
             Terms and conditions
           </Link>
         </p>
