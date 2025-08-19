@@ -182,9 +182,9 @@ const ExploreVehicleCard = ({
                 <h5 className="text-grey-800 text-xl md:text-h6 3xl:text-h5 !font-semibold">
                   {name}
                 </h5>
-                {type === "Luxury" && (
+                {(type === "SUVElectric" || type === "SedanElectric") && (
                   <span className="inline-block px-2 py-0.5 rounded-full bg-success-500 text-xs md:text-sm 3xl:text-sm text-white font-sm relative -top-3">
-                    Electric Vehicle
+                    EV
                   </span>
                 )}
               </div>
@@ -233,9 +233,15 @@ const ExploreVehicleCard = ({
                   "text-xs md:text-sm 3xl:text-base text-grey-500 font-bold mt-1",
                   "truncate max-w-[120px] md:max-w-[180px] 3xl:max-w-[220px]"
                 )}
-                title={type === "Luxury" ? "Electric Vehicle" : type}
+                title={
+                  type === "SUVElectric" || type === "SedanElectric"
+                    ? "Electric Vehicle"
+                    : type
+                }
               >
-                {type === "Luxury" ? "Electric Vehicle" : type}
+                {type === "SUVElectric" || type === "SedanElectric"
+                  ? "Electric Vehicle"
+                  : type}
               </p>
             </div>
           </Link>
