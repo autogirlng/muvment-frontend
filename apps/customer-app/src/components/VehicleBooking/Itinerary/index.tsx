@@ -27,5 +27,5 @@ const Itinerary = ({
     </div>
   );
 };
-
+ 
 export default Itinerary;
