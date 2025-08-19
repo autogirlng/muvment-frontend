@@ -1,5 +1,6 @@
 "use client";
 import Benefits from "@/components/LandingPageComponents/Benefits";
+import RideSection from "@/components/RideSection";
 import NewListings from "@/components/LandingPageComponents/NewListings";
 import Footer from "@/components/LandingPageComponents/Footer";
 import Hero from "@/components/LandingPageComponents/Hero";
@@ -38,6 +39,7 @@ export default function HomePage() {
       <MobileNav user={data ?? null} />
       <Hero />
       <Benefits />
+      <RideSection />
       <TopVehicles />
       <PopularCities />
       <VehicleCategories />
