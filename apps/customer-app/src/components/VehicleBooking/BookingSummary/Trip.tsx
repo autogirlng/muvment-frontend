@@ -7,7 +7,9 @@ import { VehicleInformation } from "@/utils/types";
 import Icons from "@repo/ui/icons";
 import cn from "classnames";
 import { format } from "date-fns";
-import { ReactNode } from "react";
+import { ReactNode, useState, useEffect } from "react";
+import { TripDetails } from "@/utils/types";
+import { toTitleCase } from "@/utils/functions";
 
 type Props = { vehicle: VehicleInformation | null };
 
@@ -22,11 +24,18 @@ const Trip = ({ vehicle }: Props) => {
     vehicle?.id ?? "",
     "itineraryInformation"
   );
+  const [trips, setTrips] = useState<TripDetails[]>([])
+
+  useEffect(() => {
+    const trips = JSON.parse(sessionStorage.getItem('trips') || '[]');
+    setTrips(trips);
+  }, [])
 
   return (
     <div className="space-y-4 pt-8">
-      <TripInfoWrapper title="Prices">
+      {/* <TripInfoWrapper title="Prices">
         <div className="flex items-center divide-x divide-grey-200 space-x-3">
+
           <div>
             {<p className="text-sm 3xl:text-base">Daily</p>}
             <p className="text-sm md:text-base 3xl:text-xl !font-semibold">
@@ -44,7 +53,50 @@ const Trip = ({ vehicle }: Props) => {
             </p>
           </div>
         </div>
-      </TripInfoWrapper>
+      </TripInfoWrapper> */}
+
+      {
+        trips?.map((trip, index) => {
+          return <div key={trip.id}>
+            <h6>Trip {index + 1}</h6>
+            <TripInfoWrapper title="Booking Type">
+              <p className="bg-grey-900 text-white py-0.5 px-4 rounded-3xl w-fit text-xs md:text-sm 3xl:text-base">
+                {toTitleCase(trip.bookingType?.toLowerCase().split("_")[0] || '')} {toTitleCase(trip.bookingType?.toLowerCase().split("_")[1] || '')}
+              </p>
+              <div className="space-y-3 text-xs md:text-sm 3xl:text-base">
+                <DurationDetails
+                  date={new Date(trip.tripStartDate || '')}
+                  time={new Date(trip.tripStartTime || '')}
+                  icon={Icons.ic_flag}
+                  iconColor="text-primary-500"
+                  title="Start"
+                />
+              </div>
+            </TripInfoWrapper>
+            <TripInfoWrapper title="Itinerary">
+              <SectionDetails
+                title="Pick-up"
+                description={trip.pickupLocation || ''}
+                isLocation
+              />
+              <SectionDetails
+                title="Drop-off"
+                description={trip.dropoffLocation || ''}
+                isLocation
+              />
+              <SectionDetails
+                title="Areas of Use"
+                description={`${toTitleCase(trip.areaOfUse?.toLowerCase().split("_")[0] || '')} ${toTitleCase(trip.areaOfUse?.toLowerCase().split("_")[1] || '')} ${toTitleCase(trip.areaOfUse?.toLowerCase().split("_")[2] || '')}`}
+              />
+              {trip.outskirtLocations && <SectionDetails
+                title="Outskirt Locations"
+                description={trip.outskirtLocations?.join(", ") || ''}
+              />}
+            </TripInfoWrapper>
+          </div>
+        })
+      }
+      {/* 
       <TripInfoWrapper title="Duration">
         <p className="bg-grey-900 text-white py-0.5 px-4 rounded-3xl w-fit text-xs md:text-sm 3xl:text-base">
           {calculateNumberOfDays(
@@ -68,8 +120,8 @@ const Trip = ({ vehicle }: Props) => {
             title="Stop"
           />
         </div>
-      </TripInfoWrapper>
-      <TripInfoWrapper title="Itinerary">
+      </TripInfoWrapper> */}
+      {/* <TripInfoWrapper title="Itinerary">
         <SectionDetails
           title="Pick-up"
           description={itineraryInformation?.pickupLocation}
@@ -88,30 +140,30 @@ const Trip = ({ vehicle }: Props) => {
           title="Outskirt Locations"
           description={itineraryInformation?.outskirtsLocation}
         />
-      </TripInfoWrapper>
+      </TripInfoWrapper> */}
       {(itineraryInformation?.extraDetails ||
         personalInformation?.tripPurpose ||
         itineraryInformation?.purposeOfRide) && (
-        <TripInfoWrapper title="Extras">
-          {itineraryInformation?.extraDetails && (
-            <SectionDetails
-              title="Extra Details"
-              description={itineraryInformation?.extraDetails}
-            />
-          )}
-          {(personalInformation?.tripPurpose ||
-            itineraryInformation?.purposeOfRide) && (
-            <SectionDetails
-              title="Trip Purpose"
-              description={
-                personalInformation?.tripPurpose ??
-                itineraryInformation?.purposeOfRide ??
-                "-"
-              }
-            />
-          )}
-        </TripInfoWrapper>
-      )}
+          <TripInfoWrapper title="Extras">
+            {itineraryInformation?.extraDetails && (
+              <SectionDetails
+                title="Extra Details"
+                description={itineraryInformation?.extraDetails}
+              />
+            )}
+            {(personalInformation?.tripPurpose ||
+              itineraryInformation?.purposeOfRide) && (
+                <SectionDetails
+                  title="Trip Purpose"
+                  description={
+                    personalInformation?.tripPurpose ??
+                    itineraryInformation?.purposeOfRide ??
+                    "-"
+                  }
+                />
+              )}
+          </TripInfoWrapper>
+        )}
     </div>
   );
 };

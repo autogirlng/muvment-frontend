@@ -2,7 +2,7 @@ import { Formik, Form } from "formik";
 import { GroupCheckBox } from "@repo/ui/checkbox";
 import { StepperNavigation } from "@repo/ui/stepper";
 import { outskirtsLocationOptions } from "@/utils/data";
-import { CalendarValue, ItineraryInformationValues } from "@/utils/types";
+import { CalendarValue, ItineraryInformationValues, TripDetails } from "@/utils/types";
 import InputField from "@repo/ui/inputField";
 import TextArea from "@repo/ui/textarea";
 import SelectInput from "@repo/ui/select";
@@ -16,6 +16,10 @@ import {
 import { itineraryInformationSchema } from "@/utils/validationSchema";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useRef, useEffect, useState } from "react";
+import { TripPerDaySelect } from "../VehicleSummary/TripPerDaySelect";
+import { useItineraryForm } from "@/hooks/useItineraryForm";
+import { useQuery } from "@tanstack/react-query";
+import useFetchVehicleById from "../hooks/useFetchVehicleById";
 
 // Your combineDateTime function - preserves local timezone
 function combineDateTime(
@@ -275,11 +279,9 @@ const GoogleMapsInput: React.FC<GoogleMapsInputProps> = ({
             predictions.map((prediction, idx) => (
               <div
                 key={prediction.place_id}
-                className={`flex items-start gap-3 px-6 py-4 cursor-pointer transition-colors duration-150 ${
-                  idx === 0 ? "rounded-t-xl" : ""
-                } ${
-                  idx === predictions.length - 1 ? "rounded-b-xl" : ""
-                } hover:bg-primary-50 active:bg-primary-100 border-b border-gray-100 last:border-b-0`}
+                className={`flex items-start gap-3 px-6 py-4 cursor-pointer transition-colors duration-150 ${idx === 0 ? "rounded-t-xl" : ""
+                  } ${idx === predictions.length - 1 ? "rounded-b-xl" : ""
+                  } hover:bg-primary-50 active:bg-primary-100 border-b border-gray-100 last:border-b-0`}
                 onClick={() => handlePlaceSelect(prediction)}
                 tabIndex={0}
                 onKeyDown={(e) => {
@@ -349,7 +351,6 @@ const GoogleMapsInput: React.FC<GoogleMapsInputProps> = ({
     </div>
   );
 };
-
 const baseInitialValues: ItineraryInformationValues = {
   pickupLocation: "",
   startDate: null,
@@ -375,6 +376,8 @@ const ItineraryForm = ({
   vehicleId: string;
 }) => {
   const searchParams = useSearchParams();
+
+
 
   // Get URL parameters
   const startDateParam = searchParams.get("startDate");
@@ -407,240 +410,302 @@ const ItineraryForm = ({
     };
   }, [vehicleId, startDate, startTime, endDate, endTime, pickupLocationParam]);
 
+
+  const { trips, setTrips, deleteTrip, onChangeTrip, addTrip, bookingPriceBreakdown, isTripFormsComplete } = useItineraryForm(null)
+
+
+  // const initialValues = {
+  //   "pickupLocation": "ddd",
+  //   "startDate": "2025-08-01T00:30:00",
+  //   "startTime": "2025-08-17T23:30:00.000Z",
+  //   "dropoffLocation": "f",
+  //   "endDate": "2025-08-07T00:30:00",
+  //   "endTime": "2025-08-17T23:30:00.000Z",
+  //   "areaOfUse": "Mainland Central",
+  //   "outskirtsLocation": [
+  //     "Badagry"
+  //   ],
+  //   "extraDetails": "",
+  //   "purposeOfRide": ""
+  // }
+
+
+  // const initialValues = {
+  //   pickupLocation: trips[0]?.pickupLocation || "",
+  //   startDate: "2025-08-01T00:30:00",
+  //   startTime: "2025-08-17T23:30:00.000Z",
+  //   dropoffLocation: trips[0]?.dropoffLocation || "",
+  //   endDate: "2025-08-07T00:30:00",
+  //   endTime: "2025-08-17T23:30:00.000Z",
+  //   areaOfUse: "Mainland Central",
+  //   outskirtsLocation: [
+  //     "Badagry"
+  //   ],
+  //   extraDetails: "",
+  //   purposeOfRide: ""
+  // }
+
+  // console.log(trips)
+
+  useEffect(() => {
+    const trips = JSON.parse(sessionStorage.getItem('trips') || '[]');
+    setTrips(trips)
+  }, [])
+
+  const { vehicle } = useFetchVehicleById({ id: vehicleId })
+
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={itineraryInformationSchema}
-      onSubmit={(values, { setSubmitting }) => {
-        // Combine date and time fields before saving - now using Date objects directly
-        const { startDateTime, endDateTime } = combineDateTime(
-          values.startDate as Date,
-          values.startTime as Date,
-          values.endDate as Date,
-          values.endTime as Date
-        );
+    <>
 
-        // Create updated values with combined datetime
-        const updatedValues = {
-          ...values,
-          startDate: startDateTime,
-          endDate: endDateTime,
-        };
 
-        saveAndUpdateBookingInformation(
-          updatedValues,
-          vehicleId,
-          "itineraryInformation"
-        );
-        setCurrentStep(currentStep + 1);
+      <Formik
+        initialValues={initialValues}
+        validationSchema={itineraryInformationSchema}
+        onSubmit={(values, { setSubmitting }) => {
+          // Combine date and time fields before saving - now using Date objects directly
+          const { startDateTime, endDateTime } = combineDateTime(
+            values.startDate as Date,
+            values.startTime as Date,
+            values.endDate as Date,
+            values.endTime as Date
+          );
 
-        setSubmitting(false);
-      }}
-    >
-      {({
-        values,
-        touched,
-        errors,
-        isValid,
-        dirty,
-        handleBlur,
-        handleChange,
-        setFieldTouched,
-        setFieldValue,
-        isSubmitting,
-      }) => (
-        <Form className="max-w-[500px] w-full space-y-8">
-          <h6 className="!font-bold text-base md:text-xl 3xl:text-h6">
-            Daily Rental
-          </h6>
-          <InputField
-            name="pickupLocation"
-            id="pickupLocation"
-            type="text"
-            label="Pickup location"
-            placeholder="Enter your pickup location"
-            value={values.pickupLocation}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            disabled={!!pickupLocationParam}
-            error={
-              errors.pickupLocation && touched.pickupLocation
-                ? String(errors.pickupLocation)
-                : ""
-            }
-          />
+          // Create updated values with combined datetime
+          const updatedValues = {
+            ...values,
+            startDate: startDateTime,
+            endDate: endDateTime,
+          };
 
-          <FormRow>
-            <DateInput
-              label="Pickup date"
-              name="startDate"
-              value={values.startDate}
-              onChange={(value: CalendarValue) =>
-                setFieldValue("startDate", value as Date | null)
-              }
-              disabled={!!hasUrlDates}
+          saveAndUpdateBookingInformation(
+            updatedValues,
+            vehicleId,
+            "itineraryInformation"
+          );
+          setCurrentStep(currentStep + 1);
+
+          setSubmitting(false);
+        }}
+      >
+        {({
+          values,
+          touched,
+          errors,
+          isValid,
+          dirty,
+          handleBlur,
+          handleChange,
+          setFieldTouched,
+          setFieldValue,
+          isSubmitting,
+        }) => (
+          <Form className="max-w-[500px] w-full space-y-8">
+            <h6 className="!font-bold text-base md:text-xl 3xl:text-h6">
+              Daily Rental
+            </h6>
+            <h6 className="!font-bold text-base md:text-md ">Add Booking Details</h6>
+
+            {trips?.map((trip, index) => {
+              return <TripPerDaySelect key={trip.id}
+                day={`${index + 1}`}
+                disabled={true}
+                vehicle={vehicle}
+                id={trip.id || ''}
+                deleteMethod={deleteTrip}
+                page="booking-vehicle"
+                onChangeTrip={onChangeTrip} initialValues={trip} />
+            })}
+            {/* <InputField
+              name="pickupLocation"
+              id="pickupLocation"
+              type="text"
+              label="Pickup location"
+              placeholder="Enter your pickup location"
+              value={values.pickupLocation}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              disabled={!!pickupLocationParam}
               error={
-                errors.startDate && touched.startDate
-                  ? String(errors.startDate)
+                errors.pickupLocation && touched.pickupLocation
+                  ? String(errors.pickupLocation)
                   : ""
               }
             />
-            <TimeInput
-              label="Pickup time"
-              name="startTime"
-              value={values.startTime}
-              onChange={(date: Date) => setFieldValue("startTime", date)}
+
+            <FormRow>
+              <DateInput
+                label="Pickup date"
+                name="startDate"
+                value={values.startDate}
+                onChange={(value: CalendarValue) =>
+                  setFieldValue("startDate", value as Date | null)
+                }
+                disabled={!!hasUrlDates}
+                error={
+                  errors.startDate && touched.startDate
+                    ? String(errors.startDate)
+                    : ""
+                }
+              />
+              <TimeInput
+                label="Pickup time"
+                name="startTime"
+                value={values.startTime}
+                onChange={(date: Date) => setFieldValue("startTime", date)}
+                onBlur={handleBlur}
+                disabled={!!hasUrlDates}
+                error={
+                  errors.startTime && touched.startTime
+                    ? String(errors.startTime)
+                    : ""
+                }
+              />
+            </FormRow> */}
+
+            {/* Google Maps Autocomplete Drop-off Location */}
+            {/* <GoogleMapsInput
+              value={values.dropoffLocation}
+              onChange={handleChange}
               onBlur={handleBlur}
-              disabled={!!hasUrlDates}
               error={
-                errors.startTime && touched.startTime
-                  ? String(errors.startTime)
+                errors.dropoffLocation && touched.dropoffLocation
+                  ? String(errors.dropoffLocation)
                   : ""
               }
             />
-          </FormRow>
 
-          {/* Google Maps Autocomplete Drop-off Location */}
-          <GoogleMapsInput
-            value={values.dropoffLocation}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={
-              errors.dropoffLocation && touched.dropoffLocation
-                ? String(errors.dropoffLocation)
-                : ""
-            }
-          />
+            <FormRow>
+              <DateInput
+                label="Drop-off date"
+                name="endDate"
+                value={values.endDate}
+                onChange={(value: CalendarValue) =>
+                  setFieldValue("endDate", value as Date | null)
+                }
+                disabled={!!hasUrlDates}
+                error={
+                  errors.endDate && touched.endDate ? String(errors.endDate) : ""
+                }
+              />
+              <TimeInput
+                label="Drop-off time"
+                name="endTime"
+                value={values.endTime}
+                onChange={(date: Date) => setFieldValue("endTime", date)}
+                onBlur={handleBlur}
+                disabled={!!hasUrlDates}
+                error={
+                  errors.endTime && touched.endTime ? String(errors.endTime) : ""
+                }
+              />
+            </FormRow>
 
-          <FormRow>
-            <DateInput
-              label="Drop-off date"
-              name="endDate"
-              value={values.endDate}
-              onChange={(value: CalendarValue) =>
-                setFieldValue("endDate", value as Date | null)
-              }
-              disabled={!!hasUrlDates}
+            <SelectInput
+              id="areaOfUse"
+              label="Area of use"
+              placeholder="Select"
+              variant="outlined"
+              options={[
+                { option: "All Areas", value: "All Areas" },
+                { option: "Mainland Central", value: "Mainland Central" },
+                { option: "Island Central", value: "Island Central" },
+                {
+                  option: "Mainland and Island Central",
+                  value: "Mainland and Island Central",
+                },
+              ]}
+              value={values.areaOfUse}
+              onChange={(value: string) => {
+                setFieldTouched("areaOfUse", true);
+                setFieldValue("areaOfUse", value);
+              }}
               error={
-                errors.endDate && touched.endDate ? String(errors.endDate) : ""
+                errors.areaOfUse && touched.areaOfUse
+                  ? String(errors.areaOfUse)
+                  : ""
               }
             />
-            <TimeInput
-              label="Drop-off time"
-              name="endTime"
-              value={values.endTime}
-              onChange={(date: Date) => setFieldValue("endTime", date)}
+
+            <div className="space-y-3">
+              <label
+                htmlFor="features"
+                className="text-sm block font-medium text-black"
+              >
+                Outskirt locations
+              </label>
+              <p className="text-sm text-grey-600">
+                Stops here will incur an additional cost of N6,500 set by the host
+                of your vehicle
+              </p>
+              <div className="flex flex-wrap gap-x-4 gap-y-8">
+                {outskirtsLocationOptions.map((feature) => {
+                  console.log(values?.outskirtsLocation)
+                  return <GroupCheckBox
+                    key={feature}
+                    feature={feature}
+                    checkedValues={values?.outskirtsLocation}
+                    onChange={(feature: string, isChecked: boolean) => {
+                      if (isChecked) {
+                        const newValues = [...values.outskirtsLocation, feature];
+                        setFieldValue("outskirtsLocation", newValues);
+                      } else {
+                        const newValues = values.outskirtsLocation.filter(
+                          (value: string) => value !== feature
+                        );
+                        setFieldValue("outskirtsLocation", newValues);
+                      }
+                    }}
+                  />
+                })}
+              </div>
+            </div> */}
+
+            <TextArea
+              name="extraDetails"
+              id="extraDetails"
+              type="text"
+              label="Extra details(optional)"
+              placeholder={`Add extra trip details you would like to share`}
+              value={values.extraDetails}
+              onChange={handleChange}
               onBlur={handleBlur}
-              disabled={!!hasUrlDates}
               error={
-                errors.endTime && touched.endTime ? String(errors.endTime) : ""
+                errors.extraDetails && touched.extraDetails
+                  ? String(errors.extraDetails)
+                  : ""
               }
             />
-          </FormRow>
 
-          <SelectInput
-            id="areaOfUse"
-            label="Area of use"
-            placeholder="Select"
-            variant="outlined"
-            options={[
-              { option: "All Areas", value: "All Areas" },
-              { option: "Mainland Central", value: "Mainland Central" },
-              { option: "Island Central", value: "Island Central" },
-              {
-                option: "Mainland and Island Central",
-                value: "Mainland and Island Central",
-              },
-            ]}
-            value={values.areaOfUse}
-            onChange={(value: string) => {
-              setFieldTouched("areaOfUse", true);
-              setFieldValue("areaOfUse", value);
-            }}
-            error={
-              errors.areaOfUse && touched.areaOfUse
-                ? String(errors.areaOfUse)
-                : ""
-            }
-          />
+            <TextArea
+              name="purposeOfRide"
+              id="purposeOfRide"
+              type="text"
+              label="Purpose of ride(optional)"
+              placeholder={`Add your purpose of ride`}
+              value={values.purposeOfRide}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={
+                errors.purposeOfRide && touched.purposeOfRide
+                  ? String(errors.purposeOfRide)
+                  : ""
+              }
+            />
 
-          <div className="space-y-3">
-            <label
-              htmlFor="features"
-              className="text-sm block font-medium text-black"
-            >
-              Outskirt locations
-            </label>
-            <p className="text-sm text-grey-600">
-              Stops here will incur an additional cost of N6,500 set by the host
-              of your vehicle
-            </p>
-            <div className="flex flex-wrap gap-x-4 gap-y-8">
-              {outskirtsLocationOptions.map((feature) => (
-                <GroupCheckBox
-                  key={feature}
-                  feature={feature}
-                  checkedValues={values?.outskirtsLocation}
-                  onChange={(feature: string, isChecked: boolean) => {
-                    if (isChecked) {
-                      const newValues = [...values.outskirtsLocation, feature];
-                      setFieldValue("outskirtsLocation", newValues);
-                    } else {
-                      const newValues = values.outskirtsLocation.filter(
-                        (value: string) => value !== feature
-                      );
-                      setFieldValue("outskirtsLocation", newValues);
-                    }
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-
-          <TextArea
-            name="extraDetails"
-            id="extraDetails"
-            type="text"
-            label="Extra details(optional)"
-            placeholder={`Add extra trip details you would like to share`}
-            value={values.extraDetails}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={
-              errors.extraDetails && touched.extraDetails
-                ? String(errors.extraDetails)
-                : ""
-            }
-          />
-
-          <TextArea
-            name="purposeOfRide"
-            id="purposeOfRide"
-            type="text"
-            label="Purpose of ride(optional)"
-            placeholder={`Add your purpose of ride`}
-            value={values.purposeOfRide}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={
-              errors.purposeOfRide && touched.purposeOfRide
-                ? String(errors.purposeOfRide)
-                : ""
-            }
-          />
-
-          <StepperNavigation
-            steps={steps}
-            currentStep={currentStep}
-            setCurrentStep={setCurrentStep}
-            handleSaveDraft={() => {}}
-            isSaveDraftloading={false}
-            isNextLoading={isSubmitting}
-            disableNextButton={!isValid || isSubmitting}
-          />
-        </Form>
-      )}
-    </Formik>
+            {/* <button onClick={() => setCurrentStep(2)}>next</button> */}
+            <StepperNavigation
+              steps={steps}
+              currentStep={currentStep}
+              setCurrentStep={setCurrentStep}
+              handleSaveDraft={() => { }}
+              isSaveDraftloading={false}
+              isNextLoading={isSubmitting}
+              disableNextButton={!isValid || isSubmitting}
+            />
+          </Form>
+        )}
+      </Formik>
+    </>
   );
 };
 
