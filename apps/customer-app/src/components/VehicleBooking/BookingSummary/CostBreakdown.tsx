@@ -1,7 +1,7 @@
 import { HorizontalDivider } from "@repo/ui/divider";
 import Button from "@repo/ui/button";
 import cn from "classnames";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   calculateDiscount,
   calculateNumberOfDays,
@@ -12,11 +12,13 @@ import {
   getExistingBookingInformation,
   useFetchUrlParams,
 } from "@/utils/functions";
-import { VehicleInformation } from "@/utils/types";
+import { TripDetails, VehicleInformation } from "@/utils/types";
 import { standardServiceFeeInPercentage } from "@/utils/constants";
 import useHandleBooking from "../hooks/useHandleBooking";
 import { useSearchParams } from "next/navigation";
 import { BlurredDialog } from "@repo/ui/dialog";
+import { useHttp } from "@/hooks/useHttp";
+import { BookingSummaryPricing } from "@/utils/types";
 
 type Props = { vehicle: VehicleInformation | null; type: "guest" | "user" };
 
@@ -99,7 +101,6 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
       ...itineraryInformationValues
     } = itineraryInformation;
 
-    console.log(itineraryInformation);
 
     const amount = priceData?.totalPrice
       ? parseFloat(priceData?.totalPrice)
@@ -145,12 +146,12 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
       ...itineraryInformationValues,
       startDate:
         itineraryInformation.startDate &&
-        !itineraryInformation.startDate.endsWith("Z")
+          !itineraryInformation.startDate.endsWith("Z")
           ? itineraryInformation.startDate + "Z"
           : itineraryInformation.startDate,
       endDate:
         itineraryInformation.endDate &&
-        !itineraryInformation.endDate.endsWith("Z")
+          !itineraryInformation.endDate.endsWith("Z")
           ? itineraryInformation.endDate + "Z"
           : itineraryInformation.endDate,
       amount: amount,
@@ -160,12 +161,58 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
       redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`,
     });
   };
+  const http = useHttp()
+  const [bookingPriceSummary, setBookingPriceSummary] = useState<BookingSummaryPricing>()
+
+  const fetchBookingPriceSummary = async () => {
+    const bookingTypes: string[] = [];
+    const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || "[]");
+    let isOutskirt = false;
+    for (let trip of trips) {
+      if (trip.bookingType) {
+        bookingTypes.push(trip.bookingType)
+      }
+      if (trip.outskirtLocations && trip.outskirtLocations.length >= 1) {
+        isOutskirt = true
+      }
+    }
+
+    const bookingPrice = await http.post<BookingSummaryPricing>("/api/bookings/calculate-price",
+      {
+        vehicleId: vehicle?.id,
+        bookingTypes,
+        isExtension: false,
+        isOutskirt
+      }
+    );
+    setBookingPriceSummary(bookingPrice)
+  }
+  useEffect(() => {
+    fetchBookingPriceSummary()
+  }, [])
 
   return (
     <>
       <div className="space-y-7 border border-grey-200 rounded-3xl md:max-w-[400px] px-6 py-8">
         <h6 className="text-base md:text-xl 3xl:text-h6">Cost Breakdown</h6>
-        <Prices
+        {
+          bookingPriceSummary && <section className="space-y-7">
+
+            <Prices
+              title="Outskirt Fee"
+              price={`${bookingPriceSummary?.currency} ${formatNumberWithCommas(bookingPriceSummary?.breakdown.outskirtFee || '')}`}
+            />
+            <Prices
+              title="Extra hours"
+              price="Billed as you go"
+              priceColor="text-grey-400"
+            />
+            <Prices
+              title="Total Cost"
+              price={`${bookingPriceSummary?.currency} ${formatNumberWithCommas(bookingPriceSummary?.totalPrice || '')}`}
+            />
+          </section>}
+        {/* <Prices
           title="Total Cost"
           price={`${currencyCode} ${priceData?.totalPrice ? formatNumberWithCommas(priceData.totalPrice) : formatNumberWithCommas(totalCostWithoutServiceFee)}`}
         />
@@ -180,15 +227,13 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
         />
 
         <Prices
-          title={`Discount (-${
-            priceData?.breakdown?.discountPercentage ||
+          title={`Discount (-${priceData?.breakdown?.discountPercentage ||
             hostDiscounts.find(
               (d) => parseInt(numberOfDays) <= d.durationInDays
             )?.percentage ||
             0
-          }%)`}
-          price={`-${currencyCode} ${
-            formatNumberWithCommas(priceData?.breakdown?.discountAmount) ||
+            }%)`}
+          price={`-${currencyCode} ${formatNumberWithCommas(priceData?.breakdown?.discountAmount) ||
             formatNumberWithCommas(
               calculateDiscount(
                 totalCostWithoutServiceFee,
@@ -196,16 +241,16 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
                 parseInt(numberOfDays)
               )
             )
-          }`}
-        />
+            }`}
+        /> */}
 
         <HorizontalDivider variant="light" />
 
-        <Prices
+        {/* <Prices
           title="Total"
           price={`${currencyCode} ${formatNumberWithCommas(priceData.totalPrice)}`}
           isTotalCost
-        />
+        /> */}
 
         <HorizontalDivider variant="light" />
 
