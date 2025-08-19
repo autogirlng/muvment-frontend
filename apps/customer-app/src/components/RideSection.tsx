@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import Icons from '@repo/ui/icons';
 import { Leaf } from 'lucide-react';
@@ -28,22 +29,22 @@ export default function RideSection() {
             <div className="relative flex-shrink-0 mb-6">
               <div className="flex flex-col xs:flex-row gap-4 items-center justify-center">
                 <div className="relative w-37 h-40 xs:w-39 xs:h-48 sm:w-42 sm:h-52 rounded-xl overflow-hidden shadow-lg transform -rotate-12 translate-y-2 translate-x-1 bg-orange-200 flex items-center justify-center">
-                  <img src="/images/landing/10.png" alt="Electric Car" className="object-cover w-full h-full scale-150 transition-transform duration-300 ease-in-out" />
+                  <Image src="/images/landing/10.png" alt="Electric Car" fill className="object-cover scale-150 transition-transform duration-300 ease-in-out" />
                 </div>
                 <div className="relative w-37 h-40 xs:w-39 xs:h-48 sm:w-42 sm:h-52 rounded-xl overflow-hidden shadow-lg bg-orange-300 flex items-center justify-center">
-                  <img src="/images/landing/8.png" alt="EV Interior" className="object-cover w-full h-full scale-150 transition-transform duration-300 ease-in-out" />
+                  <Image src="/images/landing/8.png" alt="EV Interior" fill className="object-cover scale-150 transition-transform duration-300 ease-in-out" />
                 </div>
                 <div className="relative w-37 h-40 xs:w-39 xs:h-48 sm:w-42 sm:h-52 rounded-xl overflow-hidden shadow-lg transform rotate-12 translate-y-2 translate-x-1 bg-orange-400 flex items-center justify-center -ml-2">
-                  <img src="/images/landing/9.png" alt="Charging" className="object-cover w-full h-full scale-150 transition-transform duration-300 ease-in-out" />
+                  <Image src="/images/landing/9.png" alt="Charging" fill className="object-cover scale-150 transition-transform duration-300 ease-in-out" />
                 </div>
               </div>
             </div>
             <p className="text-grey-700 mb-6 md:mb-8 text-sm text-center md:text-left">
-              Whether you're commuting to work, heading to the airport, attending a meeting, or simply curious, our exceptional chauffeur-driven electric vehicle service is designed to impress.
+              Whether you&apos;re commuting to work, heading to the airport, attending a meeting, or simply curious, our exceptional chauffeur-driven electric vehicle service is designed to impress.
             </p>
             <div className="flex justify-center md:justify-start">
               <Link href="/explore" passHref legacyBehavior>
-                <a className="bg-primary-500 text-white font-semibold py-3 px-6 rounded-full hover:bg-primary-600 transition-colors w-full xs:w-auto text-center block">
+                <a className="bg-primary-500 text-white font-semibold py-3 px-6 rounded-full hover:bg-primary-600 transition-colors w-full xs:w-auto hover:text-white text-center block">
                   Explore Electric Cars
                 </a>
               </Link>
