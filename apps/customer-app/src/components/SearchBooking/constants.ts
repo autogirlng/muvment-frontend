@@ -3,6 +3,7 @@ import { PlacePrediction } from "./types";
 export const DEFAULT_LOCATION_SUGGESTIONS: PlacePrediction[] = [
   {
     id: "anywhere",
+    place_id: "anywhere",
     name: "Anywhere",
     description: "Search everywhere",
     type: "popular",
@@ -10,6 +11,7 @@ export const DEFAULT_LOCATION_SUGGESTIONS: PlacePrediction[] = [
   },
   {
     id: "recent-1",
+    place_id: "recent-1",
     name: "Yaba, Mainland, Lagos",
     description: "Recent search",
     type: "recent",
@@ -17,6 +19,7 @@ export const DEFAULT_LOCATION_SUGGESTIONS: PlacePrediction[] = [
   },
   {
     id: "recent-2",
+    place_id: "recent-2",
     name: "Victoria Island, Island, Lagos",
     description: "Recent search",
     type: "recent",
@@ -24,6 +27,7 @@ export const DEFAULT_LOCATION_SUGGESTIONS: PlacePrediction[] = [
   },
   {
     id: "popular-1",
+    place_id: "popular-1",
     name: "Ugbowo, Benin City, Edo State",
     description: "Popular location",
     type: "popular",

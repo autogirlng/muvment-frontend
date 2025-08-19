@@ -106,9 +106,9 @@ function SearchBookings({
   };
 
   // Handle location selection
-  const onLocationSelect = (location: any) => {
-    const selectedName = handleLocationSelect(location);
-    setSearchValue(selectedName);
+  const onLocationSelect = async (location: any) => {
+    const selectedLocation = await handleLocationSelect(location);
+    setSearchValue(selectedLocation.name);
   };
 
   // Enhanced date/time change handlers with auto-correction

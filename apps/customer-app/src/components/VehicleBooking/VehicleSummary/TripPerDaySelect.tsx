@@ -12,6 +12,21 @@ import {
     ITripPerDaySelect
 } from "@/utils/types";
 import { toTitleCase } from "@/utils/functions";
+import InputField from "@repo/ui/inputField";
+import { useQuery } from "@tanstack/react-query";
+import { useHttp } from "@/hooks/useHttp";
+import { GroupCheckBox } from "@repo/ui/checkbox";
+
+
+interface OutskirtLocations {
+    id: string;
+    locationName: string;
+    state: string;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+
+}
 
 const InputSection = ({
     title,
@@ -41,16 +56,37 @@ const InputSection = ({
 
 
 
-const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle }: ITripPerDaySelect) => {
+const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initialValues, disabled, page }: ITripPerDaySelect) => {
     const [date, setDate] = useState(`Day ${day}: Choose Date`);
-
-    const [bookingType, setBookingType] = useState('');
-    const [tripStartDate, setTripStartDate] = useState<Date | null>(null);
-    const [tripStartTime, setTripStartTime] = useState<Date | null>(null);
-    const [pickupLocation, setPickupLocation] = useState('');
-    const [dropoffLocation, setDropoffLocation] = useState('');
-    const [areaOfUse, setAreaOfUse] = useState('Mainland Central');
+    const [bookingType, setBookingType] = useState(initialValues?.bookingType || '');
+    const initialTripStartTime = initialValues ? new Date(`${initialValues.tripStartTime}`) : null
+    const initialTripStartDate = initialValues ? new Date(`${initialValues.tripStartDate}`) : null
+    const [tripStartDate, setTripStartDate] = useState<Date | null>(initialTripStartDate);
+    const [tripStartTime, setTripStartTime] = useState<Date | null>(initialTripStartTime);
+    const [pickupLocation, setPickupLocation] = useState(initialValues?.pickupLocation || "");
+    const [dropoffLocation, setDropoffLocation] = useState(initialValues?.dropoffLocation || "");
+    const [areaOfUse, setAreaOfUse] = useState(initialValues?.areaOfUse);
     const [isDayTwoCollapsed, setIsDayTwoCollapsed] = useState(false);
+    const [checkedLocations, setCheckedLocations] = useState<string[]>([])
+
+
+    const http = useHttp();
+
+    const isOutskirt = (): boolean => {
+        const location = initialValues?.areaOfUse?.split("_")
+
+        if (location && location[location.length - 1] === "OUTSKIRT") {
+            return true
+        }
+        return false
+    }
+
+    const { data: outskirtLocations, isError, isLoading } = useQuery({
+        queryKey: ["getOutskirtsLocations", id],
+        queryFn: () => http.get<OutskirtLocations[]>(`/api/outskirt-locations/state/${vehicle?.stateOfRegistration.toUpperCase()}`),
+        enabled: isOutskirt() && !!vehicle?.stateOfRegistration,
+        retry: false,
+    });
 
     const onChange = (key: string, value: string) => {
         const trips: TripDetails[] = JSON.parse(sessionStorage.getItem('trips') || '[]')
@@ -67,7 +103,6 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle }: ITri
             updatedTrips = [...trips, { id, [key]: value }];
         }
         sessionStorage.setItem("trips", JSON.stringify(updatedTrips))
-
         onChangeTrip(id, { [key]: value })
 
         switch (key) {
@@ -99,6 +134,7 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle }: ITri
                 break;
         }
     }
+
 
     return <>
         <div className="rounded-2xl px-4 p-2 mt-1 border border-grey-200">
@@ -133,13 +169,13 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle }: ITri
                 </svg>
             </div>
 
-            {/* Form fields for Day 2 */}
+
             {!isDayTwoCollapsed && (
                 <div className="mt-2 pt-2 space-y-4">
-                    {/* Booking Type */}
                     <div>
                         <InputSection title="Booking Type">
                             <SelectInput
+                                disabled={disabled}
                                 id="bookingType"
                                 placeholder="Select Booking Type"
                                 variant="outlined"
@@ -186,35 +222,48 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle }: ITri
                             <DateInput
                                 name="startDate"
                                 value={tripStartDate}
-                                onChange={(value: CalendarValue) => {
-                                    onChange("tripStartDate", value?.toString() || '')
-                                }}
+                                disabled={disabled}
+                                onChange={(value: CalendarValue) => { onChange("tripStartDate", value?.toString() || '') }}
                                 minDate={new Date()} />
                             <TimeInput
                                 name="startTime"
+                                disabled={disabled}
                                 value={tripStartTime}
                                 onChange={(date: Date) => onChange("tripStartTime", date.toString())}
                                 timeType="start" />
                         </InputSection>
                     </div>
-                    <InputSection title="Pickup Location">
+                    {/* <InputSection title="Pickup Location">
                         <input
                             type="text"
                             name="pickupLocation"
+                            disabled
                             value={pickupLocation}
                             onChange={(e) => onChange("pickupLocation", e.target.value)}
                             placeholder="Enter location"
                             className="w-full rounded-[18px] p-4 text-left text-sm h-[56px] outline-none bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A] placeholder:text-grey-400"
                         />
+                    </InputSection> */}
+                    <InputSection title="Pickup Location">
+                        <InputField
+                            type="text"
+                            id="pickupLocation"
+                            name="pickupLocation"
+                            disabled={disabled}
+                            value={pickupLocation}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange("pickupLocation", e.target.value)}
+                            placeholder="Enter location"
+                        />
                     </InputSection>
                     <InputSection title="Drop-off Location">
-                        <input
+                        <InputField
                             type="text"
+                            id="dropoffLocation"
+                            disabled={disabled}
                             name="dropoffLocation"
                             value={dropoffLocation}
-                            onChange={(e) => onChange("dropoffLocation", e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange("dropoffLocation", e.target.value)}
                             placeholder="Enter location"
-                            className="w-full rounded-[18px] p-4 text-left text-sm h-[56px] outline-none bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A] placeholder:text-grey-400"
                         />
                     </InputSection>
 
@@ -224,6 +273,7 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle }: ITri
                             id="areaOfUse"
                             placeholder="Select Area of Use"
                             variant="outlined"
+                            disabled={disabled}
                             options={[
                                 {
                                     option: `${toTitleCase(vehicle?.stateOfRegistration || "")} Mainland Central`,
@@ -231,19 +281,78 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle }: ITri
                                 },
                                 {
                                     option: `${toTitleCase(vehicle?.stateOfRegistration || "")} Island Central`,
-                                    value: `${toTitleCase(vehicle?.stateOfRegistration || "")}_ISLAND_CENTRAL`
+                                    value: `${vehicle?.stateOfRegistration.toUpperCase()}_ISLAND_CENTRAL`
                                 },
                                 {
                                     option: `${toTitleCase(vehicle?.stateOfRegistration || "")} Mainland Outskirt`,
-                                    value: `${toTitleCase(vehicle?.stateOfRegistration || "")}_MAINLAND_OUTSKIRT`
+                                    value: `${vehicle?.stateOfRegistration.toUpperCase()}_MAINLAND_OUTSKIRT`
                                 },
                             ]}
                             value={areaOfUse}
                             onChange={(value) => onChange("areaOfUse", value)}
                         />
                     </InputSection>
+                    {
+                        page === 'booking-vehicle' && isOutskirt() && <div className="space-y-3">
+                            <label
+                                htmlFor="features"
+                                className="text-sm block font-medium mt-4 text-black"
+                            >
+                                Outskirt locations
+                            </label>
+                            <p className="text-sm text-grey-600">
+                                Stops here will incur an additional cost of N6,500 set by the host
+                                of your vehicle
+                            </p>
+                            <div className="flex flex-wrap gap-x-4 gap-y-8">
+                                {outskirtLocations?.map((location) => (
+                                    <GroupCheckBox
+                                        key={location.locationName}
+                                        feature={location.locationName}
+                                        checkedValues={checkedLocations}
+                                        onChange={(feature: string, isChecked: boolean) => {
+                                            if (isChecked) {
+                                                setCheckedLocations(prev => [...prev, feature]);
+                                                const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || "[]")
+                                                const updatedTrips = trips.map((trip) => {
+                                                    if (trip.id === id) {
+                                                        return {
+                                                            ...trip,
+                                                            outskirtLocations: [...checkedLocations, feature]
+                                                        }
+                                                    }
+                                                    return trip;
+                                                })
+                                                sessionStorage.setItem("trips", JSON.stringify(updatedTrips))
+
+                                            }
+                                            else {
+                                                const newValues = checkedLocations.filter(
+                                                    (value: string) => value !== feature
+                                                );
+                                                setCheckedLocations(newValues);
+                                                const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || "[]")
+                                                const updatedTrips = trips.map((trip) => {
+                                                    if (trip.id === id) {
+                                                        return {
+                                                            ...trip,
+                                                            outskirtLocations: [...newValues]
+                                                        }
+                                                    }
+                                                    return trip;
+                                                })
+                                                // sessionStorage.setItem("trips", JSON.stringify(updatedTrips))
+                                            }
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    }
                 </div>
             )}
+
+
         </div>
     </>
 }

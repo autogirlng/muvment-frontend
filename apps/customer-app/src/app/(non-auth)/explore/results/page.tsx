@@ -1,7 +1,7 @@
 "use client";
 
 import cn from "classnames";
-import { Suspense, useState, useEffect, useCallback } from "react";
+import { Suspense, useState, useCallback, useEffect } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { FullPageSpinner } from "@repo/ui/spinner";
@@ -14,6 +14,8 @@ import DesktopNav from "@/components/Navbar/DesktopNav";
 import MobileNav from "@/components/Navbar/MobileNav";
 import BackLink from "@/components/BackLink";
 import BookingSearchBar from "@/components/searchbar-component/SearchBar";
+import NavBookingSearchBar from "@/components/searchbar-component/NavBookingSearchBar";
+import { useAppSelector } from "@/lib/hooks";
 
 interface VehicleImage {
   frontView: string;
@@ -51,25 +53,50 @@ interface ApiResponse {
   totalPages: number;
   totalCount: number;
 }
+
 const fetchRides = async (
   params: Record<string, string | null | string[]>
 ): Promise<ApiResponse> => {
-  const endpoint = "https://dev-muvment.up.railway.app/api/customer/find-ride";
+  const BASE_URL = "https://dev-muvment.up.railway.app";
+  let endpoint = `${BASE_URL}/api/customer/find-ride`;
   const queryParams = new URLSearchParams();
 
-  Object.entries(params).forEach(([key, value]) => {
-    if (Array.isArray(value)) {
-      value.forEach((v) => queryParams.append(key, v));
-    } else if (value) {
-      queryParams.append(key, value);
-    }
-  });
+  if (params.latitude && params.longitude) {
+    endpoint = `${BASE_URL}/api/customer/nearby`;
+
+    const nearbyParams = {
+      latitude: params.latitude,
+      longitude: params.longitude,
+      radius: "250",
+      search: params.search,
+      category: params.category,
+      bookingType: params.bookingType,
+      untilDate: params.untilDate,
+      fromDate: params.fromDate,
+    };
+
+    Object.entries(nearbyParams).forEach(([key, value]) => {
+      if (value) {
+        queryParams.append(key, Array.isArray(value) ? value.join(",") : value);
+      }
+    });
+  } else {
+    Object.entries(params).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((v) => queryParams.append(key, v));
+      } else if (value) {
+        queryParams.append(key, value);
+      }
+    });
+  }
+
   const response = await fetch(`${endpoint}?${queryParams.toString()}`);
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
   return response.json();
 };
+
 const placeholderImages = [
   "/images/vehicles/1.png",
   "/images/vehicles/2.png",
@@ -85,6 +112,7 @@ export default function ExplorePage() {
 }
 
 function ExplorePageLayout() {
+  const { user } = useAppSelector((state) => state.user);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -94,6 +122,8 @@ function ExplorePageLayout() {
   const bookingType = searchParams.get("bookingType");
   const category = searchParams.get("category");
   const search = searchParams.get("location");
+  const latitude = searchParams.get("latitude");
+  const longitude = searchParams.get("longitude");
   const price = searchParams.getAll("price");
   const type = searchParams.getAll("type");
   const make = searchParams.getAll("make");
@@ -107,6 +137,8 @@ function ExplorePageLayout() {
     bookingType,
     category,
     search,
+    latitude,
+    longitude,
     price,
     type,
     make,
@@ -120,7 +152,7 @@ function ExplorePageLayout() {
     isLoading,
     isError,
   } = useQuery<ApiResponse>({
-    queryKey: ["findRide", queryKeyParams],
+    queryKey: ["rides", queryKeyParams],
     queryFn: () => fetchRides(queryKeyParams),
     staleTime: 500,
   });
@@ -139,6 +171,8 @@ function ExplorePageLayout() {
     numberOfSeats,
     features,
   };
+
+  useEffect(() => {}, [user]);
 
   const handleFilterChange = useCallback(
     (filterName: string, value: string | number[]) => {
@@ -181,10 +215,10 @@ function ExplorePageLayout() {
 
   return (
     <div>
-      <DesktopNav user={null} explorePage>
-        <BookingSearchBar />
+      <DesktopNav user={user} explorePage>
+        <NavBookingSearchBar />
       </DesktopNav>
-      <MobileNav user={null} />
+      <MobileNav user={user} />
 
       <div className="pb-14 pt-10 md:pt-44 px-8">
         <div

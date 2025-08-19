@@ -739,6 +739,7 @@ export interface TripDetails {
   pickupLocation?: string;
   dropoffLocation?: string;
   areaOfUse?: string;
+  outskirtLocations?:string[];
 
 }
 export interface Trips {
@@ -747,9 +748,12 @@ export interface Trips {
 
   
   export interface ITripPerDaySelect {
-      day: string,
-      deleteMethod?: (idToDelete: string) => void,
-      id: string,
+    initialValues?:TripDetails;
+      day: string;
+      deleteMethod?: (idToDelete: string) => void;
+      id: string;
       onChangeTrip: (id: string, details: TripDetails) => void;
-      vehicle?: VehicleInformation | null
+      vehicle?: VehicleInformation | null;
+      disabled:boolean;
+      page?:string;
   }

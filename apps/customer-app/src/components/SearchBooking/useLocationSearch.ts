@@ -1,26 +1,34 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { PlacePrediction } from "./types";
 import { GoogleMapsService } from "./googleMapsService";
-import {
-  DEFAULT_LOCATION_SUGGESTIONS,
-  GOOGLE_MAPS_DEBOUNCE_DELAY,
-} from "./constants";
+import { GOOGLE_MAPS_DEBOUNCE_DELAY } from "./constants";
+import { getRecentSearches, addRecentSearch } from "@/utils/recentSearches";
+
+type SelectedLocation = {
+  name: string;
+  lat: number | null;
+  lng: number | null;
+};
 
 export const useLocationSearch = () => {
   const [showLocationDropdown, setShowLocationDropdown] =
     useState<boolean>(false);
   const [locationSuggestions, setLocationSuggestions] = useState<
     PlacePrediction[]
-  >(DEFAULT_LOCATION_SUGGESTIONS);
+  >([]);
+
+  const [recentSearches, setRecentSearches] = useState<PlacePrediction[]>([]);
   const [isLoadingPlaces, setIsLoadingPlaces] = useState<boolean>(false);
   const [searchError, setSearchError] = useState<string>("");
 
   const googleMapsService = useRef<GoogleMapsService>(new GoogleMapsService());
   const debounceTimeout = useRef<NodeJS.Timeout>();
 
-  // Initialize Google Maps service
   useEffect(() => {
-    const initializeService = async () => {
+    const initialize = async () => {
+      const loadedRecentSearches = getRecentSearches();
+      setRecentSearches(loadedRecentSearches);
+      setLocationSuggestions(loadedRecentSearches);
       try {
         await googleMapsService.current.initialize();
       } catch (error) {
@@ -28,49 +36,37 @@ export const useLocationSearch = () => {
         setSearchError("Location search is currently unavailable.");
       }
     };
-
-    initializeService();
+    initialize();
   }, []);
 
-  // Debounced Google Places search
-  const searchGooglePlaces = useCallback(async (query: string) => {
-    if (!query.trim()) {
-      setLocationSuggestions(DEFAULT_LOCATION_SUGGESTIONS);
-      return;
-    }
-
-    setIsLoadingPlaces(true);
-    setSearchError("");
-
-    try {
-      const suggestions = await googleMapsService.current.searchPlaces(query);
-      setLocationSuggestions(suggestions);
-    } catch (error) {
-      setSearchError("Location search is currently unavailable.");
-      console.error("Location search error:", error);
-
-      // Fallback to filtered default suggestions
-      const filteredDefaults = DEFAULT_LOCATION_SUGGESTIONS.filter((location) =>
-        location.name.toLowerCase().includes(query.toLowerCase())
-      );
-      setLocationSuggestions(filteredDefaults);
-    } finally {
-      setIsLoadingPlaces(false);
-    }
-  }, []);
-
-  // Debounced search effect
-  const debouncedSearch = useCallback(
-    (searchValue: string) => {
-      if (debounceTimeout.current) {
-        clearTimeout(debounceTimeout.current);
-      }
-
-      if (searchValue.trim() === "") {
-        setLocationSuggestions(DEFAULT_LOCATION_SUGGESTIONS);
+  const searchGooglePlaces = useCallback(
+    async (query: string) => {
+      if (!query.trim()) {
+        setLocationSuggestions(recentSearches);
         setIsLoadingPlaces(false);
         return;
       }
+
+      setIsLoadingPlaces(true);
+      setSearchError("");
+
+      try {
+        const suggestions = await googleMapsService.current.searchPlaces(query);
+        setLocationSuggestions(suggestions);
+      } catch (error) {
+        setSearchError("Location search is currently unavailable.");
+        console.error("Location search error:", error);
+        setLocationSuggestions([]);
+      } finally {
+        setIsLoadingPlaces(false);
+      }
+    },
+    [recentSearches]
+  );
+
+  const debouncedSearch = useCallback(
+    (searchValue: string) => {
+      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
 
       debounceTimeout.current = setTimeout(() => {
         searchGooglePlaces(searchValue);
@@ -79,20 +75,45 @@ export const useLocationSearch = () => {
     [searchGooglePlaces]
   );
 
-  // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
-      if (debounceTimeout.current) {
-        clearTimeout(debounceTimeout.current);
-      }
+      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
     };
   }, []);
 
-  const handleLocationSelect = useCallback((location: PlacePrediction) => {
-    setShowLocationDropdown(false);
-    setSearchError("");
-    return location.name;
-  }, []);
+  const handleLocationSelect = useCallback(
+    async (location: PlacePrediction): Promise<SelectedLocation> => {
+      setShowLocationDropdown(false);
+      setSearchError("");
+
+      addRecentSearch(location);
+      setRecentSearches((prev) =>
+        [
+          location,
+          ...prev.filter((p) => p.place_id !== location.place_id),
+        ].slice(0, 5)
+      );
+
+      if (!location.place_id) {
+        return { name: location.name, lat: null, lng: null };
+      }
+
+      try {
+        const placeDetails = await googleMapsService.current.getPlaceDetails(
+          location.place_id
+        );
+        const lat = placeDetails.geometry?.location?.lat();
+        const lng = placeDetails.geometry?.location?.lng();
+
+        return { name: location.name, lat: lat ?? null, lng: lng ?? null };
+      } catch (error) {
+        console.error("Error fetching place details:", error);
+        setSearchError("Could not retrieve location details.");
+        return { name: location.name, lat: null, lng: null };
+      }
+    },
+    []
+  );
 
   const handleSearchInputFocus = useCallback(() => {
     setShowLocationDropdown(true);
@@ -100,9 +121,7 @@ export const useLocationSearch = () => {
 
   const handleSearchInputChange = useCallback(
     (value: string) => {
-      if (!showLocationDropdown) {
-        setShowLocationDropdown(true);
-      }
+      if (!showLocationDropdown) setShowLocationDropdown(true);
       setSearchError("");
       debouncedSearch(value);
     },
