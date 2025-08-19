@@ -57,7 +57,8 @@ interface ApiResponse {
 const fetchRides = async (
   params: Record<string, string | null | string[]>
 ): Promise<ApiResponse> => {
-  const BASE_URL = "https://dev-muvment.up.railway.app";
+  const BASE_URL =
+    process.env.NEXT_PUBLIC_API_URL || "https://dev-muvment.up.railway.app";
   let endpoint = `${BASE_URL}/api/customer/find-ride`;
   const queryParams = new URLSearchParams();
 
