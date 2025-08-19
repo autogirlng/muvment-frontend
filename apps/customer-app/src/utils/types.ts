@@ -496,6 +496,7 @@ export interface BookingInformation {
   purposeOfRide: string;
 }
 export interface VehicleInformation {
+  availabilityAndPricing: any;
   id?: string;
   listingName: string;
   location?: string;
@@ -704,3 +705,51 @@ export type TransactionTableRow = {
   status: string;
   actions: string;
 };
+
+
+// Booking a trip/trips
+
+export interface Breakdown {
+  bookingTypes: string[];
+  bookingTypeBreakdown: {
+    [key: string]: number; // An object with string keys and number values
+  };
+  outskirtFee: number;
+  extensionFee: number;
+  discountAmount: number;
+  discountPercentage: number;
+  isExtension: boolean;
+  isOutskirt: boolean;
+}
+
+// For the top-level object
+export interface BookingSummaryPricing {
+  totalPrice: number;
+  breakdown: Breakdown;
+  currency: string;
+  unit: string;
+}
+
+
+export interface TripDetails {
+  id?: string;
+  bookingType?: string;
+  tripStartDate?: string;
+  tripStartTime?: string;
+  pickupLocation?: string;
+  dropoffLocation?: string;
+  areaOfUse?: string;
+
+}
+export interface Trips {
+  id: string;
+  tripDetails?: TripDetails; }
+
+  
+  export interface ITripPerDaySelect {
+      day: string,
+      deleteMethod?: (idToDelete: string) => void,
+      id: string,
+      onChangeTrip: (id: string, details: TripDetails) => void;
+      vehicle?: VehicleInformation | null
+  }
