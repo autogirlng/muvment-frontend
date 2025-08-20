@@ -64,7 +64,7 @@ export default function RideSection() {
               Whether you&apos;re commuting to work, heading to the airport, attending a meeting, or simply curious, our exceptional chauffeur-driven electric vehicle service is designed to impress.
             </p>
             <div className="flex justify-center md:justify-start">
-              <Link href="/explore" passHref legacyBehavior>
+              <Link href="/explore/results?category=SUVElectric" passHref legacyBehavior>
                 <a className="bg-primary-500 text-white font-semibold py-3 px-6 rounded-xl hover:bg-primary-600 transition-colors w-full xs:w-auto hover:text-white text-center block">
                   Explore Electric Cars
                 </a>

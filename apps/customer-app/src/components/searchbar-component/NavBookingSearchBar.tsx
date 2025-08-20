@@ -8,8 +8,12 @@ import {
   Dispatch,
   SetStateAction,
   useMemo,
+  Suspense, // Import Suspense
 } from "react";
-import { useRouter } from "next/navigation";
+// --- START: MODIFICATION 1 ---
+// Import useSearchParams to read URL parameters
+import { useRouter, useSearchParams } from "next/navigation";
+// --- END: MODIFICATION 1 ---
 import { ChevronDown, Search } from "lucide-react";
 import { DatePicker } from "@repo/ui/calendar";
 
@@ -26,6 +30,7 @@ type CustomDropdownProps = {
   columnClasses: string;
 };
 
+// The CustomDropdown component remains unchanged
 const CustomDropdown: FC<CustomDropdownProps> = ({
   label,
   options,
@@ -43,8 +48,8 @@ const CustomDropdown: FC<CustomDropdownProps> = ({
       SIX_HOURS: "6 Hours",
       TWELVE_HOURS: "12 Hours",
       AIRPORT_PICKUP: "Airport Transfers",
-      SedanElectric: "Sedan Electric",
-      SUVElectric: "SUV Electric",
+      SedanElectric: "Sedan (Electric)",
+      SUVElectric: "SUV (Electric)",
     };
     return mappings[rawValue] || rawValue;
   };
@@ -90,12 +95,9 @@ const CustomDropdown: FC<CustomDropdownProps> = ({
           <span>{formatDisplayValue(value)}</span>
           <ChevronDown
             size={20}
-            className={`transition-transform duration-200 ${
-              isOpen ? "rotate-180" : ""
-            }`}
+            className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
           />
         </button>
-
         {isOpen && (
           <div
             className="absolute z-10 w-full mt-2 bg-white rounded-xl shadow-lg origin-top-right"
@@ -119,9 +121,31 @@ const CustomDropdown: FC<CustomDropdownProps> = ({
   );
 };
 
+// --- START: MODIFICATION 2 ---
+// This is the new wrapper component
 const BookingSearchBar = () => {
+  return (
+    // Suspense is required to use the useSearchParams hook
+    <Suspense
+      fallback={
+        <div className="w-full max-w-5xl mx-auto h-[72px] bg-white shadow-lg rounded-2xl animate-pulse" />
+      }
+    >
+      <SearchBarContent />
+    </Suspense>
+  );
+};
+// --- END: MODIFICATION 2 ---
+
+// --- START: MODIFICATION 3 ---
+// Renamed the original component to SearchBarContent
+const SearchBarContent = () => {
   const router = useRouter();
-  const [bookingType, setBookingType] = useState<string>("AN_HOUR");
+  // useSearchParams hook to get URL params
+  const searchParams = useSearchParams();
+
+  // State initialization with default values
+  const [bookingType, setBookingType] = useState<string>("TWELVE_HOURS");
   const [location, setLocation] = useState<string>("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
@@ -129,6 +153,59 @@ const BookingSearchBar = () => {
   const [untilDate, setUntilDate] = useState<Value>(new Date());
   const [category, setCategory] = useState<string>("SUVElectric");
   const [openPicker, setOpenPicker] = useState<"from" | "until" | null>(null);
+
+  // Define options here to use them in the useEffect below
+  const bookingTypeOptions = [
+    "AN_HOUR",
+    "THREE_HOURS",
+    "SIX_HOURS",
+    "TWELVE_HOURS",
+    "AIRPORT_PICKUP",
+  ];
+  const allCategoryOptions = [
+    "SUV",
+    "Sedan",
+    "SedanElectric",
+    "SUVElectric",
+    "BUS",
+  ];
+
+  // useEffect to pre-fill the form from URL parameters on component mount
+  useEffect(() => {
+    const params = {
+      bookingType: searchParams.get("bookingType"),
+      location: searchParams.get("location"),
+      latitude: searchParams.get("latitude"),
+      longitude: searchParams.get("longitude"),
+      fromDate: searchParams.get("fromDate"),
+      untilDate: searchParams.get("untilDate"),
+      category: searchParams.get("category"),
+    };
+
+    if (params.bookingType && bookingTypeOptions.includes(params.bookingType)) {
+      setBookingType(params.bookingType);
+    }
+    if (params.location) {
+      setLocation(params.location);
+    }
+    if (params.latitude) {
+      setLatitude(parseFloat(params.latitude));
+    }
+    if (params.longitude) {
+      setLongitude(parseFloat(params.longitude));
+    }
+    // Add time part to avoid timezone issues where new Date('YYYY-MM-DD') might result in the previous day
+    if (params.fromDate) {
+      setFromDate(new Date(`${params.fromDate}T00:00:00`));
+    }
+    if (params.untilDate) {
+      setUntilDate(new Date(`${params.untilDate}T00:00:00`));
+    }
+    if (params.category && allCategoryOptions.includes(params.category)) {
+      setCategory(params.category);
+    }
+  }, [searchParams]); // Dependency array ensures this runs when params change
+  // --- END: MODIFICATION 3 ---
 
   const {
     showLocationDropdown,
@@ -202,20 +279,6 @@ const BookingSearchBar = () => {
   const inputDisplayClasses =
     "w-full text-left bg-transparent border-none focus:ring-0 p-0 font-semibold text-[#98A2B3] placeholder-gray-500 text-xs sm:text-sm cursor-pointer";
   const columnPadding = "p-4 lg:py-2 lg:px-5 border-[#98A2B3]";
-  const bookingTypeOptions = [
-    "AN_HOUR",
-    "THREE_HOURS",
-    "SIX_HOURS",
-    "TWELVE_HOURS",
-    "AIRPORT_PICKUP",
-  ];
-  const allCategoryOptions = [
-    "SUV",
-    "Sedan",
-    "SedanElectric",
-    "SUVElectric",
-    "BUS",
-  ];
 
   const getFilteredCategories = (type: string) => {
     const hourlyElectricOnly = ["AN_HOUR", "THREE_HOURS", "SIX_HOURS"];
@@ -232,7 +295,7 @@ const BookingSearchBar = () => {
 
   useEffect(() => {
     if (!filteredCategoryOptions.includes(category)) {
-      setCategory(filteredCategoryOptions[0]);
+      setCategory(filteredCategoryOptions[0] || allCategoryOptions[0]);
     }
   }, [filteredCategoryOptions, category]);
 
@@ -246,7 +309,6 @@ const BookingSearchBar = () => {
           onChange={setBookingType}
           columnClasses="lg:w-[175px] lg:flex-shrink-0"
         />
-
         <div
           ref={locationWrapperRef}
           className={`relative w-full ${columnPadding} lg:w-auto lg:flex-1 lg:min-w-[220px]`}
@@ -287,7 +349,6 @@ const BookingSearchBar = () => {
             dropdownRef={locationWrapperRef}
           />
         </div>
-
         <div
           className={`w-full ${columnPadding} lg:w-[160px] lg:flex-shrink-0`}
         >
@@ -334,7 +395,6 @@ const BookingSearchBar = () => {
           columnClasses="lg:w-[130px] lg:flex-shrink-0"
         />
       </div>
-
       <button
         type="button"
         onClick={handleSearch}
