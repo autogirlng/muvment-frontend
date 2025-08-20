@@ -12,13 +12,16 @@ import {
   getExistingBookingInformation,
   useFetchUrlParams,
 } from "@/utils/functions";
-import { TripDetails, VehicleInformation } from "@/utils/types";
+import { BookingInformation, TripDetails, VehicleInformation } from "@/utils/types";
 import { standardServiceFeeInPercentage } from "@/utils/constants";
 import useHandleBooking from "../hooks/useHandleBooking";
 import { useSearchParams } from "next/navigation";
 import { BlurredDialog } from "@repo/ui/dialog";
 import { useHttp } from "@/hooks/useHttp";
 import { BookingSummaryPricing } from "@/utils/types";
+import { format } from "date-fns";
+import { useRouter } from "next/navigation";
+import { transactionData } from "@/utils/data";
 
 type Props = { vehicle: VehicleInformation | null; type: "guest" | "user" };
 
@@ -57,116 +60,118 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
     : new Date(itineraryInformation?.endDate);
 
   // Calculate number of days
-  const numberOfDays = calculateNumberOfDays(endDate, startDate);
+  // const numberOfDays = calculateNumberOfDays(endDate, startDate);
 
-  const totalCostWithoutServiceFee = calculateTotalCostWithoutServiceFee(
-    endDate,
-    startDate,
-    dailyRate
-  );
-  const serviceFee = calculateServiceFee(
-    totalCostWithoutServiceFee,
-    standardServiceFeeInPercentage
-  );
-  const subTotal = calculateSubTotal(
-    dailyRate,
-    hostDiscounts,
-    endDate,
-    startDate
-  );
+  // const totalCostWithoutServiceFee = calculateTotalCostWithoutServiceFee(
+  //   endDate,
+  //   startDate,
+  //   dailyRate
+  // );
+  // const serviceFee = calculateServiceFee(
+  //   totalCostWithoutServiceFee,
+  //   standardServiceFeeInPercentage
+  // );
+  // const subTotal = calculateSubTotal(
+  //   dailyRate,
+  //   hostDiscounts,
+  //   endDate,
+  //   startDate
+  // );
 
-  const { saveBooking, proceedToPayment } = useHandleBooking({
-    vehicleId: vehicle?.id ?? "",
-    type,
-  });
+  // const { saveBooking, proceedToPayment } = useHandleBooking({
+  //   vehicleId: vehicle?.id ?? "",
+  //   type,
+  // });
 
-  const handleOpenCancellationModal = () => {
-    setOpenCancellationModal(!openCancellationModal);
-  };
+  // const handleOpenCancellationModal = () => {
+  //   setOpenCancellationModal(!openCancellationModal);
+  // };
 
-  const saveBookingHandler = () => {
-    const {
-      secondaryCountryCode,
-      secondaryCountry,
-      userCountry,
-      userCountryCode,
-      ...personalInformationValues
-    } = personalInformation;
+  // const saveBookingHandler = () => {
+  //   const {
+  //     secondaryCountryCode,
+  //     secondaryCountry,
+  //     userCountry,
+  //     userCountryCode,
+  //     ...personalInformationValues
+  //   } = personalInformation;
 
-    const {
-      // startDate,
-      // endDate,
-      startTime,
-      endTime,
-      ...itineraryInformationValues
-    } = itineraryInformation;
+  //   const {
+  //     // startDate,
+  //     // endDate,
+  //     startTime,
+  //     endTime,
+  //     ...itineraryInformationValues
+  //   } = itineraryInformation;
 
 
-    const amount = priceData?.totalPrice
-      ? parseFloat(priceData?.totalPrice)
-      : parseInt(subTotal);
+  //   const amount = priceData?.totalPrice
+  //     ? parseFloat(priceData?.totalPrice)
+  //     : parseInt(subTotal);
 
-    saveBooking.mutate({
-      ...personalInformationValues,
-      ...itineraryInformationValues,
-      // startDate: itineraryInformation.startDate,
-      // endDate: itineraryInformation.endDate,
-      amount: amount,
-      currencyCode: currencyCode,
-      bookingType,
-      duration: parseInt(numberOfDays),
-      redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/draft`,
-    });
-  };
+  //   saveBooking.mutate({
+  //     ...personalInformationValues,
+  //     ...itineraryInformationValues,
+  //     // startDate: itineraryInformation.startDate,
+  //     // endDate: itineraryInformation.endDate,
+  //     amount: amount,
+  //     currencyCode: currencyCode,
+  //     bookingType,
+  //     duration: parseInt(numberOfDays),
+  //     redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/draft`,
+  //   });
+  // };
 
-  const proceedToPaymentHandler = () => {
-    const {
-      secondaryCountryCode,
-      secondaryCountry,
-      userCountry,
-      userCountryCode,
-      ...personalInformationValues
-    } = personalInformation;
+  // const proceedToPaymentHandler = () => {
+  //   const {
+  //     secondaryCountryCode,
+  //     secondaryCountry,
+  //     userCountry,
+  //     userCountryCode,
+  //     ...personalInformationValues
+  //   } = personalInformation;
 
-    let {
-      // startDate,
-      // endDate,
-      startTime,
-      endTime,
-      ...itineraryInformationValues
-    } = itineraryInformation;
+  //   let {
+  //     // startDate,
+  //     // endDate,
+  //     startTime,
+  //     endTime,
+  //     ...itineraryInformationValues
+  //   } = itineraryInformation;
 
-    const amount = priceData?.totalPrice
-      ? parseFloat(priceData?.totalPrice)
-      : parseInt(subTotal);
+  //   const amount = priceData?.totalPrice
+  //     ? parseFloat(priceData?.totalPrice)
+  //     : parseInt(subTotal);
 
-    // console.log({
-    proceedToPayment.mutate({
-      ...personalInformationValues,
-      ...itineraryInformationValues,
-      startDate:
-        itineraryInformation.startDate &&
-          !itineraryInformation.startDate.endsWith("Z")
-          ? itineraryInformation.startDate + "Z"
-          : itineraryInformation.startDate,
-      endDate:
-        itineraryInformation.endDate &&
-          !itineraryInformation.endDate.endsWith("Z")
-          ? itineraryInformation.endDate + "Z"
-          : itineraryInformation.endDate,
-      amount: amount,
-      currencyCode: currencyCode,
-      bookingType,
-      duration: parseInt(numberOfDays),
-      redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`,
-    });
-  };
+  //   // console.log({
+  //   proceedToPayment.mutate({
+  //     ...personalInformationValues,
+  //     ...itineraryInformationValues,
+  //     startDate:
+  //       itineraryInformation.startDate &&
+  //         !itineraryInformation.startDate.endsWith("Z")
+  //         ? itineraryInformation.startDate + "Z"
+  //         : itineraryInformation.startDate,
+  //     endDate:
+  //       itineraryInformation.endDate &&
+  //         !itineraryInformation.endDate.endsWith("Z")
+  //         ? itineraryInformation.endDate + "Z"
+  //         : itineraryInformation.endDate,
+  //     amount: amount,
+  //     currencyCode: currencyCode,
+  //     bookingType,
+  //     duration: parseInt(numberOfDays),
+  //     redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`,
+  //   });
+  // };
   const http = useHttp()
   const [bookingPriceSummary, setBookingPriceSummary] = useState<BookingSummaryPricing>()
-
+  const [userTrips, setUserTrips] = useState<TripDetails[]>()
+  const router = useRouter()
   const fetchBookingPriceSummary = async () => {
     const bookingTypes: string[] = [];
     const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || "[]");
+    setUserTrips(trips)
     let isOutskirt = false;
     for (let trip of trips) {
       if (trip.bookingType) {
@@ -176,6 +181,8 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
         isOutskirt = true
       }
     }
+
+
 
     const bookingPrice = await http.post<BookingSummaryPricing>("/api/bookings/calculate-price",
       {
@@ -187,6 +194,75 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
     );
     setBookingPriceSummary(bookingPrice)
   }
+
+  const handlePayment = async () => {
+    const {
+      secondaryCountryCode,
+      secondaryCountry,
+      userCountry,
+      userCountryCode,
+      ...personalInformationValues
+    } = personalInformation;
+
+    const bookings: any[] = []
+
+
+    userTrips && userTrips?.map((trip) => {
+      const date = new Date(trip.tripStartDate || '')
+      const startDate = format(date, "yyyy-MM-dd")
+      const time = new Date(trip.tripStartTime || '')
+      const startTime = time.toISOString().split("T")[1]
+
+      const booking = {
+        vehicleId: vehicle?.id,
+        currencyCode: bookingPriceSummary?.currency || "NGN",
+        countryCode: userCountryCode || "+234",
+        country: userCountry || "NG",
+        startDate: `${startDate}T${startTime}`,
+        endDate: `${date.toISOString().split("T")[0]}T23:59:59.000Z`,
+        duration: 1,
+        bookingType: trip.bookingType,
+        amount: bookingPriceSummary?.breakdown.bookingTypeBreakdown[`${trip.bookingType}`],
+        secondaryPhoneNumber: personalInformationValues.secondaryPhoneNumber,
+        isForSelf: personalInformationValues.isForSelf,
+        specialInstructions: "",
+        guestName: personalInformationValues.guestName,
+        guestEmail: personalInformationValues.guestEmail,
+        guestPhoneNumber: personalInformationValues.guestPhoneNumber,
+        pickupLocation: trip.pickupLocation || '',
+        dropoffLocation: trip.dropoffLocation || '',
+        outskirtsLocation: trip.outskirtLocations || [],
+        areaOfUse: trip.areaOfUse || '',
+        extraDetails: "",
+        purposeOfRide: "",
+        tripPurpose: "",
+        emergencyContact: "",
+        paymentMethod: "CARD",
+        travelCompanions: [
+
+        ],
+        redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`
+      }
+      bookings.push(booking)
+    })
+
+    try {
+      const transaction = await http.post("/api/bookings/create-multiple",
+        {
+          bookings: bookings,
+          currencyCode: bookingPriceSummary?.currency || "NGN",
+          totalAmount: Number(bookingPriceSummary?.totalPrice),
+          redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`,
+          paymentMethod: "CARD"
+        })
+      // @ts-ignore
+      router.push(transaction.checkoutUrl)
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
   useEffect(() => {
     fetchBookingPriceSummary()
   }, [])
@@ -261,7 +337,7 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
           Learn more about our free cancellation
         </button> */}
 
-        <Button
+        {/* <Button
           variant="outlined"
           rounded="full"
           fullWidth
@@ -270,8 +346,18 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
           disabled={saveBooking.isPending}
         >
           Save Booking
-        </Button>
+        </Button> */}
         <Button
+          color="primary"
+          rounded="full"
+          fullWidth
+          onClick={handlePayment}
+        // loading={proceedToPayment.isPending}
+        // disabled={proceedToPayment.isPending}
+        >
+          Book Now
+        </Button>
+        {/* <Button
           color="primary"
           rounded="full"
           fullWidth
@@ -280,11 +366,11 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
           disabled={proceedToPayment.isPending}
         >
           Book Now
-        </Button>
+        </Button> */}
       </div>
 
       {/* Cancellation Policy Modal */}
-      <BlurredDialog
+      {/* <BlurredDialog
         open={openCancellationModal}
         onOpenChange={handleOpenCancellationModal}
         trigger={<button className="hidden" />}
@@ -311,7 +397,7 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
           </div>
         }
         content={<CancellationPolicyModal />}
-      />
+      /> */}
     </>
   );
 };
