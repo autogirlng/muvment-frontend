@@ -184,7 +184,7 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
                                     { option: "1 Hour", value: "AN_HOUR" },
                                     { option: "3 hours", value: "THREE_HOURS" },
                                     { option: "6 hours", value: "SIX_HOURS" },
-                                    { option: "12 hours", value: " TWELVE_HOURS" },
+                                    { option: "12 hours", value: "TWELVE_HOURS" },
                                     { option: "Airport Transfers", value: "AIRPORT_PICKUP" },
 
                                 ]}
