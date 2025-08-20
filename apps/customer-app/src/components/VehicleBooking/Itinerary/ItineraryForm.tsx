@@ -692,7 +692,6 @@ const ItineraryForm = ({
               }
             />
 
-            {/* <button onClick={() => setCurrentStep(2)}>next</button> */}
             <StepperNavigation
               steps={steps}
               currentStep={currentStep}
