@@ -105,7 +105,7 @@ const BookingMobileRow = ({ items }: { items: BookingInformation }) => {
       <TableCell title="Guest Name" content={items?.guestName} />
       <TableCell title="Booking ID" content={items?.id} />
       <TableCell title="Booking Type" content={items?.bookingType} />
-      <TableCell title="Duration" content={`${items?.duration} days`} />
+      <TableCell title="Duration" content={`${items?.duration} hours`} />
       <TableCell
         title="Vehicle"
         content={items?.vehicle ? String(items.vehicle) : ""}
