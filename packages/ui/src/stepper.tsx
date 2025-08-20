@@ -19,13 +19,12 @@ export const Stepper = ({
           <Fragment key={index}>
             <div className="flex items-center justify-between gap-6">
               <div
-                className={`flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10 rounded-full border-grey-500 border-[1.5px] text-xs ${
-                  currentStep > index
-                    ? "bg-primary-500 border-primary-500 text-white"
-                    : currentStep === index
-                      ? "bg-grey-500 text-white"
-                      : "text-grey-500"
-                }`}
+                className={`flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10 rounded-full border-grey-500 border-[1.5px] text-xs ${currentStep > index
+                  ? "bg-primary-500 border-primary-500 text-white"
+                  : currentStep === index
+                    ? "bg-grey-500 text-white"
+                    : "text-grey-500"
+                  }`}
               >
                 {index + 1}
               </div>
@@ -127,7 +126,7 @@ export const StepperNavigation = ({
             </StepperButton>
           ) : (
             <StepperButton
-              // onClick={handleNext}
+              onClick={handleNext}
               disabled={
                 currentStep === steps.length ||
                 disableNextButton ||
