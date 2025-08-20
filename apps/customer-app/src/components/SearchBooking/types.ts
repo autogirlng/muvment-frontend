@@ -10,6 +10,7 @@ export interface GooglePlace {
 
 export interface PlacePrediction {
   id: string;
+  place_id: string;
   name: string;
   description: string;
   type: "google" | "recent" | "popular";

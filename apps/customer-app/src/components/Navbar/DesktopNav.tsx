@@ -41,7 +41,9 @@ export default function DesktopNav({ user, children, explorePage }: Props) {
           : "bg-[#F9FAFB59] backdrop-blur-xl"
       )}
     >
-      <Link href="/" className="flex items-center gap-2">
+      {/* --- MODIFICATION START --- */}
+      {/* The 'font-bold' class is added here. It will only affect text-based logos. */}
+      <Link href="/" className="flex items-center gap-2 font-bold">
         <Image
           className=""
           src="/images/image.png"
@@ -50,7 +52,10 @@ export default function DesktopNav({ user, children, explorePage }: Props) {
           height={40}
         />
       </Link>
-      {children}
+      {/* --- MODIFICATION END --- */}
+
+      <div className="flex-1 flex justify-center px-4">{children}</div>
+
       <nav className="flex items-center gap-4">
         <Link
           className={cn(
