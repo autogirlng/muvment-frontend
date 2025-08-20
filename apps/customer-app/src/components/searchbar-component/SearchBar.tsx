@@ -43,8 +43,8 @@ const CustomDropdown: FC<CustomDropdownProps> = ({
       SIX_HOURS: "6 Hours",
       TWELVE_HOURS: "12 Hours",
       AIRPORT_PICKUP: "Airport Transfers",
-      SedanElectric: "Sedan Electric",
-      SUVElectric: "SUV Electric",
+      SedanElectric: "Sedan (Electric)",
+      SUVElectric: "SUV (Electric)",
     };
     return mappings[rawValue] || rawValue;
   };
@@ -121,7 +121,7 @@ const CustomDropdown: FC<CustomDropdownProps> = ({
 
 const BookingSearchBar = () => {
   const router = useRouter();
-  const [bookingType, setBookingType] = useState<string>("AN_HOUR");
+  const [bookingType, setBookingType] = useState<string>("TWELVE_HOURS");
   const [location, setLocation] = useState<string>("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
