@@ -25,7 +25,7 @@ const BookingDesktopRow = ({ items }: { items: BookingInformation }) => {
         }
       />
       <TableCell content={items?.bookingType} />
-      <TableCell content={`${items?.duration} days`} />
+      <TableCell content={`${items?.duration} hours`} />
       <TableCell
         content={
           items?.startDate
