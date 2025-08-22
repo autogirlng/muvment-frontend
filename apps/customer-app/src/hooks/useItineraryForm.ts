@@ -28,18 +28,29 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
       const deleteTrip = async (idToDelete: string) => {
         const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || '[]');
         const updatedTrips = trips.filter((trip) => trip.id !== idToDelete);
+
         sessionStorage.setItem("trips", JSON.stringify(updatedTrips));
+        
         setTrips(prev => prev.filter((trip) => trip.id !== idToDelete));
         const bookingTypes: string[] = [];
-        updatedTrips.map((trip) => {
+        let outskirtsAreaOfUse:string[] = [];
+
+        updatedTrips.forEach((trip) => {
           trip.bookingType && bookingTypes.push(trip.bookingType)
+          const area = trip.areaOfUse?.split("_")
+
+          if(area && area[area?.length - 1] === "OUTSKIRT"){
+              outskirtsAreaOfUse.push(area.join("_"))
+          }
         })
         const bookingPrice = await http.post<BookingSummaryPricing>("/api/bookings/calculate-price",
           {
             vehicleId: vehicle?.id,
             bookingTypes,
             isExtension: false,
-            isOutskirt: false
+            isOutskirt: outskirtsAreaOfUse.length > 0, 
+            numberOfOutskirts: outskirtsAreaOfUse.length
+
           }
         );
         bookingPrice && setBookingPriceBreakdown(bookingPrice)
@@ -47,7 +58,7 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
       }
     
    const onChangeTrip = async (id: string, details: TripDetails) => {
-  // 1. Create a new updated trips array
+  //  Create a new updated trips array
   const updatedTrips = trips.map((trip) => {
     if (trip.id === id) {
       const currentTripDetails = trip.tripDetails || {};
@@ -59,13 +70,13 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
     return trip;
   });
 
-  // 2. Update the trips state
+  //  Update the trips state
   setTrips(updatedTrips);
 
   const areaOfUseBreakdown = details.areaOfUse?.split("_");
   const isOutskirt = areaOfUseBreakdown && areaOfUseBreakdown[areaOfUseBreakdown.length - 1] === "OUTSKIRT";
 
-  // 3. Update the outskirtTrips ref based on the specific trip change
+  //  Update the outskirtTrips ref based on the specific trip change
   if (isOutskirt) {
     if (!outskirtTrips.current.includes(id)) {
       outskirtTrips.current = [...outskirtTrips.current, id];
@@ -74,15 +85,15 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
     outskirtTrips.current = outskirtTrips.current.filter((tripID) => tripID !== id);
   }
 
-  // 4. Update the outskirt state
+  //  Update the outskirt state
   setTripOutskirt(outskirtTrips.current.length > 0);
 
-  // 5. Check conditions to proceed with price calculation
+  //  Check conditions to proceed with price calculation
   if (
     (details.bookingType && details.bookingType.length > 0) ||
     (areaOfUseBreakdown && areaOfUseBreakdown.length >= 1)
   ) {
-    // 6. Recalculate booking types from the new state
+    //  Recalculate booking types from the new state
     const bookingTypes: string[] = [];
     updatedTrips.forEach((trip) => {
       if (trip.tripDetails?.bookingType) {
@@ -90,7 +101,7 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
       }
     });
 
-    // 7. Make API call
+    //  Make API call
     try {
       const bookingPrice = await http.post<BookingSummaryPricing>("/api/bookings/calculate-price", {
         vehicleId: vehicle?.id,

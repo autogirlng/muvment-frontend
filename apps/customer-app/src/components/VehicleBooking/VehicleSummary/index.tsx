@@ -58,7 +58,7 @@ export default function VehicleSummary({
   const [openBookRideModal, setBookRideModal] = useState<boolean>(false);
   const handleOpenBookRideModal = () => setBookRideModal(true);
 
-
+  console.log(bookingPriceBreakdown)
   return (
     <VehicleDetails
       vehicle={vehicle}
@@ -164,7 +164,7 @@ export default function VehicleSummary({
                   </div>
                   <div className="w-full  text-sm flex justify-between mt-4">
                     <span>Outskirt Price</span>
-                    <span> NGN {bookingPriceBreakdown.breakdown.outskirtFee || 0}</span>
+                    <span> {bookingPriceBreakdown.currency || 'NGN'} {bookingPriceBreakdown.breakdown.outskirtFee || 0}</span>
                   </div>
                   {<div className="w-full  text-sm flex justify-between mt-4">
                     <span>Area of Use</span>
