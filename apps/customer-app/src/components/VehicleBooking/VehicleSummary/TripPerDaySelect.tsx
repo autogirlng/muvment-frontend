@@ -262,15 +262,15 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
                             options={[
                                 {
                                     option: `${toTitleCase(vehicle?.stateOfRegistration || "")} Mainland Central`,
-                                    value: `${vehicle?.stateOfRegistration.toUpperCase()}_MAINLAND_CENTRAL`
+                                    value: `${vehicle?.location && vehicle.location.toUpperCase()}_MAINLAND_CENTRAL`
                                 },
                                 {
                                     option: `${toTitleCase(vehicle?.stateOfRegistration || "")} Island Central`,
-                                    value: `${vehicle?.stateOfRegistration.toUpperCase()}_ISLAND_CENTRAL`
+                                    value: `${vehicle?.location && vehicle.location.toUpperCase()}_ISLAND_CENTRAL`
                                 },
                                 {
-                                    option: `${toTitleCase(vehicle?.stateOfRegistration || "")} Mainland Outskirt`,
-                                    value: `${vehicle?.stateOfRegistration.toUpperCase()}_MAINLAND_OUTSKIRT`
+                                    option: `${toTitleCase(vehicle?.location || "")} Mainland Outskirt`,
+                                    value: `${vehicle?.location && vehicle.location.toUpperCase()}_MAINLAND_OUTSKIRT`
                                 },
                             ]}
                             value={areaOfUse}
