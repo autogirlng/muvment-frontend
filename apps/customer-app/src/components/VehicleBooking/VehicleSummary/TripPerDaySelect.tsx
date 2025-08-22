@@ -215,9 +215,6 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
                         <InputSection
                             title="Trip Start"
                             textColor="black"
-                        // error={
-                        //     !isDateRangeValid ? "Invalid date range selected" : undefined
-                        // }
                         >
                             <DateInput
                                 name="startDate"
@@ -233,17 +230,6 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
                                 timeType="start" />
                         </InputSection>
                     </div>
-                    {/* <InputSection title="Pickup Location">
-                        <input
-                            type="text"
-                            name="pickupLocation"
-                            disabled
-                            value={pickupLocation}
-                            onChange={(e) => onChange("pickupLocation", e.target.value)}
-                            placeholder="Enter location"
-                            className="w-full rounded-[18px] p-4 text-left text-sm h-[56px] outline-none bg-white text-grey-900 border border-grey-300 hover:border-primary-500 focus:border-primary-500 focus:shadow-[0_0_0_4px_#1E93FF1A] placeholder:text-grey-400"
-                        />
-                    </InputSection> */}
                     <InputSection title="Pickup Location">
                         <InputField
                             type="text"
@@ -267,7 +253,6 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
                         />
                     </InputSection>
 
-                    {/* Area of Use */}
                     <InputSection title="Area of Use" >
                         <SelectInput
                             id="areaOfUse"
@@ -277,15 +262,15 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
                             options={[
                                 {
                                     option: `${toTitleCase(vehicle?.stateOfRegistration || "")} Mainland Central`,
-                                    value: `${vehicle?.stateOfRegistration.toUpperCase()}_MAINLAND_CENTRAL`
+                                    value: `${vehicle?.location && vehicle.location.toUpperCase()}_MAINLAND_CENTRAL`
                                 },
                                 {
                                     option: `${toTitleCase(vehicle?.stateOfRegistration || "")} Island Central`,
-                                    value: `${vehicle?.stateOfRegistration.toUpperCase()}_ISLAND_CENTRAL`
+                                    value: `${vehicle?.location && vehicle.location.toUpperCase()}_ISLAND_CENTRAL`
                                 },
                                 {
-                                    option: `${toTitleCase(vehicle?.stateOfRegistration || "")} Mainland Outskirt`,
-                                    value: `${vehicle?.stateOfRegistration.toUpperCase()}_MAINLAND_OUTSKIRT`
+                                    option: `${toTitleCase(vehicle?.location || "")} Mainland Outskirt`,
+                                    value: `${vehicle?.location && vehicle.location.toUpperCase()}_MAINLAND_OUTSKIRT`
                                 },
                             ]}
                             value={areaOfUse}
@@ -341,7 +326,6 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
                                                     }
                                                     return trip;
                                                 })
-                                                // sessionStorage.setItem("trips", JSON.stringify(updatedTrips))
                                             }
                                         }}
                                     />

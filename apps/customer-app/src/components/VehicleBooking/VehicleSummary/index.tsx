@@ -4,20 +4,17 @@ import { formatNumberWithCommas } from "@/utils/functions";
 import {
   MappedInformation,
   VehicleInformation,
-  VehiclePerksProp,
-  BookingSummaryPricing,
-  TripDetails,
-  Trips
+  VehiclePerksProp
 } from "@/utils/types";
-import React, { ReactNode, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "@repo/ui/button";
 import VehicleDetails from "./VehicleDetails";
 import { useRouter } from "next/navigation";
 import { TripPerDaySelect } from "./TripPerDaySelect";
-import { useHttp } from "@/hooks/useHttp";
 import { toTitleCase } from "@/utils/functions";
 import { useItineraryForm } from "@/hooks/useItineraryForm";
-
+import { BlurredDialog } from "@repo/ui/dialog";
+import { useAppSelector } from "@/lib/hooks";
 
 
 type Props = {
@@ -45,16 +42,15 @@ export default function VehicleSummary({
   vehicleImages,
 }: Props) {
   const router = useRouter();
-  // const { user } = useAppSelector((state) => state.user);
-  // const [openBookRideModal, setBookRideModal] = useState<boolean>(false);
+  const { user } = useAppSelector((state) => state.user);
   const { setTrips, trips, deleteTrip, onChangeTrip, addTrip, bookingPriceBreakdown, isTripFormsComplete } = useItineraryForm(vehicle)
 
   useEffect(() => {
     sessionStorage.removeItem("trips")
     setTrips([{ id: "trip-0", tripDetails: {} }])
-
   }, [])
-
+  const [openBookRideModal, setBookRideModal] = useState<boolean>(false);
+  const handleOpenBookRideModal = () => setBookRideModal(!openBookRideModal);
 
   return (
     <VehicleDetails
@@ -130,22 +126,21 @@ export default function VehicleSummary({
               <h1 className="font-bold text-[17px]">Add Booking Details</h1>
               <p className="text-sm my-4">Trip per day</p>
 
-              {trips.map((key, index) => {
-                return <TripPerDaySelect key={key.id}
-                  day={`${index + 1}`}
-                  id={key.id}
-                  vehicle={vehicle}
-                  deleteMethod={deleteTrip}
-                  disabled={false}
-                  onChangeTrip={onChangeTrip} />
-              })}
-
+              {
+                trips.map((key, index) => {
+                  return <TripPerDaySelect key={key.id}
+                    day={`${index + 1}`}
+                    id={key.id}
+                    vehicle={vehicle}
+                    deleteMethod={deleteTrip}
+                    disabled={false}
+                    onChangeTrip={onChangeTrip} />
+                })
+              }
               <div className="text-center">
                 <button onClick={() => addTrip(`trip-${trips.length}`)} className="text-[#0673ff] mt-3 border-0 bg-white">+ Add Trip</button>
               </div>
-
             </div>
-
             {
               bookingPriceBreakdown && <div className="rounded-2xl p-5 m-0 border border-grey-200">
                 <h2 className="font-bold">Cost Breakdown</h2>
@@ -159,8 +154,11 @@ export default function VehicleSummary({
                     <span>Extra Hours</span>
                     <span>Billed as you go</span>
                   </div>
-
                   <div className="w-full  text-sm flex justify-between mt-4">
+                    <span>Outskirt Price</span>
+                    <span> {bookingPriceBreakdown.currency || 'NGN'} {bookingPriceBreakdown.breakdown.outskirtFee || 0}</span>
+                  </div>
+                  {<div className="w-full  text-sm flex justify-between mt-4">
                     <span>Area of Use</span>
                     <span style={{ textTransform: "capitalize" }}>
                       {trips.map((trip) => {
@@ -169,10 +167,10 @@ export default function VehicleSummary({
                         const area1 = toTitleCase(toTitleCase(areaOfUse?.split("_")[1] || ''))
                         let area2 = toTitleCase(areaOfUse?.split("_")[2] || '')
 
-                        return <>{state} {area1} {area2}<br /> {area2 === "Outskirt" && <span className="text-xs text-[blue]">+NGN 8000</span>} <br /></>
+                        return <>{state} {area1} {area2}<br /> </>
                       })}
                     </span>
-                  </div>
+                  </div>}
 
                   {
                     bookingPriceBreakdown.breakdown.discountAmount > 0 &&
@@ -189,7 +187,8 @@ export default function VehicleSummary({
               </div>
             }
 
-            <Button
+
+            {user ? <Button
               color="primary"
               fullWidth
               disabled={
@@ -197,39 +196,37 @@ export default function VehicleSummary({
               }
               onClick={() => router.push(`/vehicle/booking/${vehicle?.id}`)}
             >
-              Book Now
-            </Button>
+              Book Ride
+            </Button> : <BlurredDialog
+              open={openBookRideModal}
+              onOpenChange={handleOpenBookRideModal}
+              trigger={
+                <Button
+                  color="primary"
+                  fullWidth
+                  disabled={
+                    !isTripFormsComplete
+                  }
+                >
+                  Book Ride
+                </Button>
+              }
+              title={<p className="text-lg font-semibold">Book Ride</p>}
+              content={
+                <BookRideModal vehicleId={vehicle?.id || ""} />
+              }
+              width="max-w-[556px]"
+            />}
+
           </div>
 
-          <div className="divide-y divide-grey-200 text-grey-800">
-          </div>
         </div>
       </div>
 
-      {/* only show if user is not signed in */}
-      {/* {!user && (
-        <BlurredDialog
-          open={openBookRideModal}
-          onOpenChange={handleOpenBookRideModal}
-          trigger={<button className="hidden" />}
-          title={<p>Book Ride</p>}
-          content={
-            <BookRideModal
-              id={vehicle?.id || ""}
-              bookingType={values.bookingType}
-              startDate={values.startDate?.toISOString() ?? null}
-              startTime={values.startTime?.toISOString() ?? null}
-              endDate={values.endDate?.toISOString() ?? null}
-              endTime={values.endTime?.toISOString() ?? null}
-              pickupLocation={values.pickupLocation || null}
-            />
-          }
-          width="max-w-[556px]"
-        />
-      )} */}
     </VehicleDetails>
   );
 }
+
 
 const PricingTitle = ({
   text,
@@ -255,72 +252,12 @@ const PricingDescription = ({
   </p>
 );
 
-const InputSection = ({
-  title,
-  children,
-  textColor = "black",
-  error,
-}: {
-  title: string;
-  children: ReactNode;
-  textColor?: "black" | "blue";
-  error?: string;
-}) => {
-  return (
-    <div className="space-y-3">
-      <p
-        className={cn(
-          "text-sm 3xl:text-base",
-          textColor === "blue" ? "text-primary-500" : "text-black"
-        )}
-      >
-        {title}
-      </p>
-      <div className="flex items-center gap-3">{children}</div>
-      {error && <p className="text-error-500 ">{error}</p>}
-    </div>
-  );
-};
 
-const BookRideModal = ({
-  id,
-  bookingType,
-  startDate,
-  startTime,
-  endDate,
-  endTime,
-  pickupLocation,
-}: {
-  id: string;
-  bookingType: string;
-  startDate: string | null;
-  startTime: string | null;
-  endDate: string | null;
-  endTime: string | null;
-  pickupLocation: string | null;
-}) => {
+const BookRideModal = ({ vehicleId }: { vehicleId: string }) => {
   return (
     <div className="space-y-4">
       <Link
-        href={`/vehicle/booking/guest/${id}${bookingType ||
-          startDate ||
-          startTime ||
-          endDate ||
-          endTime ||
-          pickupLocation
-          ? `?${[
-            startDate && `startDate=${startDate}`,
-            startTime && `startTime=${startTime}`,
-            endDate && `endDate=${endDate}`,
-            endTime && `endTime=${endTime}`,
-            bookingType && `bookingType=${bookingType}`,
-            pickupLocation &&
-            `pickupLocation=${encodeURIComponent(pickupLocation)}`,
-          ]
-            .filter(Boolean)
-            .join("&")}`
-          : ""
-          }`}
+        href={`/vehicle/booking/guest/${vehicleId}`}
         className="block"
       >
         <Button className="!bg-grey-90 !text-grey-700" fullWidth>
@@ -335,3 +272,4 @@ const BookRideModal = ({
     </div>
   );
 };
+

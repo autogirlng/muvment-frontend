@@ -5,7 +5,7 @@ import {
   Trips, 
   VehicleInformation
 } from "@/utils/types";
-import  {  useState, useEffect } from "react";
+import  {  useState, useEffect, useRef } from "react";
 import { useHttp } from "@/hooks/useHttp";
 
 
@@ -13,7 +13,9 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
       const [bookingPriceBreakdown, setBookingPriceBreakdown] = useState<BookingSummaryPricing | undefined>();
       const [_, setTripOutskirt] = useState<boolean>(false)
       const [trips, setTrips] = useState<Trips[]>([])
-    
+      const outskirtTrips = useRef<string[]>([])
+
+
       const [isTripFormsComplete, setIsTripFormComplete] = useState<boolean>(false)
     
       const http = useHttp()
@@ -26,59 +28,94 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
       const deleteTrip = async (idToDelete: string) => {
         const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || '[]');
         const updatedTrips = trips.filter((trip) => trip.id !== idToDelete);
+
         sessionStorage.setItem("trips", JSON.stringify(updatedTrips));
+        
         setTrips(prev => prev.filter((trip) => trip.id !== idToDelete));
         const bookingTypes: string[] = [];
-        updatedTrips.map((trip) => {
+        let outskirtsAreaOfUse:string[] = [];
+
+        updatedTrips.forEach((trip) => {
           trip.bookingType && bookingTypes.push(trip.bookingType)
+          const area = trip.areaOfUse?.split("_")
+
+          if(area && area[area?.length - 1] === "OUTSKIRT"){
+              outskirtsAreaOfUse.push(area.join("_"))
+          }
         })
         const bookingPrice = await http.post<BookingSummaryPricing>("/api/bookings/calculate-price",
           {
             vehicleId: vehicle?.id,
             bookingTypes,
             isExtension: false,
-            isOutskirt: false
+            isOutskirt: outskirtsAreaOfUse.length > 0, 
+            numberOfOutskirts: outskirtsAreaOfUse.length
+
           }
         );
         bookingPrice && setBookingPriceBreakdown(bookingPrice)
     
       }
     
-      const onChangeTrip = async (id: string, details: TripDetails) => {
-        const updatedDays = trips.map(trip => {
-          if (trip.id === id) {
-            const currentTripDetails = trip.tripDetails || {};
-            return {
-              ...trip,
-              tripDetails: { ...currentTripDetails, ...details }
-            };
-          }
-          return trip;
-        });
-        setTrips(updatedDays);
-        if (details.bookingType && details.bookingType.length > 0) {
-          const bookingTypes: string[] = [];
-          let isOutskirt = false;
-          updatedDays.map((trip) => {
-            if (trip.tripDetails?.areaOfUse === "MAINLAND_OUTSKIRT") {
-              isOutskirt = true;
-              setTripOutskirt(true)
-            };
-            trip.tripDetails?.bookingType && bookingTypes.push(trip.tripDetails?.bookingType)
-          })
-    
-          const bookingPrice = await http.post<BookingSummaryPricing>("/api/bookings/calculate-price",
-            {
-              vehicleId: vehicle?.id,
-              bookingTypes,
-              isExtension: false,
-              isOutskirt
-            }
-          );
-    
-          bookingPrice && setBookingPriceBreakdown(bookingPrice)
-        }
+   const onChangeTrip = async (id: string, details: TripDetails) => {
+  //  Create a new updated trips array
+  const updatedTrips = trips.map((trip) => {
+    if (trip.id === id) {
+      const currentTripDetails = trip.tripDetails || {};
+      return {
+        ...trip,
+        tripDetails: { ...currentTripDetails, ...details },
+      };
+    }
+    return trip;
+  });
+
+  //  Update the trips state
+  setTrips(updatedTrips);
+
+  const areaOfUseBreakdown = details.areaOfUse?.split("_");
+  const isOutskirt = areaOfUseBreakdown && areaOfUseBreakdown[areaOfUseBreakdown.length - 1] === "OUTSKIRT";
+
+  //  Update the outskirtTrips ref based on the specific trip change
+  if (isOutskirt) {
+    if (!outskirtTrips.current.includes(id)) {
+      outskirtTrips.current = [...outskirtTrips.current, id];
+    }
+  } else {
+    outskirtTrips.current = outskirtTrips.current.filter((tripID) => tripID !== id);
+  }
+
+  //  Update the outskirt state
+  setTripOutskirt(outskirtTrips.current.length > 0);
+
+  //  Check conditions to proceed with price calculation
+  if (
+    (details.bookingType && details.bookingType.length > 0) ||
+    (areaOfUseBreakdown && areaOfUseBreakdown.length >= 1)
+  ) {
+    //  Recalculate booking types from the new state
+    const bookingTypes: string[] = [];
+    updatedTrips.forEach((trip) => {
+      if (trip.tripDetails?.bookingType) {
+        bookingTypes.push(trip.tripDetails.bookingType);
       }
+    });
+
+    //  Make API call
+    try {
+      const bookingPrice = await http.post<BookingSummaryPricing>("/api/bookings/calculate-price", {
+        vehicleId: vehicle?.id,
+        bookingTypes,
+        isExtension: false,
+        isOutskirt: outskirtTrips.current.length > 0,
+        numberOfOutskirts: outskirtTrips.current.length,
+      });
+      setBookingPriceBreakdown(bookingPrice);
+    } catch (error) {
+      console.error("Error calculating price:", error);
+    }
+  }
+};
     
       useEffect(() => {
         const requiredFields: (keyof TripDetails)[] = [
