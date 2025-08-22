@@ -20,6 +20,7 @@ import { useItineraryForm } from "@/hooks/useItineraryForm";
 
 
 
+
 type Props = {
   vehicle: VehicleInformation | null;
   perks: VehiclePerksProp[];
@@ -52,8 +53,8 @@ export default function VehicleSummary({
   useEffect(() => {
     sessionStorage.removeItem("trips")
     setTrips([{ id: "trip-0", tripDetails: {} }])
-
   }, [])
+  console.log(bookingPriceBreakdown)
 
 
   return (
@@ -227,6 +228,35 @@ export default function VehicleSummary({
           width="max-w-[556px]"
         />
       )} */}
+      {/* {!user && (
+        <BlurredDialog
+          open={openBookRideModal}
+          onOpenChange={handleOpenBookRideModal}
+          trigger={<button className="hidden" />}
+          title={<p>Book Ride</p>}
+          content={
+            <BookRideModal
+              id={vehicle?.id || ""}
+              bookingType={values.bookingType}
+              startDate={values.startDate?.toISOString() ?? null}
+              startTime={values.startTime?.toISOString() ?? null}
+              endDate={values.endDate?.toISOString() ?? null}
+              endTime={values.endTime?.toISOString() ?? null}
+              pickupLocation={values.pickupLocation || null}
+            />
+          }
+          width="max-w-[556px]"
+        />
+      )} */}
+      <BookRideModal
+        id={vehicle?.id || ""}
+        bookingType={"values.bookingType"}
+        startDate={null}
+        startTime={null}
+        endDate={null}
+        endTime={null}
+        pickupLocation={null}
+      />
     </VehicleDetails>
   );
 }
