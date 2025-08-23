@@ -740,6 +740,8 @@ export interface TripDetails {
   dropoffLocation?: string;
   areaOfUse?: string;
   outskirtLocations?:string[];
+  purposeOfRide?:string;
+  extraDetails?:string;
 
 }
 export interface Trips {

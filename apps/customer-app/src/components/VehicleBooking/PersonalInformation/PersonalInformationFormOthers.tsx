@@ -305,7 +305,7 @@ thank you.`}
         steps={steps}
         currentStep={currentStep}
         setCurrentStep={setCurrentStep}
-        handleSaveDraft={() => {}}
+        handleSaveDraft={() => { }}
         isSaveDraftloading={false}
         isNextLoading={isSubmitting}
         disableNextButton={!isValid || isSubmitting}
