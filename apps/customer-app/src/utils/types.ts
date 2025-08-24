@@ -547,6 +547,8 @@ export interface VehicleInformation {
     numberOfCustomers: number;
     totalRevenue: number;
   };
+  extremeAreaPrice?: number;
+  extremeAreasLocation?:  string[];
 }
 export interface AssignedDriver {
   id: string;
@@ -728,6 +730,7 @@ export interface Breakdown {
   discountPercentage: number;
   isExtension: boolean;
   isOutskirt: boolean;
+  extremeAreaFee: number
 }
 
 // For the top-level object
@@ -748,6 +751,7 @@ export interface TripDetails {
   dropoffLocation?: string;
   areaOfUse?: string;
   outskirtLocations?:string[];
+  extremeLocations?:string[];
   purposeOfRide?:string;
   extraDetails?:string;
 

@@ -11,9 +11,9 @@ import { useHttp } from "@/hooks/useHttp";
 
 export const useItineraryForm = (vehicle:VehicleInformation | null) => {
       const [bookingPriceBreakdown, setBookingPriceBreakdown] = useState<BookingSummaryPricing | undefined>();
-      const [_, setTripOutskirt] = useState<boolean>(false)
       const [trips, setTrips] = useState<Trips[]>([])
       const outskirtTrips = useRef<string[]>([])
+      const extremeTrips = useRef<string[]>([])
 
 
       const [isTripFormsComplete, setIsTripFormComplete] = useState<boolean>(false)
@@ -34,6 +34,7 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
         setTrips(prev => prev.filter((trip) => trip.id !== idToDelete));
         const bookingTypes: string[] = [];
         let outskirtsAreaOfUse:string[] = [];
+        let extremeAreas:string[] = [];
 
         updatedTrips.forEach((trip) => {
           trip.bookingType && bookingTypes.push(trip.bookingType)
@@ -42,6 +43,9 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
           if(area && area[area?.length - 1] === "OUTSKIRT"){
               outskirtsAreaOfUse.push(area.join("_"))
           }
+          if(area && area[area?.length - 1] === "AREA" && area && area[area?.length - 2] === "EXTREME"){
+           extremeAreas.push(area.join("_"))
+          }
         })
         const bookingPrice = await http.post<BookingSummaryPricing>("/api/bookings/calculate-price",
           {
@@ -49,7 +53,9 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
             bookingTypes,
             isExtension: false,
             isOutskirt: outskirtsAreaOfUse.length > 0, 
-            numberOfOutskirts: outskirtsAreaOfUse.length
+            numberOfOutskirts: outskirtsAreaOfUse.length, 
+            isExtremeArea: extremeAreas.length > 0,
+            numberOfExtremeAreas: extremeAreas.length
 
           }
         );
@@ -75,6 +81,10 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
 
   const areaOfUseBreakdown = details.areaOfUse?.split("_");
   const isOutskirt = areaOfUseBreakdown && areaOfUseBreakdown[areaOfUseBreakdown.length - 1] === "OUTSKIRT";
+  const isExtreme = areaOfUseBreakdown && 
+  areaOfUseBreakdown[areaOfUseBreakdown.length - 2] === "EXTREME" 
+  && areaOfUseBreakdown[areaOfUseBreakdown.length - 1] === "AREA";
+
 
   //  Update the outskirtTrips ref based on the specific trip change
   if (isOutskirt) {
@@ -84,9 +94,15 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
   } else {
     outskirtTrips.current = outskirtTrips.current.filter((tripID) => tripID !== id);
   }
+  if(isExtreme){
+    if (!extremeTrips.current.includes(id)) {
+    extremeTrips.current = [...extremeTrips.current, id];
+    }
+  } else {
+    extremeTrips.current = extremeTrips.current.filter((tripID) => tripID !== id);
 
-  //  Update the outskirt state
-  setTripOutskirt(outskirtTrips.current.length > 0);
+  }
+
 
   //  Check conditions to proceed with price calculation
   if (
@@ -109,6 +125,8 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
         isExtension: false,
         isOutskirt: outskirtTrips.current.length > 0,
         numberOfOutskirts: outskirtTrips.current.length,
+        isExtremeArea: extremeTrips.current.length > 0,
+        numberOfExtremeAreas: extremeTrips.current.length
       });
       setBookingPriceBreakdown(bookingPrice);
     } catch (error) {

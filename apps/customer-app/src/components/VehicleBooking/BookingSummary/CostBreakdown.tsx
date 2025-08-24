@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { transactionData } from "@/utils/data";
 import { NewBookingType } from "@/utils/types";
 import { Spinner } from "@repo/ui/spinner";
+import { Tiro_Devanagari_Hindi } from "next/font/google";
 
 interface CreateNewBooking {
   vehicleId: string;
@@ -307,6 +308,8 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
     const bookingTypes: string[] = [];
     const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || "[]");
     const outskirtTripIDs = new Set()
+    const extremeLocationsIDs = new Set();
+
     setUserTrips(trips)
     let isOutskirt = false;
     for (let trip of trips) {
@@ -317,6 +320,9 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
         outskirtTripIDs.add(trip.id);
         isOutskirt = true
       }
+      if (trip.extremeLocations && trip.extremeLocations.length >= 1) {
+        extremeLocationsIDs.add(trip.id)
+      }
     }
 
     const bookingPrice = await http.post<BookingSummaryPricing>("/api/bookings/calculate-price",
@@ -325,7 +331,9 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
         bookingTypes,
         isExtension: false,
         isOutskirt,
-        numberOfOutskirts: outskirtTripIDs.size
+        numberOfOutskirts: outskirtTripIDs.size,
+        isExtremeArea: extremeLocationsIDs.size > 0,
+        numberOfExtremeAreas: extremeLocationsIDs.size
       }
     );
     setBookingPriceSummary(bookingPrice)
@@ -415,11 +423,12 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
 
         ],
         redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`,
-        extremeAreasLocation: []
+        extremeAreasLocation: trip.extremeLocations || []
 
       }
       bookings.push(booking)
     })
+
 
     try {
 
@@ -453,6 +462,15 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
         {
           bookingPriceSummary ?
             <section className="space-y-7">
+
+              {
+                (bookingPriceSummary?.breakdown?.extremeAreaFee ?? 0) > 0 && (
+                  <Prices
+                    title="Outskirt Fee"
+                    price={`${bookingPriceSummary.currency} ${formatNumberWithCommas(bookingPriceSummary.breakdown!.extremeAreaFee)}`}
+                  />
+                )
+              }
               {
                 (bookingPriceSummary?.breakdown?.outskirtFee ?? 0) > 0 && (
                   <Prices

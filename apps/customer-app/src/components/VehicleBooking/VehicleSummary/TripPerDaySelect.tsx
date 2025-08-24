@@ -61,15 +61,25 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
 
     const [isDayTwoCollapsed, setIsDayTwoCollapsed] = useState(false);
     const [checkedLocations, setCheckedLocations] = useState<string[]>([])
+    const [checkedExtremeLocations, setCheckedExtremeLocations] = useState<string[]>([])
 
-    const isOutskirt = (): boolean => {
+    const isOutskirt = (): string => {
         const location = initialValues?.areaOfUse?.split("_")
 
         if (location && location[location.length - 1] === "OUTSKIRT") {
-            return true
+            return 'outskirt'
         }
-        return false
+
+        else if (location && location[location.length - 1] === "AREA" && location && location[location.length - 2] === "EXTREME") {
+            return 'extreme'
+        }
+        else {
+            return ''
+
+        }
     }
+
+
 
 
 
@@ -125,6 +135,32 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
             default:
                 break;
         }
+    }
+
+    const areasOfUse = (): { option: string, value: string }[] => {
+        let areas = [
+            {
+                option: `${toTitleCase(vehicle?.location || "")} Mainland Central`,
+                value: `${vehicle?.location && vehicle.location.toUpperCase()}_MAINLAND_CENTRAL`
+            },
+            {
+                option: `${toTitleCase(vehicle?.location || "")} Island Central`,
+                value: `${vehicle?.location && vehicle.location.toUpperCase()}_ISLAND_CENTRAL`
+            },
+        ]
+        if (vehicle?.outskirtsLocation && vehicle.outskirtsLocation.length >= 1) {
+            areas.push({
+                option: `${toTitleCase(vehicle?.location || "")} Mainland Outskirt`,
+                value: `${vehicle?.location && vehicle.location.toUpperCase()}_MAINLAND_OUTSKIRT`
+            },)
+        }
+        if (vehicle?.extremeAreasLocation && vehicle.extremeAreasLocation.length >= 1) {
+            areas.push({
+                option: `${toTitleCase(vehicle?.location || "")} Extreme Area`,
+                value: `${vehicle?.location && vehicle.location.toUpperCase()}_EXTREME_AREA`
+            },)
+        }
+        return areas;
     }
 
 
@@ -251,27 +287,14 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
                             placeholder="Select Area of Use"
                             variant="outlined"
                             disabled={disabled}
-                            options={[
-                                {
-                                    option: `${toTitleCase(vehicle?.location || "")} Mainland Central`,
-                                    value: `${vehicle?.location && vehicle.location.toUpperCase()}_MAINLAND_CENTRAL`
-                                },
-                                {
-                                    option: `${toTitleCase(vehicle?.location || "")} Island Central`,
-                                    value: `${vehicle?.location && vehicle.location.toUpperCase()}_ISLAND_CENTRAL`
-                                },
-                                {
-                                    option: `${toTitleCase(vehicle?.location || "")} Mainland Outskirt`,
-                                    value: `${vehicle?.location && vehicle.location.toUpperCase()}_MAINLAND_OUTSKIRT`
-                                },
-                            ]}
+                            options={areasOfUse()}
                             value={areaOfUse}
                             onChange={(value) => onChange("areaOfUse", value)}
                         />
                     </InputSection>
                     {
                         page === 'booking-vehicle' &&
-                        isOutskirt() &&
+                        isOutskirt() === "outskirt" &&
                         (vehicle?.outskirtsLocation?.length ?? 0) >= 1 &&
                         <div className="space-y-3">
                             <label
@@ -328,6 +351,66 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
                             </div>
                         </div>
                     }
+
+                    {
+                        page === 'booking-vehicle' &&
+                        isOutskirt() === "extreme" &&
+                        (vehicle?.extremeAreasLocation?.length ?? 0) >= 1 &&
+                        <div className="space-y-3">
+                            <label
+                                htmlFor="features"
+                                className="text-sm block font-medium mt-4 text-black"
+                            >
+                                Extreme locations
+                            </label>
+                            <p className="text-sm text-grey-600">
+                                Stops here will incur an additional cost of {vehicle?.vehicleCurrency} {vehicle?.extremeAreaPrice} set by the host
+                                of your vehicle
+                            </p>
+                            <div className="flex flex-wrap gap-x-4 gap-y-8">
+                                {vehicle?.extremeAreasLocation?.map((location) => (
+                                    <GroupCheckBox
+                                        key={location}
+                                        feature={location}
+                                        checkedValues={checkedExtremeLocations}
+                                        onChange={(feature: string, isChecked: boolean) => {
+                                            if (isChecked) {
+                                                // Only keep the newly selected checkbox one
+                                                setCheckedExtremeLocations([feature]);
+                                                const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || "[]");
+                                                const updatedTrips = trips.map((trip) => {
+                                                    if (trip.id === id) {
+                                                        return {
+                                                            ...trip,
+                                                            extremeLocations: [feature],
+                                                        };
+                                                    }
+                                                    return trip;
+                                                });
+                                                sessionStorage.setItem("trips", JSON.stringify(updatedTrips));
+                                            } else {
+                                                // If unchecked, clear selection
+                                                setCheckedExtremeLocations([]);
+
+                                                const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || "[]");
+                                                const updatedTrips = trips.map((trip) => {
+                                                    if (trip.id === id) {
+                                                        return {
+                                                            ...trip,
+                                                            extremeLocations: [],
+                                                        };
+                                                    }
+                                                    return trip;
+                                                });
+                                                sessionStorage.setItem("trips", JSON.stringify(updatedTrips));
+                                            }
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    }
+
                     {
                         page === 'booking-vehicle' && <>
                             <TextArea

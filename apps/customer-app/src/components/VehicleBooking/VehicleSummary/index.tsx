@@ -81,7 +81,7 @@ export default function VehicleSummary({
                   <PricingDescription
                     text={`NGN ${formatNumberWithCommas(
                       vehicle?.pricing?.dailyRate?.value || 0
-                    )}/day`}
+                    )}/trip`}
                   />
                 </div>
                 <div className="pl-6">
@@ -154,10 +154,16 @@ export default function VehicleSummary({
                     <span>Extra Hours</span>
                     <span>Billed as you go</span>
                   </div>
-                  <div className="w-full  text-sm flex justify-between mt-4">
+                  {<div className="w-full  text-sm flex justify-between mt-4">
                     <span>Outskirt Price</span>
                     <span> {bookingPriceBreakdown.currency || 'NGN'} {bookingPriceBreakdown.breakdown.outskirtFee || 0}</span>
+                  </div>}
+
+                  {<div className="w-full  text-sm flex justify-between mt-4">
+                    <span>Extreme Area Price</span>
+                    <span> {bookingPriceBreakdown.currency || 'NGN'} {bookingPriceBreakdown.breakdown.extremeAreaFee || 0}</span>
                   </div>
+                  }
                   {<div className="w-full  text-sm flex justify-between mt-4">
                     <span>Area of Use</span>
                     <span style={{ textTransform: "capitalize" }}>

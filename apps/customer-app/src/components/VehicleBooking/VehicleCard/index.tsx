@@ -59,7 +59,7 @@ const VehicleInformationCard = ({
               {vehicle?.listingName}
             </h6>
             <p className="text-xs sm:text-sm md:text-sm 3xl:text-base text-black">
-              {`NGN ${formatNumberWithCommas(vehicle?.pricing?.dailyRate?.value || 0)}/day`}
+              {`NGN ${formatNumberWithCommas(vehicle?.pricing?.dailyRate?.value || 0)}/trip`}
             </p>
           </div>
           <GreyWrap>
