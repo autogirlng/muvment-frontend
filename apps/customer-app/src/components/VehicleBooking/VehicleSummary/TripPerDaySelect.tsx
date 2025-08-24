@@ -13,37 +13,9 @@ import {
 } from "@/utils/types";
 import { toTitleCase } from "@/utils/functions";
 import InputField from "@repo/ui/inputField";
-import { useQuery } from "@tanstack/react-query";
-import { useHttp } from "@/hooks/useHttp";
 import { GroupCheckBox } from "@repo/ui/checkbox";
-
-
-
-
-import { Formik, Form } from "formik";
-import { StepperNavigation } from "@repo/ui/stepper";
-import { outskirtsLocationOptions } from "@/utils/data";
-import { ItineraryInformationValues, } from "@/utils/types";
 import TextArea from "@repo/ui/textarea";
-import {
-    getExistingBookingInformation,
-    saveAndUpdateBookingInformation,
-} from "@/utils/functions";
-import { itineraryInformationSchema } from "@/utils/validationSchema";
-import { useSearchParams } from "next/navigation";
-import { useMemo, useRef, useEffect, } from "react";
-import { useItineraryForm } from "@/hooks/useItineraryForm";
-import useFetchVehicleById from "../hooks/useFetchVehicleById";
 
-interface OutskirtLocations {
-    id: string;
-    locationName: string;
-    state: string;
-    isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
-
-}
 
 const InputSection = ({
     title,
@@ -90,9 +62,6 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
     const [isDayTwoCollapsed, setIsDayTwoCollapsed] = useState(false);
     const [checkedLocations, setCheckedLocations] = useState<string[]>([])
 
-
-    const http = useHttp();
-
     const isOutskirt = (): boolean => {
         const location = initialValues?.areaOfUse?.split("_")
 
@@ -102,12 +71,7 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
         return false
     }
 
-    const { data: outskirtLocations, isError, isLoading } = useQuery({
-        queryKey: ["getOutskirtsLocations", id],
-        queryFn: () => http.get<OutskirtLocations[]>(`/api/outskirt-locations/state/${vehicle?.stateOfRegistration.toUpperCase()}`),
-        enabled: isOutskirt() && !!vehicle?.stateOfRegistration,
-        retry: false,
-    });
+
 
     const onChange = (key: string, value: string) => {
         const trips: TripDetails[] = JSON.parse(sessionStorage.getItem('trips') || '[]')

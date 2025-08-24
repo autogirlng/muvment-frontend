@@ -12,16 +12,149 @@ import {
   getExistingBookingInformation,
   useFetchUrlParams,
 } from "@/utils/functions";
-import { BookingInformation, TripDetails, VehicleInformation } from "@/utils/types";
+import { BookingInformation, BookingType, TransactionStatus, TripDetails, VehicleInformation, User } from "@/utils/types";
 import { standardServiceFeeInPercentage } from "@/utils/constants";
 import useHandleBooking from "../hooks/useHandleBooking";
 import { useSearchParams } from "next/navigation";
 import { BlurredDialog } from "@repo/ui/dialog";
 import { useHttp } from "@/hooks/useHttp";
 import { BookingSummaryPricing } from "@/utils/types";
-import { format } from "date-fns";
+import { format, addHours } from "date-fns";
 import { useRouter } from "next/navigation";
 import { transactionData } from "@/utils/data";
+import { NewBookingType } from "@/utils/types";
+import { Spinner } from "@repo/ui/spinner";
+
+interface CreateNewBooking {
+  vehicleId: string;
+  currencyCode: string;
+  countryCode: string;
+  country: string;
+  startDate: string; // ISO date string
+  endDate: string;   // ISO date string
+  duration: number;
+  bookingType: NewBookingType;
+  amount: number;
+  secondaryPhoneNumber: string;
+  isForSelf: boolean;
+  specialInstructions: string;
+  guestName: string;
+  guestEmail: string;
+  guestPhoneNumber: string;
+  pickupLocation: string;
+  dropoffLocation: string;
+  outskirtsLocation: string[];
+  extremeAreasLocation: string[];
+  areaOfUse: string;
+  extraDetails: string;
+  purposeOfRide: string;
+  tripPurpose: string;
+  emergencyContact: string;
+  paymentMethod: "BANK_TRANSFER" | "CARD" | "CASH";
+  travelCompanions: { name: string; phoneNumber: string; }[];
+  redirectUrl: string;
+}
+
+// ----- Root Response -----
+export interface CheckoutResponse {
+  transactionReference: string;
+  paymentReference: string;
+  merchantName: string;
+  apiKey: string;
+  redirectUrl: string;
+  enabledPaymentMethod: string[];
+  checkoutUrl: string;
+  metaData: TransactionMetaData;
+  bookings: Booking[];
+}
+
+// ----- MetaData -----
+export interface TransactionMetaData {
+  transactionId: string;
+  bookingIds: string;
+  isMultipleBookings: string; // could also be boolean if backend returns real boolean
+}
+
+// ----- Booking -----
+export interface Booking {
+  id: string;
+  startDate: string; // ISO datetime
+  endDate: string;   // ISO datetime
+  duration: number;
+  bookingType: string; // e.g. "AN_HOUR"
+  amount: number;
+  paymentStatus: string;
+  paymentMethod: string;
+  rentalAgreement: string | null;
+  bookingStatus: string;
+  isForSelf: boolean;
+  guestName: string;
+  guestEmail: string;
+  guestPhoneNumber: string;
+  pickupLocation: string;
+  dropoffLocation: string;
+  emergencyContact: string;
+  userEmail: string | null;
+  userPhoneNumber: string | null;
+  userCountry: string;
+  countryCode: string;
+  specialInstructions: string;
+  paymentLink: string | null;
+  outskirtsLocation: string[];
+  extremeAreasLocation: string[];
+  areaOfUse: string;
+  extraDetails: string;
+  purposeOfRide: string;
+  tripPurpose: string;
+  secondaryPhoneNumber: string;
+  currencyCode: string;
+  vehicleId: string;
+  userId: string;
+  hostId: string;
+  numberOfExtraHours: number;
+  version: number;
+  createdAt: string;
+  updatedAt: string;
+  bookingGroupId: string;
+  travelCompanions: TravelCompanion[];
+  vehicle: VehicleInformation;
+}
+
+// ----- Travel Companion -----
+export interface TravelCompanion {
+  name?: string;
+  phoneNumber?: string;
+}
+
+
+// ----- Pricing -----
+export interface Pricing {
+  dailyRate: Rate;
+  extraHoursFee: number;
+  airportPickupFee: number;
+  hourlyRate: Rate | null;
+  discounts: Discount[];
+}
+
+export interface Rate {
+  value: number;
+  currency: string | null;
+  unit: string;
+}
+
+export interface Discount {
+  durationInDays: number;
+  percentage: number;
+}
+
+// ----- Trip Settings -----
+export interface TripSettings {
+  advanceNotice: string;
+  maxTripDuration: string;
+  provideDriver: boolean;
+  fuelProvided: boolean;
+}
+
 
 type Props = { vehicle: VehicleInformation | null; type: "guest" | "user" };
 
@@ -168,9 +301,12 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
   const [bookingPriceSummary, setBookingPriceSummary] = useState<BookingSummaryPricing>()
   const [userTrips, setUserTrips] = useState<TripDetails[]>()
   const router = useRouter()
+
+
   const fetchBookingPriceSummary = async () => {
     const bookingTypes: string[] = [];
     const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || "[]");
+    const outskirtTripIDs = new Set()
     setUserTrips(trips)
     let isOutskirt = false;
     for (let trip of trips) {
@@ -178,18 +314,18 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
         bookingTypes.push(trip.bookingType)
       }
       if (trip.outskirtLocations && trip.outskirtLocations.length >= 1) {
+        outskirtTripIDs.add(trip.id);
         isOutskirt = true
       }
     }
-
-
 
     const bookingPrice = await http.post<BookingSummaryPricing>("/api/bookings/calculate-price",
       {
         vehicleId: vehicle?.id,
         bookingTypes,
         isExtension: false,
-        isOutskirt
+        isOutskirt,
+        numberOfOutskirts: outskirtTripIDs.size
       }
     );
     setBookingPriceSummary(bookingPrice)
@@ -201,53 +337,93 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
       secondaryCountry,
       userCountry,
       userCountryCode,
+      country,
+      guestEmail,
+      guestName,
+      guestPhoneNumber,
+      isForSelf,
+      secondaryPhoneNumber,
+      tripPurpose,
+      specialInstructions,
       ...personalInformationValues
     } = personalInformation;
 
-    const bookings: any[] = []
+
+    const bookings: CreateNewBooking[] = []
 
 
     userTrips && userTrips?.map((trip) => {
+
       const date = new Date(trip.tripStartDate || '')
       const startDate = format(date, "yyyy-MM-dd")
       const time = new Date(trip.tripStartTime || '')
       const startTime = time.toISOString().split("T")[1]
 
-      const booking = {
-        vehicleId: vehicle?.id,
+      const startDateTime = new Date(`${startDate}T${startTime}`)
+
+      let endDateTime: Date;
+
+
+      switch (trip.bookingType) {
+        case "AN_HOUR":
+          endDateTime = addHours(startDateTime, 1);
+          break;
+        case "THREE_HOURS":
+          endDateTime = addHours(startDateTime, 3);
+          break;
+        case "SIX_HOURS":
+          endDateTime = addHours(startDateTime, 6);
+          break;
+        case "TWELVE_HOURS":
+          endDateTime = addHours(startDateTime, 12);
+          break;
+        case "AIRPORT_PICKUP":
+          endDateTime = addHours(startDateTime, 3);
+          break;
+        default:
+          endDateTime = time;
+      }
+
+
+      const tripCost = bookingPriceSummary?.breakdown.bookingTypeBreakdown[`${trip.bookingType}`];
+      const booking: CreateNewBooking = {
+        vehicleId: vehicle?.id || '',
         currencyCode: bookingPriceSummary?.currency || "NGN",
         countryCode: userCountryCode || "+234",
         country: userCountry || "NG",
-        startDate: `${startDate}T${startTime}`,
-        endDate: `${date.toISOString().split("T")[0]}T23:59:59.000Z`,
+        startDate: startDateTime.toISOString(),
+        endDate: endDateTime.toISOString(),
         duration: 1,
-        bookingType: trip.bookingType,
-        amount: bookingPriceSummary?.breakdown.bookingTypeBreakdown[`${trip.bookingType}`],
-        secondaryPhoneNumber: personalInformationValues.secondaryPhoneNumber,
-        isForSelf: personalInformationValues.isForSelf,
-        specialInstructions: "",
-        guestName: personalInformationValues.guestName,
-        guestEmail: personalInformationValues.guestEmail,
-        guestPhoneNumber: personalInformationValues.guestPhoneNumber,
+        bookingType: trip?.bookingType!,
+        amount: tripCost || 0,
+        secondaryPhoneNumber: secondaryPhoneNumber || "",
+        isForSelf,
+        specialInstructions: specialInstructions || "",
+        guestName: guestName || "",
+        guestEmail: guestEmail || "",
+        guestPhoneNumber: guestPhoneNumber || "",
         pickupLocation: trip.pickupLocation || '',
         dropoffLocation: trip.dropoffLocation || '',
         outskirtsLocation: trip.outskirtLocations || [],
         areaOfUse: trip.areaOfUse || '',
-        extraDetails: "",
-        purposeOfRide: "",
-        tripPurpose: "",
+        extraDetails: trip.extraDetails || '',
+        purposeOfRide: trip.purposeOfRide || "",
+        tripPurpose: tripPurpose || "",
         emergencyContact: "",
         paymentMethod: "CARD",
         travelCompanions: [
 
         ],
-        redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`
+        redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`,
+        extremeAreasLocation: []
+
       }
       bookings.push(booking)
     })
 
     try {
-      const transaction = await http.post("/api/bookings/create-multiple",
+
+      const transaction = await http.post<CheckoutResponse>("/api/bookings/create-multiple",
         {
           bookings: bookings,
           currencyCode: bookingPriceSummary?.currency || "NGN",
@@ -255,7 +431,7 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
           redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`,
           paymentMethod: "CARD"
         })
-      // @ts-ignore
+
       router.push(transaction.checkoutUrl)
     } catch (error) {
       console.log(error)
@@ -263,31 +439,44 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
 
   }
 
+  console.log(bookingPriceSummary)
   useEffect(() => {
     fetchBookingPriceSummary()
   }, [])
 
   return (
     <>
-      <div className="space-y-7 border border-grey-200 rounded-3xl md:max-w-[400px] px-6 py-8">
+      <div className="w-full space-y-7 border border-grey-200 rounded-3xl md:max-w-[400px] px-6 py-8">
         <h6 className="text-base md:text-xl 3xl:text-h6">Cost Breakdown</h6>
-        {
-          bookingPriceSummary && <section className="space-y-7">
 
-            <Prices
-              title="Outskirt Fee"
-              price={`${bookingPriceSummary?.currency} ${formatNumberWithCommas(bookingPriceSummary?.breakdown.outskirtFee || '')}`}
-            />
-            <Prices
-              title="Extra hours"
-              price="Billed as you go"
-              priceColor="text-grey-400"
-            />
-            <Prices
-              title="Total Cost"
-              price={`${bookingPriceSummary?.currency} ${formatNumberWithCommas(bookingPriceSummary?.totalPrice || '')}`}
-            />
-          </section>}
+
+        {
+          bookingPriceSummary ?
+            <section className="space-y-7">
+              {
+                (bookingPriceSummary?.breakdown?.outskirtFee ?? 0) > 0 && (
+                  <Prices
+                    title="Outskirt Fee"
+                    price={`${bookingPriceSummary.currency} ${formatNumberWithCommas(bookingPriceSummary.breakdown!.outskirtFee)}`}
+                  />
+                )
+              }
+
+              <Prices
+                title="Extra hours"
+                price="Billed as you go"
+                priceColor="text-grey-400"
+              />
+              <HorizontalDivider variant="light" />
+              <Prices
+                title="Total Cost"
+                price={`${bookingPriceSummary?.currency} ${formatNumberWithCommas(bookingPriceSummary?.totalPrice || '')}`}
+              />
+            </section> :
+            <div className="flex items-center justify-center h-full w-full">
+              <Spinner />
+            </div>
+        }
         {/* <Prices
           title="Total Cost"
           price={`${currencyCode} ${priceData?.totalPrice ? formatNumberWithCommas(priceData.totalPrice) : formatNumberWithCommas(totalCostWithoutServiceFee)}`}
@@ -320,7 +509,7 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
             }`}
         /> */}
 
-        <HorizontalDivider variant="light" />
+        {/* <HorizontalDivider variant="light" /> */}
 
         {/* <Prices
           title="Total"
@@ -328,7 +517,7 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
           isTotalCost
         /> */}
 
-        <HorizontalDivider variant="light" />
+        {/* <HorizontalDivider variant="light" /> */}
 
         {/* <button
           onClick={handleOpenCancellationModal}
@@ -357,6 +546,18 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
         >
           Book Now
         </Button>
+
+        {/* <Button
+          color="primary"
+          rounded="full"
+          fullWidth
+          onClick={() => { }}
+        // loading={proceedToPayment.isPending}
+        // disabled={proceedToPayment.isPending}
+        >
+          Book Now
+        </Button> */}
+
         {/* <Button
           color="primary"
           rounded="full"
