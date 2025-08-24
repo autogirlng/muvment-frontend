@@ -148,7 +148,7 @@ export default function VehicleSummary({
 
                   <div className="w-full text-sm flex justify-between mt-3">
                     <span>Total Cost</span>
-                    <span>NGN {bookingPriceBreakdown.totalPrice - bookingPriceBreakdown.breakdown.discountAmount || 0}</span>
+                    <span>{bookingPriceBreakdown.currency || 'NGN'} {bookingPriceBreakdown.totalPrice - bookingPriceBreakdown.breakdown.discountAmount || 0}</span>
                   </div>
                   <div className="w-full  text-sm flex justify-between mt-4">
                     <span>Extra Hours</span>
@@ -175,14 +175,14 @@ export default function VehicleSummary({
                   {
                     bookingPriceBreakdown.breakdown.discountAmount > 0 &&
                     <div className="w-full text-sm flex justify-between mt-4">
-                      <span>Discount -{bookingPriceBreakdown.breakdown.discountPercentage}%</span>
-                      <span>-NGN {bookingPriceBreakdown.breakdown.discountAmount}</span>
+                      <span>Discount - {bookingPriceBreakdown.breakdown.discountPercentage}%</span>
+                      <span>-{bookingPriceBreakdown.currency || 'NGN'} {bookingPriceBreakdown.breakdown.discountAmount}</span>
                     </div>
                   }
                 </div>
                 <div className="w-full text-sm flex justify-between mt-4">
                   <span>Total</span>
-                  <span className="font-bold">NGN {bookingPriceBreakdown.totalPrice}</span>
+                  <span className="font-bold">{bookingPriceBreakdown.currency || 'NGN'} {bookingPriceBreakdown.totalPrice}</span>
                 </div>
               </div>
             }
@@ -257,7 +257,7 @@ const BookRideModal = ({ vehicleId }: { vehicleId: string }) => {
   return (
     <div className="space-y-4">
       <Link
-        href={`/vehicle/booking/guest/${vehicleId}`}
+        href={`/vehicle/booking/${vehicleId}`}
         className="block"
       >
         <Button className="!bg-grey-90 !text-grey-700" fullWidth>

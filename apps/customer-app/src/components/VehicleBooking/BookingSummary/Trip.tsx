@@ -92,6 +92,15 @@ const Trip = ({ vehicle }: Props) => {
                 title="Outskirt Locations"
                 description={trip.outskirtLocations?.join(", ") || ''}
               />}
+
+              {trip.extraDetails && <SectionDetails
+                title="Extra Details"
+                description={`${trip.extraDetails}`}
+              />}
+              {trip.purposeOfRide && <SectionDetails
+                title="Purpose of Ride"
+                description={`${trip.purposeOfRide}`}
+              />}
             </TripInfoWrapper>
           </div>
         })

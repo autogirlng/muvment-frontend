@@ -286,6 +286,14 @@ export const enum BookingType {
   MULTI_DAY = "MULTI_DAY",
 }
 
+export enum NewBookingType {
+  AN_HOUR = "AN_HOUR",
+  THREE_HOURS = "THREE_HOURS",
+  SIX_HOURS = "SIX_HOURS",
+  TWELVE_HOURS = "TWELVE_HOURS",
+  AIRPORT_PICKUP = "AIRPORT_PICKUP"
+} 
+
 export enum TransactionType {
   CREDIT = "CREDIT",
   DEBIT = "DEBIT",
@@ -733,13 +741,15 @@ export interface BookingSummaryPricing {
 
 export interface TripDetails {
   id?: string;
-  bookingType?: string;
+  bookingType?: NewBookingType;
   tripStartDate?: string;
   tripStartTime?: string;
   pickupLocation?: string;
   dropoffLocation?: string;
   areaOfUse?: string;
   outskirtLocations?:string[];
+  purposeOfRide?:string;
+  extraDetails?:string;
 
 }
 export interface Trips {

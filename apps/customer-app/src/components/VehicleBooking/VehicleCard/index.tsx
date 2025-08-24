@@ -102,7 +102,7 @@ const VehicleInformationCard = ({
           ))}
         </Swiper>
 
-        <div className="flex items-center justify-between">
+        {/* <div className="flex items-center justify-between">
           <p className="text-sm md:text-base 3xl:text-xl !font-semibold">
             Booking Summary
           </p>
@@ -112,11 +112,11 @@ const VehicleInformationCard = ({
               {priceData?.totalPrice
                 ? `NGN ${formatNumberWithCommas(priceData.totalPrice)}`
                 : `NGN ${formatNumberWithCommas(
-                    (vehicle?.pricing?.dailyRate?.value || 0) * 1
-                  )}`}
+                  (vehicle?.pricing?.dailyRate?.value || 0) * 1
+                )}`}
             </p>
           </GreyWrap>
-        </div>
+        </div> */}
 
         {bookingType && (
           <BookingSummaryItems
@@ -160,7 +160,7 @@ const VehicleInformationCard = ({
         <HorizontalDivider variant="light" />
         <div className="space-y-1 text-sm md:text-base 3xl:text-xl">
           <p className="text-grey-900 !font-semibold">
-            Free cancellation until 15th Aug 2024
+            Free cancellation until 25th Sept 2025
           </p>
           <button
             onClick={handleOpenCancellationModal}
@@ -304,13 +304,13 @@ const BookingSummaryItems = ({
           {value
             ? value
             : date &&
-              time && (
-                <>
-                  <span>{date}</span>
-                  <VerticalDivider className="!h-4" />
-                  <span>{time}</span>
-                </>
-              )}
+            time && (
+              <>
+                <span>{date}</span>
+                <VerticalDivider className="!h-4" />
+                <span>{time}</span>
+              </>
+            )}
         </p>
       )}
     </div>

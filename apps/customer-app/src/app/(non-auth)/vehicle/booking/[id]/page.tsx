@@ -26,7 +26,6 @@ export default function VehicleBookingPage({
 
   const [currentStep, setCurrentStep] = useState<number>(0);
 
-  // console.log("vehicle", vehicle);
 
   const handleCurrentStep = (step: number) => {
     setCurrentStep(step);

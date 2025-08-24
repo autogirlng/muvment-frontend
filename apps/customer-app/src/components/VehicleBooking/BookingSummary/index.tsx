@@ -57,6 +57,7 @@ export default function BookingSummary({
         >
           <Trip vehicle={vehicle} />
         </Collapse>
+
       </div>
       <CostBreakdown vehicle={vehicle} type={type} />
     </div>

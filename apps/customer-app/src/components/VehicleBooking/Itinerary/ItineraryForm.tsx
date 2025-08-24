@@ -411,41 +411,8 @@ const ItineraryForm = ({
   }, [vehicleId, startDate, startTime, endDate, endTime, pickupLocationParam]);
 
 
-  const { trips, setTrips, deleteTrip, onChangeTrip, addTrip, bookingPriceBreakdown, isTripFormsComplete } = useItineraryForm(null)
+  const { trips, setTrips, deleteTrip, onChangeTrip } = useItineraryForm(null)
 
-
-  // const initialValues = {
-  //   "pickupLocation": "ddd",
-  //   "startDate": "2025-08-01T00:30:00",
-  //   "startTime": "2025-08-17T23:30:00.000Z",
-  //   "dropoffLocation": "f",
-  //   "endDate": "2025-08-07T00:30:00",
-  //   "endTime": "2025-08-17T23:30:00.000Z",
-  //   "areaOfUse": "Mainland Central",
-  //   "outskirtsLocation": [
-  //     "Badagry"
-  //   ],
-  //   "extraDetails": "",
-  //   "purposeOfRide": ""
-  // }
-
-
-  // const initialValues = {
-  //   pickupLocation: trips[0]?.pickupLocation || "",
-  //   startDate: "2025-08-01T00:30:00",
-  //   startTime: "2025-08-17T23:30:00.000Z",
-  //   dropoffLocation: trips[0]?.dropoffLocation || "",
-  //   endDate: "2025-08-07T00:30:00",
-  //   endTime: "2025-08-17T23:30:00.000Z",
-  //   areaOfUse: "Mainland Central",
-  //   outskirtsLocation: [
-  //     "Badagry"
-  //   ],
-  //   extraDetails: "",
-  //   purposeOfRide: ""
-  // }
-
-  // console.log(trips)
 
   useEffect(() => {
     const trips = JSON.parse(sessionStorage.getItem('trips') || '[]');
@@ -660,37 +627,7 @@ const ItineraryForm = ({
               </div>
             </div> */}
 
-            <TextArea
-              name="extraDetails"
-              id="extraDetails"
-              type="text"
-              label="Extra details(optional)"
-              placeholder={`Add extra trip details you would like to share`}
-              value={values.extraDetails}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={
-                errors.extraDetails && touched.extraDetails
-                  ? String(errors.extraDetails)
-                  : ""
-              }
-            />
 
-            <TextArea
-              name="purposeOfRide"
-              id="purposeOfRide"
-              type="text"
-              label="Purpose of ride(optional)"
-              placeholder={`Add your purpose of ride`}
-              value={values.purposeOfRide}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={
-                errors.purposeOfRide && touched.purposeOfRide
-                  ? String(errors.purposeOfRide)
-                  : ""
-              }
-            />
 
             <StepperNavigation
               steps={steps}
