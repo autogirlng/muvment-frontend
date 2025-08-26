@@ -2,175 +2,61 @@ import { HorizontalDivider } from "@repo/ui/divider";
 import Button from "@repo/ui/button";
 import cn from "classnames";
 import { useEffect, useState } from "react";
+import { useAppSelector } from "@/lib/hooks";
 import {
-  calculateDiscount,
-  calculateNumberOfDays,
-  calculateServiceFee,
-  calculateSubTotal,
-  calculateTotalCostWithoutServiceFee,
   formatNumberWithCommas,
   getExistingBookingInformation,
-  useFetchUrlParams,
 } from "@/utils/functions";
-import { BookingInformation, TripDetails, VehicleInformation } from "@/utils/types";
-import { standardServiceFeeInPercentage } from "@/utils/constants";
-import useHandleBooking from "../hooks/useHandleBooking";
-import { useSearchParams } from "next/navigation";
-import { BlurredDialog } from "@repo/ui/dialog";
+import {
+  TransactionBookingResponse,
+  CreateNewBookingAuthenticated,
+  CreateNewBookingUnauthenticated,
+  TripDetails,
+  CostBreakdownProps
+} from "@/utils/types";
+
 import { useHttp } from "@/hooks/useHttp";
 import { BookingSummaryPricing } from "@/utils/types";
-import { format } from "date-fns";
+import { format, addHours } from "date-fns";
 import { useRouter } from "next/navigation";
-import { transactionData } from "@/utils/data";
+import { Spinner } from "@repo/ui/spinner";
 
-type Props = { vehicle: VehicleInformation | null; type: "guest" | "user" };
 
-const CostBreakdown = ({ vehicle, type }: Props) => {
-  const searchParams = useSearchParams();
-  const [openCancellationModal, setOpenCancellationModal] = useState(false);
 
-  // Get startDate and endDate from URL params
-  const urlStartDate = searchParams.get("startDate");
-  const urlEndDate = searchParams.get("endDate");
-
-  const itineraryInformation = getExistingBookingInformation(
-    {},
-    vehicle?.id ?? "",
-    "itineraryInformation"
-  );
+const CostBreakdown = ({ vehicle, type }: CostBreakdownProps) => {
   const personalInformation = getExistingBookingInformation(
     {},
     vehicle?.id ?? "",
     "personalInformation"
   );
-
-  const { bookingType } = useFetchUrlParams();
-
-  const priceDataString = localStorage.getItem("priceData");
-  const priceData = priceDataString ? JSON.parse(priceDataString) : null;
-
-  const currencyCode = vehicle?.vehicleCurrency;
-  const dailyRate = vehicle?.pricing?.dailyRate?.value ?? 0;
-  const hostDiscounts = vehicle?.pricing?.discounts ?? [];
-  const startDate = urlStartDate
-    ? new Date(urlStartDate)
-    : new Date(itineraryInformation?.startDate);
-  const endDate = urlEndDate
-    ? new Date(urlEndDate)
-    : new Date(itineraryInformation?.endDate);
-
-  // Calculate number of days
-  // const numberOfDays = calculateNumberOfDays(endDate, startDate);
-
-  // const totalCostWithoutServiceFee = calculateTotalCostWithoutServiceFee(
-  //   endDate,
-  //   startDate,
-  //   dailyRate
-  // );
-  // const serviceFee = calculateServiceFee(
-  //   totalCostWithoutServiceFee,
-  //   standardServiceFeeInPercentage
-  // );
-  // const subTotal = calculateSubTotal(
-  //   dailyRate,
-  //   hostDiscounts,
-  //   endDate,
-  //   startDate
-  // );
-
-  // const { saveBooking, proceedToPayment } = useHandleBooking({
-  //   vehicleId: vehicle?.id ?? "",
-  //   type,
-  // });
-
-  // const handleOpenCancellationModal = () => {
-  //   setOpenCancellationModal(!openCancellationModal);
-  // };
-
-  // const saveBookingHandler = () => {
-  //   const {
-  //     secondaryCountryCode,
-  //     secondaryCountry,
-  //     userCountry,
-  //     userCountryCode,
-  //     ...personalInformationValues
-  //   } = personalInformation;
-
-  //   const {
-  //     // startDate,
-  //     // endDate,
-  //     startTime,
-  //     endTime,
-  //     ...itineraryInformationValues
-  //   } = itineraryInformation;
-
-
-  //   const amount = priceData?.totalPrice
-  //     ? parseFloat(priceData?.totalPrice)
-  //     : parseInt(subTotal);
-
-  //   saveBooking.mutate({
-  //     ...personalInformationValues,
-  //     ...itineraryInformationValues,
-  //     // startDate: itineraryInformation.startDate,
-  //     // endDate: itineraryInformation.endDate,
-  //     amount: amount,
-  //     currencyCode: currencyCode,
-  //     bookingType,
-  //     duration: parseInt(numberOfDays),
-  //     redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/draft`,
-  //   });
-  // };
-
-  // const proceedToPaymentHandler = () => {
-  //   const {
-  //     secondaryCountryCode,
-  //     secondaryCountry,
-  //     userCountry,
-  //     userCountryCode,
-  //     ...personalInformationValues
-  //   } = personalInformation;
-
-  //   let {
-  //     // startDate,
-  //     // endDate,
-  //     startTime,
-  //     endTime,
-  //     ...itineraryInformationValues
-  //   } = itineraryInformation;
-
-  //   const amount = priceData?.totalPrice
-  //     ? parseFloat(priceData?.totalPrice)
-  //     : parseInt(subTotal);
-
-  //   // console.log({
-  //   proceedToPayment.mutate({
-  //     ...personalInformationValues,
-  //     ...itineraryInformationValues,
-  //     startDate:
-  //       itineraryInformation.startDate &&
-  //         !itineraryInformation.startDate.endsWith("Z")
-  //         ? itineraryInformation.startDate + "Z"
-  //         : itineraryInformation.startDate,
-  //     endDate:
-  //       itineraryInformation.endDate &&
-  //         !itineraryInformation.endDate.endsWith("Z")
-  //         ? itineraryInformation.endDate + "Z"
-  //         : itineraryInformation.endDate,
-  //     amount: amount,
-  //     currencyCode: currencyCode,
-  //     bookingType,
-  //     duration: parseInt(numberOfDays),
-  //     redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`,
-  //   });
-  // };
   const http = useHttp()
   const [bookingPriceSummary, setBookingPriceSummary] = useState<BookingSummaryPricing>()
   const [userTrips, setUserTrips] = useState<TripDetails[]>()
   const router = useRouter()
+  const { user } = useAppSelector((state) => state.user);
+  const {
+    secondaryCountryCode,
+    secondaryCountry,
+    userCountry,
+    userCountryCode,
+    country,
+    guestEmail,
+    guestName,
+    guestPhoneNumber,
+    isForSelf,
+    secondaryPhoneNumber,
+    tripPurpose,
+    specialInstructions,
+    ...personalInformationValues
+  } = personalInformation;
+
+
   const fetchBookingPriceSummary = async () => {
     const bookingTypes: string[] = [];
     const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || "[]");
+    const outskirtTripIDs = new Set()
+    const extremeLocationsIDs = new Set();
+
     setUserTrips(trips)
     let isOutskirt = false;
     for (let trip of trips) {
@@ -178,84 +64,98 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
         bookingTypes.push(trip.bookingType)
       }
       if (trip.outskirtLocations && trip.outskirtLocations.length >= 1) {
+        outskirtTripIDs.add(trip.id);
         isOutskirt = true
       }
+      if (trip.extremeLocations && trip.extremeLocations.length >= 1) {
+        extremeLocationsIDs.add(trip.id)
+      }
     }
-
-
 
     const bookingPrice = await http.post<BookingSummaryPricing>("/api/bookings/calculate-price",
       {
         vehicleId: vehicle?.id,
         bookingTypes,
         isExtension: false,
-        isOutskirt
+        isOutskirt,
+        numberOfOutskirts: outskirtTripIDs.size,
+        isExtremeArea: extremeLocationsIDs.size > 0,
+        numberOfExtremeAreas: extremeLocationsIDs.size
       }
     );
     setBookingPriceSummary(bookingPrice)
   }
 
-  const handlePayment = async () => {
-    const {
-      secondaryCountryCode,
-      secondaryCountry,
-      userCountry,
-      userCountryCode,
-      ...personalInformationValues
-    } = personalInformation;
 
-    const bookings: any[] = []
-
-
+  const handlePaymentUnauthenticated = async () => {
+    const bookings: CreateNewBookingUnauthenticated[] = []
     userTrips && userTrips?.map((trip) => {
       const date = new Date(trip.tripStartDate || '')
       const startDate = format(date, "yyyy-MM-dd")
       const time = new Date(trip.tripStartTime || '')
       const startTime = time.toISOString().split("T")[1]
+      const startDateTime = new Date(`${startDate}T${startTime}`)
+      let endDateTime: Date;
+      switch (trip.bookingType) {
+        case "AN_HOUR":
+          endDateTime = addHours(startDateTime, 1);
+          break;
+        case "THREE_HOURS":
+          endDateTime = addHours(startDateTime, 3);
+          break;
+        case "SIX_HOURS":
+          endDateTime = addHours(startDateTime, 6);
+          break;
+        case "TWELVE_HOURS":
+          endDateTime = addHours(startDateTime, 12);
+          break;
+        case "AIRPORT_PICKUP":
+          endDateTime = addHours(startDateTime, 3);
+          break;
+        default:
+          endDateTime = time;
+      }
 
-      const booking = {
-        vehicleId: vehicle?.id,
-        currencyCode: bookingPriceSummary?.currency || "NGN",
-        countryCode: userCountryCode || "+234",
-        country: userCountry || "NG",
-        startDate: `${startDate}T${startTime}`,
-        endDate: `${date.toISOString().split("T")[0]}T23:59:59.000Z`,
-        duration: 1,
-        bookingType: trip.bookingType,
-        amount: bookingPriceSummary?.breakdown.bookingTypeBreakdown[`${trip.bookingType}`],
-        secondaryPhoneNumber: personalInformationValues.secondaryPhoneNumber,
-        isForSelf: personalInformationValues.isForSelf,
-        specialInstructions: "",
-        guestName: personalInformationValues.guestName,
-        guestEmail: personalInformationValues.guestEmail,
-        guestPhoneNumber: personalInformationValues.guestPhoneNumber,
+      let booking: CreateNewBookingUnauthenticated = {
+        vehicleId: vehicle?.id || '',
+        startDate: startDateTime.toISOString(),
+        endDate: endDateTime.toISOString(),
+        bookingType: trip?.bookingType!,
+        specialInstructions: specialInstructions || "",
         pickupLocation: trip.pickupLocation || '',
         dropoffLocation: trip.dropoffLocation || '',
         outskirtsLocation: trip.outskirtLocations || [],
         areaOfUse: trip.areaOfUse || '',
-        extraDetails: "",
-        purposeOfRide: "",
-        tripPurpose: "",
+        extraDetails: trip.extraDetails || '',
+        purposeOfRide: trip.purposeOfRide || "",
+        tripPurpose: tripPurpose || "",
         emergencyContact: "",
-        paymentMethod: "CARD",
         travelCompanions: [
 
         ],
-        redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`
+        extremeAreasLocation: trip.extremeLocations || []
       }
       bookings.push(booking)
     })
 
+
     try {
-      const transaction = await http.post("/api/bookings/create-multiple",
+
+      const transaction = await http.post<TransactionBookingResponse>("/api/bookings/guest-booking-multiple",
         {
+          guestName: guestName || "",
+          guestEmail: guestEmail || "",
+          guestPhoneNumber: guestPhoneNumber || "",
+          countryCode: userCountryCode || "+234",
+          country: userCountry || "NG",
           bookings: bookings,
           currencyCode: bookingPriceSummary?.currency || "NGN",
           totalAmount: Number(bookingPriceSummary?.totalPrice),
           redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`,
           paymentMethod: "CARD"
         })
-      // @ts-ignore
+      sessionStorage.setItem("bookingIDs", transaction.metaData.bookingIds)
+
       router.push(transaction.checkoutUrl)
     } catch (error) {
       console.log(error)
@@ -263,141 +163,151 @@ const CostBreakdown = ({ vehicle, type }: Props) => {
 
   }
 
+
+  const handlePaymentAuthenticated = async () => {
+
+    const bookings: CreateNewBookingAuthenticated[] = []
+    userTrips && userTrips?.map((trip) => {
+      const date = new Date(trip.tripStartDate || '')
+      const startDate = format(date, "yyyy-MM-dd")
+      const time = new Date(trip.tripStartTime || '')
+      const startTime = time.toISOString().split("T")[1]
+
+      const startDateTime = new Date(`${startDate}T${startTime}`)
+
+      let endDateTime: Date;
+
+
+      switch (trip.bookingType) {
+        case "AN_HOUR":
+          endDateTime = addHours(startDateTime, 1);
+          break;
+        case "THREE_HOURS":
+          endDateTime = addHours(startDateTime, 3);
+          break;
+        case "SIX_HOURS":
+          endDateTime = addHours(startDateTime, 6);
+          break;
+        case "TWELVE_HOURS":
+          endDateTime = addHours(startDateTime, 12);
+          break;
+        case "AIRPORT_PICKUP":
+          endDateTime = addHours(startDateTime, 3);
+          break;
+        default:
+          endDateTime = time;
+      }
+      const tripCost = bookingPriceSummary?.breakdown.bookingTypeBreakdown[`${trip.bookingType}`];
+      let booking: CreateNewBookingAuthenticated = {
+        vehicleId: vehicle?.id || '',
+        currencyCode: bookingPriceSummary?.currency || "NGN",
+        countryCode: userCountryCode || "+234",
+        country: userCountry || "NG",
+        startDate: startDateTime.toISOString(),
+        endDate: endDateTime.toISOString(),
+        duration: 1,
+        bookingType: trip?.bookingType!,
+        amount: tripCost || 0,
+        secondaryPhoneNumber: secondaryPhoneNumber || "",
+        isForSelf,
+        specialInstructions: specialInstructions || "",
+        guestName: guestName || "",
+        guestEmail: guestEmail || "",
+        guestPhoneNumber: guestPhoneNumber || "",
+        pickupLocation: trip.pickupLocation || '',
+        dropoffLocation: trip.dropoffLocation || '',
+        outskirtsLocation: trip.outskirtLocations || [],
+        areaOfUse: trip.areaOfUse || '',
+        extraDetails: trip.extraDetails || '',
+        purposeOfRide: trip.purposeOfRide || "",
+        tripPurpose: tripPurpose || "",
+        emergencyContact: "",
+        paymentMethod: "CARD",
+        travelCompanions: [
+
+        ],
+        redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`,
+        extremeAreasLocation: trip.extremeLocations || []
+      }
+      bookings.push(booking)
+    })
+
+
+    try {
+
+      const transaction = await http.post<TransactionBookingResponse>("/api/bookings/create-multiple",
+        {
+          bookings: bookings,
+          currencyCode: bookingPriceSummary?.currency || "NGN",
+          totalAmount: Number(bookingPriceSummary?.totalPrice),
+          redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`,
+          paymentMethod: "CARD"
+        })
+
+      router.push(transaction.checkoutUrl)
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
+  console.log(bookingPriceSummary)
   useEffect(() => {
     fetchBookingPriceSummary()
   }, [])
 
   return (
     <>
-      <div className="space-y-7 border border-grey-200 rounded-3xl md:max-w-[400px] px-6 py-8">
+      <div className="w-full space-y-7 border border-grey-200 rounded-3xl md:max-w-[400px] px-6 py-8">
         <h6 className="text-base md:text-xl 3xl:text-h6">Cost Breakdown</h6>
         {
-          bookingPriceSummary && <section className="space-y-7">
+          bookingPriceSummary ?
+            <section className="space-y-7">
 
-            <Prices
-              title="Outskirt Fee"
-              price={`${bookingPriceSummary?.currency} ${formatNumberWithCommas(bookingPriceSummary?.breakdown.outskirtFee || '')}`}
-            />
-            <Prices
-              title="Extra hours"
-              price="Billed as you go"
-              priceColor="text-grey-400"
-            />
-            <Prices
-              title="Total Cost"
-              price={`${bookingPriceSummary?.currency} ${formatNumberWithCommas(bookingPriceSummary?.totalPrice || '')}`}
-            />
-          </section>}
-        {/* <Prices
-          title="Total Cost"
-          price={`${currencyCode} ${priceData?.totalPrice ? formatNumberWithCommas(priceData.totalPrice) : formatNumberWithCommas(totalCostWithoutServiceFee)}`}
-        />
-        <Prices
-          title="Extra hours"
-          price="Billed as you go"
-          priceColor="text-grey-400"
-        />
-        <Prices
-          title={`Service Charge (${standardServiceFeeInPercentage * 100}%)`}
-          price={`${currencyCode} ${formatNumberWithCommas(serviceFee)}`}
-        />
+              {
+                (bookingPriceSummary?.breakdown?.extremeAreaFee ?? 0) > 0 && (
+                  <Prices
+                    title="Outskirt Fee"
+                    price={`${bookingPriceSummary.currency} ${formatNumberWithCommas(bookingPriceSummary.breakdown!.extremeAreaFee)}`}
+                  />
+                )
+              }
+              {
+                (bookingPriceSummary?.breakdown?.outskirtFee ?? 0) > 0 && (
+                  <Prices
+                    title="Outskirt Fee"
+                    price={`${bookingPriceSummary.currency} ${formatNumberWithCommas(bookingPriceSummary.breakdown!.outskirtFee)}`}
+                  />
+                )
+              }
 
-        <Prices
-          title={`Discount (-${priceData?.breakdown?.discountPercentage ||
-            hostDiscounts.find(
-              (d) => parseInt(numberOfDays) <= d.durationInDays
-            )?.percentage ||
-            0
-            }%)`}
-          price={`-${currencyCode} ${formatNumberWithCommas(priceData?.breakdown?.discountAmount) ||
-            formatNumberWithCommas(
-              calculateDiscount(
-                totalCostWithoutServiceFee,
-                hostDiscounts,
-                parseInt(numberOfDays)
-              )
-            )
-            }`}
-        /> */}
+              <Prices
+                title="Extra hours"
+                price="Billed as you go"
+                priceColor="text-grey-400"
+              />
+              <HorizontalDivider variant="light" />
+              <Prices
+                title="Total Cost"
+                price={`${bookingPriceSummary?.currency} ${formatNumberWithCommas(bookingPriceSummary?.totalPrice || '')}`}
+              />
+            </section> :
+            <div className="flex items-center justify-center h-full w-full">
+              <Spinner />
+            </div>
+        }
 
-        <HorizontalDivider variant="light" />
-
-        {/* <Prices
-          title="Total"
-          price={`${currencyCode} ${formatNumberWithCommas(priceData.totalPrice)}`}
-          isTotalCost
-        /> */}
-
-        <HorizontalDivider variant="light" />
-
-        {/* <button
-          onClick={handleOpenCancellationModal}
-          className="text-primary-500 text-sm md:text-base 3xl:text-xl hover:underline cursor-pointer bg-transparent border-none p-0"
-        >
-          Learn more about our free cancellation
-        </button> */}
-
-        {/* <Button
-          variant="outlined"
-          rounded="full"
-          fullWidth
-          onClick={saveBookingHandler}
-          loading={saveBooking.isPending}
-          disabled={saveBooking.isPending}
-        >
-          Save Booking
-        </Button> */}
         <Button
           color="primary"
           rounded="full"
           fullWidth
-          onClick={handlePayment}
+          onClick={user ? handlePaymentAuthenticated : handlePaymentUnauthenticated}
         // loading={proceedToPayment.isPending}
         // disabled={proceedToPayment.isPending}
         >
           Book Now
         </Button>
-        {/* <Button
-          color="primary"
-          rounded="full"
-          fullWidth
-          onClick={proceedToPaymentHandler}
-          loading={proceedToPayment.isPending}
-          disabled={proceedToPayment.isPending}
-        >
-          Book Now
-        </Button> */}
       </div>
-
-      {/* Cancellation Policy Modal */}
-      {/* <BlurredDialog
-        open={openCancellationModal}
-        onOpenChange={handleOpenCancellationModal}
-        trigger={<button className="hidden" />}
-        title={
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="text-red-500"
-              >
-                <path
-                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-            <p className="text-xl font-semibold text-gray-900">
-              Cancellation Policy
-            </p>
-          </div>
-        }
-        content={<CancellationPolicyModal />}
-      /> */}
     </>
   );
 };

@@ -1,22 +1,409 @@
 "use client";
 
-import ExplorePageLayout from "@/components/Explore/ExplorePageLayout";
+import cn from "classnames";
+import { Suspense, useState, useCallback, useEffect } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { FullPageSpinner } from "@repo/ui/spinner";
 import Icons from "@repo/ui/icons";
+import ExploreVehicleCard from "@/components/Explore/VehicleCard";
+import EmptyState from "@/components/EmptyState";
+import MainFilters from "@/components/Explore/MainFilters";
+import AllFilters from "@/components/Explore/AllFilters";
+import DesktopNav from "@/components/Navbar/DesktopNav";
+import MobileNav from "@/components/Navbar/MobileNav";
+import BackLink from "@/components/BackLink";
+import NavBookingSearchBar from "@/components/searchbar-component/NavBookingSearchBar";
+import { useAppSelector } from "@/lib/hooks";
 
-export default function ExploreCitiesPage({
-  params,
-}: {
-  params: { city: string };
-}) {
-  const capitalizedCity =
-    params.city.charAt(0).toUpperCase() + params.city.slice(1);
+// --- Interfaces (remain compatible with the new API response) ---
+
+interface VehicleImage {
+  id: string;
+  frontView: string;
+  backView: string;
+  sideView1: string;
+  sideView2: string;
+  interior: string;
+  other: string;
+  vehicleId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Discount {
+  durationInDays: number;
+  percentage: number;
+}
+
+interface DailyRate {
+  value: number;
+  currency: string | null;
+  unit: string;
+}
+
+interface Pricing {
+  dailyRate: DailyRate;
+  extraHoursFee: number;
+  airportPickupFee: number;
+  hourlyRate: number | null;
+  discounts: Discount[];
+}
+
+interface TripSettings {
+  advanceNotice: string;
+  maxTripDuration: string;
+  provideDriver: boolean;
+  fuelProvided: boolean;
+}
+
+export interface Vehicle {
+  id: string;
+  pricing: Pricing;
+  tripSettings: TripSettings;
+  listingName: string;
+  location: string;
+  address: string;
+  vehicleType: string;
+  make: string;
+  model: string;
+  yearOfRelease: string;
+  hasTracker: boolean;
+  hasInsurance: boolean;
+  licensePlateNumber: string;
+  vehicleColor: string;
+  stateOfRegistration: string;
+  vehicleDescription: string;
+  numberOfSeats: number;
+  longitude: number | null;
+  latitude: number | null;
+  status: string;
+  vehicleStatus: string;
+  rejectionReason: string | null;
+  userId: string;
+  vehicleCurrency: string;
+  isActive: boolean;
+  areYouVehicleOwner: boolean;
+  vehicleIdentifier: string;
+  isReserved: boolean;
+  reservationExpiresAt: string;
+  unavailableFrom: string | null;
+  unavailableUntil: string | null;
+  features: string[];
+  outskirtsLocation: string[];
+  outskirtsPrice: number | null;
+  extremeAreasLocation: string[];
+  extremeAreaPrice: number | null;
+  isTopRate: boolean;
+  createdAt: string;
+  updatedAt: string;
+  VehicleImage: VehicleImage;
+}
+
+interface ApiResponse {
+  data: Vehicle[];
+  page: number;
+  limit: number;
+  totalPages: number;
+  totalCount: number;
+}
+
+// --- Rewritten fetchRides function to use the new endpoint ---
+
+const fetchRides = async (
+  params: Record<string, string | undefined | null | string[]>
+): Promise<ApiResponse> => {
+  const BASE_URL =
+    process.env.NEXT_PUBLIC_API_URL || "https://dev-muvment.up.railway.app";
+  const endpoint = `${BASE_URL}/api/listings`;
+  const queryParams = new URLSearchParams();
+
+  // The city from the URL path is the primary location filter
+  if (params.city && typeof params.city === "string") {
+    queryParams.append("location", params.city);
+  } else {
+    // If no city is present in the URL path, return empty results
+    return Promise.resolve({
+      data: [],
+      page: 1,
+      limit: 10,
+      totalPages: 0,
+      totalCount: 0,
+    });
+  }
+
+  // Create a copy of params to process other filters
+  const apiParams = { ...params };
+
+  // Map the 'type' filter from the URL to 'vehicleType' for the API call
+  if (apiParams.type) {
+    apiParams.vehicleType = apiParams.type;
+  }
+
+  // Append all other filter params from the URL's query string
+  Object.entries(apiParams).forEach(([key, value]) => {
+    // Exclude params that are not part of the filter API or already handled
+    if (
+      ["city", "type", "latitude", "longitude", "search", "category"].includes(
+        key
+      )
+    )
+      return;
+
+    if (Array.isArray(value)) {
+      value.forEach((v) => queryParams.append(key, v));
+    } else if (value) {
+      queryParams.append(key, value);
+    }
+  });
+
+  const response = await fetch(`${endpoint}?${queryParams.toString()}`);
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+  return response.json();
+};
+
+const placeholderImages = [
+  "/images/vehicles/1.png",
+  "/images/vehicles/2.png",
+  "/images/vehicles/3.png",
+];
+
+export default function ExplorePage() {
+  return (
+    <Suspense fallback={<FullPageSpinner />}>
+      <ExplorePageLayout />
+    </Suspense>
+  );
+}
+
+function ExplorePageLayout() {
+  const { user } = useAppSelector((state) => state.user);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // --- Extract city from the URL path ---
+  const city = pathname.split("/").pop();
+  const capitalizedCity = city
+    ? city.charAt(0).toUpperCase() + city.slice(1)
+    : "";
+
+  const fromDate = searchParams.get("fromDate");
+  const untilDate = searchParams.get("untilDate");
+  const bookingType = searchParams.get("bookingType");
+  const price = searchParams.getAll("price");
+  const type = searchParams.getAll("type");
+  const make = searchParams.getAll("make");
+  const yearOfRelease = searchParams.getAll("yearOfRelease");
+  const numberOfSeats = searchParams.getAll("numberOfSeats");
+  const features = searchParams.getAll("features");
+
+  const queryKeyParams = {
+    city,
+    fromDate,
+    untilDate,
+    bookingType,
+    price,
+    type,
+    make,
+    yearOfRelease,
+    numberOfSeats,
+    features,
+  };
+
+  const {
+    data: apiResponse,
+    isLoading,
+    isError,
+  } = useQuery<ApiResponse>({
+    queryKey: ["rides", queryKeyParams],
+    queryFn: () => fetchRides(queryKeyParams),
+    staleTime: 500,
+    // Only enable the query if the city has been successfully extracted from the URL
+    enabled: !!city,
+  });
+
+  const listings = apiResponse?.data ?? [];
+  const totalCount = apiResponse?.totalCount ?? 0;
+
+  const [isDisplayList, setIsDisplayList] = useState<boolean>(true);
+  const [showAllFilters, setShowAllFilters] = useState<boolean>(false);
+
+  const filters = {
+    price: [Number(price[0] ?? 0), Number(price[1] ?? 10000000)],
+    type,
+    make,
+    yearOfRelease,
+    numberOfSeats,
+    features,
+  };
+
+  useEffect(() => {}, [user]);
+
+  const handleFilterChange = useCallback(
+    (filterName: string, value: string | number[]) => {
+      const currentParams = new URLSearchParams(
+        Array.from(searchParams.entries())
+      );
+
+      if (Array.isArray(value)) {
+        currentParams.delete(filterName);
+        value.forEach((v) => currentParams.append(filterName, String(v)));
+      } else {
+        const allValues = currentParams.getAll(filterName);
+        if (allValues.includes(value)) {
+          const newValues = allValues.filter((v) => v !== value);
+          currentParams.delete(filterName);
+          newValues.forEach((v) => currentParams.append(filterName, v));
+        } else {
+          currentParams.append(filterName, value);
+        }
+      }
+      router.push(`${pathname}?${currentParams.toString()}`);
+    },
+    [searchParams, pathname, router]
+  );
+
+  const getVehicleImages = (vehicle: Vehicle) => {
+    if (!vehicle.VehicleImage) return placeholderImages;
+    const { frontView, backView, sideView1, sideView2, interior, other } =
+      vehicle.VehicleImage;
+    const images = [
+      frontView,
+      backView,
+      sideView1,
+      sideView2,
+      interior,
+      other,
+    ].filter(Boolean);
+    return images.length > 0 ? images : placeholderImages;
+  };
 
   return (
-    <ExplorePageLayout
-      title={`Vehicles In ${capitalizedCity}`}
-      icon={Icons.ic_location}
-      type="all"
-      location={capitalizedCity}
-    />
+    <div>
+      <DesktopNav user={user} explorePage>
+        <NavBookingSearchBar />
+      </DesktopNav>
+      <MobileNav user={user} />
+
+      <div className="pb-14 pt-10 md:pt-44 px-8">
+        <div
+          className={cn(
+            "space-y-8 mx-auto",
+            showAllFilters
+              ? "lg:w-[102%] 3xl:w-[103%] max-w-[1650px] 3xl:max-w-[1700px]"
+              : "w-full max-w-[1400px]"
+          )}
+        >
+          <div
+            className={cn(
+              "space-y-4 md:space-y-8",
+              showAllFilters && "md:ml-[290px] 2xl:ml-[480px] mr-2"
+            )}
+          >
+            <BackLink backLink="/explore" />
+            <div className="flex items-center justify-between gap-3">
+              <h1 className="text-base md:text-h5 3xl:text-h4 !font-bold">
+                Explore Vehicles in {capitalizedCity}
+              </h1>
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <h5 className="text-sm md:text-h5 3xl:text-h5">
+                {isLoading
+                  ? `Searching in ${capitalizedCity}...`
+                  : `${totalCount}+ vehicles available`}
+              </h5>
+              <button
+                onClick={() => setShowAllFilters(true)}
+                className="md:hidden bg-white border border-grey-300 rounded-lg p-2 flex items-center gap-2 text-grey-500"
+              >
+                {Icons.ic_filter}
+              </button>
+            </div>
+          </div>
+
+          {showAllFilters ? (
+            <AllFilters
+              filters={filters}
+              handleFilterChange={handleFilterChange}
+              setShowAllFilters={setShowAllFilters}
+            />
+          ) : (
+            <MainFilters
+              filters={filters}
+              handleFilterChange={handleFilterChange}
+              setShowAllFilters={setShowAllFilters}
+            />
+          )}
+
+          <div
+            className={cn(
+              "space-y-8",
+              showAllFilters && "md:ml-[290px] 2xl:ml-[480px] mr-2"
+            )}
+          >
+            {isLoading ? (
+              <FullPageSpinner />
+            ) : isError ? (
+              <EmptyState
+                title="Something went wrong"
+                image="/icons/empty_booking_state.png"
+              />
+            ) : listings.length > 0 ? (
+              <div
+                className={cn(
+                  isDisplayList
+                    ? "flex flex-col gap-8"
+                    : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10"
+                )}
+              >
+                {listings.map((vehicle: Vehicle) => (
+                  <ExploreVehicleCard
+                    key={vehicle.id}
+                    vehicleId={vehicle.id}
+                    fromDate={fromDate ?? undefined}
+                    untilDate={untilDate ?? undefined}
+                    showAllFilters={showAllFilters}
+                    isDisplayList={isDisplayList}
+                    name={vehicle.listingName}
+                    type={vehicle.vehicleType}
+                    location={vehicle.location}
+                    dailyPrice={vehicle.pricing.dailyRate.value}
+                    currency={vehicle.pricing.dailyRate.currency ?? "NGN"}
+                    extraHoursFee={vehicle.pricing.extraHoursFee}
+                    vehicleImages={getVehicleImages(vehicle)}
+                    vehicleDetails={[
+                      {
+                        driverAvailable: vehicle.tripSettings.provideDriver
+                          ? "Yes"
+                          : "No",
+                        icon: Icons.ic_driver ?? <></>,
+                      },
+                      {
+                        fuelAvailable: vehicle.tripSettings.fuelProvided
+                          ? "Yes"
+                          : "No",
+                        icon: Icons.ic_fuel ?? <></>,
+                      },
+                      {
+                        seats: vehicle.numberOfSeats.toString(),
+                        icon: Icons.ic_seat ?? <></>,
+                      },
+                    ]}
+                  />
+                ))}
+              </div>
+            ) : (
+              <EmptyState
+                title={`No Listings Found in ${capitalizedCity}`}
+                image="/icons/empty_booking_state.png"
+              />
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

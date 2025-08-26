@@ -1,7 +1,9 @@
 import { Swiper, SwiperSlide, SwiperRef } from "swiper/react";
-import { Pagination, Autoplay, Keyboard } from "swiper/modules";
+// 1. Import Navigation module and its CSS
+import { Pagination, Autoplay, Keyboard, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import "swiper/css/navigation"; // <-- Added navigation CSS
 
 import { useRef } from "react";
 import Image from "next/image";
@@ -83,49 +85,102 @@ function PopularCities({}: Props) {
           adventure in style
         </p>
       </div>
-      {/* Added extra padding to accommodate hover expansion */}
-      <div className="px-5 sm:px-10 md:px-16 3xl:px-[110px] pb-16 md:pb-24">
-        <div onMouseOver={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-          <Swiper
-            onInit={(swiper) => {
-              swiper.autoplay.start();
-            }}
-            slidesPerView={"auto"}
-            modules={[Pagination, Autoplay, Keyboard]}
-            ref={swiperRef}
-            spaceBetween={20}
-            pagination={{
-              type: "bullets",
-              clickable: true,
-            }}
-            autoplay={{
-              delay: 3000,
-              disableOnInteraction: false,
-              pauseOnMouseEnter: true,
-            }}
-            keyboard={{ enabled: true }}
-            breakpoints={{
-              0: {
-                spaceBetween: 12,
-              },
-              600: {
-                spaceBetween: 20,
-              },
-            }}
-            loop={true}
-            className="popular-cities-swiper !py-8"
+
+      {/* 2. Added relative positioning to this container to position arrows */}
+      <div
+        className="px-5 sm:px-10 md:px-16 3xl:px-[110px] pb-16 md:pb-24 relative"
+        onMouseOver={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <Swiper
+          onInit={(swiper) => {
+            swiper.autoplay.start();
+          }}
+          slidesPerView={"auto"}
+          // 3. Add Navigation to the Swiper modules
+          modules={[Pagination, Autoplay, Keyboard, Navigation]}
+          ref={swiperRef}
+          spaceBetween={20}
+          pagination={{
+            type: "bullets",
+            clickable: true,
+          }}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+          }}
+          keyboard={{ enabled: true }}
+          // 4. Configure Swiper to use our custom arrow buttons
+          navigation={{
+            nextEl: ".popular-cities-next",
+            prevEl: ".popular-cities-prev",
+          }}
+          breakpoints={{
+            0: {
+              spaceBetween: 12,
+            },
+            600: {
+              spaceBetween: 20,
+            },
+          }}
+          loop={true}
+          className="popular-cities-swiper !py-8"
+        >
+          {cities.map((city, index) => (
+            <SwiperSlide key={index} className="!w-auto py-5">
+              <Cities
+                name={city.name}
+                image={city.image}
+                description={city.description}
+                link={city.link}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+
+        {/* 5. Add modern navigation arrows (visible on desktop only) */}
+        <div className="hidden md:block">
+          {/* Left Arrow */}
+          <button
+            aria-label="Previous slide"
+            className="popular-cities-prev absolute top-1/2 -translate-y-1/2 left-4 3xl:left-12 z-20 flex items-center justify-center w-12 h-12 rounded-full bg-white/70 backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-white hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-            {cities.map((city, index) => (
-              <SwiperSlide key={index} className="!w-auto py-5">
-                <Cities
-                  name={city.name}
-                  image={city.image}
-                  description={city.description}
-                  link={city.link}
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2.5}
+              stroke="currentColor"
+              className="w-6 h-6 text-gray-800"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15.75 19.5L8.25 12l7.5-7.5"
+              />
+            </svg>
+          </button>
+          {/* Right Arrow */}
+          <button
+            aria-label="Next slide"
+            className="popular-cities-next absolute top-1/2 -translate-y-1/2 right-4 3xl:right-12 z-20 flex items-center justify-center w-12 h-12 rounded-full bg-white/70 backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-white hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2.5}
+              stroke="currentColor"
+              className="w-6 h-6 text-gray-800"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M8.25 4.5l7.5 7.5-7.5 7.5"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </section>

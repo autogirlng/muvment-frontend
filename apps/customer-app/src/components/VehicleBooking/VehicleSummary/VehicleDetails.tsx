@@ -282,7 +282,7 @@ export default function VehicleDetails({
               </div>
 
               {/* vehicle perks */}
-              <div className="space-y-5">
+              {/*               <div className="space-y-5">
                 <SectionTitle text="Perks" />
                 <div className="flex flex-wrap gap-3">
                   {perks.map(
@@ -305,7 +305,7 @@ export default function VehicleDetails({
                     Learn more about our free cancellation
                   </button>
                 </div>
-              </div>
+              </div> */}
 
               {/* vehicle features */}
               <div className="space-y-5">

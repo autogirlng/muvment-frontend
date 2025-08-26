@@ -13,20 +13,9 @@ import {
 } from "@/utils/types";
 import { toTitleCase } from "@/utils/functions";
 import InputField from "@repo/ui/inputField";
-import { useQuery } from "@tanstack/react-query";
-import { useHttp } from "@/hooks/useHttp";
 import { GroupCheckBox } from "@repo/ui/checkbox";
+import TextArea from "@repo/ui/textarea";
 
-
-interface OutskirtLocations {
-    id: string;
-    locationName: string;
-    state: string;
-    isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
-
-}
 
 const InputSection = ({
     title,
@@ -66,27 +55,33 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
     const [pickupLocation, setPickupLocation] = useState(initialValues?.pickupLocation || "");
     const [dropoffLocation, setDropoffLocation] = useState(initialValues?.dropoffLocation || "");
     const [areaOfUse, setAreaOfUse] = useState(initialValues?.areaOfUse);
+    const [extraDetails, setExtraDetails] = useState<string>('')
+    const [purposeOfRide, setPurposeOfRide] = useState<string>('')
+
+
     const [isDayTwoCollapsed, setIsDayTwoCollapsed] = useState(false);
     const [checkedLocations, setCheckedLocations] = useState<string[]>([])
+    const [checkedExtremeLocations, setCheckedExtremeLocations] = useState<string[]>([])
 
-
-    const http = useHttp();
-
-    const isOutskirt = (): boolean => {
+    const isOutskirt = (): string => {
         const location = initialValues?.areaOfUse?.split("_")
 
         if (location && location[location.length - 1] === "OUTSKIRT") {
-            return true
+            return 'outskirt'
         }
-        return false
+
+        else if (location && location[location.length - 1] === "AREA" && location && location[location.length - 2] === "EXTREME") {
+            return 'extreme'
+        }
+        else {
+            return ''
+
+        }
     }
 
-    const { data: outskirtLocations, isError, isLoading } = useQuery({
-        queryKey: ["getOutskirtsLocations", id],
-        queryFn: () => http.get<OutskirtLocations[]>(`/api/outskirt-locations/state/${vehicle?.stateOfRegistration.toUpperCase()}`),
-        enabled: isOutskirt() && !!vehicle?.stateOfRegistration,
-        retry: false,
-    });
+
+
+
 
     const onChange = (key: string, value: string) => {
         const trips: TripDetails[] = JSON.parse(sessionStorage.getItem('trips') || '[]')
@@ -130,9 +125,42 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
             case 'areaOfUse':
                 setAreaOfUse(value);
                 break;
+            case 'extraDetails':
+                setExtraDetails(value);
+                break;
+            case 'purposeOfRide':
+                setPurposeOfRide(value);
+                break;
+
             default:
                 break;
         }
+    }
+
+    const areasOfUse = (): { option: string, value: string }[] => {
+        let areas = [
+            {
+                option: `${toTitleCase(vehicle?.location || "")} Mainland Central`,
+                value: `${vehicle?.location && vehicle.location.toUpperCase()}_MAINLAND_CENTRAL`
+            },
+            {
+                option: `${toTitleCase(vehicle?.location || "")} Island Central`,
+                value: `${vehicle?.location && vehicle.location.toUpperCase()}_ISLAND_CENTRAL`
+            },
+        ]
+        if (vehicle?.outskirtsLocation && vehicle.outskirtsLocation.length >= 1) {
+            areas.push({
+                option: `${toTitleCase(vehicle?.location || "")} Mainland Outskirt`,
+                value: `${vehicle?.location && vehicle.location.toUpperCase()}_MAINLAND_OUTSKIRT`
+            },)
+        }
+        if (vehicle?.extremeAreasLocation && vehicle.extremeAreasLocation.length >= 1) {
+            areas.push({
+                option: `${toTitleCase(vehicle?.location || "")} Extreme Area`,
+                value: `${vehicle?.location && vehicle.location.toUpperCase()}_EXTREME_AREA`
+            },)
+        }
+        return areas;
     }
 
 
@@ -259,26 +287,16 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
                             placeholder="Select Area of Use"
                             variant="outlined"
                             disabled={disabled}
-                            options={[
-                                {
-                                    option: `${toTitleCase(vehicle?.stateOfRegistration || "")} Mainland Central`,
-                                    value: `${vehicle?.location && vehicle.location.toUpperCase()}_MAINLAND_CENTRAL`
-                                },
-                                {
-                                    option: `${toTitleCase(vehicle?.stateOfRegistration || "")} Island Central`,
-                                    value: `${vehicle?.location && vehicle.location.toUpperCase()}_ISLAND_CENTRAL`
-                                },
-                                {
-                                    option: `${toTitleCase(vehicle?.location || "")} Mainland Outskirt`,
-                                    value: `${vehicle?.location && vehicle.location.toUpperCase()}_MAINLAND_OUTSKIRT`
-                                },
-                            ]}
+                            options={areasOfUse()}
                             value={areaOfUse}
                             onChange={(value) => onChange("areaOfUse", value)}
                         />
                     </InputSection>
                     {
-                        page === 'booking-vehicle' && isOutskirt() && <div className="space-y-3">
+                        page === 'booking-vehicle' &&
+                        isOutskirt() === "outskirt" &&
+                        (vehicle?.outskirtsLocation?.length ?? 0) >= 1 &&
+                        <div className="space-y-3">
                             <label
                                 htmlFor="features"
                                 className="text-sm block font-medium mt-4 text-black"
@@ -286,46 +304,46 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
                                 Outskirt locations
                             </label>
                             <p className="text-sm text-grey-600">
-                                Stops here will incur an additional cost of N6,500 set by the host
+                                Stops here will incur an additional cost of {vehicle?.vehicleCurrency} {vehicle?.outskirtsPrice} set by the host
                                 of your vehicle
                             </p>
                             <div className="flex flex-wrap gap-x-4 gap-y-8">
-                                {outskirtLocations?.map((location) => (
+                                {vehicle?.outskirtsLocation?.map((location) => (
                                     <GroupCheckBox
-                                        key={location.locationName}
-                                        feature={location.locationName}
+                                        key={location}
+                                        feature={location}
                                         checkedValues={checkedLocations}
                                         onChange={(feature: string, isChecked: boolean) => {
                                             if (isChecked) {
-                                                setCheckedLocations(prev => [...prev, feature]);
-                                                const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || "[]")
-                                                const updatedTrips = trips.map((trip) => {
-                                                    if (trip.id === id) {
-                                                        return {
-                                                            ...trip,
-                                                            outskirtLocations: [...checkedLocations, feature]
-                                                        }
-                                                    }
-                                                    return trip;
-                                                })
-                                                sessionStorage.setItem("trips", JSON.stringify(updatedTrips))
+                                                // Only keep the newly selected checkbox one
+                                                setCheckedLocations([feature]);
 
-                                            }
-                                            else {
-                                                const newValues = checkedLocations.filter(
-                                                    (value: string) => value !== feature
-                                                );
-                                                setCheckedLocations(newValues);
-                                                const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || "[]")
+                                                const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || "[]");
                                                 const updatedTrips = trips.map((trip) => {
                                                     if (trip.id === id) {
                                                         return {
                                                             ...trip,
-                                                            outskirtLocations: [...newValues]
-                                                        }
+                                                            outskirtLocations: [feature],
+                                                        };
                                                     }
                                                     return trip;
-                                                })
+                                                });
+                                                sessionStorage.setItem("trips", JSON.stringify(updatedTrips));
+                                            } else {
+                                                // If unchecked, clear selection
+                                                setCheckedLocations([]);
+
+                                                const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || "[]");
+                                                const updatedTrips = trips.map((trip) => {
+                                                    if (trip.id === id) {
+                                                        return {
+                                                            ...trip,
+                                                            outskirtLocations: [],
+                                                        };
+                                                    }
+                                                    return trip;
+                                                });
+                                                sessionStorage.setItem("trips", JSON.stringify(updatedTrips));
                                             }
                                         }}
                                     />
@@ -333,6 +351,92 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
                             </div>
                         </div>
                     }
+
+                    {
+                        page === 'booking-vehicle' &&
+                        isOutskirt() === "extreme" &&
+                        (vehicle?.extremeAreasLocation?.length ?? 0) >= 1 &&
+                        <div className="space-y-3">
+                            <label
+                                htmlFor="features"
+                                className="text-sm block font-medium mt-4 text-black"
+                            >
+                                Extreme locations
+                            </label>
+                            <p className="text-sm text-grey-600">
+                                Stops here will incur an additional cost of {vehicle?.vehicleCurrency} {vehicle?.extremeAreaPrice} set by the host
+                                of your vehicle
+                            </p>
+                            <div className="flex flex-wrap gap-x-4 gap-y-8">
+                                {vehicle?.extremeAreasLocation?.map((location) => (
+                                    <GroupCheckBox
+                                        key={location}
+                                        feature={location}
+                                        checkedValues={checkedExtremeLocations}
+                                        onChange={(feature: string, isChecked: boolean) => {
+                                            if (isChecked) {
+                                                // Only keep the newly selected checkbox one
+                                                setCheckedExtremeLocations([feature]);
+                                                const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || "[]");
+                                                const updatedTrips = trips.map((trip) => {
+                                                    if (trip.id === id) {
+                                                        return {
+                                                            ...trip,
+                                                            extremeLocations: [feature],
+                                                        };
+                                                    }
+                                                    return trip;
+                                                });
+                                                sessionStorage.setItem("trips", JSON.stringify(updatedTrips));
+                                            } else {
+                                                // If unchecked, clear selection
+                                                setCheckedExtremeLocations([]);
+
+                                                const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || "[]");
+                                                const updatedTrips = trips.map((trip) => {
+                                                    if (trip.id === id) {
+                                                        return {
+                                                            ...trip,
+                                                            extremeLocations: [],
+                                                        };
+                                                    }
+                                                    return trip;
+                                                });
+                                                sessionStorage.setItem("trips", JSON.stringify(updatedTrips));
+                                            }
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    }
+
+                    {
+                        page === 'booking-vehicle' && <>
+                            <TextArea
+                                name="extraDetails"
+                                id="extraDetails"
+                                label="Extra details (optional)"
+                                placeholder="Add extra trip details you would like to share"
+                                value={extraDetails}
+                                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                                    onChange("extraDetails", e.target.value)
+                                }
+                            />
+
+                            <TextArea
+                                name="purposeOfRide"
+                                id="purposeOfRide"
+                                label="Purpose of ride (optional)"
+                                placeholder="Add your purpose of ride"
+                                value={purposeOfRide}
+                                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                                    onChange("purposeOfRide", e.target.value)
+                                }
+                            />
+                        </>
+                    }
+
                 </div>
             )}
 
