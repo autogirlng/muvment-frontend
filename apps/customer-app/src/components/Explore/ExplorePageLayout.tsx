@@ -16,6 +16,7 @@ import MobileNav from "../Navbar/MobileNav";
 import BackLink from "@/components/BackLink";
 import { useAppSelector } from "@/lib/hooks";
 import SearchBookings from "../SearchBooking/SearchBookings";
+import NavBookingSearchBar from "../searchbar-component/NavBookingSearchBar";
 
 // Default placeholder images
 const placeholderImages = [
@@ -158,18 +159,7 @@ export default function ExplorePageLayout({
     <div>
       <DesktopNav user={user} explorePage>
         <div className="max-w-[1024px]">
-          <SearchBookings
-            searchValue={searchValue}
-            setSearchValue={setSearchValue}
-            fromDateValue={fromDateValue}
-            setFromDateValue={setFromDateValue}
-            fromTimeValue={fromTimeValue}
-            setFromTimeValue={setFromTimeValue}
-            untilDateValue={untilDateValue}
-            setUntilDateValue={setUntilDateValue}
-            untilTimeValue={untilTimeValue}
-            setUntilTimeValue={setUntilTimeValue}
-          />
+          <NavBookingSearchBar />
         </div>
       </DesktopNav>
       <MobileNav user={user}></MobileNav>

@@ -13,6 +13,7 @@ import {
   TransactionStatus,
   TransactionTableRow,
   TransactionType,
+  NewBookingType,
 } from "./types";
 
 type OptionType = { option: string; value: string };
@@ -23,7 +24,7 @@ export const popupNavItems = [
   {
     icon: Icons.ic_globe_search,
     name: "Explore",
-    link: "/explore",
+    link: "/explore/results",
     border: true,
   },
   {
@@ -930,8 +931,11 @@ export const bookingFilters = [
   {
     title: "bookingType",
     options: [
-      { option: "Single day", value: BookingType.SINGLE_DAY },
-      { option: "Multi day", value: BookingType.MULTI_DAY },
+      { option: "1 Hour", value: NewBookingType.AN_HOUR },
+      { option: "3 Hours", value: NewBookingType.THREE_HOURS },
+      { option: "6 Hours", value: NewBookingType.SIX_HOURS },
+      { option: "12 Hours", value: NewBookingType.TWELVE_HOURS },
+      { option: "Airport Pickup", value: NewBookingType.AIRPORT_PICKUP },
     ],
   },
   {

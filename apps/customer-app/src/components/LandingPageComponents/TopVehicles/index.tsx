@@ -1,4 +1,5 @@
 import { Swiper, SwiperSlide, SwiperRef } from "swiper/react";
+// The Navigation module is already imported, which is great.
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -111,11 +112,17 @@ function TopVehicles({}: Props) {
         {isLoading ? (
           <FullPageSpinner className="!min-h-[300px]" />
         ) : listings.length > 0 ? (
-          <div onMouseOver={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+          // 1. Add `relative` class to this wrapper for positioning the arrows
+          <div
+            className="relative"
+            onMouseOver={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
             <Swiper
               ref={swiperRef}
               slidesPerView={"auto"}
-              modules={[Pagination, Autoplay]}
+              // 2. Add Navigation module
+              modules={[Pagination, Autoplay, Navigation]}
               spaceBetween={20}
               pagination={{
                 type: "bullets",
@@ -125,6 +132,11 @@ function TopVehicles({}: Props) {
                 delay: 5000,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true,
+              }}
+              // 3. Configure navigation to use custom arrow classes
+              navigation={{
+                nextEl: ".top-vehicles-next",
+                prevEl: ".top-vehicles-prev",
               }}
               breakpoints={{
                 0: {
@@ -158,6 +170,48 @@ function TopVehicles({}: Props) {
                 </SwiperSlide>
               ))}
             </Swiper>
+
+            {/* 4. Add the arrow buttons (visible on desktop only) */}
+            <div className="hidden md:block">
+              <button
+                aria-label="Previous vehicle"
+                className="top-vehicles-prev absolute top-1/2 -translate-y-1/2 left-0 3xl:left-8 z-20 flex items-center justify-center w-12 h-12 rounded-full bg-white/70 backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-white hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2.5}
+                  stroke="currentColor"
+                  className="w-6 h-6 text-gray-800"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 19.5L8.25 12l7.5-7.5"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-label="Next vehicle"
+                className="top-vehicles-next absolute top-1/2 -translate-y-1/2 right-0 3xl:right-8 z-20 flex items-center justify-center w-12 h-12 rounded-full bg-white/70 backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-white hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2.5}
+                  stroke="currentColor"
+                  className="w-6 h-6 text-gray-800"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         ) : (
           <div className="text-center py-10">
@@ -189,7 +243,7 @@ function TopVehicles({}: Props) {
 
 export default TopVehicles;
 
-// Vehicle component with like functionality
+// Vehicle component with like functionality (No changes needed here)
 const VehicleCard = ({
   vehicleId,
   vehicleImages,

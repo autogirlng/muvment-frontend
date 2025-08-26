@@ -286,13 +286,20 @@ export const enum BookingType {
   MULTI_DAY = "MULTI_DAY",
 }
 
+export type BookingTypeCalendar =
+  | "AN_HOUR"
+  | "THREE_HOURS"
+  | "SIX_HOURS"
+  | "TWELVE_HOURS"
+  | "AIRPORT_PICKUP";
+
 export enum NewBookingType {
   AN_HOUR = "AN_HOUR",
   THREE_HOURS = "THREE_HOURS",
   SIX_HOURS = "SIX_HOURS",
   TWELVE_HOURS = "TWELVE_HOURS",
-  AIRPORT_PICKUP = "AIRPORT_PICKUP"
-} 
+  AIRPORT_PICKUP = "AIRPORT_PICKUP",
+}
 
 export enum TransactionType {
   CREDIT = "CREDIT",
@@ -478,7 +485,7 @@ export interface BookingInformation {
   startDate: string;
   endDate: string;
   duration: number;
-  bookingType: BookingType;
+  bookingType: NewBookingType;
   amount: number;
   paymentStatus: TransactionStatus;
   paymentLink: string;
@@ -548,7 +555,7 @@ export interface VehicleInformation {
     totalRevenue: number;
   };
   extremeAreaPrice?: number;
-  extremeAreasLocation?:  string[];
+  extremeAreasLocation?: string[];
 }
 export interface AssignedDriver {
   id: string;
@@ -716,7 +723,6 @@ export type TransactionTableRow = {
   actions: string;
 };
 
-
 // Booking a trip/trips
 
 export interface Breakdown {
@@ -730,7 +736,7 @@ export interface Breakdown {
   discountPercentage: number;
   isExtension: boolean;
   isOutskirt: boolean;
-  extremeAreaFee: number
+  extremeAreaFee: number;
 }
 
 // For the top-level object
@@ -741,7 +747,6 @@ export interface BookingSummaryPricing {
   unit: string;
 }
 
-
 export interface TripDetails {
   id?: string;
   bookingType?: NewBookingType;
@@ -750,37 +755,34 @@ export interface TripDetails {
   pickupLocation?: string;
   dropoffLocation?: string;
   areaOfUse?: string;
-  outskirtLocations?:string[];
-  extremeLocations?:string[];
-  purposeOfRide?:string;
-  extraDetails?:string;
-
+  outskirtLocations?: string[];
+  extremeLocations?: string[];
+  purposeOfRide?: string;
+  extraDetails?: string;
 }
 export interface Trips {
   id: string;
-  tripDetails?: TripDetails; 
+  tripDetails?: TripDetails;
 }
 
-  
-  export interface ITripPerDaySelect {
-    initialValues?:TripDetails;
-      day: string;
-      deleteMethod?: (idToDelete: string) => void;
-      id: string;
-      onChangeTrip: (id: string, details: TripDetails) => void;
-      vehicle?: VehicleInformation | null;
-      disabled:boolean;
-      page?:string;
-  }
+export interface ITripPerDaySelect {
+  initialValues?: TripDetails;
+  day: string;
+  deleteMethod?: (idToDelete: string) => void;
+  id: string;
+  onChangeTrip: (id: string, details: TripDetails) => void;
+  vehicle?: VehicleInformation | null;
+  disabled: boolean;
+  page?: string;
+}
 
-  
 export interface CreateNewBookingAuthenticated {
   vehicleId: string;
   currencyCode: string;
   countryCode: string;
   country: string;
   startDate: string; // ISO date string
-  endDate: string;   // ISO date string
+  endDate: string; // ISO date string
   duration: number;
   bookingType: NewBookingType;
   amount: number;
@@ -800,14 +802,14 @@ export interface CreateNewBookingAuthenticated {
   tripPurpose: string;
   emergencyContact: string;
   paymentMethod: "BANK_TRANSFER" | "CARD" | "CASH";
-  travelCompanions: { name: string; phoneNumber: string; }[];
+  travelCompanions: { name: string; phoneNumber: string }[];
   redirectUrl: string;
 }
 
 export interface CreateNewBookingUnauthenticated {
   vehicleId: string;
   startDate: string; // ISO date string
-  endDate: string;   // ISO date string
+  endDate: string; // ISO date string
   bookingType: NewBookingType; // extend with all possible enums
   pickupLocation: string;
   dropoffLocation: string;
@@ -837,7 +839,6 @@ export interface TransactionBookingResponse {
   bookings: Booking[];
 }
 
-
 // ----- MetaData -----
 export interface TransactionMetaData {
   transactionId: string;
@@ -849,7 +850,7 @@ export interface TransactionMetaData {
 export interface Booking {
   id: string;
   startDate: string; // ISO datetime
-  endDate: string;   // ISO datetime
+  endDate: string; // ISO datetime
   duration: number;
   bookingType: string; // e.g. "AN_HOUR"
   amount: number;
@@ -890,14 +891,11 @@ export interface Booking {
   vehicle: VehicleInformation;
 }
 
-
-
 // ----- Travel Companion -----
 export interface TravelCompanion {
   name?: string;
   phoneNumber?: string;
 }
-
 
 // ----- Pricing -----
 export interface Pricing {
@@ -927,4 +925,7 @@ export interface TripSettings {
   fuelProvided: boolean;
 }
 
-export type CostBreakdownProps = { vehicle: VehicleInformation | null; type: "guest" | "user" };
+export type CostBreakdownProps = {
+  vehicle: VehicleInformation | null;
+  type: "guest" | "user";
+};
