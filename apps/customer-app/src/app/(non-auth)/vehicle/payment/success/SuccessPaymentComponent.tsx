@@ -17,15 +17,18 @@ import { FullPageSpinner } from "@repo/ui/spinner";
 import useFetchVehicleById from "@/components/VehicleBooking/hooks/useFetchVehicleById";
 import useGetBookingById from "@/components/BookingsAnalytics/hooks/useGetBookingById";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useHttp } from "@/hooks/useHttp";
 
 const SuccessPaymentComponent = () => {
   const [vehicleId, setVehicleId] = useState<string>("");
   const [bookingId, setBookingId] = useState<string>("");
   const [userLoggedIn, setUserLoggedIn] = useState<boolean>(false);
+  const http = useHttp()
 
   useEffect(() => {
-    const storedVehicleId = localStorage.getItem("vehicleId");
-    const storedBookingId = localStorage.getItem("bookingId");
+    const storedVehicleId = sessionStorage.getItem("vehicleIds");
+    const storedBookingId = sessionStorage.getItem("bookingIds");
     const userLoggedInVal = localStorage.getItem("user_token");
 
     if (userLoggedInVal) {
@@ -63,10 +66,21 @@ const SuccessPaymentComponent = () => {
     id: bookingId,
   });
 
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ["getBookingById", bookingId],
+
+    queryFn: async () =>
+      await http.get(`/api/bookings/group/15f9be24-f92d-4f20-a4f4-c13689f69646`),
+  });
+  console.log(data, "here")
+
+
+
+
   // Show loading state while getting IDs from localStorage
-  if (!vehicleId || !bookingId) {
-    return <FullPageSpinner className="!min-h-screen" />;
-  }
+  // if (!vehicleId || !bookingId) {
+  //   return <FullPageSpinner className="!min-h-screen" />;
+  // }
 
   return (
     <div className="flex justify-between flex-col-reverse md:flex-row text-grey-800">
