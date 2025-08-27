@@ -154,7 +154,8 @@ const CostBreakdown = ({ vehicle, type }: CostBreakdownProps) => {
           redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`,
           paymentMethod: "CARD"
         })
-      sessionStorage.setItem("bookingIDs", transaction.metaData.bookingIds)
+      sessionStorage.setItem("bookingGroupID", transaction.bookings[0].bookingGroupId)
+      sessionStorage.setItem("vehicleID", vehicle?.id || '')
 
       router.push(transaction.checkoutUrl)
     } catch (error) {
@@ -243,7 +244,8 @@ const CostBreakdown = ({ vehicle, type }: CostBreakdownProps) => {
           redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`,
           paymentMethod: "CARD"
         })
-
+      sessionStorage.setItem("bookingGroupID", transaction.bookings[0].bookingGroupId)
+      sessionStorage.setItem("vehicleIds", vehicle?.id || '')
       router.push(transaction.checkoutUrl)
     } catch (error) {
       console.log(error)

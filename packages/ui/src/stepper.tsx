@@ -124,9 +124,22 @@ export const StepperNavigation = ({
               <span>{submitText}</span>{" "}
               {isSubmitloading ? <Spinner /> : Icons.ic_chevron_right}
             </StepperButton>
-          ) : (
+          ) : currentStep !== 0 ? <StepperButton
+            // Button to be clicked if formik is not handling the next step
+            onClick={handleNext}
+            disabled={
+              currentStep === steps.length ||
+              disableNextButton ||
+              isNextLoading
+            }
+            className="px-6 3xl:!px-8 bg-transparent sm:bg-primary-500 text-primary-500 sm:text-white disabled:sm:bg-grey-300"
+            type="submit"
+          >
+            <span>Next</span>{" "}
+            {isNextLoading ? <Spinner /> : Icons.ic_chevron_right}
+          </StepperButton> : (
+            // Button clicked if formik is handling next step
             <StepperButton
-              onClick={handleNext}
               disabled={
                 currentStep === steps.length ||
                 disableNextButton ||
