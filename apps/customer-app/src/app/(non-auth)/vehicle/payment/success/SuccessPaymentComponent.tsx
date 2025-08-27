@@ -72,7 +72,6 @@ const SuccessPaymentComponent = () => {
     queryFn: async () =>
       await http.get(`/api/bookings/group/15f9be24-f92d-4f20-a4f4-c13689f69646`),
   });
-  console.log(data, "here")
 
 
 
