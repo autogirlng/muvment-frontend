@@ -1,22 +1,26 @@
-// BookingCalendar.tsx - Updated with new header design and status-based colors
-import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+"use client";
+
+import { useState, FC } from "react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { format } from "date-fns";
 import useBookings from "./hooks/useBookings";
-// import mockUseBookings from "./hooks/mockUseBookings";
 import { FullPageSpinner } from "@repo/ui/spinner";
 
 type Props = {
   filters?: Record<string, string[]>;
 };
 
-// Updated booking interface based on your API response
 interface Booking {
   id: string;
   startDate: string;
   endDate: string;
   duration: number;
-  bookingType: "SINGLE_DAY" | "MULTI_DAY";
+  bookingType:
+    | "AN_HOUR"
+    | "THREE_HOURS"
+    | "SIX_HOURS"
+    | "TWELVE_HOURS"
+    | "AIRPORT_PICKUP";
   amount: number;
   paymentStatus: string;
   paymentMethod: string;
@@ -29,7 +33,7 @@ interface Booking {
   currencyCode: string;
   vehicleId: string;
   userId: string;
-  hostId?: string; // Made optional for compatibility
+  hostId?: string;
   createdAt: string;
   updatedAt: string;
   vehicle: {
@@ -42,11 +46,10 @@ interface Booking {
     yearOfRelease: string;
     vehicleColor: string;
     numberOfSeats: number;
-    // ... other vehicle properties
   };
 }
 
-// Booking status colors matching your system
+// Helper functions (getStatusColor, getDayBackgroundColor, getPaymentStatusColor) remain the same
 const getStatusColor = (status: string) => {
   switch (status.toUpperCase()) {
     case "CONFIRMED":
@@ -54,11 +57,11 @@ const getStatusColor = (status: string) => {
     case "COMPLETED":
       return "bg-primary-100 text-primary-800";
     case "APPROVED":
-      return "bg-[#FFE0E0] text-emerald-800";
+      return "bg-[#C8EFE0] text-[#50C878]";
     case "PENDING":
-      return "bg-[#FEF6E7] text-orange-800";
+      return "bg-[#FEF6E7] text-[#ffA500]";
     case "CANCELLED":
-      return "bg-red-100 text-red-800";
+      return "bg-danger-100 text-danger-800";
     case "REFUND":
       return "bg-yellow-100 text-yellow-800";
     case "ACCEPTED":
@@ -70,12 +73,9 @@ const getStatusColor = (status: string) => {
   }
 };
 
-// Day background colors based on booking status
 const getDayBackgroundColor = (bookings: Booking[]) => {
   if (bookings.length === 0) return "";
-
-  // Get the most important status (priority order)
-  const statusPriority = {
+  const statusPriority: Record<string, number> = {
     CONFIRMED: 1,
     APPROVED: 2,
     ACCEPTED: 3,
@@ -85,51 +85,41 @@ const getDayBackgroundColor = (bookings: Booking[]) => {
     CANCELLED: 7,
     REFUND: 8,
   };
-
-  const sortedBookings = bookings.sort((a, b) => {
-    const priorityA =
-      statusPriority[
-        a.bookingStatus.toUpperCase() as keyof typeof statusPriority
-      ] || 9;
-    const priorityB =
-      statusPriority[
-        b.bookingStatus.toUpperCase() as keyof typeof statusPriority
-      ] || 9;
-    return priorityA - priorityB;
-  });
-
+  const sortedBookings = [...bookings].sort(
+    (a, b) =>
+      (statusPriority[a.bookingStatus.toUpperCase()] || 9) -
+      (statusPriority[b.bookingStatus.toUpperCase()] || 9)
+  );
   const primaryStatus = sortedBookings[0].bookingStatus.toUpperCase();
-
   switch (primaryStatus) {
     case "CONFIRMED":
     case "APPROVED":
     case "ACCEPTED":
-      return "bg-[#D9FFDE]"; // Green for confirmed/approved bookings
+      return "bg-[#D9FFDE]";
     case "COMPLETED":
-      return "bg-primary-200"; // Blue for completed
+      return "bg-primary-200";
     case "DRIVER_ASSIGNED":
-      return "bg-purple-200"; // Purple for driver assigned
+      return "bg-[#800080]";
     case "PENDING":
-      return "bg-yellow-200"; // Yellow/orange for pending
+      return "bg-[#FFCC99]";
     case "CANCELLED":
-      return "bg-red-200"; // Red for cancelled
+      return "bg-[#AA0000]";
     case "REFUND":
-      return "bg-[#FEF6E7]"; // Orange for refund
+      return "bg-[#FEF6E7]";
     default:
-      return "bg-[#D0D5DD]"; // Gray for others
+      return "bg-[#D0D5DD]";
   }
 };
 
-// Payment status colors
 const getPaymentStatusColor = (status: string) => {
   switch (status.toUpperCase()) {
     case "PAID":
     case "COMPLETED":
-      return "bg-[#D9FFDE] text-green-800";
+      return "bg-[#D9FFDE] text-success-800";
     case "PENDING":
-      return "bg-yellow-100 text-yellow-800";
+      return "bg-[#FEF6E7] text-[#ffA500]";
     case "FAILED":
-      return "bg-red-100 text-red-800";
+      return "bg-danger-100 text-danger-800";
     case "REFUNDED":
       return "bg-primary-100 text-primary-800";
     default:
@@ -137,313 +127,47 @@ const getPaymentStatusColor = (status: string) => {
   }
 };
 
-export default function BookingCalendar({ filters }: Props) {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<number | null>(null);
+// --- MODIFICATION START: New Modal Component ---
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  bookings: Booking[];
+  fullDate: string;
+}
 
-  // Use your existing booking hook with increased limit for calendar view
-  const { bookings, isError, isLoading } = useBookings({
-    currentPage: 1,
-    pageLimit: 1000, // Get all bookings for calendar view
-    filters,
-  });
-
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-
-  const fullMonths = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  const getDaysInMonth = (date: Date) => {
-    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-  };
-
-  const getFirstDayOfMonth = (date: Date) => {
-    return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
-  };
-
-  const navigateMonth = (direction: number) => {
-    setCurrentDate((prev) => {
-      const newDate = new Date(prev);
-      newDate.setMonth(prev.getMonth() + direction);
-      return newDate;
-    });
-  };
-
-  const getBookingsForDate = (day: number) => {
-    const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
-    return bookings.filter((booking) => {
-      if (!booking.startDate || !booking.endDate) return false;
-
-      // Convert API dates to comparable format (YYYY-MM-DD)
-      const startDate = new Date(booking.startDate).toISOString().split("T")[0];
-      const endDate = new Date(booking.endDate).toISOString().split("T")[0];
-
-      return startDate <= dateStr && endDate >= dateStr;
-    });
-  };
-
-  const formatBookingTime = (booking: {
-    startDate: string;
-    endDate: string;
-    duration: number;
-  }) => {
-    const startTime = new Date(booking.startDate);
-    const endTime = new Date(booking.endDate);
-
-    // Check if it's the same day
-    if (startTime.toDateString() === endTime.toDateString()) {
-      return `${format(startTime, "h:mm a")}-${format(endTime, "h:mm a")}`;
-    }
-
-    // Multi-day booking
-    if (booking.duration > 1) {
-      return "All day";
-    }
-
-    return `${format(startTime, "h:mm a")}-${format(endTime, "h:mm a")}`;
-  };
-
-  const renderCalendarDays = () => {
-    const daysInMonth = getDaysInMonth(currentDate);
-    const firstDay = getFirstDayOfMonth(currentDate);
-    const days = [];
-
-    // Empty cells for days before the first day of the month
-    for (let i = 0; i < firstDay; i++) {
-      days.push(
-        <div
-          key={`empty-${i}`}
-          className="h-20 md:h-24 lg:h-28 border border-gray-200 bg-gray-50"
-        ></div>
-      );
-    }
-
-    // Days of the month
-    for (let day = 1; day <= daysInMonth; day++) {
-      const dayBookings = getBookingsForDate(day);
-      const hasBookings = dayBookings.length > 0;
-      const dayBgColor = getDayBackgroundColor(dayBookings);
-      const isToday =
-        new Date().toDateString() ===
-        new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth(),
-          day
-        ).toDateString();
-
-      days.push(
-        <div
-          key={day}
-          className={`h-20 md:h-24 lg:h-28 border-[0.5px] border-[#aaa] p-1 md:p-2 relative cursor-pointer hover:opacity-80 transition-opacity ${
-            hasBookings ? dayBgColor : ""
-          } ${isToday ? "bg-primary-500" : ""}`}
-          onClick={() => setSelectedDate(selectedDate === day ? null : day)}
-        >
-          <div className="flex justify-between items-start">
-            <span
-              className={`text-sm font-medium ${
-                isToday ? "text-white font-bold" : ""
-              }`}
-            >
-              {day}
-            </span>
-          </div>
-
-          {hasBookings && (
-            <div className="mt-1 space-y-1">
-              {dayBookings.slice(0, 2).map((booking, index) => (
-                <div
-                  key={`${booking.id}-${index}`}
-                  className={`text-xs px-1 py-0.5 rounded truncate ${getStatusColor(booking.bookingStatus)}`}
-                  title={`${booking.id} - ${booking.bookingStatus} - ${booking.vehicle?.listingName}`}
-                >
-                  {formatBookingTime(booking)}
-                </div>
-              ))}
-              {dayBookings.length > 2 && (
-                <div className="text-xs text-gray-500 font-medium">
-                  +{dayBookings.length - 2} more
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    return days;
-  };
-
-  if (isLoading) {
-    return <FullPageSpinner className="!min-h-[400px]" />;
-  }
-
-  if (isError) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-gray-500">
-          Something went wrong loading the calendar
-        </p>
-      </div>
-    );
-  }
+const BookingDetailsModal: FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  bookings,
+  fullDate,
+}) => {
+  if (!isOpen) return null;
 
   return (
-    <div className="bg-white rounded-lg border-[0.5px] border-[#667185]">
-      {/* New Header Design matching the image */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200">
-        {/* Left section - Navigation and current month/year */}
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => navigateMonth(-1)}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <h2 className="text-base font-medium text-gray-700 min-w-[120px] text-center">
-              {fullMonths[currentDate.getMonth()]} {currentDate.getFullYear()}
-            </h2>
-            <button
-              onClick={() => navigateMonth(1)}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        {/* Center section - Month selector tabs */}
-        <div className="hidden lg:flex items-center space-x-1 bg-gray-100 p-1">
-          <table className="border border-[#D0D5DD]">
-            <thead>
-              {months.map((month, index) => (
-                <th
-                  key={month}
-                  className={`px-1 ${
-                    index === currentDate.getMonth()
-                      ? "bg-[#0673FF] text-white shadow-sm"
-                      : "text-gray-600 hover:text-gray-900 hover:bg-white"
-                  }`}
-                  onClick={() => {
-                    const newDate = new Date(currentDate);
-                    newDate.setMonth(index);
-                    setCurrentDate(newDate);
-                  }}
-                >
-                  <button className={`px-4 py-2.5 text-sm font-medium`}>
-                    {month}
-                  </button>
-                </th>
-              ))}
-            </thead>
-          </table>
-        </div>
-
-        {/* Right section - Filter and year selector */}
-        <div className="flex items-center space-x-3">
-          <div className="lg:hidden">
-            <select
-              value={currentDate.getMonth()}
-              onChange={(e) => {
-                const newDate = new Date(currentDate);
-                newDate.setMonth(parseInt(e.target.value));
-                setCurrentDate(newDate);
-              }}
-              className="text-sm border border-gray-300 rounded px-2 py-1"
-            >
-              {months.map((month, index) => (
-                <option key={month} value={index}>
-                  {month}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <select
-            value={currentDate.getFullYear()}
-            onChange={(e) => {
-              const newDate = new Date(currentDate);
-              newDate.setFullYear(parseInt(e.target.value));
-              setCurrentDate(newDate);
-            }}
-            className="text-sm border border-[#D0D5DD] rounded px-5 py-2"
+    <div
+      className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center p-4 transition-opacity duration-300"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex justify-between items-center p-4 border-b border-gray-200">
+          <h3 className="font-medium text-gray-900">Bookings for {fullDate}</h3>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-800 p-1 rounded-full"
           >
-            {Array.from(
-              { length: 10 },
-              (_, i) => new Date().getFullYear() - 5 + i
-            ).map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
+            <X size={20} />
+          </button>
         </div>
-      </div>
-
-      {/* Calendar Grid */}
-      <div className="p-4">
-        {/* Days of week header */}
-        <div className="grid grid-cols-7 mb-2">
-          {[
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-          ].map((day) => (
-            <div
-              key={day}
-              className="p-2 text-center text-sm font-medium text-gray-600"
-            >
-              <span className="hidden md:inline">{day}</span>
-              <span className="md:hidden">{day.slice(0, 3)}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Calendar days */}
-        <div className="grid grid-cols-7 gap-0">{renderCalendarDays()}</div>
-      </div>
-
-      {/* Selected date details */}
-      {selectedDate && (
-        <div className="border-t border-gray-200 p-4">
-          <h3 className="font-medium text-gray-900 mb-3">
-            Bookings for {months[currentDate.getMonth()]} {selectedDate},{" "}
-            {currentDate.getFullYear()}
-          </h3>
-          <div className="space-y-3">
-            {getBookingsForDate(selectedDate).map((booking) => (
-              <div key={booking.id} className="p-4 bg-gray-50 rounded-lg">
+        <div className="p-4 space-y-3 overflow-y-auto">
+          {bookings.length > 0 ? (
+            bookings.map((booking) => (
+              <div
+                key={booking.id}
+                className="p-4 bg-gray-50 rounded-lg border border-gray-200"
+              >
                 <div className="flex items-start justify-between mb-2">
                   <div>
                     <p className="font-medium text-sm">{booking.id}</p>
@@ -460,7 +184,6 @@ export default function BookingCalendar({ filters }: Props) {
                     </span>
                   </div>
                 </div>
-
                 <div className="grid grid-cols-2 gap-4 text-xs">
                   <div>
                     <p className="text-gray-600">Duration</p>
@@ -489,7 +212,6 @@ export default function BookingCalendar({ filters }: Props) {
                     </p>
                   </div>
                 </div>
-
                 <div className="mt-3 pt-3 border-t border-gray-200">
                   <div className="grid grid-cols-1 gap-2 text-xs">
                     <div>
@@ -503,13 +225,292 @@ export default function BookingCalendar({ filters }: Props) {
                   </div>
                 </div>
               </div>
-            ))}
-            {getBookingsForDate(selectedDate).length === 0 && (
-              <p className="text-gray-500 text-sm">No bookings for this date</p>
-            )}
+            ))
+          ) : (
+            <p className="text-gray-500 text-sm text-center py-8">
+              No bookings for this date
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+// --- MODIFICATION END ---
+
+export default function BookingCalendar({ filters }: Props) {
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<number | null>(null);
+
+  const { bookings, isError, isLoading } = useBookings({
+    currentPage: 1,
+    pageLimit: 1000,
+    filters,
+  });
+
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const fullMonths = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const getDaysInMonth = (date: Date) =>
+    new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  const getFirstDayOfMonth = (date: Date) =>
+    new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+
+  const navigateMonth = (direction: number) => {
+    setCurrentDate((prev) => {
+      const newDate = new Date(prev);
+      newDate.setMonth(prev.getMonth() + direction);
+      return newDate;
+    });
+  };
+
+  const getBookingsForDate = (day: number) => {
+    const dateStr = `${currentDate.getFullYear()}-${String(
+      currentDate.getMonth() + 1
+    ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+    return bookings.filter((booking) => {
+      if (!booking.startDate || !booking.endDate) return false;
+
+      // Convert API dates to comparable format (YYYY-MM-DD)
+      const startDate = new Date(booking.startDate).toISOString().split("T")[0];
+      const endDate = new Date(booking.endDate).toISOString().split("T")[0]; // Corrected line
+
+      return startDate <= dateStr && endDate >= dateStr;
+    });
+  };
+
+  const formatBookingTime = (booking: {
+    startDate: string;
+    endDate: string;
+    duration: number;
+  }) => {
+    const startTime = new Date(booking.startDate);
+    const endTime = new Date(booking.endDate);
+    if (startTime.toDateString() === endTime.toDateString()) {
+      return `${format(startTime, "h:mm a")}-${format(endTime, "h:mm a")}`;
+    }
+    if (booking.duration > 1) return "All day";
+    return `${format(startTime, "h:mm a")}-${format(endTime, "h:mm a")}`;
+  };
+
+  const renderCalendarDays = () => {
+    const daysInMonth = getDaysInMonth(currentDate);
+    const firstDay = getFirstDayOfMonth(currentDate);
+    const days = [];
+
+    for (let i = 0; i < firstDay; i++) {
+      days.push(
+        <div
+          key={`empty-${i}`}
+          className="h-20 md:h-24 lg:h-28 border border-gray-200 bg-gray-50"
+        ></div>
+      );
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayBookings = getBookingsForDate(day);
+      const hasBookings = dayBookings.length > 0;
+      const dayBgColor = getDayBackgroundColor(dayBookings);
+      const isToday =
+        new Date().toDateString() ===
+        new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth(),
+          day
+        ).toDateString();
+
+      days.push(
+        <div
+          key={day}
+          className={`h-20 md:h-24 lg:h-28 border-[0.5px] border-[#aaa] p-1 md:p-2 relative cursor-pointer hover:opacity-80 transition-opacity ${hasBookings ? dayBgColor : ""} ${isToday ? "bg-primary-500" : ""}`}
+          onClick={() => setSelectedDate(day)} // --- MODIFICATION: Set the selected date to open modal
+        >
+          <div className="flex justify-between items-start">
+            <span
+              className={`text-sm font-medium ${isToday ? "text-white font-bold bg-[#0000FF] px-1 py-0.5 rounded-full" : ""}`}
+            >
+              {day}
+            </span>
+          </div>
+          {hasBookings && (
+            <div className="mt-1 space-y-1">
+              {dayBookings.slice(0, 2).map((booking, index) => (
+                <div
+                  key={`${booking.id}-${index}`}
+                  className={`text-xs px-1 py-0.5 rounded truncate ${getStatusColor(booking.bookingStatus)}`}
+                  title={`${booking.id} - ${booking.bookingStatus} - ${booking.vehicle?.listingName}`}
+                >
+                  {formatBookingTime(booking)}
+                </div>
+              ))}
+              {dayBookings.length > 2 && (
+                <div className="text-xs text-gray-500 font-medium">
+                  +{dayBookings.length - 2} more
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    }
+    return days;
+  };
+
+  if (isLoading) return <FullPageSpinner className="!min-h-[400px]" />;
+  if (isError)
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500">
+          Something went wrong loading the calendar
+        </p>
+      </div>
+    );
+
+  return (
+    <div className="bg-white rounded-lg border-[0.5px] border-[#667185]">
+      {/* Calendar Header */}
+      <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => navigateMonth(-1)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <h2 className="text-base font-medium text-gray-700 min-w-[120px] text-center">
+              {fullMonths[currentDate.getMonth()]} {currentDate.getFullYear()}
+            </h2>
+            <button
+              onClick={() => navigateMonth(1)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
-      )}
+        <div className="hidden lg:flex items-center space-x-1 bg-gray-100 p-1">
+          <table className="border border-[#D0D5DD]">
+            <thead>
+              {months.map((month, index) => (
+                <th
+                  key={month}
+                  className={`px-1 ${index === currentDate.getMonth() ? "bg-[#0673FF] text-white shadow-sm" : "text-gray-600 hover:text-gray-900 hover:bg-white"}`}
+                  onClick={() => {
+                    const newDate = new Date(currentDate);
+                    newDate.setMonth(index);
+                    setCurrentDate(newDate);
+                  }}
+                >
+                  <button className={`px-4 py-2.5 text-sm font-medium`}>
+                    {month}
+                  </button>
+                </th>
+              ))}
+            </thead>
+          </table>
+        </div>
+        <div className="flex items-center space-x-3">
+          <div className="lg:hidden">
+            <select
+              value={currentDate.getMonth()}
+              onChange={(e) => {
+                const newDate = new Date(currentDate);
+                newDate.setMonth(parseInt(e.target.value));
+                setCurrentDate(newDate);
+              }}
+              className="text-sm border border-gray-300 rounded px-2 py-1"
+            >
+              {months.map((month, index) => (
+                <option key={month} value={index}>
+                  {month}
+                </option>
+              ))}
+            </select>
+          </div>
+          <select
+            value={currentDate.getFullYear()}
+            onChange={(e) => {
+              const newDate = new Date(currentDate);
+              newDate.setFullYear(parseInt(e.target.value));
+              setCurrentDate(newDate);
+            }}
+            className="text-sm border border-[#D0D5DD] rounded px-5 py-2"
+          >
+            {Array.from(
+              { length: new Date().getFullYear() - 2025 + 1 },
+              (_, i) => 2025 + i
+            ).map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Calendar Grid */}
+      <div className="p-4">
+        <div className="grid grid-cols-7 mb-2">
+          {[
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+          ].map((day) => (
+            <div
+              key={day}
+              className="p-2 text-center text-sm font-medium text-gray-600"
+            >
+              <span className="hidden md:inline">{day}</span>
+              <span className="md:hidden">{day.slice(0, 3)}</span>
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-7 gap-0">{renderCalendarDays()}</div>
+      </div>
+
+      {/* --- MODIFICATION: Render Modal instead of inline details --- */}
+      <BookingDetailsModal
+        isOpen={selectedDate !== null}
+        onClose={() => setSelectedDate(null)}
+        bookings={selectedDate ? getBookingsForDate(selectedDate) : []}
+        fullDate={
+          selectedDate
+            ? `${fullMonths[currentDate.getMonth()]} ${selectedDate}, ${currentDate.getFullYear()}`
+            : ""
+        }
+      />
     </div>
   );
 }

@@ -45,6 +45,7 @@ const CustomDropdown: FC<CustomDropdownProps> = ({
       AIRPORT_PICKUP: "Airport Transfers",
       SedanElectric: "Sedan (Electric)",
       SUVElectric: "SUV (Electric)",
+      MidsizeSUV: "Mid size SUV",
     };
     return mappings[rawValue] || rawValue;
   };
@@ -198,7 +199,7 @@ const BookingSearchBar = () => {
   const labelClasses =
     "block text-xs font-medium text-[#98A2B3] whitespace-nowrap";
   const inputClasses =
-    "w-full bg-transparent border-none focus:ring-0 p-0 mt-1 font-semibold text-[#98A2B3] placeholder-gray-500 text-xs sm:text-sm";
+    "w-full bg-transparent border-none focus:ring-0 p-0 mt-1 font-semibold text-[#98A2B3] placeholder-gray-500 text-xs sm:text-xs";
   const inputDisplayClasses =
     "w-full text-left bg-transparent border-none focus:ring-0 p-0 font-semibold text-[#98A2B3] placeholder-gray-500 text-xs sm:text-sm cursor-pointer";
   const columnPadding = "p-4 lg:py-2 lg:px-5 border-[#98A2B3]";
@@ -214,7 +215,8 @@ const BookingSearchBar = () => {
     "Sedan",
     "SedanElectric",
     "SUVElectric",
-    "BUS",
+    "MidsizeSUV",
+    "Bus",
   ];
 
   const getFilteredCategories = (type: string) => {

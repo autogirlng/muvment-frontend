@@ -37,7 +37,9 @@ export default function OnboardingAddImagePage() {
           <span className="text-primary-500">{user?.firstName}!</span>
         </h1>
         <p className="text-sm 2xl:text-base text-grey-500">
-          Add some personalization to your account, add a profile picture.
+          {image
+            ? "Looks good! Profile picture uploaded"
+            : "Add some personalization to your account, add a profile picture."}
         </p>
       </div>
 
@@ -60,16 +62,16 @@ export default function OnboardingAddImagePage() {
 
       {image ? (
         //   <Link href="/onboarding/save-password">
-        <Link href="/bookings">
+        <Link href="/explore/results">
           <Button fullWidth variant="filled" color="primary" type="submit">
-            Next
+            Book a vehicle
           </Button>
         </Link>
       ) : (
         <div className="flex items-center gap-6">
-          <Link href="/bookings">
+          <Link href="/explore/results">
             <Button fullWidth variant="filled" color="primary" type="submit">
-              Skip
+              Skip and Book a vehicle
             </Button>
           </Link>
           <label
