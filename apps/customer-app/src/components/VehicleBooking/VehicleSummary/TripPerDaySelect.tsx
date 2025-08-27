@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import DateInput from "../DateInput";
 import TimeInput from "../TimeInput";
 import Icons from "@repo/ui/icons";
@@ -12,9 +12,9 @@ import {
     ITripPerDaySelect
 } from "@/utils/types";
 import { toTitleCase } from "@/utils/functions";
-import InputField from "@repo/ui/inputField";
 import { GroupCheckBox } from "@repo/ui/checkbox";
 import TextArea from "@repo/ui/textarea";
+import { GoogleMapsLocationInput } from "../GoogleMapsLocationInput";
 
 
 const InputSection = ({
@@ -44,7 +44,6 @@ const InputSection = ({
 };
 
 
-
 const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initialValues, disabled, page }: ITripPerDaySelect) => {
     const [date, setDate] = useState(`Day ${day}: Choose Date`);
     const [bookingType, setBookingType] = useState(initialValues?.bookingType || '');
@@ -57,8 +56,6 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
     const [areaOfUse, setAreaOfUse] = useState(initialValues?.areaOfUse);
     const [extraDetails, setExtraDetails] = useState<string>('')
     const [purposeOfRide, setPurposeOfRide] = useState<string>('')
-
-
     const [isDayTwoCollapsed, setIsDayTwoCollapsed] = useState(false);
     const [checkedLocations, setCheckedLocations] = useState<string[]>([])
     const [checkedExtremeLocations, setCheckedExtremeLocations] = useState<string[]>([])
@@ -78,10 +75,6 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
 
         }
     }
-
-
-
-
 
     const onChange = (key: string, value: string) => {
         const trips: TripDetails[] = JSON.parse(sessionStorage.getItem('trips') || '[]')
@@ -258,28 +251,24 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
                                 timeType="start" />
                         </InputSection>
                     </div>
-                    <InputSection title="Pickup Location">
-                        <InputField
-                            type="text"
-                            id="pickupLocation"
-                            name="pickupLocation"
+                    <InputSection title="Pickup location">
+                        <GoogleMapsLocationInput
                             disabled={disabled}
                             value={pickupLocation}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange("pickupLocation", e.target.value)}
+                            onChange={(value) => onChange("pickupLocation", value)}
                             placeholder="Enter location"
                         />
                     </InputSection>
+
                     <InputSection title="Drop-off Location">
-                        <InputField
-                            type="text"
-                            id="dropoffLocation"
+                        <GoogleMapsLocationInput
                             disabled={disabled}
-                            name="dropoffLocation"
                             value={dropoffLocation}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange("dropoffLocation", e.target.value)}
+                            onChange={(value) => onChange("dropoffLocation", value)}
                             placeholder="Enter location"
                         />
                     </InputSection>
+
 
                     <InputSection title="Area of Use" >
                         <SelectInput
@@ -446,3 +435,5 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
 }
 
 export { TripPerDaySelect }
+
+
