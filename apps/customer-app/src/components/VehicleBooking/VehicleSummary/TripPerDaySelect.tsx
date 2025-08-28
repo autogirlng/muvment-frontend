@@ -44,7 +44,7 @@ const InputSection = ({
 };
 
 
-const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initialValues, disabled, page }: ITripPerDaySelect) => {
+const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initialValues, disabled, page, isCollapsed, toggleOpen }: ITripPerDaySelect) => {
     const [date, setDate] = useState(`Day ${day}: Choose Date`);
     const [bookingType, setBookingType] = useState(initialValues?.bookingType || '');
     const initialTripStartTime = initialValues ? new Date(`${initialValues.tripStartTime}`) : null
@@ -161,7 +161,7 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
         <div className="rounded-2xl px-4 p-2 mt-1 border border-grey-200">
             <div
                 className="flex justify-between items-center cursor-pointer"
-                onClick={() => setIsDayTwoCollapsed(!isDayTwoCollapsed)}
+                onClick={() => toggleOpen()}
             >
                 <div className="flex items-center space-x-2 text-gray-600">
                     {Icons.ic_calendar}
@@ -178,7 +178,7 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
                 }
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className={`h-5 w-5 text-gray-600 transition-transform duration-300 ${isDayTwoCollapsed ? 'rotate-180' : 'rotate-0'}`}
+                    className={`h-5 w-5 text-gray-600 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : 'rotate-0'}`}
                     viewBox="0 0 20 20"
                     fill="currentColor"
                 >
@@ -191,7 +191,7 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
             </div>
 
 
-            {!isDayTwoCollapsed && (
+            {!isCollapsed && (
                 <div className="mt-2 pt-2 space-y-4">
                     <div>
                         <InputSection title="Booking Type">

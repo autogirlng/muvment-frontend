@@ -15,13 +15,24 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
       const outskirtTrips = useRef<string[]>([])
       const extremeTrips = useRef<string[]>([])
 
-
+const [openTripIds, setOpenTripIds] = useState<Set<string>>(new Set());
       const [isTripFormsComplete, setIsTripFormComplete] = useState<boolean>(false)
+
+  const toggleOpen = (id: string) => {
+    setOpenTripIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    })
+  }
+
     
       const http = useHttp()
       const addTrip = (id: string) => {
         setTrips(prev => [...prev, { id }])
         setIsTripFormComplete(false)
+         setOpenTripIds(new Set([id]));
     
       }
     
@@ -32,6 +43,11 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
         sessionStorage.setItem("trips", JSON.stringify(updatedTrips));
         
         setTrips(prev => prev.filter((trip) => trip.id !== idToDelete));
+        setOpenTripIds(prev => {
+          const updated = new Set(prev);
+          updated.delete(idToDelete)
+          return updated
+        })
         const bookingTypes: string[] = [];
         let outskirtsAreaOfUse:string[] = [];
         let extremeAreas:string[] = [];
@@ -166,5 +182,5 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
         setIsTripFormComplete(missingFields.length === 0)
       }, [trips])
 
-      return {setTrips, trips, deleteTrip, onChangeTrip, addTrip, bookingPriceBreakdown, isTripFormsComplete}
+      return {setTrips, trips, deleteTrip, openTripIds, toggleOpen, onChangeTrip, addTrip, bookingPriceBreakdown, isTripFormsComplete}
 } 

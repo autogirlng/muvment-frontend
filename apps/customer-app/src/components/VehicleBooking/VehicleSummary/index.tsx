@@ -24,16 +24,6 @@ type Props = {
   vehicleImages: string[];
 };
 
-// type InitialValuesProps = {
-//   bookingType: "SINGLE_DAY" | "MULTI_DAY" | string;
-//   startDate: Date | null;
-//   startTime: Date | null;
-//   endDate: Date | null;
-//   endTime: Date | null;
-//   pickupLocation: string;
-// };
-// For the nested 'breakdown' object
-
 
 export default function VehicleSummary({
   vehicle,
@@ -43,7 +33,17 @@ export default function VehicleSummary({
 }: Props) {
   const router = useRouter();
   const { user } = useAppSelector((state) => state.user);
-  const { setTrips, trips, deleteTrip, onChangeTrip, addTrip, bookingPriceBreakdown, isTripFormsComplete } = useItineraryForm(vehicle)
+  const {
+    setTrips,
+    trips,
+    deleteTrip,
+    onChangeTrip,
+    addTrip,
+    toggleOpen,
+    openTripIds,
+    bookingPriceBreakdown,
+    isTripFormsComplete
+  } = useItineraryForm(vehicle)
 
   useEffect(() => {
     sessionStorage.removeItem("trips")
@@ -51,6 +51,7 @@ export default function VehicleSummary({
   }, [])
   const [openBookRideModal, setBookRideModal] = useState<boolean>(false);
   const handleOpenBookRideModal = () => setBookRideModal(!openBookRideModal);
+
 
   return (
     <VehicleDetails
@@ -134,7 +135,10 @@ export default function VehicleSummary({
                     vehicle={vehicle}
                     deleteMethod={deleteTrip}
                     disabled={false}
-                    onChangeTrip={onChangeTrip} />
+                    onChangeTrip={onChangeTrip}
+                    isCollapsed={!openTripIds.has(key.id)}
+                    toggleOpen={() => toggleOpen(key.id)}
+                  />
                 })
               }
               <div className="text-center">
