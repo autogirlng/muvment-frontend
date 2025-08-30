@@ -18,6 +18,7 @@ import Button from "@repo/ui/button";
 import { useRouter } from "next/navigation";
 import TopHeader from "@/components/Navbar/TopHeader";
 import useExtendBooking from "./hooks/useExtendBooking";
+import { useHttp } from "@/hooks/useHttp";
 import { useSearchParams } from "next/navigation";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import Link from "next/link";
@@ -72,12 +73,16 @@ const ExtendTripPage: NextPage = () => {
   const searchParams = useSearchParams();
   const bookingId = searchParams.get("id");
 
+  // useHttp hook
+  const { post } = useHttp();
+
   // State declarations
   const [extraHours, setExtraHours] = useState<number>(4);
   const [areaOfUse, setAreaOfUse] = useState<string>("Mainland");
   const [reason, setReason] = useState<string>("");
   const [specialRequests, setSpecialRequests] = useState<string>("");
   const [isChecked, setIsChecked] = useState<boolean>(true);
+  const [isPaying, setIsPaying] = useState<boolean>(false);
 
   // Data fetching
   const { booking, isLoading, isError } = useExtendBooking({
@@ -125,6 +130,35 @@ const ExtendTripPage: NextPage = () => {
   if (isError || !booking) {
     return null;
   }
+
+  // Handler for payment initialization
+  const handleProceedToPayment = async () => {
+    if (!booking) return;
+    setIsPaying(true);
+    try {
+      const newEndDate = addHours(new Date(booking.endDate), extraHours);
+      const body = {
+        bookingId: booking.id,
+        newEndDate: newEndDate.toISOString(),
+        additionalHours: extraHours,
+        additionalAmount: totalCost,
+        currencyCode: "NGN",
+        redirectUrl: `${window.location.origin}/bookings`,
+      };
+      const res = await post<{ paymentUrl: string }>(
+        "/api/bookings/extend/initialize",
+        body
+      );
+      if (res && res.paymentUrl) {
+        window.location.href = res.paymentUrl;
+      }
+    } catch (err) {
+      // Optionally show error to user
+      alert((err as Error).message || "Failed to initialize payment");
+    } finally {
+      setIsPaying(false);
+    }
+  };
 
   return (
     <>
@@ -373,14 +407,13 @@ const ExtendTripPage: NextPage = () => {
                 </div>
               </div>
               <Button
-                className="w-full mt-6 bg-primary-700 hover:bg-primary-500 text-white"
+                className="w-full mt-6 bg-[#0051ff] hover:bg-primary-500 text-white"
                 size="lg"
-                disabled={!isChecked}
-                onClick={() => {
-                  // Handle payment logic here
-                }}
+                disabled={!isChecked || isPaying}
+                onClick={handleProceedToPayment}
+                isLoading={isPaying}
               >
-                Proceed to payment
+                {isPaying ? "Processing..." : "Proceed to payment"}
               </Button>
             </div>
           </div>
