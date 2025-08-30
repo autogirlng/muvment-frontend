@@ -15,7 +15,7 @@ import { toTitleCase } from "@/utils/functions";
 import { useItineraryForm } from "@/hooks/useItineraryForm";
 import { BlurredDialog } from "@repo/ui/dialog";
 import { useAppSelector } from "@/lib/hooks";
-
+import { BookingCostBreakdown } from "./BookingCostBreakdown";
 
 type Props = {
   vehicle: VehicleInformation | null;
@@ -146,55 +146,7 @@ export default function VehicleSummary({
               </div>
             </div>
             {
-              bookingPriceBreakdown && <div className="rounded-2xl p-5 m-0 border border-grey-200">
-                <h2 className="font-bold">Cost Breakdown</h2>
-                <div className="border-b border-grey-200 pb-4">
-
-                  <div className="w-full text-sm flex justify-between mt-3">
-                    <span>Total Cost</span>
-                    <span>{bookingPriceBreakdown.currency || 'NGN'} {bookingPriceBreakdown.totalPrice - bookingPriceBreakdown.breakdown.discountAmount || 0}</span>
-                  </div>
-                  <div className="w-full  text-sm flex justify-between mt-4">
-                    <span>Extra Hours</span>
-                    <span>Billed as you go</span>
-                  </div>
-                  {<div className="w-full  text-sm flex justify-between mt-4">
-                    <span>Outskirt Price</span>
-                    <span> {bookingPriceBreakdown.currency || 'NGN'} {bookingPriceBreakdown.breakdown.outskirtFee || 0}</span>
-                  </div>}
-
-                  {<div className="w-full  text-sm flex justify-between mt-4">
-                    <span>Extreme Area Price</span>
-                    <span> {bookingPriceBreakdown.currency || 'NGN'} {bookingPriceBreakdown.breakdown.extremeAreaFee || 0}</span>
-                  </div>
-                  }
-                  {<div className="w-full  text-sm flex justify-between mt-4">
-                    <span>Area of Use</span>
-                    <span style={{ textTransform: "capitalize" }}>
-                      {trips.map((trip) => {
-                        const areaOfUse = toTitleCase(trip.tripDetails?.areaOfUse || '')
-                        const state = toTitleCase(areaOfUse?.split("_")[0] || '')
-                        const area1 = toTitleCase(toTitleCase(areaOfUse?.split("_")[1] || ''))
-                        let area2 = toTitleCase(areaOfUse?.split("_")[2] || '')
-
-                        return <>{state} {area1} {area2}<br /> </>
-                      })}
-                    </span>
-                  </div>}
-
-                  {
-                    bookingPriceBreakdown.breakdown.discountAmount > 0 &&
-                    <div className="w-full text-sm flex justify-between mt-4">
-                      <span>Discount - {bookingPriceBreakdown.breakdown.discountPercentage}%</span>
-                      <span>-{bookingPriceBreakdown.currency || 'NGN'} {bookingPriceBreakdown.breakdown.discountAmount}</span>
-                    </div>
-                  }
-                </div>
-                <div className="w-full text-sm flex justify-between mt-4">
-                  <span>Total</span>
-                  <span className="font-bold">{bookingPriceBreakdown.currency || 'NGN'} {bookingPriceBreakdown.totalPrice}</span>
-                </div>
-              </div>
+              bookingPriceBreakdown && <BookingCostBreakdown bookingPriceBreakdown={bookingPriceBreakdown} vehicle={vehicle} trips={trips} />
             }
 
 

@@ -49,29 +49,32 @@ const [openTripIds, setOpenTripIds] = useState<Set<string>>(new Set());
           return updated
         })
         const bookingTypes: string[] = [];
-        let outskirtsAreaOfUse:string[] = [];
-        let extremeAreas:string[] = [];
+        const outskirtsTripIds:string[] = [];
+        let extremeAreaTripIds:string[] = [];
 
         updatedTrips.forEach((trip) => {
+          
           trip.bookingType && bookingTypes.push(trip.bookingType)
           const area = trip.areaOfUse?.split("_")
 
           if(area && area[area?.length - 1] === "OUTSKIRT"){
-              outskirtsAreaOfUse.push(area.join("_"))
+              outskirtsTripIds.push(trip.id || "")
           }
           if(area && area[area?.length - 1] === "AREA" && area && area[area?.length - 2] === "EXTREME"){
-           extremeAreas.push(area.join("_"))
+           extremeAreaTripIds.push(trip.id || "")
           }
         })
+        outskirtTrips.current = outskirtsTripIds
+        extremeTrips.current = extremeAreaTripIds
         const bookingPrice = await http.post<BookingSummaryPricing>("/api/bookings/calculate-price",
           {
             vehicleId: vehicle?.id,
             bookingTypes,
             isExtension: false,
-            isOutskirt: outskirtsAreaOfUse.length > 0, 
-            numberOfOutskirts: outskirtsAreaOfUse.length, 
-            isExtremeArea: extremeAreas.length > 0,
-            numberOfExtremeAreas: extremeAreas.length
+            isOutskirt: outskirtsTripIds.length > 0, 
+            numberOfOutskirts: outskirtsTripIds.length, 
+            isExtremeArea: extremeAreaTripIds.length > 0,
+            numberOfExtremeAreas: extremeAreaTripIds.length
 
           }
         );
@@ -95,7 +98,11 @@ const [openTripIds, setOpenTripIds] = useState<Set<string>>(new Set());
   //  Update the trips state
   setTrips(updatedTrips);
 
-  const areaOfUseBreakdown = details.areaOfUse?.split("_");
+  const activeTrip = updatedTrips.find(trip => trip.id === id)?.tripDetails
+ 
+  
+
+  const areaOfUseBreakdown = activeTrip?.areaOfUse?.split("_");
   const isOutskirt = areaOfUseBreakdown && areaOfUseBreakdown[areaOfUseBreakdown.length - 1] === "OUTSKIRT";
   const isExtreme = areaOfUseBreakdown && 
   areaOfUseBreakdown[areaOfUseBreakdown.length - 2] === "EXTREME" 
@@ -133,7 +140,6 @@ const [openTripIds, setOpenTripIds] = useState<Set<string>>(new Set());
       }
     });
 
-    //  Make API call
     try {
       const bookingPrice = await http.post<BookingSummaryPricing>("/api/bookings/calculate-price", {
         vehicleId: vehicle?.id,

@@ -56,7 +56,6 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
     const [areaOfUse, setAreaOfUse] = useState(initialValues?.areaOfUse);
     const [extraDetails, setExtraDetails] = useState<string>('')
     const [purposeOfRide, setPurposeOfRide] = useState<string>('')
-    const [isDayTwoCollapsed, setIsDayTwoCollapsed] = useState(false);
     const [checkedLocations, setCheckedLocations] = useState<string[]>([])
     const [checkedExtremeLocations, setCheckedExtremeLocations] = useState<string[]>([])
 
@@ -167,28 +166,47 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
                     {Icons.ic_calendar}
                     <span className="text-sm">{date}</span>
                 </div>
-                {
-                    day !== "1" && deleteMethod &&
-                    <svg xmlns="http://www.w3.org/2000/svg" onClick={() => deleteMethod(id)} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 6h18" />
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                        <line x1="10" y1="11" x2="10" y2="17" />
-                        <line x1="14" y1="11" x2="14" y2="17" />
+
+                {/* Right side actions */}
+                <div className="flex items-center gap-5">
+                    {day !== "1" && deleteMethod ? (
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                deleteMethod(id);
+                            }}
+                            className="w-5 h-5 text-gray-600 cursor-pointer"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                        >
+                            <path d="M3 6h18" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <line x1="10" y1="11" x2="10" y2="17" />
+                            <line x1="14" y1="11" x2="14" y2="17" />
+                        </svg>
+                    ) : (
+                        <div className="w-5 h-5" />
+                    )}
+
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className={`w-5 h-5 text-gray-600 transition-transform duration-300 ${isCollapsed ? "rotate-180" : "rotate-0"
+                            }`}
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                    >
+                        <path
+                            fillRule="evenodd"
+                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                        />
                     </svg>
-                }
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className={`h-5 w-5 text-gray-600 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : 'rotate-0'}`}
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                >
-                    <path
-                        fillRule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                    />
-                </svg>
+                </div>
             </div>
+
 
 
             {!isCollapsed && (

@@ -411,7 +411,7 @@ const ItineraryForm = ({
   }, [vehicleId, startDate, startTime, endDate, endTime, pickupLocationParam]);
 
 
-  const { trips, setTrips, deleteTrip, onChangeTrip } = useItineraryForm(null)
+  const { trips, setTrips, deleteTrip, onChangeTrip, toggleOpen, openTripIds, } = useItineraryForm(null)
 
 
   useEffect(() => {
@@ -480,7 +480,10 @@ const ItineraryForm = ({
                 id={trip.id || ''}
                 deleteMethod={deleteTrip}
                 page="booking-vehicle"
-                onChangeTrip={onChangeTrip} initialValues={trip} />
+                onChangeTrip={onChangeTrip} initialValues={trip}
+                isCollapsed={!openTripIds.has(trip.id)}
+                toggleOpen={() => toggleOpen(trip.id)}
+              />
             })}
             {/* <InputField
               name="pickupLocation"

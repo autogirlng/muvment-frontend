@@ -737,6 +737,8 @@ export interface Breakdown {
   isExtension: boolean;
   isOutskirt: boolean;
   extremeAreaFee: number;
+  originalPrice:number;
+  totalDays:number;
 }
 
 // For the top-level object
