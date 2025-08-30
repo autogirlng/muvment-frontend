@@ -737,6 +737,8 @@ export interface Breakdown {
   isExtension: boolean;
   isOutskirt: boolean;
   extremeAreaFee: number;
+  originalPrice:number;
+  totalDays:number;
 }
 
 // For the top-level object
@@ -774,6 +776,8 @@ export interface ITripPerDaySelect {
   vehicle?: VehicleInformation | null;
   disabled: boolean;
   page?: string;
+  isCollapsed?:boolean;
+  toggleOpen:()=>void;
 }
 
 export interface CreateNewBookingAuthenticated {

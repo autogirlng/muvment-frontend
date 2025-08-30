@@ -20,7 +20,8 @@ import { BookingSummaryPricing } from "@/utils/types";
 import { format, addHours } from "date-fns";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@repo/ui/spinner";
-
+import { BookingCostBreakdown } from "../VehicleSummary/BookingCostBreakdown";
+import { useItineraryForm } from "@/hooks/useItineraryForm";
 
 
 const CostBreakdown = ({ vehicle, type }: CostBreakdownProps) => {
@@ -51,6 +52,7 @@ const CostBreakdown = ({ vehicle, type }: CostBreakdownProps) => {
   } = personalInformation;
 
 
+
   const fetchBookingPriceSummary = async () => {
     const bookingTypes: string[] = [];
     const trips: TripDetails[] = JSON.parse(sessionStorage.getItem("trips") || "[]");
@@ -60,14 +62,15 @@ const CostBreakdown = ({ vehicle, type }: CostBreakdownProps) => {
     setUserTrips(trips)
     let isOutskirt = false;
     for (let trip of trips) {
+      const areaOfUse = trip.areaOfUse?.split("_");
       if (trip.bookingType) {
         bookingTypes.push(trip.bookingType)
       }
-      if (trip.outskirtLocations && trip.outskirtLocations.length >= 1) {
+      if ((trip.outskirtLocations && trip.outskirtLocations.length >= 1) || (areaOfUse && areaOfUse[areaOfUse?.length - 1] === "OUTSKIRT")) {
         outskirtTripIDs.add(trip.id);
         isOutskirt = true
       }
-      if (trip.extremeLocations && trip.extremeLocations.length >= 1) {
+      if ((trip.extremeLocations && trip.extremeLocations.length >= 1) || (areaOfUse && areaOfUse[areaOfUse?.length - 2] === "EXTREME")) {
         extremeLocationsIDs.add(trip.id)
       }
     }
@@ -154,7 +157,8 @@ const CostBreakdown = ({ vehicle, type }: CostBreakdownProps) => {
           redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`,
           paymentMethod: "CARD"
         })
-      sessionStorage.setItem("bookingIDs", transaction.metaData.bookingIds)
+      sessionStorage.setItem("bookingGroupID", transaction.bookings[0].bookingGroupId)
+      sessionStorage.setItem("vehicleID", vehicle?.id || '')
 
       router.push(transaction.checkoutUrl)
     } catch (error) {
@@ -243,7 +247,8 @@ const CostBreakdown = ({ vehicle, type }: CostBreakdownProps) => {
           redirectUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/vehicle/payment/success`,
           paymentMethod: "CARD"
         })
-
+      sessionStorage.setItem("bookingGroupID", transaction.bookings[0].bookingGroupId)
+      sessionStorage.setItem("vehicleIds", vehicle?.id || '')
       router.push(transaction.checkoutUrl)
     } catch (error) {
       console.log(error)
@@ -262,36 +267,37 @@ const CostBreakdown = ({ vehicle, type }: CostBreakdownProps) => {
         <h6 className="text-base md:text-xl 3xl:text-h6">Cost Breakdown</h6>
         {
           bookingPriceSummary ?
-            <section className="space-y-7">
+            // <section className="space-y-7">
 
-              {
-                (bookingPriceSummary?.breakdown?.extremeAreaFee ?? 0) > 0 && (
-                  <Prices
-                    title="Outskirt Fee"
-                    price={`${bookingPriceSummary.currency} ${formatNumberWithCommas(bookingPriceSummary.breakdown!.extremeAreaFee)}`}
-                  />
-                )
-              }
-              {
-                (bookingPriceSummary?.breakdown?.outskirtFee ?? 0) > 0 && (
-                  <Prices
-                    title="Outskirt Fee"
-                    price={`${bookingPriceSummary.currency} ${formatNumberWithCommas(bookingPriceSummary.breakdown!.outskirtFee)}`}
-                  />
-                )
-              }
+            //   {
+            //     (bookingPriceSummary?.breakdown?.extremeAreaFee ?? 0) > 0 && (
+            //       <Prices
+            //         title="Outskirt Fee"
+            //         price={`${bookingPriceSummary.currency} ${formatNumberWithCommas(bookingPriceSummary.breakdown!.extremeAreaFee)}`}
+            //       />
+            //     )
+            //   }
+            //   {
+            //     (bookingPriceSummary?.breakdown?.outskirtFee ?? 0) > 0 && (
+            //       <Prices
+            //         title="Outskirt Fee"
+            //         price={`${bookingPriceSummary.currency} ${formatNumberWithCommas(bookingPriceSummary.breakdown!.outskirtFee)}`}
+            //       />
+            //     )
+            //   }
 
-              <Prices
-                title="Extra hours"
-                price="Billed as you go"
-                priceColor="text-grey-400"
-              />
-              <HorizontalDivider variant="light" />
-              <Prices
-                title="Total Cost"
-                price={`${bookingPriceSummary?.currency} ${formatNumberWithCommas(bookingPriceSummary?.totalPrice || '')}`}
-              />
-            </section> :
+            //   <Prices
+            //     title="Extra hours"
+            //     price="Billed as you go"
+            //     priceColor="text-grey-400"
+            //   />
+            //   <HorizontalDivider variant="light" />
+            //   <Prices
+            //     title="Total Cost"
+            //     price={`${bookingPriceSummary?.currency} ${formatNumberWithCommas(bookingPriceSummary?.totalPrice || '')}`}
+            //   />
+            // </section> 
+            <BookingCostBreakdown bookingPriceBreakdown={bookingPriceSummary} vehicle={vehicle} trips={userTrips} /> :
             <div className="flex items-center justify-center h-full w-full">
               <Spinner />
             </div>

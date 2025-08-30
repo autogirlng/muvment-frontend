@@ -184,7 +184,7 @@ const PersonalInformationFormMyself = ({
               }
               info
               tooltipTitle=""
-              tooltipDescription=""
+              tooltipDescription="Add an extra phone number we can reach you on if your primary line isn’t available. This helps us contact you faster in case of urgent updates or booking issues"
             />
           )}
           <button

@@ -15,13 +15,24 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
       const outskirtTrips = useRef<string[]>([])
       const extremeTrips = useRef<string[]>([])
 
-
+const [openTripIds, setOpenTripIds] = useState<Set<string>>(new Set());
       const [isTripFormsComplete, setIsTripFormComplete] = useState<boolean>(false)
+
+  const toggleOpen = (id: string) => {
+    setOpenTripIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    })
+  }
+
     
       const http = useHttp()
       const addTrip = (id: string) => {
         setTrips(prev => [...prev, { id }])
         setIsTripFormComplete(false)
+         setOpenTripIds(new Set([id]));
     
       }
     
@@ -32,30 +43,38 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
         sessionStorage.setItem("trips", JSON.stringify(updatedTrips));
         
         setTrips(prev => prev.filter((trip) => trip.id !== idToDelete));
+        setOpenTripIds(prev => {
+          const updated = new Set(prev);
+          updated.delete(idToDelete)
+          return updated
+        })
         const bookingTypes: string[] = [];
-        let outskirtsAreaOfUse:string[] = [];
-        let extremeAreas:string[] = [];
+        const outskirtsTripIds:string[] = [];
+        let extremeAreaTripIds:string[] = [];
 
         updatedTrips.forEach((trip) => {
+          
           trip.bookingType && bookingTypes.push(trip.bookingType)
           const area = trip.areaOfUse?.split("_")
 
           if(area && area[area?.length - 1] === "OUTSKIRT"){
-              outskirtsAreaOfUse.push(area.join("_"))
+              outskirtsTripIds.push(trip.id || "")
           }
           if(area && area[area?.length - 1] === "AREA" && area && area[area?.length - 2] === "EXTREME"){
-           extremeAreas.push(area.join("_"))
+           extremeAreaTripIds.push(trip.id || "")
           }
         })
+        outskirtTrips.current = outskirtsTripIds
+        extremeTrips.current = extremeAreaTripIds
         const bookingPrice = await http.post<BookingSummaryPricing>("/api/bookings/calculate-price",
           {
             vehicleId: vehicle?.id,
             bookingTypes,
             isExtension: false,
-            isOutskirt: outskirtsAreaOfUse.length > 0, 
-            numberOfOutskirts: outskirtsAreaOfUse.length, 
-            isExtremeArea: extremeAreas.length > 0,
-            numberOfExtremeAreas: extremeAreas.length
+            isOutskirt: outskirtsTripIds.length > 0, 
+            numberOfOutskirts: outskirtsTripIds.length, 
+            isExtremeArea: extremeAreaTripIds.length > 0,
+            numberOfExtremeAreas: extremeAreaTripIds.length
 
           }
         );
@@ -79,7 +98,11 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
   //  Update the trips state
   setTrips(updatedTrips);
 
-  const areaOfUseBreakdown = details.areaOfUse?.split("_");
+  const activeTrip = updatedTrips.find(trip => trip.id === id)?.tripDetails
+ 
+  
+
+  const areaOfUseBreakdown = activeTrip?.areaOfUse?.split("_");
   const isOutskirt = areaOfUseBreakdown && areaOfUseBreakdown[areaOfUseBreakdown.length - 1] === "OUTSKIRT";
   const isExtreme = areaOfUseBreakdown && 
   areaOfUseBreakdown[areaOfUseBreakdown.length - 2] === "EXTREME" 
@@ -117,7 +140,6 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
       }
     });
 
-    //  Make API call
     try {
       const bookingPrice = await http.post<BookingSummaryPricing>("/api/bookings/calculate-price", {
         vehicleId: vehicle?.id,
@@ -166,5 +188,5 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
         setIsTripFormComplete(missingFields.length === 0)
       }, [trips])
 
-      return {setTrips, trips, deleteTrip, onChangeTrip, addTrip, bookingPriceBreakdown, isTripFormsComplete}
+      return {setTrips, trips, deleteTrip, openTripIds, toggleOpen, onChangeTrip, addTrip, bookingPriceBreakdown, isTripFormsComplete}
 } 
