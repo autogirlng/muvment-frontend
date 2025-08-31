@@ -277,25 +277,28 @@ const SuccessPaymentComponent = () => {
     id: vehicleId,
   });
 
-  const { bookingDetail, isLoading: isLoadingBooking } = useGetBookingById({
-    id: "",
-  });
+  // const { bookingDetail, isLoading: isLoadingBooking } = useGetBookingById({
+  //   id: bookingId,
+  // });
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ["getBookingById", bookingId],
 
     queryFn: async () =>
       await http.get<BookingInformation[]>(`/api/bookings/group/${bookingId}`),
+    enabled: !!bookingId,
+    retry: false
+
   });
 
 
 
-
-
-  // Show loading state while getting IDs from localStorage
-  // if (!vehicleId || !bookingId) {
-  //   return <FullPageSpinner className="!min-h-screen" />;
-  // }
+  console.log(vehicleId)
+  console.log(bookingId)
+  //Show loading state while getting IDs from localStorage
+  if (!vehicleId || !bookingId) {
+    return <FullPageSpinner className="!min-h-screen" />;
+  }
 
   return (
     <div className="flex justify-between flex-col-reverse md:flex-row text-grey-800">
@@ -315,7 +318,7 @@ const SuccessPaymentComponent = () => {
           <>
             <div className="space-y-4 mt-8 md:mt-0">
               <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-bold leading-tight">
-                {bookingDetail?.vehicle?.listingName}
+                {data && data[0]?.vehicle?.listingName}
               </h2>
             </div>
 
@@ -430,9 +433,9 @@ const SuccessPaymentComponent = () => {
 
       {/* payment summary - adjusted width */}
       <div className="w-full md:w-1/2 text-center py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32 px-4 sm:px-6 md:px-8 lg:px-12">
-        {isLoadingBooking ? (
+        {isLoading && data ? (
           <FullPageSpinner className="!min-h-[300px]" />
-        ) : bookingDetail?.paymentStatus === TransactionStatus.SUCCESS ? (
+        ) : data && data[0]?.paymentStatus === TransactionStatus.SUCCESS ? (
           <div className="h-full flex flex-col items-center justify-center gap-12 sm:gap-16">
             <div className="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto space-y-6">
               <div className="space-y-3">
@@ -444,12 +447,12 @@ const SuccessPaymentComponent = () => {
                 </p>
               </div>
               <h4 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold">
-                Pay {bookingDetail?.currencyCode}{" "}
-                {formatNumberWithCommas(bookingDetail?.amount || 0)}
+                Pay {data[0]?.currencyCode}{" "}
+                {formatNumberWithCommas(data[0]?.amount || 0)}
               </h4>
               <Link
                 className="block w-full"
-                href={bookingDetail?.paymentLink || ""}
+                href={data[0]?.paymentLink || ""}
                 target="_blank"
               >
                 <Button
@@ -533,7 +536,7 @@ const SuccessPaymentComponent = () => {
                 </Link>
               </div>
             </div>
-            <p className="text-grey-500 text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed max-w-xs sm:max-w-sm md:max-w-md mx-auto">
+            {/* <p className="text-grey-500 text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed max-w-xs sm:max-w-sm md:max-w-md mx-auto">
               You can cancel this ride on or before 48hrs to the trip{" "}
               <Link
                 href="/privacy-policy"
@@ -541,7 +544,7 @@ const SuccessPaymentComponent = () => {
               >
                 View policy
               </Link>
-            </p>
+            </p> */}
           </div>
         )}
       </div>
