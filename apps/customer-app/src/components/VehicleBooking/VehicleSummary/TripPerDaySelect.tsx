@@ -9,7 +9,8 @@ import { format } from 'date-fns';
 import {
     CalendarValue,
     TripDetails,
-    ITripPerDaySelect
+    ITripPerDaySelect,
+    NewBookingType
 } from "@/utils/types";
 import { toTitleCase } from "@/utils/functions";
 import { GroupCheckBox } from "@repo/ui/checkbox";
@@ -155,6 +156,33 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
         return areas;
     }
 
+    const generateBookingOptions = (): { option: string, value: string }[] => {
+        const bookingOptions = []
+        if (vehicle?.pricing.bookingTypePrices) {
+            for (let bookType of vehicle?.pricing.bookingTypePrices) {
+                if (bookType.type === NewBookingType.AN_HOUR) {
+                    bookingOptions.push({ option: "1 Hour", value: bookType.type })
+                }
+                else if (bookType.type === NewBookingType.THREE_HOURS) {
+                    bookingOptions.push({ option: "3 Hour", value: bookType.type })
+                }
+                else if (bookType.type === NewBookingType.SIX_HOURS) {
+                    bookingOptions.push({ option: "6 Hour", value: bookType.type })
+                }
+                else if (bookType.type === NewBookingType.TWELVE_HOURS) {
+                    bookingOptions.push({ option: "12 Hour", value: bookType.type })
+                }
+
+                else {
+                    bookingOptions.push({ option: bookType.type.replaceAll("_", " "), value: bookType.type })
+                }
+            }
+        }
+        if (vehicle?.pricing?.airportPickupFee && vehicle?.pricing.airportPickupFee > 0) {
+            bookingOptions.push({ option: "Airport Transfers", value: "AIRPORT_PICKUP" })
+        }
+        return bookingOptions;
+    }
 
     return <>
         <div className="rounded-2xl px-4 p-2 mt-1 border border-grey-200">
@@ -219,14 +247,7 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
                                 placeholder="Select Booking Type"
                                 variant="outlined"
                                 className=""
-                                options={[
-                                    { option: "1 Hour", value: "AN_HOUR" },
-                                    { option: "3 hours", value: "THREE_HOURS" },
-                                    { option: "6 hours", value: "SIX_HOURS" },
-                                    { option: "12 hours", value: "TWELVE_HOURS" },
-                                    { option: "Airport Transfers", value: "AIRPORT_PICKUP" },
-
-                                ]}
+                                options={generateBookingOptions()}
                                 value={bookingType}
                                 onChange={(value) => onChange("bookingType", value)}
                             />
