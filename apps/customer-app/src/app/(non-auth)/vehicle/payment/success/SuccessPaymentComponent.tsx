@@ -19,6 +19,221 @@ import useGetBookingById from "@/components/BookingsAnalytics/hooks/useGetBookin
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useHttp } from "@/hooks/useHttp";
+import { ReactNode } from "react";
+import { toTitleCase } from "@/utils/functions";
+import Icons from "@repo/ui/icons";
+
+import cn from "classnames";
+
+const TripInfoWrapper = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) => {
+  return (
+    <div className="bg-white rounded-3xl py-4 px-7 space-y-5">
+      <p className="text-sm md:text-base 3xl:text-xl text-grey-800 !font-semibold">
+        {title}
+      </p>
+      <div className="space-y-8">{children}</div>
+    </div>
+  );
+};
+
+const DurationDetails = ({
+  date,
+  time,
+  icon,
+  iconColor,
+  title,
+}: {
+  date: Date;
+  time: Date;
+  icon: ReactNode;
+  iconColor: string;
+  title: string;
+}) => {
+  return (
+    <div className="flex items-center justify-between gap-2">
+      <p className="flex items-center gap-1.5">
+        <span className={cn("*:w-5 *:h-5", iconColor)}>{icon}</span>
+        <span>{title}</span>
+      </p>
+      <p>
+        {format(new Date(date), "do MMM yyyy")} |{" "}
+        {format(new Date(time), "hh:mma")}
+      </p>
+    </div>
+  );
+};
+export interface BookingInformation {
+  id: string;
+  startDate: string;
+  endDate: string;
+  duration: number;
+  bookingType: "TWELVE_HOURS" | "AN_HOUR" | "DAILY" | string; // extend as needed
+  amount: number;
+  paymentStatus: "PENDING" | "PAID" | "FAILED" | string;
+  paymentMethod: "CARD" | "BANK_TRANSFER" | "CASH" | string;
+  rentalAgreement: string | null;
+  bookingStatus: "PENDING" | "CONFIRMED" | "CANCELLED" | string;
+  isForSelf: boolean;
+  guestName: string;
+  guestEmail: string;
+  guestPhoneNumber: string;
+  pickupLocation: string;
+  dropoffLocation: string;
+  emergencyContact: string;
+  userEmail: string | null;
+  userPhoneNumber: string | null;
+  userCountry: string | null;
+  countryCode: string | null;
+  specialInstructions: string;
+  paymentLink: string;
+  outskirtsLocation: string[];
+  extremeAreasLocation: string[];
+  areaOfUse: string;
+  extraDetails: string;
+  purposeOfRide: string;
+  tripPurpose: string;
+  secondaryPhoneNumber: string | null;
+  currencyCode: string;
+  vehicleId: string;
+  userId: string;
+  hostId: string;
+  numberOfExtraHours: number;
+  version: number;
+  createdAt: string;
+  updatedAt: string;
+  bookingGroupId: string;
+  vehicle: Vehicle;
+  user: User;
+}
+
+export interface Vehicle {
+  pricing: VehiclePricing;
+  tripSettings: TripSettings;
+  id: string;
+  listingName: string;
+  location: string;
+  address: string;
+  vehicleType: string;
+  make: string;
+  model: string;
+  yearOfRelease: string;
+  hasTracker: boolean;
+  hasInsurance: boolean;
+  licensePlateNumber: string;
+  vehicleColor: string;
+  stateOfRegistration: string;
+  vehicleDescription: string;
+  numberOfSeats: number;
+  longitude: number | null;
+  latitude: number | null;
+  status: string;
+  vehicleStatus: string;
+  rejectionReason: string | null;
+  userId: string;
+  vehicleCurrency: string;
+  isActive: boolean;
+  areYouVehicleOwner: boolean;
+  vehicleIdentifier: string;
+  isReserved: boolean;
+  reservationExpiresAt: string;
+  unavailableFrom: string | null;
+  unavailableUntil: string | null;
+  features: string[];
+  outskirtsLocation: string[];
+  outskirtsPrice: number | null;
+  extremeAreasLocation: string[];
+  extremeAreaPrice: number | null;
+  isTopRate: boolean;
+  createdAt: string;
+  updatedAt: string;
+  VehicleImage: VehicleImage;
+}
+
+export interface VehiclePricing {
+  dailyRate: {
+    value: number;
+    currency: string | null;
+    unit: string;
+  };
+  extraHoursFee: number;
+  airportPickupFee: number;
+  hourlyRate: number | null;
+  discounts: Discount[];
+  bookingTypePrices: any[]; // refine if needed
+}
+
+export interface Discount {
+  durationInDays: number;
+  percentage: number;
+}
+
+export interface TripSettings {
+  advanceNotice: string;
+  maxTripDuration: string;
+  provideDriver: boolean;
+  fuelProvided: boolean;
+}
+
+export interface VehicleImage {
+  id: string;
+  frontView: string;
+  backView: string;
+  sideView1: string;
+  sideView2: string;
+  interior: string;
+  other: string;
+  vehicleId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  dob: string | null;
+  profileImage: string | null;
+  countryCode: string;
+  country: string;
+  emailConfirmed: boolean;
+  otp: string | null;
+  passwordOtp: string | null;
+  phoneNumber: string;
+  isActive: boolean;
+  phoneVerified: boolean;
+  bvnVerified: boolean;
+  withdrawalAccountVerified: boolean;
+  bio: string | null;
+  city: string | null;
+  cities: string[];
+  userRole: "CUSTOMER" | "ADMIN" | string;
+  isBusiness: boolean;
+  businessLogo: string | null;
+  businessName: string | null;
+  businessAddress: string | null;
+  businessPhoneNumber: string | null;
+  businessEmail: string | null;
+  createdAt: string;
+  updatedAt: string;
+  referralCode: string;
+  referredBy: string | null;
+  referralBalance: number;
+  onBoardedBy: string | null;
+  mouDocument: string | null;
+  lastLogin: string | null;
+  isDeleted: boolean;
+  blockedReason: string | null;
+  teamId: string | null;
+}
+
 
 const SuccessPaymentComponent = () => {
   const [vehicleId, setVehicleId] = useState<string>("");
@@ -27,8 +242,8 @@ const SuccessPaymentComponent = () => {
   const http = useHttp()
 
   useEffect(() => {
-    const storedVehicleId = sessionStorage.getItem("vehicleIds");
-    const storedBookingId = sessionStorage.getItem("bookingIds");
+    const storedVehicleId = sessionStorage.getItem("vehicleID");
+    const storedBookingId = sessionStorage.getItem("bookingGroupID");
     const userLoggedInVal = localStorage.getItem("user_token");
 
     if (userLoggedInVal) {
@@ -63,15 +278,16 @@ const SuccessPaymentComponent = () => {
   });
 
   const { bookingDetail, isLoading: isLoadingBooking } = useGetBookingById({
-    id: bookingId,
+    id: "",
   });
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ["getBookingById", bookingId],
 
     queryFn: async () =>
-      await http.get(`/api/bookings/group/15f9be24-f92d-4f20-a4f4-c13689f69646`),
+      await http.get<BookingInformation[]>(`/api/bookings/group/${bookingId}`),
   });
+
 
 
 
@@ -169,39 +385,44 @@ const SuccessPaymentComponent = () => {
                 )}
               </div>
 
-              <div className="bg-white py-4 sm:py-5 md:py-6 px-4 sm:px-6 md:px-7 rounded-xl sm:rounded-2xl md:rounded-[22px] space-y-4 sm:space-y-5 md:space-y-6 shadow-sm">
-                <div className="flex items-center gap-3 justify-between flex-wrap">
-                  <p className="font-semibold text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">
-                    Duration
-                  </p>
-                  <button className="text-grey-700 font-medium border-2 border-grey-700 rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm md:text-base hover:bg-grey-700 hover:text-white transition-colors duration-200 whitespace-nowrap">
-                    Edit Dates
-                  </button>
-                </div>
-                <div>
-                  <p className="bg-grey-900 text-white w-fit px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm md:text-base lg:text-lg">
-                    {bookingDetail?.duration}
-                  </p>
-                </div>
-                <div className="space-y-3 text-xs sm:text-sm md:text-base lg:text-lg">
-                  <div className="flex items-center gap-3 justify-between">
-                    <p className="text-grey-600">Start</p>
-                    <p className="text-right font-medium">
-                      {bookingDetail?.startDate
-                        ? `${format(new Date(bookingDetail?.startDate), "do MMM yyyy")} | ${format(new Date(bookingDetail?.startDate), "h:mma")}`
-                        : "N/A"}
-                    </p>
+
+
+
+              {
+                data?.map((bookingInfo, index) => (
+                  <div key={bookingInfo.id} className="bg-white py-4 sm:py-5 md:py-6 px-4 sm:px-6 md:px-7 rounded-xl sm:rounded-2xl md:rounded-[22px] space-y-4 sm:space-y-5 md:space-y-6 shadow-sm">
+                    <p>Trip {index + 1}</p>
+                    <div className="space-y-3 text-xs sm:text-sm md:text-base lg:text-lg">
+                      <div className="flex items-center gap-3 justify-between">
+                        <div className="flex items-center gap-3 justify-between flex-wrap">
+                          <p className="text-sm md:text-base 3xl:text-xl text-grey-800 !font-semibold">
+                            Booking Type
+                          </p>
+                        </div>
+                        <div>
+                          <p className="bg-grey-900 text-white py-0.5 px-4 rounded-3xl w-fit text-xs md:text-sm 3xl:text-base">
+                            {toTitleCase(bookingInfo.bookingType.split("_")[0] + ` ${bookingInfo.bookingType.split("_")[1]}`)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 text-xs sm:text-sm md:text-base lg:text-lg">
+                      <div className="flex items-center gap-3 justify-between">
+                        <p className="flex items-center gap-1.5">
+                          <span className={cn("*:w-5 *:h-5", "text-primary-500")}>{Icons.ic_flag}</span>
+                          <span>Start</span>
+                        </p>
+                        <p>
+                          {format(new Date(bookingInfo.startDate), "do MMM yyyy")} |{" "}
+                          {format(new Date(bookingInfo.startDate), "hh:mma")}
+                        </p>
+                      </div>
+
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3 justify-between">
-                    <p className="text-grey-600">Stop</p>
-                    <p className="text-right font-medium">
-                      {bookingDetail?.endDate
-                        ? `${format(new Date(bookingDetail?.endDate), "do MMM yyyy")} | ${format(new Date(bookingDetail?.endDate), "h:mma")}`
-                        : "N/A"}
-                    </p>
-                  </div>
-                </div>
-              </div>
+                ))
+              }
             </div>
           </>
         )}
@@ -273,7 +494,7 @@ const SuccessPaymentComponent = () => {
                 </p>
               </div>
               <div className="space-y-3 sm:space-y-4">
-                <Button
+                {/* <Button
                   variant="outlined"
                   rounded="full"
                   fullWidth
@@ -285,7 +506,7 @@ const SuccessPaymentComponent = () => {
                   }}
                 >
                   Cancel Booking
-                </Button>
+                </Button> */}
                 <Link
                   href={
                     userLoggedIn

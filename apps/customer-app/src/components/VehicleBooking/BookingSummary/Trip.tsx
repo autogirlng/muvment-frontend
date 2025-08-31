@@ -33,28 +33,6 @@ const Trip = ({ vehicle }: Props) => {
 
   return (
     <div className="space-y-4 pt-8">
-      {/* <TripInfoWrapper title="Prices">
-        <div className="flex items-center divide-x divide-grey-200 space-x-3">
-
-          <div>
-            {<p className="text-sm 3xl:text-base">Daily</p>}
-            <p className="text-sm md:text-base 3xl:text-xl !font-semibold">
-              {vehicle?.pricing?.dailyRate?.currency}{" "}
-              {formatNumberWithCommas(vehicle?.pricing?.dailyRate?.value || 0)}
-              /day
-            </p>
-          </div>
-          <div className="pl-3">
-            <p className="text-sm 3xl:text-base">Extra Hours</p>
-
-            <p className="text-sm md:text-base 3xl:text-xl !font-semibold">
-              {vehicle?.pricing?.dailyRate?.currency}{" "}
-              {vehicle?.pricing?.extraHoursFee}/hr
-            </p>
-          </div>
-        </div>
-      </TripInfoWrapper> */}
-
       {
         trips?.map((trip, index) => {
           return <div key={trip.id}>
@@ -105,51 +83,6 @@ const Trip = ({ vehicle }: Props) => {
           </div>
         })
       }
-      {/* 
-      <TripInfoWrapper title="Duration">
-        <p className="bg-grey-900 text-white py-0.5 px-4 rounded-3xl w-fit text-xs md:text-sm 3xl:text-base">
-          {calculateNumberOfDays(
-            itineraryInformation?.endDate,
-            itineraryInformation?.startDate
-          )}
-        </p>
-        <div className="space-y-3 text-xs md:text-sm 3xl:text-base">
-          <DurationDetails
-            date={itineraryInformation?.startDate}
-            time={itineraryInformation?.startTime}
-            icon={Icons.ic_flag}
-            iconColor="text-primary-500"
-            title="Start"
-          />
-          <DurationDetails
-            date={itineraryInformation?.endDate}
-            time={itineraryInformation?.endTime}
-            icon={Icons.ic_location}
-            iconColor="text-success-500"
-            title="Stop"
-          />
-        </div>
-      </TripInfoWrapper> */}
-      {/* <TripInfoWrapper title="Itinerary">
-        <SectionDetails
-          title="Pick-up"
-          description={itineraryInformation?.pickupLocation}
-          isLocation
-        />
-        <SectionDetails
-          title="Drop-off"
-          description={itineraryInformation?.dropoffLocation}
-          isLocation
-        />
-        <SectionDetails
-          title="Areas of Use"
-          description={itineraryInformation?.areaOfUse}
-        />
-        <SectionDetails
-          title="Outskirt Locations"
-          description={itineraryInformation?.outskirtsLocation}
-        />
-      </TripInfoWrapper> */}
       {(itineraryInformation?.extraDetails ||
         personalInformation?.tripPurpose ||
         itineraryInformation?.purposeOfRide) && (

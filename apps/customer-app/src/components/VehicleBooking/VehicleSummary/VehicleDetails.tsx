@@ -330,11 +330,36 @@ export default function VehicleDetails({
                     <SectionTitle text="Outskirt Locations" />
                     <DotDivider />
                     <p className="text-sm md:text-base !font-medium text-primary-500 ">
-                      {vehicle?.outskirtsPrice}/hr
+                      {vehicle?.outskirtsPrice}/trip
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-y-8 gap-x-[18px]">
                     {vehicle?.outskirtsLocation?.map((location, index) => (
+                      <p
+                        key={index}
+                        className="text-sm md:text-base 3xl:text-xl !font-medium text-black flex items-center gap-[14px] w-[170px]"
+                      >
+                        {Icons.ic_location}
+                        <span>{location}</span>
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Extreme Areas */}
+
+              {vehicle?.extremeAreasLocation && vehicle?.extremeAreasLocation.length > 0 && (
+                <div className="space-y-5">
+                  <div className="flex items-center gap-3">
+                    <SectionTitle text="Outskirt Locations" />
+                    <DotDivider />
+                    <p className="text-sm md:text-base !font-medium text-primary-500 ">
+                      {vehicle?.extremeAreaPrice}/trip
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-y-8 gap-x-[18px]">
+                    {vehicle?.extremeAreasLocation?.map((location, index) => (
                       <p
                         key={index}
                         className="text-sm md:text-base 3xl:text-xl !font-medium text-black flex items-center gap-[14px] w-[170px]"

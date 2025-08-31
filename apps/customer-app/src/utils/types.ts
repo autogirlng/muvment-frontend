@@ -440,6 +440,8 @@ export interface Pricing {
   // hourlyRate: Rate;
   airportPickupFee: number;
   discounts: Discount[];
+  bookingTypePrices:{type: NewBookingType, price: number}[], 
+  
 }
 
 export interface AvailabilityAndPricing {

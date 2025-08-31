@@ -182,6 +182,8 @@ const CostBreakdown = ({ vehicle, type }: CostBreakdownProps) => {
       let endDateTime: Date;
 
 
+
+
       switch (trip.bookingType) {
         case "AN_HOUR":
           endDateTime = addHours(startDateTime, 1);
