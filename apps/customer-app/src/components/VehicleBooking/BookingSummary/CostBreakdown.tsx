@@ -250,7 +250,7 @@ const CostBreakdown = ({ vehicle, type }: CostBreakdownProps) => {
           paymentMethod: "CARD"
         })
       sessionStorage.setItem("bookingGroupID", transaction.bookings[0].bookingGroupId)
-      sessionStorage.setItem("vehicleIds", vehicle?.id || '')
+      sessionStorage.setItem("vehicleID", vehicle?.id || '')
       router.push(transaction.checkoutUrl)
     } catch (error) {
       console.log(error)
@@ -269,36 +269,7 @@ const CostBreakdown = ({ vehicle, type }: CostBreakdownProps) => {
         <h6 className="text-base md:text-xl 3xl:text-h6">Cost Breakdown</h6>
         {
           bookingPriceSummary ?
-            // <section className="space-y-7">
 
-            //   {
-            //     (bookingPriceSummary?.breakdown?.extremeAreaFee ?? 0) > 0 && (
-            //       <Prices
-            //         title="Outskirt Fee"
-            //         price={`${bookingPriceSummary.currency} ${formatNumberWithCommas(bookingPriceSummary.breakdown!.extremeAreaFee)}`}
-            //       />
-            //     )
-            //   }
-            //   {
-            //     (bookingPriceSummary?.breakdown?.outskirtFee ?? 0) > 0 && (
-            //       <Prices
-            //         title="Outskirt Fee"
-            //         price={`${bookingPriceSummary.currency} ${formatNumberWithCommas(bookingPriceSummary.breakdown!.outskirtFee)}`}
-            //       />
-            //     )
-            //   }
-
-            //   <Prices
-            //     title="Extra hours"
-            //     price="Billed as you go"
-            //     priceColor="text-grey-400"
-            //   />
-            //   <HorizontalDivider variant="light" />
-            //   <Prices
-            //     title="Total Cost"
-            //     price={`${bookingPriceSummary?.currency} ${formatNumberWithCommas(bookingPriceSummary?.totalPrice || '')}`}
-            //   />
-            // </section> 
             <BookingCostBreakdown bookingPriceBreakdown={bookingPriceSummary} vehicle={vehicle} trips={userTrips} /> :
             <div className="flex items-center justify-center h-full w-full">
               <Spinner />
@@ -310,8 +281,8 @@ const CostBreakdown = ({ vehicle, type }: CostBreakdownProps) => {
           rounded="full"
           fullWidth
           onClick={user ? handlePaymentAuthenticated : handlePaymentUnauthenticated}
-        // loading={proceedToPayment.isPending}
-        // disabled={proceedToPayment.isPending}
+          // loading={proceedToPayment.isPending}
+          disabled={!bookingPriceSummary}
         >
           Book Now
         </Button>
