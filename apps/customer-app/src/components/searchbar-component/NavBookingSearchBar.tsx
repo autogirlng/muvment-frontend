@@ -258,7 +258,7 @@ const SearchBarContent = () => {
       longitude: longitude ? String(longitude) : "",
       fromDate: formatDate(fromDate),
       untilDate: formatDate(untilDate),
-      category,
+      type:category,
     };
 
     const queryParams = new URLSearchParams();

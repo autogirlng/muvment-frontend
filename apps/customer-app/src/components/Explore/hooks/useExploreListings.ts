@@ -7,37 +7,63 @@ import { useHttp } from "@/hooks/useHttp";
 type ExploreDataType = {
   data: VehicleInformation[];
   totalCount: number;
+  totalPages: number;
+  page: number;
+  limit: number;
+};
+
+type FilterState = {
+  minPrice: number;
+  maxPrice: number;
+  type: string[];
+  make: string[];
+  yearOfRelease: string[];
+  numberOfSeats: string[];
+  features: string[];
 };
 
 export default function useExploreListings({
   currentPage = 1,
   pageLimit = 10,
-  filters = {},
+  filters = {
+    minPrice: 0,
+    maxPrice: 10000000,
+    type: [],
+    make: [],
+    yearOfRelease: [],
+    numberOfSeats: [],
+    features: [],
+  },
   type = "all",
   search = "",
   fromDate = "",
   untilDate = "",
   location = "",
-  categoryType = "",
 }: {
   currentPage: number;
   pageLimit: number;
-  filters?: Record<string, string[] | number[]>;
+  filters?: FilterState;
   type: "top-rated" | "all" | "search" | "category";
   search?: string;
   fromDate?: string;
   untilDate?: string;
   location?: string;
-  categoryType?: string;
 }) {
   const http = useHttp();
 
   const buildUrl = () => {
-    const baseParams = `limit=${pageLimit}`;
+    const baseParams = `page=${currentPage}&limit=${pageLimit}`;
 
     switch (type) {
       case "all":
-        return `/api/listings?${baseParams}`;
+        const allFilters = handleFilterQuery({
+          filters,
+          search,
+          fromDate,
+          untilDate,
+          location,
+        });
+        return `/api/listings?${baseParams}&${allFilters}`;
 
       case "search":
         const searchFilters = handleFilterQuery({
@@ -45,14 +71,21 @@ export default function useExploreListings({
           search,
           fromDate,
           untilDate,
+          location,
         });
         console.log("Search query:", searchFilters);
         return `/api/listings?${baseParams}&${searchFilters}`;
 
       case "category":
-        // Category uses a different endpoint structure
-        const categoryParams = `vehicleType=${encodeURIComponent(categoryType || "")}&page=${currentPage}&limit=${pageLimit}`;
-        return `/api/customer/vehicles/type?${categoryParams}`;
+        // Category now uses the same endpoint as all, but with type filter
+        const categoryFilters = handleFilterQuery({
+          filters,
+          search,
+          fromDate,
+          untilDate,
+          location,
+        });
+        return `/api/listings?${baseParams}&${categoryFilters}`;
 
       case "top-rated":
         const topRatedFilters = handleFilterQuery({
@@ -65,7 +98,14 @@ export default function useExploreListings({
         return `/api/listings/top-rated?${baseParams}&${topRatedFilters}`;
 
       default:
-        return `/api/listings?${baseParams}`;
+        const defaultFilters = handleFilterQuery({
+          filters,
+          search,
+          fromDate,
+          untilDate,
+          location,
+        });
+        return `/api/listings?${baseParams}&${defaultFilters}`;
     }
   };
 
@@ -79,7 +119,6 @@ export default function useExploreListings({
       fromDate,
       untilDate,
       location,
-      categoryType,
       type,
     ],
 
@@ -91,6 +130,9 @@ export default function useExploreListings({
   return {
     listings: data?.data || [],
     totalCount: data?.totalCount || 0,
+    totalPages: data?.totalPages || 0,
+    page: data?.page || 0,
+    limit: data?.limit || 0,
     isError,
     error,
     isLoading,
@@ -98,9 +140,17 @@ export default function useExploreListings({
   };
 }
 
-// Alternative approach: Format dates before encoding or use URLSearchParams selectively
+// Enhanced filter query handler to support all required parameters
 export const handleFilterQuery = ({
-  filters = {},
+  filters = {
+    minPrice: 0,
+    maxPrice: 10000000,
+    type: [],
+    make: [],
+    yearOfRelease: [],
+    numberOfSeats: [],
+    features: [],
+  },
   month,
   year,
   search,
@@ -110,7 +160,7 @@ export const handleFilterQuery = ({
   untilDate,
   location,
 }: {
-  filters?: Record<string, string[] | number[]>;
+  filters?: FilterState;
   month?: number;
   year?: string;
   search?: string;
@@ -127,55 +177,51 @@ export const handleFilterQuery = ({
   // Helper function to format dates (removes time portion if not needed)
   const formatDate = (dateString: string) => {
     if (!dateString) return dateString;
-
-    // If you want just the date part (YYYY-MM-DD)
-    // return dateString.split('T')[0];
-
-    // If you want to keep the full ISO string but avoid encoding issues,
-    // you can return it as-is and handle encoding manually later
     return dateString;
   };
 
-  // Handle filters object
-  Object.entries(filters).forEach(([key, values]) => {
-    if (key === "price") {
-      filterQuery.append("minPrice", values[0].toString());
-      filterQuery.append("maxPrice", values[1].toString());
-    } else if (key === "vehicle") {
-      values.forEach((value) => {
-        filterQuery.append("vehicleId", value.toString());
-      });
-    } else if (key === "yearOfRelease") {
-      values.forEach((value) => {
-        filterQuery.append("yearOfRelease", value.toString());
-      });
-    } else if (key === "type") {
-      values.forEach((value) => {
-        filterQuery.append("type", value.toString());
-      });
-    } else if (key === "make") {
-      values.forEach((value) => {
-        filterQuery.append("make", value.toString());
-      });
-    } else if (key === "status") {
-      values.forEach((value) => {
-        filterQuery.append("status", value.toString());
-      });
-    } else if (key === "features") {
-      values.forEach((value) => {
-        filterQuery.append("features", value.toString());
-      });
-    } else if (key === "numberOfSeats") {
-      values.forEach((value) => {
-        filterQuery.append("numberOfSeats", value.toString());
-      });
-    } else {
-      // Handle other filter keys
-      values.forEach((value) => {
-        filterQuery.append(key, value.toString());
-      });
-    }
-  });
+  // Handle minPrice and maxPrice
+  if (filters.minPrice !== undefined) {
+    filterQuery.append("minPrice", filters.minPrice.toString());
+  }
+  if (filters.maxPrice !== undefined) {
+    filterQuery.append("maxPrice", filters.maxPrice.toString());
+  }
+
+  // Handle type array
+  if (filters.type && filters.type.length > 0) {
+    filters.type.forEach((value) => {
+      filterQuery.append("type", value.toString());
+    });
+  }
+
+  // Handle make array
+  if (filters.make && filters.make.length > 0) {
+    filters.make.forEach((value) => {
+      filterQuery.append("make", value.toString());
+    });
+  }
+
+  // Handle yearOfRelease array
+  if (filters.yearOfRelease && filters.yearOfRelease.length > 0) {
+    filters.yearOfRelease.forEach((value) => {
+      filterQuery.append("yearOfRelease", value.toString());
+    });
+  }
+
+  // Handle numberOfSeats array
+  if (filters.numberOfSeats && filters.numberOfSeats.length > 0) {
+    filters.numberOfSeats.forEach((value) => {
+      filterQuery.append("numberOfSeats", value.toString());
+    });
+  }
+
+  // Handle features array
+  if (filters.features && filters.features.length > 0) {
+    filters.features.forEach((value) => {
+      filterQuery.append("features", value.toString());
+    });
+  }
 
   // Handle individual parameters
   if (month) filterQuery.append("month", month.toString());

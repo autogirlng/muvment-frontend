@@ -115,25 +115,30 @@ export const yearsFilterArray = Array.from(
   (_, index) => (2010 + index).toString()
 );
 
+export const bookingTypeOptions = [
+  "AN_HOUR",
+  "THREE_HOURS",
+  "SIX_HOURS",
+  "TWELVE_HOURS",
+  "AIRPORT_PICKUP",
+];
+
 export const vehicleTypeArray: string[] = [
-  "sedan",
-  "suv",
-  "truck",
-  "sportsCar",
-  "pickup",
-  "bus",
-  "luxuryVehicle",
-  "hatchback",
-  "coupe",
-  "minivan",
-  "electricVehicle",
-  "hybridVehicle",
-  "car",
-  "stationWagon",
-  "van",
-  "off-roadVehicle",
-  "motorcycle",
-  "all-terrainVehicle",
+  "Sedan",
+  "SUV",
+  "Bus",
+  "Truck",
+  "SedanElectric",
+  "SUVElectric",
+];
+
+export const vehicleTypesOptions: OptionType[] = [
+  { value: "Sedan", option: "Sedan" },
+  { value: "SUV", option: "SUV" },
+  { value: "SedanElectric", option: "Sedan Electric" },
+  { value: "SUVElectric", option: "SUV Electric" },
+  { value: "Truck", option: "Truck" },
+  { value: "Bus", option: "Bus" },
 ];
 
 export const vehicleMakeArray = [
@@ -299,26 +304,26 @@ export const yearOfReleaseOptions = Array.from(
   })
 );
 
-export const vehicleTypesOptions: OptionType[] = [
-  { value: "Sedan", option: "Sedan" },
-  { value: "SUV", option: "SUV" },
-  { value: "Truck", option: "Truck" },
-  { value: "Sports Car", option: "Sports Car" },
-  { value: "Pickup", option: "Pickup" },
-  { value: "Bus", option: "Bus" },
-  { value: "Luxury Vehicle", option: "Luxury Vehicle" },
-  { value: "Hatchback", option: "Hatchback" },
-  { value: "Coupe", option: "Coupe" },
-  { value: "Minivan", option: "Minivan" },
-  { value: "Electric vehicle", option: "Electric vehicle" },
-  { value: "Hybrid vehicle", option: "Hybrid vehicle" },
-  { value: "Car", option: "Car" },
-  { value: "Station wagon", option: "Station wagon" },
-  { value: "Van", option: "Van" },
-  { value: "Off-road vehicle", option: "Off-road vehicle" },
-  { value: "Motorcycle", option: "Motorcycle" },
-  { value: "All-terrain vehicle", option: "All-terrain vehicle" },
-];
+// export const vehicleTypesOptions: OptionType[] = [
+//   { value: "Sedan", option: "Sedan" },
+//   { value: "SUV", option: "SUV" },
+//   { value: "Truck", option: "Truck" },
+//   { value: "Sports Car", option: "Sports Car" },
+//   { value: "Pickup", option: "Pickup" },
+//   { value: "Bus", option: "Bus" },
+//   { value: "Luxury Vehicle", option: "Luxury Vehicle" },
+//   { value: "Hatchback", option: "Hatchback" },
+//   { value: "Coupe", option: "Coupe" },
+//   { value: "Minivan", option: "Minivan" },
+//   { value: "Electric vehicle", option: "Electric vehicle" },
+//   { value: "Hybrid vehicle", option: "Hybrid vehicle" },
+//   { value: "Car", option: "Car" },
+//   { value: "Station wagon", option: "Station wagon" },
+//   { value: "Van", option: "Van" },
+//   { value: "Off-road vehicle", option: "Off-road vehicle" },
+//   { value: "Motorcycle", option: "Motorcycle" },
+//   { value: "All-terrain vehicle", option: "All-terrain vehicle" },
+// ];
 
 export const vehicleMakesOptions: OptionType[] = [
   { value: "Acura", option: "Acura" },
