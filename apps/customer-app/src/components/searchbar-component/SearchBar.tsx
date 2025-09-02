@@ -15,6 +15,7 @@ import { DatePicker } from "@repo/ui/calendar";
 
 import { useLocationSearch } from "../SearchBooking/useLocationSearch";
 import LocationDropdown from "../SearchBooking/LocationDropdown";
+import { bookingTypeOptions, vehicleTypeArray } from "@/utils/data";
 
 type Value = Date | null;
 
@@ -128,7 +129,7 @@ const BookingSearchBar = () => {
   const [longitude, setLongitude] = useState<number | null>(null);
   const [fromDate, setFromDate] = useState<Value>(new Date());
   const [untilDate, setUntilDate] = useState<Value>(new Date());
-  const [category, setCategory] = useState<string>("SUVElectric");
+  const [type, setType] = useState<string>("SUVElectric");
   const [openPicker, setOpenPicker] = useState<"from" | "until" | null>(null);
 
   const {
@@ -184,7 +185,7 @@ const BookingSearchBar = () => {
       longitude: longitude ? String(longitude) : "",
       fromDate: formatDate(fromDate),
       untilDate: formatDate(untilDate),
-      category,
+     type,
     };
 
     const queryParams = new URLSearchParams();
@@ -203,28 +204,15 @@ const BookingSearchBar = () => {
   const inputDisplayClasses =
     "w-full text-left bg-transparent border-none focus:ring-0 p-0 font-semibold text-[#98A2B3] placeholder-gray-500 text-xs sm:text-sm cursor-pointer";
   const columnPadding = "p-4 lg:py-2 lg:px-5 border-[#98A2B3]";
-  const bookingTypeOptions = [
-    "AN_HOUR",
-    "THREE_HOURS",
-    "SIX_HOURS",
-    "TWELVE_HOURS",
-    "AIRPORT_PICKUP",
-  ];
-  const allCategoryOptions = [
-    "SUV",
-    "Sedan",
-    "SedanElectric",
-    "SUVElectric",
-    "MidsizeSUV",
-    "Bus",
-  ];
+ 
+
 
   const getFilteredCategories = (type: string) => {
     const hourlyElectricOnly = ["AN_HOUR", "THREE_HOURS", "SIX_HOURS"];
     if (hourlyElectricOnly.includes(type)) {
       return ["SUVElectric", "SedanElectric"];
     }
-    return allCategoryOptions;
+    return vehicleTypeArray;
   };
 
   const filteredCategoryOptions = useMemo(
@@ -233,10 +221,17 @@ const BookingSearchBar = () => {
   );
 
   useEffect(() => {
-    if (!filteredCategoryOptions.includes(category)) {
-      setCategory(filteredCategoryOptions[0]);
+    if (!filteredCategoryOptions.includes(type)) {
+      setType(filteredCategoryOptions[0]);
     }
-  }, [filteredCategoryOptions, category]);
+  }, [filteredCategoryOptions, type]);
+
+  // Ensure untilDate is never before fromDate
+  useEffect(() => {
+    if (fromDate && untilDate && untilDate < fromDate) {
+      setUntilDate(fromDate);
+    }
+  }, [fromDate, untilDate]);
 
   return (
     <div className="w-full max-w-5xl mx-auto bg-white shadow-lg rounded-2xl lg:rounded-[25px] flex flex-col lg:flex-row items-center p-2 text-left">
@@ -314,7 +309,14 @@ const BookingSearchBar = () => {
           <label className={labelClasses}>Until</label>
           <DatePicker
             value={untilDate}
-            onChange={(val) => setUntilDate(val as Value)}
+            onChange={(val) => {
+              // Ensure untilDate is not before fromDate
+              if (val && fromDate && val < fromDate) {
+                setUntilDate(fromDate);
+              } else {
+                setUntilDate(val as Value);
+              }
+            }}
             isOpen={openPicker === "until"}
             handleIsOpen={(open) => setOpenPicker(open ? "until" : null)}
             minDate={fromDate}
@@ -331,8 +333,8 @@ const BookingSearchBar = () => {
         <CustomDropdown
           label="Category"
           options={filteredCategoryOptions}
-          value={category}
-          onChange={setCategory}
+          value={type}
+          onChange={setType}
           columnClasses="lg:w-[130px] lg:flex-shrink-0"
         />
       </div>

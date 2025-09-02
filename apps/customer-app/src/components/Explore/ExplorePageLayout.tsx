@@ -1,9 +1,10 @@
 "use client";
 
 import cn from "classnames";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import Icons from "@repo/ui/icons";
+import Pagination from "@repo/ui/pagination";
 import ExploreVehicleCard from "./VehicleCard";
 import useExploreListings from "./hooks/useExploreListings";
 import useFavorites from "./hooks/useFavorites";
@@ -35,7 +36,17 @@ type Props = {
   fromTime?: string;
   untilDate?: string;
   untilTime?: string;
-  categoryType?: string;
+};
+
+type FilterState = {
+  minPrice: number;
+  maxPrice: number;
+  type: string[];
+  make: string[];
+  yearOfRelease: string[];
+  numberOfSeats: string[];
+  features: string[];
+  [key: string]: any;
 };
 
 export default function ExplorePageLayout({
@@ -48,7 +59,6 @@ export default function ExplorePageLayout({
   fromTime,
   untilDate,
   untilTime,
-  categoryType,
 }: Props) {
   const { user } = useAppSelector((state) => state.user);
   const { favoriteVehicleIds } = useFavorites();
@@ -58,15 +68,9 @@ export default function ExplorePageLayout({
   const [isDisplayList, setIsDisplayList] = useState<boolean>(true);
   const [showAllFilters, setShowAllFilters] = useState<boolean>(false);
 
-  const [filters, setFilters] = useState<{
-    price: number[];
-    type: string[];
-    make: string[];
-    yearOfRelease: string[];
-    numberOfSeats: string[];
-    features: string[];
-  }>({
-    price: [0, 10000000],
+  const [filters, setFilters] = useState<FilterState>({
+    minPrice: 0,
+    maxPrice: 10000000,
     type: [],
     make: [],
     yearOfRelease: [],
@@ -88,7 +92,7 @@ export default function ExplorePageLayout({
     untilTime ? new Date(untilTime) : null
   );
 
-  const { listings, totalCount, isError, isLoading } = useExploreListings({
+  const { listings, totalCount, totalPages, page, limit, isError, isLoading } = useExploreListings({
     currentPage,
     pageLimit,
     filters,
@@ -97,7 +101,6 @@ export default function ExplorePageLayout({
     fromDate: fromDateValue?.toISOString(),
     untilDate: untilDateValue?.toISOString(),
     location,
-    categoryType, // Pass category type to the hook
   });
 
   console.log("Listings:", listings);
@@ -113,30 +116,46 @@ export default function ExplorePageLayout({
     setCurrentPage(1);
   }, [filters]);
 
-  const handleFilterChange = (filterName: string, value: string | number[]) => {
-    const processedValue =
-      filterName === "numberOfSeats"
-        ? (value as string).split(" ")[0].replace("+", "")
-        : value;
+  // Create a dependency key that changes when filters change to force refetch
+  const filterKey = useMemo(() => JSON.stringify({
+    ...filters,
+    search: searchValue,
+    fromDate: fromDateValue?.toISOString(),
+    untilDate: untilDateValue?.toISOString(),
+    location,
+  }), [filters, searchValue, fromDateValue, untilDateValue, location]);
 
-    setFilters((prev) => ({
-      ...prev,
-      [filterName]:
-        filterName === "price"
-          ? value
-          : Array.isArray(prev[filterName as keyof typeof prev])
-            ? (prev[filterName as keyof typeof prev] as any[]).includes(
-                processedValue
-              )
-              ? (prev[filterName as keyof typeof prev] as any[]).filter(
-                  (item) => item !== processedValue
+    const handleFilterChange = (filterName: string, value: string | number[] | number) => {
+    setFilters((prev) => {
+      if (filterName === "minPrice" || filterName === "maxPrice") {
+        return {
+          ...prev,
+          [filterName]: value as number,
+        };
+      } else {
+        return {
+          ...prev,
+          [filterName]:
+            Array.isArray(prev[filterName as keyof typeof prev])
+              ? (prev[filterName as keyof typeof prev] as any[]).includes(
+                  value
                 )
-              : [
-                  ...(prev[filterName as keyof typeof prev] as any[]),
-                  processedValue,
-                ]
-            : processedValue,
-    }));
+                ? (prev[filterName as keyof typeof prev] as any[]).filter(
+                    (item) => item !== value
+                )
+                : [
+                    ...(prev[filterName as keyof typeof prev] as any[]),
+                    value,
+                  ]
+              : value,
+        };
+      }
+    });
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchValue(value);
+    setCurrentPage(1); // Reset page to 1 when search value changes
   };
 
   // Function to get valid image URLs from vehicle data
@@ -215,6 +234,18 @@ export default function ExplorePageLayout({
                 </div>
               </div>
             )}
+
+            <div className="max-w-md">
+              <input
+                type="text"
+                name="vehicleSearch"
+                placeholder="Search vehicles..."
+                value={searchValue}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className="w-full px-4 py-2 border border-grey-300 rounded-lg focus:outline-none focus:border-primary-500"
+              />
+            </div>
+
             <div className="flex items-center justify-between gap-3">
               <h5 className="text-sm md:text-h5 3xl:text-h5">
                 {totalCount}+ vehicles available
@@ -233,12 +264,52 @@ export default function ExplorePageLayout({
               filters={filters}
               handleFilterChange={handleFilterChange}
               setShowAllFilters={setShowAllFilters}
+              clearAllFilters={() => {
+                setFilters({
+                  minPrice: 0,
+                  maxPrice: 10000000,
+                  type: [],
+                  make: [],
+                  yearOfRelease: [],
+                  numberOfSeats: [],
+                  features: [],
+                });
+              }}
+              clearIndividualFilter={(filterName: string, value: string) => {
+                setFilters((prev) => {
+                  const newFilters = { ...prev };
+                  if (Array.isArray(newFilters[filterName])) {
+                    newFilters[filterName] = (newFilters[filterName] as string[]).filter(item => item !== value);
+                  }
+                  return newFilters;
+                });
+              }}
             />
           ) : (
             <MainFilters
               filters={filters}
               handleFilterChange={handleFilterChange}
               setShowAllFilters={setShowAllFilters}
+              clearAllFilters={() => {
+                setFilters({
+                  minPrice: 0,
+                  maxPrice: 10000000,
+                  type: [],
+                  make: [],
+                  yearOfRelease: [],
+                  numberOfSeats: [],
+                  features: [],
+                });
+              }}
+              clearIndividualFilter={(filterName: string, value: string) => {
+                setFilters((prev) => {
+                  const newFilters = { ...prev };
+                  if (Array.isArray(newFilters[filterName])) {
+                    newFilters[filterName] = (newFilters[filterName] as string[]).filter(item => item !== value);
+                  }
+                  return newFilters;
+                });
+              }}
             />
           )}
           <div
@@ -252,53 +323,68 @@ export default function ExplorePageLayout({
             ) : isError ? (
               <p>Something went wrong</p>
             ) : listings.length > 0 ? (
-              <div
-                className={cn(
-                  isDisplayList
-                    ? "flex flex-col gap-8"
-                    : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10"
+              <>
+                <div
+                  className={cn(
+                    isDisplayList
+                      ? "flex flex-col gap-8"
+                      : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10"
+                  )}
+                >
+                  {listings.map((vehicle, index) => (
+                    <ExploreVehicleCard
+                      key={index}
+                      vehicleId={vehicle?.id ?? ""}
+                      fromDate={fromDateValue?.toISOString()}
+                      untilDate={untilDateValue?.toISOString()}
+                      fromTime={fromTimeValue?.toISOString()}
+                      untilTime={untilTimeValue?.toISOString()}
+                      showAllFilters={showAllFilters}
+                      isDisplayList={isDisplayList}
+                      name={vehicle?.listingName || "Premium Vehicle"}
+                      type={vehicle?.vehicleType || "Luxury"}
+                      location={vehicle.location || "City"}
+                      dailyPrice={vehicle?.pricing?.dailyRate?.value || 0}
+                      currency={vehicle?.pricing?.dailyRate?.currency || "NGN"}
+                      extraHoursFee={vehicle?.pricing?.extraHoursFee}
+                      vehicleImages={getVehicleImages(vehicle)}
+                      vehicleDetails={
+                        [
+                          {
+                            driverAvailable: vehicle?.tripSettings?.provideDriver
+                              ? "Yes"
+                              : "No",
+                            icon: Icons.ic_driver,
+                          },
+                          {
+                            fuelAvailable: vehicle?.tripSettings?.fuelProvided
+                              ? "Yes"
+                              : "No",
+                            icon: Icons.ic_fuel,
+                          },
+                          {
+                            seats: vehicle?.numberOfSeats?.toString(),
+                            icon: Icons.ic_seat,
+                          },
+                        ] as Array<{ [key: string]: string | JSX.Element }>
+                      }
+                    />
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="mt-8">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalCount={totalCount}
+                      pageLimit={pageLimit}
+                      onPageChange={setCurrentPage}
+                      siblingCount={1}
+                    />
+                  </div>
                 )}
-              >
-                {listings.map((vehicle, index) => (
-                  <ExploreVehicleCard
-                    key={index}
-                    vehicleId={vehicle?.id ?? ""}
-                    fromDate={fromDateValue?.toISOString()}
-                    untilDate={untilDateValue?.toISOString()}
-                    fromTime={fromTimeValue?.toISOString()}
-                    untilTime={untilTimeValue?.toISOString()}
-                    showAllFilters={showAllFilters}
-                    isDisplayList={isDisplayList}
-                    name={vehicle?.listingName || "Premium Vehicle"}
-                    type={vehicle?.vehicleType || "Luxury"}
-                    location={vehicle.location || "City"}
-                    dailyPrice={vehicle?.pricing?.dailyRate?.value || 0}
-                    currency={vehicle?.pricing?.dailyRate?.currency || "NGN"}
-                    extraHoursFee={vehicle?.pricing?.extraHoursFee}
-                    vehicleImages={getVehicleImages(vehicle)}
-                    vehicleDetails={
-                      [
-                        {
-                          driverAvailable: vehicle?.tripSettings?.provideDriver
-                            ? "Yes"
-                            : "No",
-                          icon: Icons.ic_driver,
-                        },
-                        {
-                          fuelAvailable: vehicle?.tripSettings?.fuelProvided
-                            ? "Yes"
-                            : "No",
-                          icon: Icons.ic_fuel,
-                        },
-                        {
-                          seats: vehicle?.numberOfSeats?.toString(),
-                          icon: Icons.ic_seat,
-                        },
-                      ] as Array<{ [key: string]: string | JSX.Element }>
-                    }
-                  />
-                ))}
-              </div>
+              </>
             ) : (
               <EmptyState
                 title="No Listings Found"
