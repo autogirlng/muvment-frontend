@@ -13,7 +13,6 @@ import AllFilters from "@/components/Explore/AllFilters";
 import DesktopNav from "@/components/Navbar/DesktopNav";
 import MobileNav from "@/components/Navbar/MobileNav";
 import BackLink from "@/components/BackLink";
-import BookingSearchBar from "@/components/searchbar-component/SearchBar";
 import NavBookingSearchBar from "@/components/searchbar-component/NavBookingSearchBar";
 import { useAppSelector } from "@/lib/hooks";
 
@@ -70,7 +69,7 @@ const fetchRides = async (
       longitude: params.longitude,
       radius: "250",
       search: params.search,
-      category: params.category,
+      type: params.category,
       bookingType: params.bookingType,
       untilDate: params.untilDate,
       fromDate: params.fromDate,
@@ -118,34 +117,67 @@ function ExplorePageLayout() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const [isDisplayList, setIsDisplayList] = useState<boolean>(true);
+  const [showAllFilters, setShowAllFilters] = useState<boolean>(false);
+
+  type FilterState = {
+    minPrice: number;
+    maxPrice: number;
+    type: string[];
+    make: string[];
+    yearOfRelease: string[];
+    numberOfSeats: string[];
+    features: string[];
+    [key: string]: any; // Add this index signature
+  };
+
+  const initializeFiltersFromUrl = useCallback(() => {
+    const minPriceParam = searchParams.get("minPrice");
+    const maxPriceParam = searchParams.get("maxPrice");
+    
+    const minPrice = minPriceParam ? parseInt(minPriceParam) : 0;
+    const maxPrice = maxPriceParam ? parseInt(maxPriceParam) : 10000000;
+    
+    const type = searchParams.getAll("type");
+    const make = searchParams.getAll("make");
+    const yearOfRelease = searchParams.getAll("yearOfRelease");
+    const numberOfSeats = searchParams.getAll("numberOfSeats");
+    const features = searchParams.getAll("features");
+
+    return {
+      minPrice: isNaN(minPrice) ? 0 : minPrice,
+      maxPrice: isNaN(maxPrice) ? 10000000 : maxPrice,
+      type,
+      make,
+      yearOfRelease,
+      numberOfSeats,
+      features,
+    };
+  }, [searchParams]);
+
+  const [filters, setFilters] = useState<FilterState>(initializeFiltersFromUrl);
+
+  useEffect(() => {
+    setFilters(initializeFiltersFromUrl());
+  }, [searchParams, initializeFiltersFromUrl]);
+
   const fromDate = searchParams.get("fromDate");
   const untilDate = searchParams.get("untilDate");
   const bookingType = searchParams.get("bookingType");
-  const category = searchParams.get("category");
+  const type = searchParams.get("type");
   const search = searchParams.get("location");
   const latitude = searchParams.get("latitude");
   const longitude = searchParams.get("longitude");
-  const price = searchParams.getAll("price");
-  const type = searchParams.getAll("type");
-  const make = searchParams.getAll("make");
-  const yearOfRelease = searchParams.getAll("yearOfRelease");
-  const numberOfSeats = searchParams.getAll("numberOfSeats");
-  const features = searchParams.getAll("features");
 
   const queryKeyParams = {
+    ...filters,
     fromDate,
     untilDate,
     bookingType,
-    category,
+    type,
     search,
     latitude,
     longitude,
-    price,
-    type,
-    make,
-    yearOfRelease,
-    numberOfSeats,
-    features,
   };
 
   const {
@@ -153,50 +185,90 @@ function ExplorePageLayout() {
     isLoading,
     isError,
   } = useQuery<ApiResponse>({
-    queryKey: ["rides", queryKeyParams],
-    queryFn: () => fetchRides(queryKeyParams),
+    queryKey: ["rides", { ...queryKeyParams, minPrice: String(queryKeyParams.minPrice), maxPrice: String(queryKeyParams.maxPrice) }],
+    queryFn: () => fetchRides({
+      ...queryKeyParams,
+      minPrice: String(queryKeyParams.minPrice),
+      maxPrice: String(queryKeyParams.maxPrice),
+    }),
     staleTime: 500,
   });
 
   const listings = apiResponse?.data ?? [];
   const totalCount = apiResponse?.totalCount ?? 0;
 
-  const [isDisplayList, setIsDisplayList] = useState<boolean>(true);
-  const [showAllFilters, setShowAllFilters] = useState<boolean>(false);
+  const clearAllFilters = useCallback(() => {
+    const currentParams = new URLSearchParams(searchParams.toString());
+    
+    // Clear all filter params from URL
+    currentParams.delete("minPrice");
+    currentParams.delete("maxPrice");
+    currentParams.delete("type");
+    currentParams.delete("make");
+    currentParams.delete("yearOfRelease");
+    currentParams.delete("numberOfSeats");
+    currentParams.delete("features");
+    
+    setFilters({
+      minPrice: 0,
+      maxPrice: 10000000,
+      type: [],
+      make: [],
+      yearOfRelease: [],
+      numberOfSeats: [],
+      features: [],
+    });
+    
+    // Update URL
+    router.push(`${pathname}?${currentParams.toString()}`);
+  }, [searchParams, pathname, router]);
 
-  const filters = {
-    price: [Number(price[0] ?? 0), Number(price[1] ?? 10000000)],
-    type,
-    make,
-    yearOfRelease,
-    numberOfSeats,
-    features,
-  };
-
-  useEffect(() => {}, [user]);
+  const clearIndividualFilter = useCallback((filterName: string, value: string) => {
+    const currentParams = new URLSearchParams(searchParams.toString());
+    const newFilters: FilterState = { ...filters };
+    
+    // Remove the specific value from the filter
+    if (Array.isArray(newFilters[filterName])) {
+      newFilters[filterName] = (newFilters[filterName] as string[]).filter(item => item !== value);
+    }
+    
+    // Update URL params
+    const allValues = currentParams.getAll(filterName);
+    const newValues = allValues.filter(v => v !== value);
+    currentParams.delete(filterName);
+    newValues.forEach(v => currentParams.append(filterName, v));
+    
+    setFilters(newFilters);
+    router.push(`${pathname}?${currentParams.toString()}`);
+  }, [filters, searchParams, pathname, router]);
 
   const handleFilterChange = useCallback(
-    (filterName: string, value: string | number[]) => {
-      const currentParams = new URLSearchParams(
-        Array.from(searchParams.entries())
-      );
+    (filterName: string, value: string | number[] | number) => {
+      const currentParams = new URLSearchParams(searchParams.toString());
+      const newFilters: FilterState = { ...filters };
 
-      if (Array.isArray(value)) {
-        currentParams.delete(filterName);
-        value.forEach((v) => currentParams.append(filterName, String(v)));
+      if (filterName === "minPrice" || filterName === "maxPrice") {
+        const numericValue = typeof value === 'number' ? value : parseInt(String(value));
+        const validValue = isNaN(numericValue) ? (filterName === "minPrice" ? 0 : 10000000) : numericValue;
+        newFilters[filterName] = validValue;
+        currentParams.set(filterName, String(validValue));
       } else {
         const allValues = currentParams.getAll(filterName);
-        if (allValues.includes(value)) {
+        if (allValues.includes(value as string)) {
           const newValues = allValues.filter((v) => v !== value);
           currentParams.delete(filterName);
           newValues.forEach((v) => currentParams.append(filterName, v));
+          newFilters[filterName] = newValues;
         } else {
-          currentParams.append(filterName, value);
+          currentParams.append(filterName, value as string);
+          newFilters[filterName] = [...(newFilters[filterName] || []), value as string];
         }
       }
+
+      setFilters(newFilters);
       router.push(`${pathname}?${currentParams.toString()}`);
     },
-    [searchParams, pathname, router]
+    [filters, searchParams, pathname, router]
   );
 
   const getVehicleImages = (vehicle: Vehicle) => {
@@ -262,12 +334,16 @@ function ExplorePageLayout() {
               filters={filters}
               handleFilterChange={handleFilterChange}
               setShowAllFilters={setShowAllFilters}
+              clearAllFilters={clearAllFilters}
+              clearIndividualFilter={clearIndividualFilter}
             />
           ) : (
             <MainFilters
               filters={filters}
               handleFilterChange={handleFilterChange}
               setShowAllFilters={setShowAllFilters}
+              clearAllFilters={clearAllFilters}
+              clearIndividualFilter={clearIndividualFilter}
             />
           )}
 

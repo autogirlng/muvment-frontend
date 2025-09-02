@@ -232,7 +232,8 @@ function ExplorePageLayout() {
   const [showAllFilters, setShowAllFilters] = useState<boolean>(false);
 
   const filters = {
-    price: [Number(price[0] ?? 0), Number(price[1] ?? 10000000)],
+    minPrice: Number(price[0] ?? 0),
+    maxPrice: Number(price[1] ?? 10000000),
     type,
     make,
     yearOfRelease,
@@ -243,7 +244,7 @@ function ExplorePageLayout() {
   useEffect(() => {}, [user]);
 
   const handleFilterChange = useCallback(
-    (filterName: string, value: string | number[]) => {
+    (filterName: string, value: string | number | number[]) => {
       const currentParams = new URLSearchParams(
         Array.from(searchParams.entries())
       );
@@ -253,18 +254,39 @@ function ExplorePageLayout() {
         value.forEach((v) => currentParams.append(filterName, String(v)));
       } else {
         const allValues = currentParams.getAll(filterName);
-        if (allValues.includes(value)) {
-          const newValues = allValues.filter((v) => v !== value);
+        if (allValues.includes(String(value))) {
+          const newValues = allValues.filter((v) => v !== String(value));
           currentParams.delete(filterName);
           newValues.forEach((v) => currentParams.append(filterName, v));
         } else {
-          currentParams.append(filterName, value);
+          currentParams.append(filterName, String(value));
         }
       }
       router.push(`${pathname}?${currentParams.toString()}`);
     },
     [searchParams, pathname, router]
   );
+
+  const clearAllFilters = useCallback(() => {
+    const currentParams = new URLSearchParams();
+    // Keep only essential params like dates and location
+    if (fromDate) currentParams.set("fromDate", fromDate);
+    if (untilDate) currentParams.set("untilDate", untilDate);
+    if (bookingType) currentParams.set("bookingType", bookingType);
+    if (city) currentParams.set("city", city);
+    router.push(`${pathname}?${currentParams.toString()}`);
+  }, [fromDate, untilDate, bookingType, city, pathname, router]);
+
+  const clearIndividualFilter = useCallback((filterName: string, value: string) => {
+    const currentParams = new URLSearchParams(
+      Array.from(searchParams.entries())
+    );
+    const allValues = currentParams.getAll(filterName);
+    const newValues = allValues.filter((v) => v !== value);
+    currentParams.delete(filterName);
+    newValues.forEach((v) => currentParams.append(filterName, v));
+    router.push(`${pathname}?${currentParams.toString()}`);
+  }, [searchParams, pathname, router]);
 
   const getVehicleImages = (vehicle: Vehicle) => {
     if (!vehicle.VehicleImage) return placeholderImages;
@@ -329,12 +351,16 @@ function ExplorePageLayout() {
               filters={filters}
               handleFilterChange={handleFilterChange}
               setShowAllFilters={setShowAllFilters}
+              clearAllFilters={clearAllFilters}
+              clearIndividualFilter={clearIndividualFilter}
             />
           ) : (
             <MainFilters
               filters={filters}
               handleFilterChange={handleFilterChange}
               setShowAllFilters={setShowAllFilters}
+              clearAllFilters={clearAllFilters}
+              clearIndividualFilter={clearIndividualFilter}
             />
           )}
 

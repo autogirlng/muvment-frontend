@@ -18,21 +18,26 @@ import { HorizontalDivider } from "@repo/ui/divider";
 
 type Props = {
   filters: {
-    price: number[];
+    minPrice: number;
+    maxPrice: number;
     type: string[];
     make: string[];
     yearOfRelease: string[];
     numberOfSeats: string[];
     features: string[];
   };
-  handleFilterChange: (filterName: string, value: string | number[]) => void;
+  handleFilterChange: (filterName: string, value: string | number[] | number) => void;
   setShowAllFilters: Dispatch<SetStateAction<boolean>>;
+  clearAllFilters: () => void;
+  clearIndividualFilter: (filterName: string, value: string) => void;
 };
 
 export default function AllFilters({
   handleFilterChange,
   setShowAllFilters,
   filters,
+  clearAllFilters,
+  clearIndividualFilter,
 }: Props) {
   return (
     <div
@@ -47,15 +52,30 @@ export default function AllFilters({
         {Icons.ic_chevron_left} <span>Hide filters</span>
       </button>
 
-      <h5>Filters</h5>
+      <div className="flex items-center justify-between">
+        <h5>Filters</h5>
+        <button
+          onClick={clearAllFilters}
+          className="bg-red-50 border border-red-300 rounded-lg px-3 py-2 flex items-center gap-2 text-red-600 text-xs 3xl:text-sm !font-semibold hover:bg-red-100 transition-colors"
+        >
+          {Icons.ic_close_circle}
+          <span>Clear all</span>
+        </button>
+      </div>
 
       <HorizontalDivider className="!bg-grey-300" />
 
       <RangeFilterWithoutPopup
-        name="Prince Range"
+        name="Price Range"
         filterName="price"
-        onChange={handleFilterChange}
-        selectedItems={filters.price}
+        onChange={(filterName, value) => {
+          // Convert the price array to minPrice and maxPrice
+          if (Array.isArray(value) && value.length === 2) {
+            handleFilterChange("minPrice", value[0]);
+            handleFilterChange("maxPrice", value[1]);
+          }
+        }}
+        selectedItems={[filters.minPrice, filters.maxPrice]}
       />
 
       <HorizontalDivider className="!bg-grey-300" />
@@ -66,6 +86,7 @@ export default function AllFilters({
         filterName="type"
         onChange={handleFilterChange}
         selectedItems={filters.type}
+        onClearIndividual={clearIndividualFilter}
       />
 
       <HorizontalDivider className="!bg-grey-300" />
@@ -76,6 +97,7 @@ export default function AllFilters({
         filterName="make"
         onChange={handleFilterChange}
         selectedItems={filters.make}
+        onClearIndividual={clearIndividualFilter}
       />
 
       <HorizontalDivider className="!bg-grey-300" />
@@ -86,16 +108,25 @@ export default function AllFilters({
         filterName="yearOfRelease"
         onChange={handleFilterChange}
         selectedItems={filters.yearOfRelease}
+        onClearIndividual={clearIndividualFilter}
       />
 
       <HorizontalDivider className="!bg-grey-300" />
 
       <ChipFilterWithoutPopup
         name="Number Of Seats"
-        list={["2+", "3+", "4+", "5+", "6+", "7+"]}
+        list={[
+          "2 seater",
+          "3 seater",
+          "4 seater",
+          "5 seater",
+          "6 seater",
+          "7+ seater",
+        ]}
         filterName="numberOfSeats"
         onChange={handleFilterChange}
         selectedItems={filters.numberOfSeats}
+        onClearIndividual={clearIndividualFilter}
       />
 
       <HorizontalDivider className="!bg-grey-300" />
@@ -106,6 +137,7 @@ export default function AllFilters({
         filterName="features"
         onChange={handleFilterChange}
         selectedItems={filters.features}
+        onClearIndividual={clearIndividualFilter}
       />
     </div>
   );
