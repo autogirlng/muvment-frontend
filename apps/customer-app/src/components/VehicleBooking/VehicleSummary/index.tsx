@@ -1,6 +1,6 @@
 import cn from "classnames";
 import Link from "next/link";
-import { formatNumberWithCommas } from "@/utils/functions";
+import { formatNumberWithCommas, evaluateEndAndStartDate } from "@/utils/functions";
 import {
   MappedInformation,
   VehicleInformation,
@@ -11,11 +11,15 @@ import Button from "@repo/ui/button";
 import VehicleDetails from "./VehicleDetails";
 import { useRouter } from "next/navigation";
 import { TripPerDaySelect } from "./TripPerDaySelect";
-import { toTitleCase } from "@/utils/functions";
 import { useItineraryForm } from "@/hooks/useItineraryForm";
 import { BlurredDialog } from "@repo/ui/dialog";
 import { useAppSelector } from "@/lib/hooks";
 import { BookingCostBreakdown } from "./BookingCostBreakdown";
+import { useHttp } from "@/hooks/useHttp";
+
+import { toast } from "react-toastify";
+
+
 
 type Props = {
   vehicle: VehicleInformation | null;
@@ -51,6 +55,64 @@ export default function VehicleSummary({
   }, [])
   const [openBookRideModal, setBookRideModal] = useState<boolean>(false);
   const handleOpenBookRideModal = () => setBookRideModal(!openBookRideModal);
+
+  const [loadingBooking, setLoadingBookings] = useState<boolean>(false)
+  const http = useHttp();
+
+
+  const handleNext = async () => {
+    setLoadingBookings(true)
+    interface VehicleChecks {
+      vehicleId: string;
+      startDate: string;
+      endDate: string;
+    }
+    interface VehicleCheckResponse {
+      tripAvailable: boolean;
+      vehicleAvailability: {
+        vehicleId: string;
+        startDate: string;
+        endDate: string;
+        isAvailable: boolean;
+      }[]
+    }
+
+    const vehicleChecks: VehicleChecks[] = [];
+
+    for (let trip of trips) {
+      const tripDetails = trip.tripDetails
+      if (tripDetails) {
+        const { startDateTime, endDateTime } = evaluateEndAndStartDate(tripDetails)
+        vehicleChecks.push({ vehicleId: vehicle?.id || "", startDate: startDateTime, endDate: endDateTime })
+      }
+    }
+
+    try {
+      const vehicleCheckResponse = await http.post<VehicleCheckResponse>("/api/bookings/check-multiple-availability", {
+        vehicleChecks
+      })
+      if (!vehicleCheckResponse.tripAvailable) {
+        let trips: number[] = [];
+        for (let i = 0; i < vehicleCheckResponse.vehicleAvailability.length; i++) {
+          if (!vehicleCheckResponse.vehicleAvailability[i].isAvailable) {
+            trips.push(i + 1)
+          }
+        }
+        toast.error(`Trip ${trips.join(",")} are not available for specified time. Please modify`)
+
+      } else {
+        router.push(`/vehicle/booking/${vehicle?.id}`)
+      }
+
+
+    } catch (error) {
+      console.log(error)
+    }
+    finally {
+      setLoadingBookings(false)
+    }
+
+  }
 
 
   return (
@@ -153,10 +215,11 @@ export default function VehicleSummary({
             {user ? <Button
               color="primary"
               fullWidth
+              loading={loadingBooking}
               disabled={
                 !isTripFormsComplete
               }
-              onClick={() => router.push(`/vehicle/booking/${vehicle?.id}`)}
+              onClick={handleNext}
             >
               Book Ride
             </Button> : <BlurredDialog
@@ -169,6 +232,7 @@ export default function VehicleSummary({
                   disabled={
                     !isTripFormsComplete
                   }
+                  loading={loadingBooking}
                 >
                   Book Ride
                 </Button>

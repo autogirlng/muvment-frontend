@@ -13,9 +13,10 @@ export const useItineraryForm = (vehicle:VehicleInformation | null) => {
       const [bookingPriceBreakdown, setBookingPriceBreakdown] = useState<BookingSummaryPricing | undefined>();
       const [trips, setTrips] = useState<Trips[]>([])
       const outskirtTrips = useRef<string[]>([])
-      const extremeTrips = useRef<string[]>([])
+      const extremeTrips = useRef<string[]>([])  
 
-const [openTripIds, setOpenTripIds] = useState<Set<string>>(new Set());
+      const [openTripIds, setOpenTripIds] = useState<Set<string>>(() => {  const allIds = trips.map(trip => trip.id);
+  return new Set(allIds);});
       const [isTripFormsComplete, setIsTripFormComplete] = useState<boolean>(false)
 
   const toggleOpen = (id: string) => {
@@ -53,10 +54,8 @@ const [openTripIds, setOpenTripIds] = useState<Set<string>>(new Set());
         let extremeAreaTripIds:string[] = [];
 
         updatedTrips.forEach((trip) => {
-          
           trip.bookingType && bookingTypes.push(trip.bookingType)
           const area = trip.areaOfUse?.split("_")
-
           if(area && area[area?.length - 1] === "OUTSKIRT"){
               outskirtsTripIds.push(trip.id || "")
           }
@@ -100,8 +99,6 @@ const [openTripIds, setOpenTripIds] = useState<Set<string>>(new Set());
 
   const activeTrip = updatedTrips.find(trip => trip.id === id)?.tripDetails
  
-  
-
   const areaOfUseBreakdown = activeTrip?.areaOfUse?.split("_");
   const isOutskirt = areaOfUseBreakdown && areaOfUseBreakdown[areaOfUseBreakdown.length - 1] === "OUTSKIRT";
   const isExtreme = areaOfUseBreakdown && 
