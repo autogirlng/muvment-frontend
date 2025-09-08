@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { format } from "date-fns";
 import useBookings from "./hooks/useBookings";
 import { FullPageSpinner } from "@repo/ui/spinner";
+import { NewBookingType } from "@/utils/types";
 
 type Props = {
   filters?: Record<string, string[]>;
@@ -15,12 +16,7 @@ interface Booking {
   startDate: string;
   endDate: string;
   duration: number;
-  bookingType:
-    | "AN_HOUR"
-    | "THREE_HOURS"
-    | "SIX_HOURS"
-    | "TWELVE_HOURS"
-    | "AIRPORT_PICKUP";
+  bookingType: NewBookingType;
   amount: number;
   paymentStatus: string;
   paymentMethod: string;

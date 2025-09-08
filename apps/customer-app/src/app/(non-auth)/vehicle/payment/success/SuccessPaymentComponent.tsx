@@ -11,7 +11,7 @@ import Image from "next/image";
 import BackLink from "@/components/BackLink";
 import Link from "next/link";
 import { formatNumberWithCommas } from "@/utils/functions";
-import { TransactionStatus } from "@/utils/types";
+import { TransactionStatus, MultipleBookingInformation, VehicleInformation } from "@/utils/types";
 import { format } from "date-fns";
 import { FullPageSpinner } from "@repo/ui/spinner";
 import useFetchVehicleById from "@/components/VehicleBooking/hooks/useFetchVehicleById";
@@ -22,7 +22,6 @@ import { useHttp } from "@/hooks/useHttp";
 import { ReactNode } from "react";
 import { toTitleCase } from "@/utils/functions";
 import Icons from "@repo/ui/icons";
-
 import cn from "classnames";
 
 const TripInfoWrapper = ({
@@ -68,171 +67,128 @@ const DurationDetails = ({
     </div>
   );
 };
-export interface BookingInformation {
-  id: string;
-  startDate: string;
-  endDate: string;
-  duration: number;
-  bookingType: "TWELVE_HOURS" | "AN_HOUR" | "DAILY" | string; // extend as needed
-  amount: number;
-  paymentStatus: "PENDING" | "PAID" | "FAILED" | string;
-  paymentMethod: "CARD" | "BANK_TRANSFER" | "CASH" | string;
-  rentalAgreement: string | null;
-  bookingStatus: "PENDING" | "CONFIRMED" | "CANCELLED" | string;
-  isForSelf: boolean;
-  guestName: string;
-  guestEmail: string;
-  guestPhoneNumber: string;
-  pickupLocation: string;
-  dropoffLocation: string;
-  emergencyContact: string;
-  userEmail: string | null;
-  userPhoneNumber: string | null;
-  userCountry: string | null;
-  countryCode: string | null;
-  specialInstructions: string;
-  paymentLink: string;
-  outskirtsLocation: string[];
-  extremeAreasLocation: string[];
-  areaOfUse: string;
-  extraDetails: string;
-  purposeOfRide: string;
-  tripPurpose: string;
-  secondaryPhoneNumber: string | null;
-  currencyCode: string;
-  vehicleId: string;
-  userId: string;
-  hostId: string;
-  numberOfExtraHours: number;
-  version: number;
-  createdAt: string;
-  updatedAt: string;
-  bookingGroupId: string;
-  vehicle: Vehicle;
-  user: User;
-}
 
-export interface Vehicle {
-  pricing: VehiclePricing;
-  tripSettings: TripSettings;
-  id: string;
-  listingName: string;
-  location: string;
-  address: string;
-  vehicleType: string;
-  make: string;
-  model: string;
-  yearOfRelease: string;
-  hasTracker: boolean;
-  hasInsurance: boolean;
-  licensePlateNumber: string;
-  vehicleColor: string;
-  stateOfRegistration: string;
-  vehicleDescription: string;
-  numberOfSeats: number;
-  longitude: number | null;
-  latitude: number | null;
-  status: string;
-  vehicleStatus: string;
-  rejectionReason: string | null;
-  userId: string;
-  vehicleCurrency: string;
-  isActive: boolean;
-  areYouVehicleOwner: boolean;
-  vehicleIdentifier: string;
-  isReserved: boolean;
-  reservationExpiresAt: string;
-  unavailableFrom: string | null;
-  unavailableUntil: string | null;
-  features: string[];
-  outskirtsLocation: string[];
-  outskirtsPrice: number | null;
-  extremeAreasLocation: string[];
-  extremeAreaPrice: number | null;
-  isTopRate: boolean;
-  createdAt: string;
-  updatedAt: string;
-  VehicleImage: VehicleImage;
-}
+// export interface Vehicle {
+//   pricing: VehiclePricing;
+//   tripSettings: TripSettings;
+//   id: string;
+//   listingName: string;
+//   location: string;
+//   address: string;
+//   vehicleType: string;
+//   make: string;
+//   model: string;
+//   yearOfRelease: string;
+//   hasTracker: boolean;
+//   hasInsurance: boolean;
+//   licensePlateNumber: string;
+//   vehicleColor: string;
+//   stateOfRegistration: string;
+//   vehicleDescription: string;
+//   numberOfSeats: number;
+//   longitude: number | null;
+//   latitude: number | null;
+//   status: string;
+//   vehicleStatus: string;
+//   rejectionReason: string | null;
+//   userId: string;
+//   vehicleCurrency: string;
+//   isActive: boolean;
+//   areYouVehicleOwner: boolean;
+//   vehicleIdentifier: string;
+//   isReserved: boolean;
+//   reservationExpiresAt: string;
+//   unavailableFrom: string | null;
+//   unavailableUntil: string | null;
+//   features: string[];
+//   outskirtsLocation: string[];
+//   outskirtsPrice: number | null;
+//   extremeAreasLocation: string[];
+//   extremeAreaPrice: number | null;
+//   isTopRate: boolean;
+//   createdAt: string;
+//   updatedAt: string;
+//   VehicleImage: VehicleImage;
+// }
 
-export interface VehiclePricing {
-  dailyRate: {
-    value: number;
-    currency: string | null;
-    unit: string;
-  };
-  extraHoursFee: number;
-  airportPickupFee: number;
-  hourlyRate: number | null;
-  discounts: Discount[];
-  bookingTypePrices: any[]; // refine if needed
-}
+// export interface VehiclePricing {
+//   dailyRate: {
+//     value: number;
+//     currency: string | null;
+//     unit: string;
+//   };
+//   extraHoursFee: number;
+//   airportPickupFee: number;
+//   hourlyRate: number | null;
+//   discounts: Discount[];
+//   bookingTypePrices: any[]; 
+// }
 
-export interface Discount {
-  durationInDays: number;
-  percentage: number;
-}
+// export interface Discount {
+//   durationInDays: number;
+//   percentage: number;
+// }
 
-export interface TripSettings {
-  advanceNotice: string;
-  maxTripDuration: string;
-  provideDriver: boolean;
-  fuelProvided: boolean;
-}
+// export interface TripSettings {
+//   advanceNotice: string;
+//   maxTripDuration: string;
+//   provideDriver: boolean;
+//   fuelProvided: boolean;
+// }
 
-export interface VehicleImage {
-  id: string;
-  frontView: string;
-  backView: string;
-  sideView1: string;
-  sideView2: string;
-  interior: string;
-  other: string;
-  vehicleId: string;
-  createdAt: string;
-  updatedAt: string;
-}
+// export interface VehicleImage {
+//   id: string;
+//   frontView: string;
+//   backView: string;
+//   sideView1: string;
+//   sideView2: string;
+//   interior: string;
+//   other: string;
+//   vehicleId: string;
+//   createdAt: string;
+//   updatedAt: string;
+// }
 
-export interface User {
-  id: string;
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  dob: string | null;
-  profileImage: string | null;
-  countryCode: string;
-  country: string;
-  emailConfirmed: boolean;
-  otp: string | null;
-  passwordOtp: string | null;
-  phoneNumber: string;
-  isActive: boolean;
-  phoneVerified: boolean;
-  bvnVerified: boolean;
-  withdrawalAccountVerified: boolean;
-  bio: string | null;
-  city: string | null;
-  cities: string[];
-  userRole: "CUSTOMER" | "ADMIN" | string;
-  isBusiness: boolean;
-  businessLogo: string | null;
-  businessName: string | null;
-  businessAddress: string | null;
-  businessPhoneNumber: string | null;
-  businessEmail: string | null;
-  createdAt: string;
-  updatedAt: string;
-  referralCode: string;
-  referredBy: string | null;
-  referralBalance: number;
-  onBoardedBy: string | null;
-  mouDocument: string | null;
-  lastLogin: string | null;
-  isDeleted: boolean;
-  blockedReason: string | null;
-  teamId: string | null;
-}
+// export interface User {
+//   id: string;
+//   email: string;
+//   password: string;
+//   firstName: string;
+//   lastName: string;
+//   dob: string | null;
+//   profileImage: string | null;
+//   countryCode: string;
+//   country: string;
+//   emailConfirmed: boolean;
+//   otp: string | null;
+//   passwordOtp: string | null;
+//   phoneNumber: string;
+//   isActive: boolean;
+//   phoneVerified: boolean;
+//   bvnVerified: boolean;
+//   withdrawalAccountVerified: boolean;
+//   bio: string | null;
+//   city: string | null;
+//   cities: string[];
+//   userRole: "CUSTOMER" | "ADMIN" | string;
+//   isBusiness: boolean;
+//   businessLogo: string | null;
+//   businessName: string | null;
+//   businessAddress: string | null;
+//   businessPhoneNumber: string | null;
+//   businessEmail: string | null;
+//   createdAt: string;
+//   updatedAt: string;
+//   referralCode: string;
+//   referredBy: string | null;
+//   referralBalance: number;
+//   onBoardedBy: string | null;
+//   mouDocument: string | null;
+//   lastLogin: string | null;
+//   isDeleted: boolean;
+//   blockedReason: string | null;
+//   teamId: string | null;
+// }
 
 
 const SuccessPaymentComponent = () => {
@@ -285,7 +241,7 @@ const SuccessPaymentComponent = () => {
     queryKey: ["getBookingById", bookingId],
 
     queryFn: async () =>
-      await http.get<BookingInformation[]>(`/api/bookings/group/${bookingId}`),
+      await http.get<MultipleBookingInformation[]>(`/api/bookings/group/${bookingId}`),
     enabled: !!bookingId,
     retry: false
 
@@ -293,8 +249,7 @@ const SuccessPaymentComponent = () => {
 
 
 
-  console.log(vehicleId)
-  console.log(bookingId)
+
   //Show loading state while getting IDs from localStorage
   if (!vehicleId || !bookingId) {
     return <FullPageSpinner className="!min-h-screen" />;
@@ -497,19 +452,7 @@ const SuccessPaymentComponent = () => {
                 </p>
               </div>
               <div className="space-y-3 sm:space-y-4">
-                {/* <Button
-                  variant="outlined"
-                  rounded="full"
-                  fullWidth
-                  className="h-12 sm:h-14 text-base sm:text-lg font-semibold transition-colors duration-200 hover:text-primary-500"
-                  onClick={() => {
-                    localStorage.removeItem("vehicleId");
-                    localStorage.removeItem("bookingId");
-                    localStorage.removeItem("bookingInformation");
-                  }}
-                >
-                  Cancel Booking
-                </Button> */}
+
                 <Link
                   href={
                     userLoggedIn
