@@ -298,7 +298,13 @@ export enum NewBookingType {
   THREE_HOURS = "THREE_HOURS",
   SIX_HOURS = "SIX_HOURS",
   TWELVE_HOURS = "TWELVE_HOURS",
+  TWENTY_FOUR_HOURS="TWENTY_FOUR_HOURS",
   AIRPORT_PICKUP = "AIRPORT_PICKUP",
+}
+
+export enum PaymentGateway {
+  MONNIFY = "MONNIFY", 
+  PAYSTACK = "PAYSTACK"
 }
 
 export enum TransactionType {
@@ -481,7 +487,6 @@ export interface UserReferrals {
   status: "PENDING" | "JOINED";
   id: string;
 }
-
 export interface BookingInformation {
   id: string;
   startDate: string;
@@ -512,6 +517,52 @@ export interface BookingInformation {
   outskirtsLocation: string[];
   purposeOfRide: string;
 }
+
+
+export interface MultipleBookingInformation  {
+    id: string;
+    startDate: string;
+    endDate: string;
+    duration: number;
+    bookingType: NewBookingType;
+    amount: number;
+    paymentStatus: TransactionStatus;
+    paymentMethod: "CARD" | "BANK_TRANSFER" | "CASH";
+    rentalAgreement: string | null;
+    bookingStatus: BookingBadgeStatus;
+    isForSelf: boolean;
+    guestName: string;
+    guestEmail: string;
+    guestPhoneNumber: string;
+    pickupLocation: string;
+    dropoffLocation: string;
+    emergencyContact: string;
+    userEmail: string | null;
+    userPhoneNumber: string | null;
+    userCountry: string | null;
+    countryCode: string | null;
+    specialInstructions: string;
+    paymentLink: string;
+    outskirtsLocation: string[];
+    extremeAreasLocation: string[];
+    areaOfUse: string;
+    extraDetails: string;
+    purposeOfRide: string;
+    tripPurpose: string;
+    secondaryPhoneNumber: string | null;
+    currencyCode: string;
+    vehicleId: string;
+    userId: string;
+    hostId: string;
+    numberOfExtraHours: number;
+    version: number;
+    createdAt: string;
+    updatedAt: string;
+    bookingGroupId: string;
+    vehicle: VehicleInformation;
+    user: User;
+}
+
 export interface VehicleInformation {
   availabilityAndPricing: any;
   id?: string;
@@ -935,3 +986,18 @@ export type CostBreakdownProps = {
   vehicle: VehicleInformation | null;
   type: "guest" | "user";
 };
+
+export  interface VehicleChecks {
+      vehicleId: string;
+      startDate: string;
+      endDate: string;
+    }
+export interface VehicleCheckResponse {
+      tripAvailable: boolean;
+      vehicleAvailability: {
+        vehicleId: string;
+        startDate: string;
+        endDate: string;
+        isAvailable: boolean;
+      }[]
+    }

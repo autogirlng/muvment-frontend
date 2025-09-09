@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import { ErrorResponse, NotificationType, User } from "@/utils/types";
+import { ErrorResponse, NewBookingType, NotificationType, TripDetails, User } from "@/utils/types";
 
 import {
   lowercaseRegex,
@@ -13,7 +13,7 @@ import {
 import { daysOfTheWeek } from "./data";
 import Icons from "@repo/ui/icons";
 import { useSearchParams } from "next/navigation";
-import { formatDistanceStrict } from "date-fns";
+import { formatDistanceStrict, format, addHours } from "date-fns";
 
 export const isLengthValid = (password: string): boolean => {
   const isLengthValid = password.length >= 8;
@@ -591,4 +591,36 @@ export function toTitleCase(str: string): string {
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
 
+}
+
+export const evaluateEndAndStartDate = (tripDetails:TripDetails ) => {
+    const date = new Date(tripDetails.tripStartDate || '')
+        const startDate = format(date, "yyyy-MM-dd")
+        const time = new Date(tripDetails.tripStartTime || '')
+        const startTime = time.toISOString().split("T")[1]
+        const startDateTime = new Date(`${startDate}T${startTime}`)
+        let endDateTime: Date;
+        switch (tripDetails.bookingType) {
+          case NewBookingType.AN_HOUR:
+            endDateTime = addHours(startDateTime, 1);
+            break;
+          case NewBookingType.THREE_HOURS:
+            endDateTime = addHours(startDateTime, 3);
+            break;
+          case NewBookingType.SIX_HOURS:
+            endDateTime = addHours(startDateTime, 6);
+            break;
+          case NewBookingType.TWELVE_HOURS:
+            endDateTime = addHours(startDateTime, 12);
+            break;
+          case NewBookingType.TWENTY_FOUR_HOURS:
+            endDateTime = addHours(startDateTime, 24);
+            break;
+          case NewBookingType.AIRPORT_PICKUP:
+            endDateTime = addHours(startDateTime, 3);
+            break;
+          default:
+            endDateTime = time;
+        }
+        return {startDateTime:startDateTime.toISOString(), endDateTime:endDateTime.toISOString()}
 }
