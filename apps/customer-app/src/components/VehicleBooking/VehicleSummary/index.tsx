@@ -4,7 +4,9 @@ import { formatNumberWithCommas, evaluateEndAndStartDate } from "@/utils/functio
 import {
   MappedInformation,
   VehicleInformation,
-  VehiclePerksProp
+  VehiclePerksProp,
+  VehicleChecks,
+  VehicleCheckResponse
 } from "@/utils/types";
 import React, { useState, useEffect } from "react";
 import Button from "@repo/ui/button";
@@ -62,20 +64,7 @@ export default function VehicleSummary({
 
   const handleNext = async () => {
     setLoadingBookings(true)
-    interface VehicleChecks {
-      vehicleId: string;
-      startDate: string;
-      endDate: string;
-    }
-    interface VehicleCheckResponse {
-      tripAvailable: boolean;
-      vehicleAvailability: {
-        vehicleId: string;
-        startDate: string;
-        endDate: string;
-        isAvailable: boolean;
-      }[]
-    }
+
 
     const vehicleChecks: VehicleChecks[] = [];
 

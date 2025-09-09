@@ -172,6 +172,9 @@ const TripPerDaySelect = ({ day, deleteMethod, id, onChangeTrip, vehicle, initia
                 else if (bookType.type === NewBookingType.TWELVE_HOURS) {
                     bookingOptions.push({ option: "12 Hour", value: bookType.type })
                 }
+                else if (bookType.type === NewBookingType.TWENTY_FOUR_HOURS) {
+                    bookingOptions.push({ option: "24 Hour", value: bookType.type })
+                }
 
                 else {
                     bookingOptions.push({ option: bookType.type.replaceAll("_", " "), value: bookType.type })

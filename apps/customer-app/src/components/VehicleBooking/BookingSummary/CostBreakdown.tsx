@@ -237,7 +237,7 @@ const CostBreakdown = ({ vehicle, type }: CostBreakdownProps) => {
             </div>
         }
 
-        <Button
+        {/* <Button
           color="primary"
           rounded="full"
           fullWidth
@@ -246,7 +246,7 @@ const CostBreakdown = ({ vehicle, type }: CostBreakdownProps) => {
           disabled={!bookingPriceSummary}
         >
           Book Now(Paystack)
-        </Button>
+        </Button> */}
 
         <Button
           color="primary"
