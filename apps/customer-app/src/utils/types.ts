@@ -986,3 +986,18 @@ export type CostBreakdownProps = {
   vehicle: VehicleInformation | null;
   type: "guest" | "user";
 };
+
+export  interface VehicleChecks {
+      vehicleId: string;
+      startDate: string;
+      endDate: string;
+    }
+export interface VehicleCheckResponse {
+      tripAvailable: boolean;
+      vehicleAvailability: {
+        vehicleId: string;
+        startDate: string;
+        endDate: string;
+        isAvailable: boolean;
+      }[]
+    }
