@@ -112,59 +112,36 @@ interface ApiResponse {
 // --- Updated fetchRides function ---
 
 const fetchRides = async (
-  params: Record<string, string | null | string[]>
+  // Note: Added 'number' to the type to properly handle values like minPrice/maxPrice
+  params: Record<string, string | null | string[] | number>
 ): Promise<ApiResponse> => {
   const BASE_URL =
     process.env.NEXT_PUBLIC_API_URL || "https://dev-muvment.up.railway.app";
-  let endpoint = "";
+  // Always use the single, smart endpoint
+  const endpoint = `${BASE_URL}/api/customer/find-ride`;
   const queryParams = new URLSearchParams();
 
-  if (params.latitude && params.longitude) {
-    // Keep the nearby logic as is
-    endpoint = `${BASE_URL}/api/customer/nearby`;
-
-    const nearbyParams = {
-      latitude: params.latitude,
-      longitude: params.longitude,
-      radius: "250",
-      search: params.search,
-      category: params.category,
-      bookingType: params.bookingType,
-      untilDate: params.untilDate,
-      fromDate: params.fromDate,
-    };
-
-    Object.entries(nearbyParams).forEach(([key, value]) => {
-      if (value) {
-        queryParams.append(key, Array.isArray(value) ? value.join(",") : value);
-      }
-    });
-  } else {
-    // Use the new endpoint for other searches
-    endpoint = `${BASE_URL}/api/customer/vehicles/type`;
-
-    // Create a copy of params to avoid modifying the original object used in queryKey
-    const apiParams = { ...params };
-
-    // Map the 'type' parameter from URL to 'vehicleType' for the API call
-    if (apiParams.type) {
-      apiParams.vehicleType = apiParams.type;
-      delete apiParams.type;
+  Object.entries(params).forEach(([key, value]) => {
+    // Skip any parameters that are null, undefined, or empty arrays
+    if (
+      value === null ||
+      value === undefined ||
+      (Array.isArray(value) && value.length === 0)
+    ) {
+      return;
     }
 
-    Object.entries(apiParams).forEach(([key, value]) => {
-      // Exclude params not meant for this endpoint
-      if (key === "latitude" || key === "longitude") return;
-
-      if (Array.isArray(value)) {
-        value.forEach((v) => queryParams.append(key, v));
-      } else if (value) {
-        queryParams.append(key, value);
-      }
-    });
-  }
+    // If the value is an array, append each item separately
+    if (Array.isArray(value)) {
+      value.forEach((v) => queryParams.append(key, v));
+    } else {
+      // Otherwise, just append the single value
+      queryParams.append(key, String(value));
+    }
+  });
 
   const response = await fetch(`${endpoint}?${queryParams.toString()}`);
+
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
@@ -284,18 +261,31 @@ function ExplorePageLayout() {
     if (latitude) currentParams.set("latitude", latitude);
     if (longitude) currentParams.set("longitude", longitude);
     router.push(`${pathname}?${currentParams.toString()}`);
-  }, [fromDate, untilDate, bookingType, category, search, latitude, longitude, pathname, router]);
+  }, [
+    fromDate,
+    untilDate,
+    bookingType,
+    category,
+    search,
+    latitude,
+    longitude,
+    pathname,
+    router,
+  ]);
 
-  const clearIndividualFilter = useCallback((filterName: string, value: string) => {
-    const currentParams = new URLSearchParams(
-      Array.from(searchParams.entries())
-    );
-    const allValues = currentParams.getAll(filterName);
-    const newValues = allValues.filter((v) => v !== value);
-    currentParams.delete(filterName);
-    newValues.forEach((v) => currentParams.append(filterName, v));
-    router.push(`${pathname}?${currentParams.toString()}`);
-  }, [searchParams, pathname, router]);
+  const clearIndividualFilter = useCallback(
+    (filterName: string, value: string) => {
+      const currentParams = new URLSearchParams(
+        Array.from(searchParams.entries())
+      );
+      const allValues = currentParams.getAll(filterName);
+      const newValues = allValues.filter((v) => v !== value);
+      currentParams.delete(filterName);
+      newValues.forEach((v) => currentParams.append(filterName, v));
+      router.push(`${pathname}?${currentParams.toString()}`);
+    },
+    [searchParams, pathname, router]
+  );
 
   const getVehicleImages = (vehicle: Vehicle) => {
     if (!vehicle.VehicleImage) return placeholderImages;

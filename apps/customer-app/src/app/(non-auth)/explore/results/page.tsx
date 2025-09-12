@@ -54,43 +54,32 @@ interface ApiResponse {
 }
 
 const fetchRides = async (
-  params: Record<string, string | null | string[]>
+  params: Record<string, string | null | string[] | number>
 ): Promise<ApiResponse> => {
   const BASE_URL =
     process.env.NEXT_PUBLIC_API_URL || "https://dev-muvment.up.railway.app";
-  let endpoint = `${BASE_URL}/api/customer/find-ride`;
+  const endpoint = `${BASE_URL}/api/customer/find-ride`;
   const queryParams = new URLSearchParams();
 
-  if (params.latitude && params.longitude) {
-    endpoint = `${BASE_URL}/api/customer/nearby`;
+  // Loop through all provided parameters
+  Object.entries(params).forEach(([key, value]) => {
+    // Skip any parameters that are null or undefined
+    if (value === null || value === undefined) {
+      return;
+    }
 
-    const nearbyParams = {
-      latitude: params.latitude,
-      longitude: params.longitude,
-      radius: "250",
-      search: params.search,
-      type: params.category,
-      bookingType: params.bookingType,
-      untilDate: params.untilDate,
-      fromDate: params.fromDate,
-    };
-
-    Object.entries(nearbyParams).forEach(([key, value]) => {
-      if (value) {
-        queryParams.append(key, Array.isArray(value) ? value.join(",") : value);
-      }
-    });
-  } else {
-    Object.entries(params).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        value.forEach((v) => queryParams.append(key, v));
-      } else if (value) {
-        queryParams.append(key, value);
-      }
-    });
-  }
+    // If the value is an array, append each item separately.
+    // This is the correct way to handle multi-select filters.
+    if (Array.isArray(value)) {
+      value.forEach((v) => queryParams.append(key, v));
+    } else {
+      // Otherwise, just append the single value.
+      queryParams.append(key, String(value));
+    }
+  });
 
   const response = await fetch(`${endpoint}?${queryParams.toString()}`);
+
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
@@ -134,10 +123,10 @@ function ExplorePageLayout() {
   const initializeFiltersFromUrl = useCallback(() => {
     const minPriceParam = searchParams.get("minPrice");
     const maxPriceParam = searchParams.get("maxPrice");
-    
+
     const minPrice = minPriceParam ? parseInt(minPriceParam) : 0;
     const maxPrice = maxPriceParam ? parseInt(maxPriceParam) : 10000000;
-    
+
     const type = searchParams.getAll("type");
     const make = searchParams.getAll("make");
     const yearOfRelease = searchParams.getAll("yearOfRelease");
@@ -185,12 +174,20 @@ function ExplorePageLayout() {
     isLoading,
     isError,
   } = useQuery<ApiResponse>({
-    queryKey: ["rides", { ...queryKeyParams, minPrice: String(queryKeyParams.minPrice), maxPrice: String(queryKeyParams.maxPrice) }],
-    queryFn: () => fetchRides({
-      ...queryKeyParams,
-      minPrice: String(queryKeyParams.minPrice),
-      maxPrice: String(queryKeyParams.maxPrice),
-    }),
+    queryKey: [
+      "rides",
+      {
+        ...queryKeyParams,
+        minPrice: String(queryKeyParams.minPrice),
+        maxPrice: String(queryKeyParams.maxPrice),
+      },
+    ],
+    queryFn: () =>
+      fetchRides({
+        ...queryKeyParams,
+        minPrice: String(queryKeyParams.minPrice),
+        maxPrice: String(queryKeyParams.maxPrice),
+      }),
     staleTime: 500,
   });
 
@@ -199,7 +196,7 @@ function ExplorePageLayout() {
 
   const clearAllFilters = useCallback(() => {
     const currentParams = new URLSearchParams(searchParams.toString());
-    
+
     // Clear all filter params from URL
     currentParams.delete("minPrice");
     currentParams.delete("maxPrice");
@@ -208,7 +205,7 @@ function ExplorePageLayout() {
     currentParams.delete("yearOfRelease");
     currentParams.delete("numberOfSeats");
     currentParams.delete("features");
-    
+
     setFilters({
       minPrice: 0,
       maxPrice: 10000000,
@@ -218,29 +215,34 @@ function ExplorePageLayout() {
       numberOfSeats: [],
       features: [],
     });
-    
+
     // Update URL
     router.push(`${pathname}?${currentParams.toString()}`);
   }, [searchParams, pathname, router]);
 
-  const clearIndividualFilter = useCallback((filterName: string, value: string) => {
-    const currentParams = new URLSearchParams(searchParams.toString());
-    const newFilters: FilterState = { ...filters };
-    
-    // Remove the specific value from the filter
-    if (Array.isArray(newFilters[filterName])) {
-      newFilters[filterName] = (newFilters[filterName] as string[]).filter(item => item !== value);
-    }
-    
-    // Update URL params
-    const allValues = currentParams.getAll(filterName);
-    const newValues = allValues.filter(v => v !== value);
-    currentParams.delete(filterName);
-    newValues.forEach(v => currentParams.append(filterName, v));
-    
-    setFilters(newFilters);
-    router.push(`${pathname}?${currentParams.toString()}`);
-  }, [filters, searchParams, pathname, router]);
+  const clearIndividualFilter = useCallback(
+    (filterName: string, value: string) => {
+      const currentParams = new URLSearchParams(searchParams.toString());
+      const newFilters: FilterState = { ...filters };
+
+      // Remove the specific value from the filter
+      if (Array.isArray(newFilters[filterName])) {
+        newFilters[filterName] = (newFilters[filterName] as string[]).filter(
+          (item) => item !== value
+        );
+      }
+
+      // Update URL params
+      const allValues = currentParams.getAll(filterName);
+      const newValues = allValues.filter((v) => v !== value);
+      currentParams.delete(filterName);
+      newValues.forEach((v) => currentParams.append(filterName, v));
+
+      setFilters(newFilters);
+      router.push(`${pathname}?${currentParams.toString()}`);
+    },
+    [filters, searchParams, pathname, router]
+  );
 
   const handleFilterChange = useCallback(
     (filterName: string, value: string | number[] | number) => {
@@ -248,8 +250,13 @@ function ExplorePageLayout() {
       const newFilters: FilterState = { ...filters };
 
       if (filterName === "minPrice" || filterName === "maxPrice") {
-        const numericValue = typeof value === 'number' ? value : parseInt(String(value));
-        const validValue = isNaN(numericValue) ? (filterName === "minPrice" ? 0 : 10000000) : numericValue;
+        const numericValue =
+          typeof value === "number" ? value : parseInt(String(value));
+        const validValue = isNaN(numericValue)
+          ? filterName === "minPrice"
+            ? 0
+            : 10000000
+          : numericValue;
         newFilters[filterName] = validValue;
         currentParams.set(filterName, String(validValue));
       } else {
@@ -261,7 +268,10 @@ function ExplorePageLayout() {
           newFilters[filterName] = newValues;
         } else {
           currentParams.append(filterName, value as string);
-          newFilters[filterName] = [...(newFilters[filterName] || []), value as string];
+          newFilters[filterName] = [
+            ...(newFilters[filterName] || []),
+            value as string,
+          ];
         }
       }
 
