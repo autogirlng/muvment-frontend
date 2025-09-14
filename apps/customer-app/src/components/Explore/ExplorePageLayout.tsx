@@ -103,9 +103,7 @@ export default function ExplorePageLayout({
     location,
   });
 
-  console.log("Listings:", listings);
-  console.log("Total Count:", totalCount);
-
+  
   // Fetch user's favorite vehicles
   useEffect(() => {
     // The useFavorites hook automatically handles fetching favorites
