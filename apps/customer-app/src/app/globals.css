@@ -295,3 +295,12 @@ label svg {
     padding: 10px 30px;
   }
 }
+
+/* globals.css */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}

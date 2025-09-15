@@ -71,7 +71,7 @@ export default function RideSection() {
             </p>
             <div className="flex justify-center md:justify-start">
               <Link
-                href="/explore/results?category=SUVElectric"
+                href="/explore/categories?type=SUVElectric"
                 passHref
                 legacyBehavior
               >
