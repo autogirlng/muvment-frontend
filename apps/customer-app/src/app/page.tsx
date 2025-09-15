@@ -47,7 +47,7 @@ export default function HomePage() {
       {/* <SaveBig /> */}
       <Steps />
       <FAQ />
-      <Footer />
+      {/* <Footer /> */}
     </main>
   );
 }
