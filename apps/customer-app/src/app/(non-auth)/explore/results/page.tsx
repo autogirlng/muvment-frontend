@@ -444,6 +444,7 @@ function ExplorePageLayout() {
             )}
 
             {/* Pagination */}
+            {/* the pagination CTO SEE IT */}
             {totalPages > 1 && (
               <div className="flex justify-center mt-8">
                 <Pagination

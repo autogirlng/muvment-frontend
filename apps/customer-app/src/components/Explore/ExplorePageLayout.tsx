@@ -370,7 +370,8 @@ export default function ExplorePageLayout({
                   ))}
                 </div>
 
-                {/* Pagination */}
+                    {/* Pagination */}
+                    {/* the pagination CTO SEE IT */}
                 {totalPages > 1 && (
                   <div className="mt-8">
                     <Pagination
