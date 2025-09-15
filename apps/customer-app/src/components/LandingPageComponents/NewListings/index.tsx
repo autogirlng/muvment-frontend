@@ -84,9 +84,11 @@ function NewListings({}: Props) {
               <div className="hidden lg:flex relative items-center">
                 <div className="flex flex-row gap-6">
                   {currentVehicles.map((vehicle, index) => (
-                    <Link href={`/vehicle/details/${vehicle.id}`}>
+                    <Link
+                      key={vehicle.id || index}
+                      href={`/vehicle/details/${vehicle.id}`}
+                    >
                       <VehicleCard
-                        key={vehicle.id || index}
                         vehicleId={vehicle?.id ?? ""}
                         name={vehicle?.listingName || "Premium Vehicle"}
                         type={vehicle?.vehicleType || "SUV"}
