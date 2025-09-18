@@ -103,9 +103,7 @@ export default function ExplorePageLayout({
     location,
   });
 
-  console.log("Listings:", listings);
-  console.log("Total Count:", totalCount);
-
+  
   // Fetch user's favorite vehicles
   useEffect(() => {
     // The useFavorites hook automatically handles fetching favorites
@@ -372,7 +370,8 @@ export default function ExplorePageLayout({
                   ))}
                 </div>
 
-                {/* Pagination */}
+                    {/* Pagination */}
+                    {/* the pagination CTO SEE IT */}
                 {totalPages > 1 && (
                   <div className="mt-8">
                     <Pagination

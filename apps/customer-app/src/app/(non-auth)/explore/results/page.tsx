@@ -14,6 +14,7 @@ import DesktopNav from "@/components/Navbar/DesktopNav";
 import MobileNav from "@/components/Navbar/MobileNav";
 import BackLink from "@/components/BackLink";
 import NavBookingSearchBar from "@/components/searchbar-component/NavBookingSearchBar";
+import Pagination from "@repo/ui/pagination";
 import { useAppSelector } from "@/lib/hooks";
 
 interface VehicleImage {
@@ -157,6 +158,7 @@ function ExplorePageLayout() {
   const search = searchParams.get("location");
   const latitude = searchParams.get("latitude");
   const longitude = searchParams.get("longitude");
+  const page = searchParams.get("page") || "1";
 
   const queryKeyParams = {
     ...filters,
@@ -167,6 +169,7 @@ function ExplorePageLayout() {
     search,
     latitude,
     longitude,
+    page: parseInt(page),
   };
 
   const {
@@ -193,6 +196,18 @@ function ExplorePageLayout() {
 
   const listings = apiResponse?.data ?? [];
   const totalCount = apiResponse?.totalCount ?? 0;
+  const currentPage = apiResponse?.page ?? 1;
+  const totalPages = apiResponse?.totalPages ?? 1;
+  const pageLimit = apiResponse?.limit ?? 10;
+
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      const currentParams = new URLSearchParams(searchParams.toString());
+      currentParams.set("page", newPage.toString());
+      router.push(`${pathname}?${currentParams.toString()}`);
+    },
+    [searchParams, pathname, router]
+  );
 
   const clearAllFilters = useCallback(() => {
     const currentParams = new URLSearchParams(searchParams.toString());
@@ -205,6 +220,8 @@ function ExplorePageLayout() {
     currentParams.delete("yearOfRelease");
     currentParams.delete("numberOfSeats");
     currentParams.delete("features");
+    // Reset to page 1 when clearing filters
+    currentParams.set("page", "1");
 
     setFilters({
       minPrice: 0,
@@ -237,6 +254,8 @@ function ExplorePageLayout() {
       const newValues = allValues.filter((v) => v !== value);
       currentParams.delete(filterName);
       newValues.forEach((v) => currentParams.append(filterName, v));
+      // Reset to page 1 when clearing individual filter
+      currentParams.set("page", "1");
 
       setFilters(newFilters);
       router.push(`${pathname}?${currentParams.toString()}`);
@@ -248,6 +267,9 @@ function ExplorePageLayout() {
     (filterName: string, value: string | number[] | number) => {
       const currentParams = new URLSearchParams(searchParams.toString());
       const newFilters: FilterState = { ...filters };
+
+      // Reset to page 1 when filters change
+      currentParams.set("page", "1");
 
       if (filterName === "minPrice" || filterName === "maxPrice") {
         const numericValue =
@@ -419,6 +441,19 @@ function ExplorePageLayout() {
                 title="No Listings Found"
                 image="/icons/empty_booking_state.png"
               />
+            )}
+
+            {/* Pagination */}
+            {/* the pagination CTO SEE IT */}
+            {totalPages > 1 && (
+              <div className="flex justify-center mt-8">
+                <Pagination
+                  onPageChange={handlePageChange}
+                  totalCount={totalCount}
+                  currentPage={currentPage}
+                  pageLimit={pageLimit}
+                />
+              </div>
             )}
           </div>
         </div>
