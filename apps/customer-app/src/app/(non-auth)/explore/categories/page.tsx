@@ -15,6 +15,7 @@ import MobileNav from "@/components/Navbar/MobileNav";
 import BackLink from "@/components/BackLink";
 import BookingSearchBar from "@/components/searchbar-component/SearchBar";
 import NavBookingSearchBar from "@/components/searchbar-component/NavBookingSearchBar";
+import Pagination from "@repo/ui/pagination";
 import { useAppSelector } from "@/lib/hooks";
 
 // --- Updated Interfaces to match the new API response ---
@@ -181,6 +182,7 @@ function ExplorePageLayout() {
   const yearOfRelease = searchParams.getAll("yearOfRelease");
   const numberOfSeats = searchParams.getAll("numberOfSeats");
   const features = searchParams.getAll("features");
+  const page = searchParams.get("page") || "1";
 
   const queryKeyParams = {
     fromDate,
@@ -196,6 +198,7 @@ function ExplorePageLayout() {
     yearOfRelease,
     numberOfSeats,
     features,
+    page: parseInt(page),
   };
 
   const {
@@ -210,6 +213,9 @@ function ExplorePageLayout() {
 
   const listings = apiResponse?.data ?? [];
   const totalCount = apiResponse?.totalCount ?? 0;
+  const currentPage = apiResponse?.page ?? 1;
+  const totalPages = apiResponse?.totalPages ?? 1;
+  const pageLimit = apiResponse?.limit ?? 10;
 
   const [isDisplayList, setIsDisplayList] = useState<boolean>(true);
   const [showAllFilters, setShowAllFilters] = useState<boolean>(false);
@@ -226,11 +232,25 @@ function ExplorePageLayout() {
 
   useEffect(() => {}, [user]);
 
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      const currentParams = new URLSearchParams(
+        Array.from(searchParams.entries())
+      );
+      currentParams.set("page", newPage.toString());
+      router.push(`${pathname}?${currentParams.toString()}`);
+    },
+    [searchParams, pathname, router]
+  );
+
   const handleFilterChange = useCallback(
     (filterName: string, value: string | number | number[]) => {
       const currentParams = new URLSearchParams(
         Array.from(searchParams.entries())
       );
+
+      // Reset to page 1 when filters change
+      currentParams.set("page", "1");
 
       if (Array.isArray(value)) {
         currentParams.delete(filterName);
@@ -260,6 +280,8 @@ function ExplorePageLayout() {
     if (search) currentParams.set("location", search);
     if (latitude) currentParams.set("latitude", latitude);
     if (longitude) currentParams.set("longitude", longitude);
+    // Reset to page 1 when clearing filters
+    currentParams.set("page", "1");
     router.push(`${pathname}?${currentParams.toString()}`);
   }, [
     fromDate,
@@ -282,6 +304,8 @@ function ExplorePageLayout() {
       const newValues = allValues.filter((v) => v !== value);
       currentParams.delete(filterName);
       newValues.forEach((v) => currentParams.append(filterName, v));
+      // Reset to page 1 when clearing individual filter
+      currentParams.set("page", "1");
       router.push(`${pathname}?${currentParams.toString()}`);
     },
     [searchParams, pathname, router]
@@ -425,6 +449,18 @@ function ExplorePageLayout() {
                 title="No Listings Found"
                 image="/icons/empty_booking_state.png"
               />
+            )}
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex justify-center mt-8">
+                <Pagination
+                  onPageChange={handlePageChange}
+                  totalCount={totalCount}
+                  currentPage={currentPage}
+                  pageLimit={pageLimit}
+                />
+              </div>
             )}
           </div>
         </div>

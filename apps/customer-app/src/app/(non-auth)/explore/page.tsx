@@ -6,6 +6,7 @@ import { FullPageSpinner } from "@repo/ui/spinner";
 
 export default function SearchVehiclesPage() {
   return (
+    // CHECK THE PAGINATION HERE
     <Suspense fallback={<FullPageSpinner />}>
       <ExplorePageLayout type="all" />
     </Suspense>
